@@ -23,3 +23,11 @@ CTestTestfile.cmake
 _deps
 Debug/
 *.pch
+*.sln
+*.vcxproj
+*.filters
+*.json
+*.command
+*.exe
+*.pdb
+*.lib
