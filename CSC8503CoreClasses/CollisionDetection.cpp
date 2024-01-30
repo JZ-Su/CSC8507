@@ -471,8 +471,102 @@ bool CollisionDetection::SphereCapsuleIntersection(
 }
 
 bool CollisionDetection::OBBIntersection(const OBBVolume& volumeA, const Transform& worldTransformA,
-	const OBBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
+	const OBBVolume& volumeB, const Transform& worldTransformB, NCL::CollisionDetection::CollisionInfo& collisionInfo) {
+
+	Vector3 relativePosition = worldTransformB.GetPosition() - worldTransformA.GetPosition();
+	Vector3 AFor = worldTransformA.GetOrientation() * Vector3(0, 0, 1);
+	Vector3 ARight = worldTransformA.GetOrientation() * Vector3(1, 0, 0);
+	Vector3 AUp = worldTransformA.GetOrientation() * Vector3(0, 1, 0);
+
+	Vector3 BFor = worldTransformB.GetOrientation() * Vector3(0, 0, 1);
+	Vector3 BRight = worldTransformB.GetOrientation() * Vector3(1, 0, 0);
+	Vector3 BUp = worldTransformB.GetOrientation() * Vector3(0, 1, 0);
+
+	Vector3 boxASize = volumeA.GetHalfDimensions();
+	Vector3 boxBSize = volumeB.GetHalfDimensions();
+
+	vector<float> deltas;
+
+	bool seperationPlane[15] = { false };
+
+	float penDistance = FLT_MAX;
+	Vector3 normal;
+	Vector3 pointA;
+	Vector3 pointB;
+	Vector3 planes[15] = {
+		// 6 faces
+		ARight.Normalised(),
+		AUp.Normalised(),
+		AFor.Normalised(),
+		BRight.Normalised(),
+		BUp.Normalised(),
+		BFor.Normalised(),
+
+		//9 possuble edges
+		Vector3::Cross(ARight, BRight).Normalised(),
+		Vector3::Cross(ARight, BUp).Normalised(),
+		Vector3::Cross(ARight, BFor).Normalised(),
+		Vector3::Cross(AUp, BRight).Normalised(),
+		Vector3::Cross(AUp, BUp).Normalised(),
+		Vector3::Cross(AUp, BFor).Normalised(),
+		Vector3::Cross(AFor, BRight).Normalised(),
+		Vector3::Cross(AFor, BUp).Normalised(),
+		Vector3::Cross(AFor, BFor).Normalised()
+	};
+	for (int i = 0; i < 15; i++)
+	{
+		if (!useSAT(relativePosition, planes[i], worldTransformA, worldTransformB, volumeA.GetHalfDimensions(), volumeB.GetHalfDimensions(), penDistance, normal, pointA, pointB))
+		{
+			return false;
+		}
+	}
+	collisionInfo.AddContactPoint(pointA, pointB, normal, penDistance);
+	return true;
+
+}
+bool CollisionDetection::useSAT(const Vector3 delta, Vector3 plane, const Transform& worldTransformA, const Transform& worldTransformB,
+	const Vector3 halfSizeA, const Vector3 halfSizeB, float& penetrationDistance, Vector3& normal, Vector3& pointA, Vector3& pointB) {
+	Vector3 AFor = worldTransformA.GetOrientation() * Vector3(0, 0, 1);
+	Vector3 ARight = worldTransformA.GetOrientation() * Vector3(1, 0, 0);
+	Vector3 AUp = worldTransformA.GetOrientation() * Vector3(0, 1, 0);
+	Vector3 BFor = worldTransformB.GetOrientation() * Vector3(0, 0, 1);
+	Vector3 BRight = worldTransformB.GetOrientation() * Vector3(1, 0, 0);
+	Vector3 BUp = worldTransformB.GetOrientation() * Vector3(0, 1, 0);
+	float deltaPlaneDot = fabs(Vector3::Dot(delta, plane));
+	float boxVerticesDot =
+		fabs(Vector3::Dot(ARight * halfSizeA.x, plane)) +
+		fabs(Vector3::Dot(AUp * halfSizeA.y, plane)) +
+		fabs(Vector3::Dot(AFor * halfSizeA.z, plane)) +
+		fabs(Vector3::Dot(BRight * halfSizeB.x, plane)) +
+		fabs(Vector3::Dot(BUp * halfSizeB.y, plane)) +
+		fabs(Vector3::Dot(BFor * halfSizeB.z, plane));
+
+	bool result = deltaPlaneDot <= boxVerticesDot;
+	if (result) {
+		float delta2 = boxVerticesDot - deltaPlaneDot;
+		if (delta2 < penetrationDistance && plane.LengthSquared() > 0) {
+			penetrationDistance = delta2;
+
+			if (Vector3::Dot(plane, delta) < 0) { plane *= -1; }
+
+			normal = plane;
+			pointA = OBBSupport(worldTransformA, plane);
+			pointB = OBBSupport(worldTransformB, -plane);
+		}
+		return true;
+	}
 	return false;
+}
+Vector3 CollisionDetection::OBBSupport(const Transform& worldTransform, Vector3 worldDir) {
+	Vector3 vertex;
+	Vector3 localDirection = worldTransform.GetOrientation().Conjugate() * worldDir;
+
+	vertex.x = localDirection.x < 0 ? -0.5f : 0.5f;
+	vertex.y = localDirection.y < 0 ? -0.5f : 0.5f;
+	vertex.z = localDirection.z < 0 ? -0.5f : 0.5f;
+
+	return (Matrix4::Scale(worldTransform.GetScale()) * worldTransform.GetOrientation() *
+		Matrix4::Translation(vertex)).GetPositionVector();
 }
 
 Matrix4 GenerateInverseView(const Camera& c) {

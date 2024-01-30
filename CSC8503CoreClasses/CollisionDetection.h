@@ -114,6 +114,9 @@ namespace NCL {
 		static Vector3		UnprojectScreenPosition(Vector3 position, float aspect, float fov, const PerspectiveCamera&c);
 		static Matrix4		GenerateInverseProjection(float aspect, float fov, float nearPlane, float farPlane);
 		static Matrix4		GenerateInverseView(const Camera &c);
+		static Vector3 OBBSupport(const Transform& worldTransform, Vector3 worldDir);
+
+		static bool useSAT(const Vector3 delta, Vector3 plane, const Transform& worldTransformA, const Transform& worldTransformB, const Vector3 halfSizeA, const Vector3 halfSizeB, float& penetrationDistance, Vector3& normal, Vector3& pointA, Vector3& pointB);
 
 	protected:
 
