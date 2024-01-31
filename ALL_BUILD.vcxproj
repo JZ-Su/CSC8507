@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ResolveNugetPackages>false</ResolveNugetPackages>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{EF318A19-B1BB-36FC-884F-6353A9300CB3}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\c3057379\source\repos\CSC8507\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/c3057379/source/repos/CSC8507/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\bin\cmake.exe" -SC:/Users/c3057379/source/repos/CSC8507 -BC:/Users/c3057379/source/repos/CSC8507 --check-stamp-file C:/Users/c3057379/source/repos/CSC8507/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\c3057379\source\repos\CSC8507\CMake\Utils.cmake;C:\Users\c3057379\source\repos\CSC8507\CMakeFiles\3.28.0-rc5\CMakeCXXCompiler.cmake;C:\Users\c3057379\source\repos\CSC8507\CMakeFiles\3.28.0-rc5\CMakeRCCompiler.cmake;C:\Users\c3057379\source\repos\CSC8507\CMakeFiles\3.28.0-rc5\CMakeSystem.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeCXXInformation.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeCommonLanguageInclude.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeGenericSystem.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeInitializeConfigs.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeLanguageInformation.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeRCInformation.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeSystemSpecificInformation.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeSystemSpecificInitialize.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Compiler\CMakeCommonCompilerMacros.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Compiler\MSVC-CXX.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Compiler\MSVC.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Platform\Windows-Initialize.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Platform\Windows-MSVC-CXX.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Platform\Windows-MSVC.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Platform\Windows.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\c3057379\source\repos\CSC8507\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/c3057379/source/repos/CSC8507/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\bin\cmake.exe" -SC:/Users/c3057379/source/repos/CSC8507 -BC:/Users/c3057379/source/repos/CSC8507 --check-stamp-file C:/Users/c3057379/source/repos/CSC8507/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\c3057379\source\repos\CSC8507\CMake\Utils.cmake;C:\Users\c3057379\source\repos\CSC8507\CMakeFiles\3.28.0-rc5\CMakeCXXCompiler.cmake;C:\Users\c3057379\source\repos\CSC8507\CMakeFiles\3.28.0-rc5\CMakeRCCompiler.cmake;C:\Users\c3057379\source\repos\CSC8507\CMakeFiles\3.28.0-rc5\CMakeSystem.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeCXXInformation.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeCommonLanguageInclude.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeGenericSystem.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeInitializeConfigs.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeLanguageInformation.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeRCInformation.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeSystemSpecificInformation.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\CMakeSystemSpecificInitialize.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Compiler\CMakeCommonCompilerMacros.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Compiler\MSVC-CXX.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Compiler\MSVC.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Platform\Windows-Initialize.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Platform\Windows-MSVC-CXX.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Platform\Windows-MSVC.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Platform\Windows.cmake;H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\share\cmake-3.28\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\c3057379\source\repos\CSC8507\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\c3057379\source\repos\CSC8507\ZERO_CHECK.vcxproj">
+      <Project>{461B9BD2-2227-36C3-9987-A42CC837AA1F}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\c3057379\source\repos\CSC8507\CSC8503\CSC8503.vcxproj">
+      <Project>{F2EF3CD3-39D6-3125-A1EF-D1634602ADD5}</Project>
+      <Name>CSC8503</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\c3057379\source\repos\CSC8507\CSC8503CoreClasses\CSC8503CoreClasses.vcxproj">
+      <Project>{D5BD7E28-3C4B-32E4-ABBE-6E87665BD2AA}</Project>
+      <Name>CSC8503CoreClasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\c3057379\source\repos\CSC8507\NCLCoreClasses\NCLCoreClasses.vcxproj">
+      <Project>{08176F21-2B2A-3147-8273-B49E5C89B132}</Project>
+      <Name>NCLCoreClasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\c3057379\source\repos\CSC8507\OpenGLRendering\OpenGLRendering.vcxproj">
+      <Project>{31894B05-9BC8-3340-B4C5-3EF1D041FBD5}</Project>
+      <Name>OpenGLRendering</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

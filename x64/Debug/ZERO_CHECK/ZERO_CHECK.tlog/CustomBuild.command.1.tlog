@@ -1,0 +1,10 @@
+^C:\USERS\C3057379\SOURCE\REPOS\CSC8507\CMAKEFILES\2A8E2B4C8154785BD68E7A7989BF9CF3\GENERATE.STAMP.RULE
+setlocal
+"H:\Downloads\cmake-3.28.0-rc5-windows-x86_64 (1)\cmake-3.28.0-rc5-windows-x86_64\bin\cmake.exe" -SC:/Users/c3057379/source/repos/CSC8507 -BC:/Users/c3057379/source/repos/CSC8507 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/c3057379/source/repos/CSC8507/CSC8503.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

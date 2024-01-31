@@ -80,7 +80,7 @@ namespace NCL {
 			bool SelectObject();
 			void MoveSelectedObject();
 			void DebugObjectMovement();
-			void LockedObjectMovement();
+			void LockedObjectMovement(float dt);
 
 			GameObject* AddFloorToWorld(const Vector3& position);
 			GameObject* AddFloorToWorld(const Vector3& position, const Vector3& floorSize);
@@ -166,6 +166,8 @@ namespace NCL {
 			std::string nameString;
 			std::vector<RankScore> TimeTable, ScoreTable;
 			void LoadRankingFile();
+			//ayesh
+			float v = 0, h = 0;
 		};
 	}
 }
