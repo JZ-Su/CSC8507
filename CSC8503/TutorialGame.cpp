@@ -46,6 +46,7 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	gameState = MainMenu;
 	mainMenuState = MainMenu_Start;
 	gameMode = TimeLimited;
+	jumpTimer = 0;
 }
 
 /*
@@ -100,7 +101,7 @@ void TutorialGame::UpdateGame(float dt) {
 	//	Vector3 b = testnodes[i];
 	//	Debug::DrawLine(a, b, Debug::RED);
 	//}
-
+	updateTimer(dt);
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
 		return;
@@ -221,6 +222,7 @@ void TutorialGame::UpdateGame(float dt) {
 
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
+	
 }
 
 void TutorialGame::UpdateKeys() {
@@ -273,6 +275,8 @@ void TutorialGame::UpdateKeys() {
 }
 
 void TutorialGame::LockedObjectMovement(float dt) {
+	
+
 	Matrix4 view = world->GetMainCamera().BuildViewMatrix();
 	Matrix4 camWorld = view.Inverse();
 
@@ -352,24 +356,27 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		lockedObject->GetPhysicsObject()->AddForce(Vector3(0,-10,0));
 	}*/
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 3);
+		//lockedObject->GetPhysicsObject()->AddTorque(Vector3(0, -fwdAxis.y, 0));
 	}
+		
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3);
 	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3);
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3);
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
-		//if (player->GetCanJump())
+		if (jumpTimer <=0)
 		{
-			lockedObject->GetPhysicsObject()->AddForce(Vector3(3, 35, 0));
+			setTimer(2.0f);
+			lockedObject->GetPhysicsObject()->AddForce(Vector3(0, 100*7, 0));
 		}
 
 
@@ -388,8 +395,8 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	}*/
 	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
 	Quaternion q(viewMat);
-	float pitch = q.ToEuler().x + 0.0f;
-	float yaw = q.ToEuler().y + 10.0f;
+	float pitch = q.ToEuler().x + 10.0f;
+	float yaw = q.ToEuler().y + 15.0f;
 
 	world->GetMainCamera().SetPosition(campos);
 	world->GetMainCamera().SetPitch(pitch);
@@ -433,7 +440,7 @@ void TutorialGame::DebugObjectMovement() {
 			selectionObject->GetPhysicsObject()->AddForce(Vector3(-10, 0, 0));
 		}
 	}
-	else {
+	/*else {
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::NUMPAD4)) {
 			player->GetPhysicsObject()->AddTorque(Vector3(-10, 0, 0));
 		}
@@ -469,7 +476,7 @@ void TutorialGame::DebugObjectMovement() {
 			player->GetPhysicsObject()->AddForce(Vector3(10, 0, 0));
 			player->GetTransform().SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 1.0f));
 		}
-	}
+	}*/
 }
 
 /*
@@ -1291,4 +1298,14 @@ void TutorialGame::LoadRankingFile() {
 
 	scoreFile.close();
 	timeFile.close();
+}
+
+float TutorialGame::updateTimer(float dt)
+{
+	if (jumpTimer > 0)
+	{
+		jumpTimer -= dt;
+	}
+
+	return jumpTimer;
 }

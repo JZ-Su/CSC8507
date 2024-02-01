@@ -82,6 +82,12 @@ namespace NCL {
 			void DebugObjectMovement();
 			void LockedObjectMovement(float dt);
 
+			float updateTimer(float dt);
+			void setTimer(float time)
+			{
+				jumpTimer = time;
+			}
+
 			GameObject* AddFloorToWorld(const Vector3& position);
 			GameObject* AddFloorToWorld(const Vector3& position, const Vector3& floorSize);
 			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
@@ -151,6 +157,8 @@ namespace NCL {
 
 			float totalTime;
 			float timeInterval;
+
+			float jumpTimer;
 
 			std::vector<GameObject*> AddKeeperToWorld(const Vector3& startPos, const Vector3& endPos, const std::string& objectName = "");
 			std::vector<std::vector<GameObject*>> keeperList;

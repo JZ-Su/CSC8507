@@ -1,28 +1,21 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(531,5): warning MSB8028: The intermediate directory (CSC8503CoreClasses.dir\Debug\) contains files shared from another project (CSC8503CoreClasses.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   Scanning sources for module dependencies...
-  GameTechRenderer.cpp
-  Main.cpp
-  NetworkedGame.cpp
-  NetworkPlayer.cpp
-  StateGameObject.cpp
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\StateGameObject.cpp(74,45): warning C4305: 'argument': truncation from 'double' to 'float'
   TutorialGame.cpp
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(194,89): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(737,52): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(737,47): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(827,57): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(980,29): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(980,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(995,64): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(995,59): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1002,15): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1102,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1103,88): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1116,57): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1117,69): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1176,54): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1176,110): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1196,18): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1238,18): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-  Generating Code...
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(195,89): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(744,52): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(744,47): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(834,57): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(987,29): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(987,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1002,64): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1002,59): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1009,15): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1109,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1110,88): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1123,57): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1124,69): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1183,54): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1183,110): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1203,18): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1245,18): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   CSC8503.vcxproj -> C:\Users\c3057379\source\repos\CSC8507\x64\Debug\CSC8503.exe
