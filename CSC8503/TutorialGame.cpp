@@ -49,7 +49,7 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 }
 
 /*
-hello
+
 Each of the little demo scenarios used in the game uses the same 2 meshes,
 and the same texture and shader. There's no need to ever load in anything else
 for this module, even in the coursework, but you can add it if you like!
@@ -500,7 +500,7 @@ GameObject* TutorialGame::AddCapsuleToWorld(const Vector3& position, float halfH
 	capsule->GetTransform().SetPosition(position).SetScale(Vector3(radius, halfHeight, radius));
 	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, basicShader));
 	capsule->SetPhysicsObject(new PhysicsObject(&capsule->GetTransform(), capsule->GetBoundingVolume()));
-	capsule->GetPhysicsObject()->SetInverseMass(10.0f);
+	capsule->GetPhysicsObject()->SetInverseMass(0.0f);
 	capsule->GetPhysicsObject()->InitSphereInertia();
 
 	world->AddGameObject(capsule);
@@ -629,19 +629,24 @@ void TutorialGame::InitWorld() {
 
 void TutorialGame::InitDefaultFloor() {
 	floor = AddFloorToWorld(Vector3(0, -2, 0));
-	goalArea = AddFloorToWorld(Vector3(0, -2, 110), Vector3(100, 2, 10));
+	goalArea = AddFloorToWorld(Vector3(0, 60, 0), Vector3(1, 1, 1));
 	goalArea->GetRenderObject()->SetColour(Vector4(0, 1, 1, 1));
+	AddCubeToWorld(Vector3(-80, 5, -56), Vector3(20, 5, 44), 0);
+	AddCubeToWorld(Vector3(80, 5, -56), Vector3(20, 5, 44), 0);
+	AddCubeToWorld(Vector3(0, 5, 45), Vector3(40, 5, 55), 0);
+	AddCubeToWorld(Vector3(0, 15, 90), Vector3(40, 5, 10), 0);
+	AddCubeToWorld(Vector3(0, 25, 95), Vector3(20, 5, 5), 0);
 }
 
 void TutorialGame::InitGameExamples() {
-	AddCapsuleToWorld(Vector3(45, 30, 45), 5, 5);
-	player = AddPlayerToWorld(Vector3(0, 2, 100));
+	//AddCapsuleToWorld(Vector3(45, 30, 45), 5, 5);
+	player = AddPlayerToWorld(Vector3(0, 32, 90));
 	player->GetRenderObject()->SetColour(Vector4(0.3, 0.3, 1, 1));
 	LockCameraToObject(player);
 	linkObjects.push_back(player);
 
-	keeperList.push_back(AddKeeperToWorld(Vector3(-35, 0, -85), Vector3(55, 0, -15), "Keeper"));
-	keeperList.push_back(AddKeeperToWorld(Vector3(75, 0, -55), Vector3(-45, 0, 55), "Keeper"));
+	//keeperList.push_back(AddKeeperToWorld(Vector3(-35, 0, -85), Vector3(55, 0, -15), "Keeper"));
+	//keeperList.push_back(AddKeeperToWorld(Vector3(75, 0, -55), Vector3(-45, 0, 55), "Keeper"));
 }
 
 void TutorialGame::InitSphereGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, float radius) {
@@ -824,6 +829,7 @@ void TutorialGame::MoveSelectedObject() {
 void TutorialGame::InitPlayground() {
 	//Floor
 	InitDefaultFloor();
+	/*
 	//Left
 	AddCubeToWorld(Vector3(-95, 5, 10), Vector3(5, 5, 110), 0);
 	//Right
@@ -867,7 +873,145 @@ void TutorialGame::InitPlayground() {
 
 	AddCubeToWorld(Vector3(50, 5, -65), Vector3(10, 5, 5), 0);
 	AddCubeToWorld(Vector3(65, 5, -40), Vector3(5, 5, 40), 0);
-	AddCubeToWorld(Vector3(75, 5, -35), Vector3(5, 5, 15), 0);
+	AddCubeToWorld(Vector3(75, 5, -35), Vector3(5, 5, 15), 0);*/
+	//AddCubeToWorld(Vector3(45, 2, 80), Vector3(2, 2, 2), 0);
+	//wall
+	AddCubeToWorld(Vector3(0, 30, 101), Vector3(100, 30, 1), 0);
+	AddCubeToWorld(Vector3(0, 30, -101), Vector3(100, 30, 1), 0);
+	AddCubeToWorld(Vector3(101, 30, 0), Vector3(1, 30, 100), 0);
+	AddCubeToWorld(Vector3(-101, 30, 0), Vector3(1, 30, 100), 0);
+	AddCubeToWorld(Vector3(70, 30, 77), Vector3(30, 30, 23), 0);
+	AddCubeToWorld(Vector3(-70, 30, 77), Vector3(30, 30, 23), 0);
+	//room
+	AddCubeToWorld(Vector3(-20, 5, -20), Vector3(1, 5, 10), 0);
+	AddCubeToWorld(Vector3(-20, 5, -50), Vector3(1, 5, 10), 0);
+	AddCubeToWorld(Vector3(20, 5, -20), Vector3(1, 5, 10), 0);
+	AddCubeToWorld(Vector3(20, 5, -50), Vector3(1, 5, 10), 0);
+	AddCubeToWorld(Vector3(0, 5, -59), Vector3(19, 5, 1), 0);
+	//columns
+	AddCapsuleToWorld(Vector3(-50, 40, -60), 50, 4);
+	AddCapsuleToWorld(Vector3(-50, 40, -20), 50, 4);
+	AddCapsuleToWorld(Vector3(-50, 40, 20), 50, 4);
+	AddCapsuleToWorld(Vector3(50, 40, -60), 50, 4);
+	AddCapsuleToWorld(Vector3(50, 40, -20), 50, 4);
+	AddCapsuleToWorld(Vector3(50, 40, 20), 50, 4);
+	//stairs
+	AddCubeToWorld(Vector3(25, 20, 95), Vector3(5, 5, 5), 0);
+	AddCubeToWorld(Vector3(-25, 20, 95), Vector3(5, 5, 5), 0);
+	AddCubeToWorld(Vector3(35, 10, 75), Vector3(5, 5, 5), 0);
+	AddCubeToWorld(Vector3(-35, 10, 75), Vector3(5, 5, 5), 0);
+	AddCubeToWorld(Vector3(50, 0, 44), Vector3(10, 5, 10), 0);
+	AddCubeToWorld(Vector3(-50, 0, 44), Vector3(10, 5, 10), 0);
+	AddCubeToWorld(Vector3(80, 0, -2), Vector3(10, 5, 10), 0);
+	AddCubeToWorld(Vector3(-80, 0, -2), Vector3(10, 5, 10), 0);
+	//book shelfs
+	AddCubeToWorld(Vector3(0, 15, 60), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(8, 15, 60), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(-8, 15, 60), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(0, 15, 20), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(8, 15, 20), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(-8, 15, 20), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(-25, 15, 36), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(-25, 15, 28), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(25, 15, 36), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(25, 15, 28), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(-25, 15, 8), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(-25, 15, 0), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(25, 15, 8), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(25, 15, 0), Vector3(1, 5, 4), 0);
+
+	AddCubeToWorld(Vector3(-52, 5, 33), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(-44, 5, 33), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(-60, 5, 33), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(-96, 5, 33), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(-88, 5, 33), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(-61, 5, -8), Vector3(1, 5, 4), 0);
+
+	AddCubeToWorld(Vector3(-50, 5, -28), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(-50, 5, -44), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(-50, 5, -52), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(-30, 5, -60), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(-39, 5, -14), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(-39, 5, -22), Vector3(1, 5, 4), 0);
+
+	AddCubeToWorld(Vector3(-24, 5, -96), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(-24, 5, -88), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(24, 5, -96), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(24, 5, -88), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(-50, 5, -96), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(-50, 5, -88), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(0, 5, -16), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(0, 5, -24), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(0, 5, -44), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(0, 5, -52), Vector3(1, 5, 4), 0);
+
+	AddCubeToWorld(Vector3(50, 5, -96), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(50, 5, -88), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(50, 5, -80), Vector3(1, 5, 4), 0);
+
+	AddCubeToWorld(Vector3(61, 5, -8), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(61, 5, 0), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(61, 5, 8), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(71, 5, 22), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(71, 5, 30), Vector3(1, 5, 4), 0);
+	AddCubeToWorld(Vector3(71, 5, 38), Vector3(1, 5, 4), 0);
+
+	AddCubeToWorld(Vector3(66, 15, -96), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(74, 15, -96), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(66, 15, -16), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(-66, 15, -96), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(-74, 15, -96), Vector3(4, 5, 1), 0);
+	AddCubeToWorld(Vector3(-66, 15, -16), Vector3(4, 5, 1), 0);
+	//small shelfs
+	 AddCubeToWorld(Vector3(-44, 2, 0), Vector3(4, 2, 1), 0);
+	 AddCubeToWorld(Vector3(-52, 2, 0), Vector3(4, 2, 1), 0);
+	 AddCubeToWorld(Vector3(-38, 2, -60), Vector3(4, 2, 1), 0);
+
+	 AddCubeToWorld(Vector3(46, 2, -45), Vector3(4, 2, 1), 0);
+	 AddCubeToWorld(Vector3(54, 2, -45), Vector3(4, 2, 1), 0);
+	 AddCubeToWorld(Vector3(38, 2, -45), Vector3(4, 2, 1), 0);
+
+	 AddCubeToWorld(Vector3(66, 12, -56), Vector3(4, 2, 1), 0);
+	 AddCubeToWorld(Vector3(74, 12, -56), Vector3(4, 2, 1), 0);
+	 AddCubeToWorld(Vector3(-66, 12, -56), Vector3(4, 2, 1), 0);
+	 AddCubeToWorld(Vector3(-74, 12, -56), Vector3(4, 2, 1), 0);
+	 AddCubeToWorld(Vector3(90, 15, -86), Vector3(1, 5, 4), 0);
+	 AddCubeToWorld(Vector3(90, 15, -78), Vector3(1, 5, 4), 0);
+	 AddCubeToWorld(Vector3(90, 15, -70), Vector3(1, 5, 4), 0);
+	 AddCubeToWorld(Vector3(90, 15, -44), Vector3(1, 5, 4), 0);
+	 AddCubeToWorld(Vector3(90, 15, -36), Vector3(1, 5, 4), 0);
+	 AddCubeToWorld(Vector3(90, 15, -28), Vector3(1, 5, 4), 0);
+	 AddCubeToWorld(Vector3(-90, 15, -86), Vector3(1, 5, 4), 0);
+	 AddCubeToWorld(Vector3(-90, 15, -78), Vector3(1, 5, 4), 0);
+	 AddCubeToWorld(Vector3(-90, 15, -70), Vector3(1, 5, 4), 0);
+	 AddCubeToWorld(Vector3(-90, 15, -44), Vector3(1, 5, 4), 0);
+	 AddCubeToWorld(Vector3(-90, 15, -36), Vector3(1, 5, 4), 0);
+	 AddCubeToWorld(Vector3(-90, 15, -28), Vector3(1, 5, 4), 0);
+	//tables
+	 AddCubeToWorld(Vector3(20, 11.5, 70), Vector3(2, 1.5, 6), 0);
+	 AddCubeToWorld(Vector3(-20, 11.5, 70), Vector3(2, 1.5, 6), 0);
+	 AddCubeToWorld(Vector3(15, 11.5, 33), Vector3(2, 1.5, 6), 0);
+	 AddCubeToWorld(Vector3(-15, 11.5, 33), Vector3(2, 1.5, 6), 0);
+	 AddCubeToWorld(Vector3(15, 11.5, 3), Vector3(2, 1.5, 6), 0);
+	 AddCubeToWorld(Vector3(-15, 11.5, 3), Vector3(2, 1.5, 6), 0);
+
+	 AddCubeToWorld(Vector3(-35, 1.5, -50), Vector3(2, 1.5, 6), 0);
+	 AddCubeToWorld(Vector3(-10, 1.5, -50), Vector3(2, 1.5, 6), 0);
+	 AddCubeToWorld(Vector3(10, 1.5, -50), Vector3(2, 1.5, 6), 0);
+	 AddCubeToWorld(Vector3(-10, 1.5, -20), Vector3(2, 1.5, 6), 0);
+	 AddCubeToWorld(Vector3(10, 1.5, -20), Vector3(2, 1.5, 6), 0);
+
+	 AddCubeToWorld(Vector3(90, 1.5, 35), Vector3(2, 1.5, 6), 0);
+	 AddCubeToWorld(Vector3(68, 11.5, -83), Vector3(6, 1.5, 2), 0);
+	 AddCubeToWorld(Vector3(68, 11.5, -69), Vector3(6, 1.5, 2), 0);
+	 AddCubeToWorld(Vector3(68, 11.5, -43), Vector3(6, 1.5, 2), 0);
+	 AddCubeToWorld(Vector3(68, 11.5, -29), Vector3(6, 1.5, 2), 0);
+	 AddCubeToWorld(Vector3(-68, 11.5, -83), Vector3(6, 1.5, 2), 0);
+	 AddCubeToWorld(Vector3(-68, 11.5, -69), Vector3(6, 1.5, 2), 0);
+	 AddCubeToWorld(Vector3(-68, 11.5, -43), Vector3(6, 1.5, 2), 0);
+	 AddCubeToWorld(Vector3(-68, 11.5, -29), Vector3(6, 1.5, 2), 0);
+	 AddCubeToWorld(Vector3(-98, 11.5, -78), Vector3(2, 1.5, 6), 0);
+	 //player AddCubeToWorld(Vector3(0, 3.5, -78), Vector3(1, 3.5, 1), 0);
 }
 
 void TutorialGame::AddBonusToWorld(float totalTime) {
