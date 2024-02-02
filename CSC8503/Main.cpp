@@ -23,15 +23,12 @@
 #include "BehaviourSelector.h"
 #include "BehaviourSequence.h"
 #include "BehaviourAction.h"
-<<<<<<< Updated upstream
-//#include<irrKlang.h>
-=======
+
 #include <irrKlang.h>
 
->>>>>>> Stashed changes
 using namespace NCL;
 using namespace CSC8503;
-//using namespace irrklang;
+using namespace irrklang;
 
 
 #include <chrono>
