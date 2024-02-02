@@ -204,10 +204,17 @@ endif()
 include_directories("../OpenGLRendering/")
 include_directories("../NCLCoreClasses/")
 include_directories("../CSC8503CoreClasses/")
+include_directories("../externals/includes/")
 
+target_link_libraries(${PROJECT_NAME} LINK_PUBLIC "../externals/libs/irrKlang")
 target_link_libraries(${PROJECT_NAME} LINK_PUBLIC NCLCoreClasses)
 target_link_libraries(${PROJECT_NAME} LINK_PUBLIC CSC8503CoreClasses)
 target_link_libraries(${PROJECT_NAME} LINK_PUBLIC OpenGLRendering)
+
+file(GLOB DLLS "../externals/dlls/*.dll")
+foreach(DLL ${DLLS})
+    add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${DLL} $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+endforeach(DLL)
 
 if(USE_VULKAN)
     include_directories("../VulkanRendering/")

@@ -23,7 +23,12 @@
 #include "BehaviourSelector.h"
 #include "BehaviourSequence.h"
 #include "BehaviourAction.h"
+<<<<<<< Updated upstream
 //#include<irrKlang.h>
+=======
+#include <irrKlang.h>
+
+>>>>>>> Stashed changes
 using namespace NCL;
 using namespace CSC8503;
 //using namespace irrklang;
@@ -239,6 +244,14 @@ int main() {
 
 	TutorialGame* g = new TutorialGame();
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
+
+	//sound
+	ISoundEngine* engine = createIrrKlangDevice();
+	if (!engine) {
+		return 0;
+	}
+	engine->play2D("../externals/media/getout.ogg", true);
+
 
 	//TestBehaviourTree();
 	//TestPushdownAutomata(w); 
