@@ -342,26 +342,12 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		if (collisionRayData.rayDistance < 6)
 			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
 	}
-	/*int time = 0;
-	time += dt;*/
-	/*if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
-		lockedObject->GetPhysicsObject()->AddForce(fwdAxis);
-	}
-
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
-		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
-	}
-
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::NEXT)) {
-		lockedObject->GetPhysicsObject()->AddForce(Vector3(0,-10,0));
-	}*/
 	int speed = 5;
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * speed);
 		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 1.0f));
 		//player->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
-			
-			
+		
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
