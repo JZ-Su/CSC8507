@@ -2,20 +2,24 @@
   Scanning sources for module dependencies...
   TutorialGame.cpp
 C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(195,89): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(744,52): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(744,47): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(834,57): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(987,29): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(987,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1002,64): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1002,59): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1009,15): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1109,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1110,88): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1123,57): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1124,69): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1183,54): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1183,110): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1203,18): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1245,18): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(360,57): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(368,56): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(373,59): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(379,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(752,52): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(752,47): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(842,57): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(995,29): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(995,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1010,64): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1010,59): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1017,15): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1117,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1118,88): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1131,57): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1132,69): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1191,54): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1191,110): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1211,18): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\c3057379\source\repos\CSC8507\CSC8503\TutorialGame.cpp(1253,18): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   CSC8503.vcxproj -> C:\Users\c3057379\source\repos\CSC8507\x64\Debug\CSC8503.exe

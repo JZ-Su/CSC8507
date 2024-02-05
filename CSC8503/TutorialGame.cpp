@@ -355,22 +355,30 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::NEXT)) {
 		lockedObject->GetPhysicsObject()->AddForce(Vector3(0,-10,0));
 	}*/
-
+	int speed = 5;
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
-		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 3);
-		//lockedObject->GetPhysicsObject()->AddTorque(Vector3(0, -fwdAxis.y, 0));
+		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * speed);
+		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 1.0f));
+		//player->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
+			
+			
 	}
-		
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
-		lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3);
+		lockedObject->GetPhysicsObject()->AddForce(fwdAxis * speed);
+		//player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 0.0f));
+		//player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
-		lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3);
+		lockedObject->GetPhysicsObject()->AddForce(-rightAxis * speed);
+		//player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
+		//player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 1.0f));
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
-		lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3);
+		lockedObject->GetPhysicsObject()->AddForce(rightAxis * speed);
+		//player->GetTransform().SetOrientation(Quaternion(0, -rightAxis.x, 0, 1.0f));
+		//player->GetTransform().SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 1.0f));
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (jumpTimer <=0)
