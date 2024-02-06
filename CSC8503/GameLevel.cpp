@@ -20,25 +20,25 @@ void GameLevel::AddLevelToWorld(GameWorld* world, Level l) {
 }
 
 void GameLevel::CreateLevel1() {
-	level1.objectList.push_back(CreateCube(Vector3(), Vector3(), 10.0f));
+	level1.objectList.push_back(CreateCube(Vector3(), Vector3(10, 10, 10), 0.0f));
 
 	level1.listSize = level1.objectList.size();
 }
 
 void GameLevel::CreateLevel2() {
-	level2.objectList.push_back(CreateCube(Vector3(), Vector3(), 10.0f));
+	level2.objectList.push_back(CreateCube(Vector3(), Vector3(), 0.0f));
 
 	level2.listSize = level2.objectList.size();
 }
 
 void GameLevel::CreateLevel3() {
-	level3.objectList.push_back(CreateCube(Vector3(), Vector3(), 10.0f));
+	level3.objectList.push_back(CreateCube(Vector3(), Vector3(), 0.0f));
 
 	level3.listSize = level3.objectList.size();
 }
 
 void GameLevel::CreateLevel4() {
-	level4.objectList.push_back(CreateCube(Vector3(), Vector3(), 10.0f));
+	level4.objectList.push_back(CreateCube(Vector3(), Vector3(), 0.0f));
 
 	level4.listSize = level4.objectList.size();
 }

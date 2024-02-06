@@ -11,6 +11,7 @@
 
 #include "NavigationGrid.h"
 
+#include "GameLevel.h"
 namespace NCL {
 	namespace CSC8503 {
 		enum GameState {
@@ -57,7 +58,6 @@ namespace NCL {
 
 		protected:
 			void InitialiseAssets();
-			void InitialiseMesh();
 
 			void InitCamera();
 			void UpdateKeys();
@@ -69,31 +69,13 @@ namespace NCL {
 			in the module. Feel free to mess around with them to see different objects being created in different
 			test scenarios (constraints, collision types, and so on). 
 			*/
-			void InitGameExamples();
-
-			void InitSphereGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, float radius);
-			void InitMixedGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing);
-			void InitCubeGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, const Vector3& cubeDims);
-
-			void InitDefaultFloor();
 
 			bool SelectObject();
 			void MoveSelectedObject();
 			void DebugObjectMovement();
 			void LockedObjectMovement();
 
-			GameObject* AddFloorToWorld(const Vector3& position);
-			GameObject* AddFloorToWorld(const Vector3& position, const Vector3& floorSize);
-			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
-			GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
-
-			GameObject* AddPlayerToWorld(const Vector3& position);
-			GameObject* AddEnemyToWorld(const Vector3& position);
-			GameObject* AddBonusToWorld(const Vector3& position);
-
-			GameObject* AddCapsuleToWorld(const Vector3& position, float halfHeight, float radius);
-
-			void BridgeConstraintTest();
+			//void BridgeConstraintTest();
 
 #ifdef USEVULKAN
 			GameTechVulkanRenderer*	renderer;
@@ -133,13 +115,8 @@ namespace NCL {
 
 			GameObject* objClosest = nullptr;
 
+			GameLevel* gameLevel = nullptr;
 
-
-			void InitPlayground();
-			void AddBonusToWorld(float totalTime);
-			void BonusCollisionDetection();
-			void CountScore();
-			GameObject* AddSquareToWorld(const Vector3& position, float radius, const Vector4& color);
 
 			int score;
 			GameObject* player;
@@ -152,7 +129,6 @@ namespace NCL {
 			float totalTime;
 			float timeInterval;
 
-			std::vector<GameObject*> AddKeeperToWorld(const Vector3& startPos, const Vector3& endPos, const std::string& objectName = "");
 			std::vector<std::vector<GameObject*>> keeperList;
 
 			GameState gameState;
