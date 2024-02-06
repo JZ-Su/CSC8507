@@ -56,9 +56,11 @@ namespace NCL {
 				std::vector<Constraint*>::const_iterator& first,
 				std::vector<Constraint*>::const_iterator& last) const;
 
-			int GetWorldStateID() const {
-				return worldStateCounter;
-			}
+			int GetWorldStateID() const { return worldStateCounter; }
+			void SetWorldStateID(int i) { worldStateCounter = i; }
+
+			int GetWorldIDCounter() const { return worldIDCounter; }
+			void SetWorldIDCounter(int i) { worldIDCounter = i; }
 
 		protected:
 			std::vector<GameObject*> gameObjects;

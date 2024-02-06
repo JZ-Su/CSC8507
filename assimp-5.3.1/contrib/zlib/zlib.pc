@@ -1,0 +1,13 @@
+prefix=C:/Program Files (x86)/CSC8503
+exec_prefix=C:/Program Files (x86)/CSC8503
+libdir=
+sharedlibdir=
+includedir=
+
+Name: zlib
+Description: zlib compression library
+Version: 
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

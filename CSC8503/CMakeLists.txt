@@ -9,6 +9,8 @@ set(Header_Files
     "NetworkPlayer.h"
     "StateGameObject.h"
     "TutorialGame.h"
+    "BasicExamples.h"
+    "GameLevel.h"
 )
 source_group("Header Files" FILES ${Header_Files})
 
@@ -19,6 +21,8 @@ set(Source_Files
     "NetworkPlayer.cpp"
     "StateGameObject.cpp"
     "TutorialGame.cpp"
+    "BasicExamples.cpp"
+    "GameLevel.cpp"
 )
 
 if(USE_VULKAN)
@@ -205,11 +209,13 @@ include_directories("../OpenGLRendering/")
 include_directories("../NCLCoreClasses/")
 include_directories("../CSC8503CoreClasses/")
 include_directories("../externals/includes/")
+include_directories("../assimp-5.3.1/include/")
 
 target_link_libraries(${PROJECT_NAME} LINK_PUBLIC "../externals/libs/irrKlang")
 target_link_libraries(${PROJECT_NAME} LINK_PUBLIC NCLCoreClasses)
 target_link_libraries(${PROJECT_NAME} LINK_PUBLIC CSC8503CoreClasses)
 target_link_libraries(${PROJECT_NAME} LINK_PUBLIC OpenGLRendering)
+target_link_libraries(${PROJECT_NAME} LINK_PUBLIC "../assimp-5.3.1/lib/Debug/assimp-vc143-mtd")
 
 file(GLOB DLLS "../externals/dlls/*.dll")
 foreach(DLL ${DLLS})
