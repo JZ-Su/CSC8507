@@ -41,6 +41,24 @@ GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& di
 	return cube;
 }
 
+GameObject* BasicExamples::CreateCubeOBB(const Vector3& position, const Vector3& dimensions, float inverseMass, const Vector3& tilt, int angle) {
+	GameObject* cube = new GameObject("cube");
+
+	OBBVolume* volume = new OBBVolume(dimensions);
+	cube->SetBoundingVolume((CollisionVolume*)volume);
+
+	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Matrix4::Rotation(angle, tilt));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTexture, basicShader));
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+
+	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
+	cube->GetPhysicsObject()->InitCubeInertia();
+
+	cube->GetRenderObject()->SetColour(Vector4(0, 1, 0.5, 1));
+
+	return cube;
+}
+
 GameObject* BasicExamples::CreateSphere(const Vector3& position, float radius, float inverseMass) {
 	GameObject* sphere = new GameObject("sphere");
 

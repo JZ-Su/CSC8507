@@ -16,6 +16,7 @@ namespace NCL {
 		BasicExamples(GameTechRenderer* render);
 		~BasicExamples();
 		GameObject* CreateCube(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		GameObject* CreateCubeOBB(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, const Vector3& tilt=Vector3(1,0,0), int angle = 0.0f);
 		GameObject* CreateSphere(const Vector3& position, float radius, float inverseMass = 10.0f);
 		GameObject* CreateChar(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateGoat(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);

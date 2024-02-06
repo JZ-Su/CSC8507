@@ -26,7 +26,7 @@ void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateCube(Vector3(80, 5, -56), Vector3(20, 5, 44), 0));
 	level1.objectList.push_back(CreateCube(Vector3(0, 5, 45), Vector3(40, 5, 55), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(0, 15, 90), Vector3(40, 5, 10), 0.0f));
-	level1.objectList.push_back(CreateCube(Vector3(0, 25, 95), Vector3(20, 5, 5), 0.0f));
+	level1.objectList.push_back(CreateCube(Vector3(0, 25, 95), Vector3(20, 5, 5.1), 0.0f));
 	//wall
 	level1.objectList.push_back(CreateCube(Vector3(0, 30, 101), Vector3(100, 30, 1), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(0, 30, -101), Vector3(100, 30, 1), 0.0f));
@@ -48,14 +48,14 @@ void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateCapsule(Vector3(50, 40, -20), 50, 4, 0.0f));
 	level1.objectList.push_back(CreateCapsule(Vector3(50, 40, 20), 50, 4, 0.0f));
 	//stairs
-	level1.objectList.push_back(CreateCube(Vector3(25, 20, 95), Vector3(5, 5, 5), 0.0f));
-	level1.objectList.push_back(CreateCube(Vector3(-25, 20, 95), Vector3(5, 5, 5), 0.0f));
-	level1.objectList.push_back(CreateCube(Vector3(35, 10, 75), Vector3(5, 5, 5), 0.0f));
-	level1.objectList.push_back(CreateCube(Vector3(-35, 10, 75), Vector3(5, 5, 5), 0.0f));
-	level1.objectList.push_back(CreateCube(Vector3(50, 0, 44), Vector3(10, 5, 10), 0.0f));
-	level1.objectList.push_back(CreateCube(Vector3(-50, 0, 44), Vector3(10, 5, 10), 0.0f));
-	level1.objectList.push_back(CreateCube(Vector3(80, 0, -2), Vector3(10, 5, 10), 0.0f));
-	level1.objectList.push_back(CreateCube(Vector3(-80, 0, -2), Vector3(10, 5, 10), 0.0f));
+	level1.objectList.push_back(CreateCubeOBB(Vector3(20, 15.9, 95), Vector3(10, 10, 5), 0.0f, Vector3(0, 0, 1),	-45));
+	level1.objectList.push_back(CreateCubeOBB(Vector3(-20, 15.9, 95), Vector3(10, 10, 5), 0.0f, Vector3(0, 0, 1),	45));
+	level1.objectList.push_back(CreateCubeOBB(Vector3(35, 6.35, 76.4), Vector3(5, 10, 10), 0.0f, Vector3(1, 0, 0),	-30));
+	level1.objectList.push_back(CreateCubeOBB(Vector3(-35, 6.35, 76.4), Vector3(5, 10, 10), 0.0f, Vector3(1, 0, 0),	-30));
+	level1.objectList.push_back(CreateCubeOBB(Vector3(43.7, -3.7, 44), Vector3(10, 10, 10), 0.0f, Vector3(0, 0, 1),	-30));
+	level1.objectList.push_back(CreateCubeOBB(Vector3(-43.7, -3.7, 44), Vector3(10, 10, 10), 0.0f , Vector3(0, 0, 1), 30));
+	level1.objectList.push_back(CreateCubeOBB(Vector3(80,  -3.7, -8.3), Vector3(10, 10, 10), 0.0f  , Vector3(1, 0, 0), 30));
+	level1.objectList.push_back(CreateCubeOBB(Vector3(-80, -3.7, -8.3), Vector3(10, 10, 10), 0.0f, Vector3(1, 0, 0), 30));
 	//book shelfs
 	level1.objectList.push_back(CreateCube(Vector3(0, 15, 60), Vector3(4, 5, 1), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(8, 15, 60), Vector3(4, 5, 1), 0.0f));
