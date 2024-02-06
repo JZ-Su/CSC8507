@@ -13,9 +13,15 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 void GameLevel::AddLevelToWorld(GameWorld* world, Level l) {
 	for (auto element : l.objectList) {
 		world->AddGameObject(element);
-		element->SetWorldID(world->GetWorldIDCounter());
-		world->SetWorldIDCounter(world->GetWorldIDCounter() + 1);
-		world->SetWorldStateID(world->GetWorldStateID() + 1);
+		//element->SetWorldID(world->GetWorldIDCounter());
+		//world->SetWorldIDCounter(world->GetWorldIDCounter() + 1);
+		//world->SetWorldStateID(world->GetWorldStateID() + 1);
+	}
+}
+
+void GameLevel::RemoveLevel(GameWorld* world, Level l, bool andDelete) {
+	for (auto element : l.objectList) {
+		world->RemoveGameObject(element, andDelete);
 	}
 }
 

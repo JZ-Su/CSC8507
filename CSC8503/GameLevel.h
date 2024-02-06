@@ -14,6 +14,7 @@ namespace NCL {
 	public:
 		GameLevel(GameTechRenderer* render);
 		void AddLevelToWorld(GameWorld* world, Level l);
+		void RemoveLevel(GameWorld* world, Level l, bool andDelete = false);
 
 		void CreateLevel1();
 		void CreateLevel2();
