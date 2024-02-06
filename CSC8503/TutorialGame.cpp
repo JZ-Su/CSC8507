@@ -366,6 +366,9 @@ void TutorialGame::InitWorld() {
 
 	gameLevel = new GameLevel(renderer);
 	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
+	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
+	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
+	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel4());
 
 	score = 0;
 	totalTime = 0.0f;
