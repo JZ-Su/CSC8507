@@ -12,8 +12,6 @@
 #include "NavigationGrid.h"
 
 #include "GameLevel.h"
-
-#include "Player.h"
 namespace NCL {
 	namespace CSC8503 {
 		enum GameState {
@@ -71,18 +69,11 @@ namespace NCL {
 			in the module. Feel free to mess around with them to see different objects being created in different
 			test scenarios (constraints, collision types, and so on). 
 			*/
-			GameObject* AddPlayerToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f, float elasticity = 0.81f);
+
 			bool SelectObject();
 			void MoveSelectedObject();
 			void DebugObjectMovement();
-			void LockedObjectMovement(float dt);
-
-			float updateTimer(float dt);
-			void setTimer(float time)
-			{
-				jumpTimer = time;
-			}
-		
+			void LockedObjectMovement();
 
 			//void BridgeConstraintTest();
 
@@ -128,7 +119,7 @@ namespace NCL {
 
 
 			int score;
-			Player* player;
+			GameObject* player;
 			GameObject* floor;
 			GameObject* goalArea;
 			std::vector<GameObject*> linkObjects;
@@ -137,7 +128,6 @@ namespace NCL {
 
 			float totalTime;
 			float timeInterval;
-			float jumpTimer;
 
 			std::vector<std::vector<GameObject*>> keeperList;
 
@@ -152,7 +142,6 @@ namespace NCL {
 			std::string nameString;
 			std::vector<RankScore> TimeTable, ScoreTable;
 			void LoadRankingFile();
-			float v = 0, h = 0;
 		};
 	}
 }

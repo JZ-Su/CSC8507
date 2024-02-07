@@ -215,94 +215,32 @@ void TutorialGame::UpdateKeys() {
 	//}
 }
 
-void TutorialGame::LockedObjectMovement(float dt) {
+void TutorialGame::LockedObjectMovement() {
 	Matrix4 view = world->GetMainCamera().BuildViewMatrix();
 	Matrix4 camWorld = view.Inverse();
 
-	Vector3 camRightAxis = Vector3(camWorld.GetColumn(0)); //view is inverse of model!
+	Vector3 rightAxis = Vector3(camWorld.GetColumn(0)); //view is inverse of model!
 
-	
+	//forward is more tricky -  camera forward is 'into' the screen...
+	//so we can take a guess, and use the cross of straight up, and
+	//the right axis, to hopefully get a vector that's good enough!
 
-	Vector3 pos = lockedObject->GetTransform().GetPosition();
-	Quaternion ObjOrientation = lockedObject->GetTransform().GetOrientation();
-
-	//fwd axis of camera
-	Vector3 UpAxis = Vector3(0, 1, 0);
-	Vector3 fwdAxis = Vector3::Cross(camRightAxis, UpAxis);
+	Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
 	fwdAxis.y = 0.0f;
 	fwdAxis.Normalise();
 
-	//fwd axis of player
-	//Vector3 fwdAxis = ObjOrientation * Vector3(0, 0, 1)  ;
-	Vector3 rightAxis = Vector3::Cross(UpAxis, fwdAxis);
-	//Vector3 rightAxis = ObjOrientation * Vector3(1, 0, 0)  ;
 
-	v -= (Window::GetMouse()->GetRelativePosition().y);
-	v = std::clamp(v, -45.0f, 45.0f);
-
-	h -= (Window::GetMouse()->GetRelativePosition().x);
-	if (h < 0) h += 360.0f;
-	if (h < 360) h -= 360.0f;
-
-	Matrix4 Myaw = Matrix4::Rotation(h, Vector3(0, 1, 0));
-	Matrix4 Mpitch = Matrix4::Rotation(v, Myaw * Vector3(-1, 0, 0));
-	Matrix4 Mrot = Mpitch * Myaw;
-
-	Vector3 targetpos = lockedObject->GetTransform().GetPosition();
-	Vector3 camdir = Mrot * Vector3(0, 0, -1);
-
-	Vector3 campos = targetpos - camdir * 20.0f;
-
-
-	Ray collisionRay = Ray(targetpos, -camdir);
-	RayCollision collisionRayData;
-	if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
-	{
-		if (collisionRayData.rayDistance < 6)
-			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
-	}
-	int speed = 5;
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
-		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * speed);
-		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 1.0f));
-		//player->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
-
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
+		selectionObject->GetPhysicsObject()->AddForce(fwdAxis);
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
-		lockedObject->GetPhysicsObject()->AddForce(fwdAxis * speed);
-		//player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 0.0f));
-		//player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
-	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
-		lockedObject->GetPhysicsObject()->AddForce(-rightAxis * speed);
-		//player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
-		//player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 1.0f));
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
+		selectionObject->GetPhysicsObject()->AddForce(-fwdAxis);
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
-		lockedObject->GetPhysicsObject()->AddForce(rightAxis * speed);
-		//player->GetTransform().SetOrientation(Quaternion(0, -rightAxis.x, 0, 1.0f));
-		//player->GetTransform().SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 1.0f));
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::NEXT)) {
+		selectionObject->GetPhysicsObject()->AddForce(Vector3(0, -10, 0));
 	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
-		if (jumpTimer <= 0)
-		{
-			setTimer(2.0f);
-			lockedObject->GetPhysicsObject()->AddForce(Vector3(0, 100 * 7, 0));
-		}
-
-
-	}
-	
-	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
-	Quaternion q(viewMat);
-	float pitch = q.ToEuler().x + 10.0f;
-	float yaw = q.ToEuler().y + 15.0f;
-
-	world->GetMainCamera().SetPosition(campos);
-	world->GetMainCamera().SetPitch(pitch);
-	world->GetMainCamera().SetYaw(yaw);
 }
 
 void TutorialGame::DebugObjectMovement() {
@@ -380,35 +318,6 @@ void TutorialGame::DebugObjectMovement() {
 	}
 }
 
-
-GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position, Vector3 dimensions, float inverseMass, float elasticity) {
-	float meshSize = 1.5f;
-	inverseMass = 0.7f;
-
-	Player* character = new Player(*world, "player");
-
-	AABBVolume* volume = new AABBVolume(Vector3(0.6, 1.4, 0.6) * dimensions);
-	character->SetBoundingVolume((CollisionVolume*)volume);
-
-	character->GetTransform()
-		.SetPosition(position)
-		.SetScale(dimensions * 2);
-
-
-
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), enemyMesh, basicTex, basicShader));
-	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
-	character->GetRenderObject()->SetColour(Vector4(1, 1, 0.5, 1));
-	character->GetPhysicsObject()->SetInverseMass(inverseMass);
-	character->GetPhysicsObject()->InitCubeInertia();
-	//character->GetPhysicsObject()->SetElasticity(elasticity);
-	player = character;
-	world->AddGameObject(player);
-
-	lockedObject = player;
-	
-	return player;
-}
 /*
 
 A single function to add a large immoveable cube to the bottom of our world
