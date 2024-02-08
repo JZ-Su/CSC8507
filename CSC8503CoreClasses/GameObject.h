@@ -25,6 +25,9 @@ namespace NCL::CSC8503 {
 		bool IsActive() const {
 			return isActive;
 		}
+		void Deactivate()  {
+		 isActive = false;
+		}
 
 		Transform& GetTransform() {
 			return transform;
@@ -52,6 +55,13 @@ namespace NCL::CSC8503 {
 
 		const std::string& GetName() const {
 			return name;
+		}
+		const std::string& GetTag() const {
+			return tag;
+		}
+
+		void SetTag(std::string inTag) {
+			tag = inTag;
 		}
 
 		virtual void OnCollisionBegin(GameObject* otherObject) {
@@ -88,6 +98,7 @@ namespace NCL::CSC8503 {
 		bool		isActive;
 		int			worldID;
 		std::string	name;
+		std::string	tag;
 
 		Vector3 broadphaseAABB;
 	};

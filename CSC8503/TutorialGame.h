@@ -12,6 +12,9 @@
 #include "NavigationGrid.h"
 
 #include "GameLevel.h"
+
+#include "BasicExamples.h"
+
 namespace NCL {
 	namespace CSC8503 {
 		enum GameState {
@@ -119,7 +122,7 @@ namespace NCL {
 
 
 			int score;
-			GameObject* player;
+			Player* player;
 			GameObject* floor;
 			GameObject* goalArea;
 			std::vector<GameObject*> linkObjects;
@@ -142,6 +145,7 @@ namespace NCL {
 			std::string nameString;
 			std::vector<RankScore> TimeTable, ScoreTable;
 			void LoadRankingFile();
+			float h = 0, v = 0;
 		};
 	}
 }

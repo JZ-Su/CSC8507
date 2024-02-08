@@ -36,3 +36,5 @@ Debug/
 *.exe
 *.pdb
 *.user
+assimp-5.3.1/cmake_uninstall.cmake
+assimp-5.3.1/revision.h
