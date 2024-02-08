@@ -12,7 +12,11 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	capsuleMesh = render->LoadMesh("capsule.msh");
 
 	basicTexture = render->LoadTexture("checkerboard.png");
+	floorTexture[0] = render->LoadTexture("Floor/floor_color.jpg");
+	floorTexture[1] = render->LoadTexture("Floor/floor_normal.png");
+	floorTexture[3] = render->LoadTexture("Floor/floor_roughness.jpg");
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
+	testShader = render->LoadShader("scene.vert", "scene_uv.frag");
 }
 
 BasicExamples::~BasicExamples() {
@@ -34,6 +38,24 @@ GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& di
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTexture, basicShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+
+	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
+	cube->GetPhysicsObject()->InitCubeInertia();
+
+	return cube;
+}
+
+GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* cube = new GameObject("cube");
+
+	AABBVolume* volume = new AABBVolume(dimensions);
+	cube->SetBoundingVolume((CollisionVolume*)volume);
+
+	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, floorTexture[0], testShader));
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+	cube->GetRenderObject()->SetDefaultTexture(floorTexture[1], 1);
+	cube->GetRenderObject()->SetDefaultTexture(floorTexture[3], 3);
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();

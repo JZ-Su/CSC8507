@@ -2,6 +2,11 @@
 
 uniform vec4 		objectColour;
 uniform sampler2D 	mainTex;
+uniform sampler2D 	normalTex;
+uniform sampler2D 	metalTex;
+uniform sampler2D 	roughTex;
+uniform sampler2D 	aoTex;
+uniform sampler2D 	heightTex;
 uniform sampler2DShadow shadowTex;
 
 uniform vec3	lightPos;
@@ -18,6 +23,8 @@ in Vertex
 	vec2 texCoord;
 	vec4 shadowProj;
 	vec3 normal;
+	vec3 tangent;
+	vec3 binormal;
 	vec3 worldPos;
 } IN;
 

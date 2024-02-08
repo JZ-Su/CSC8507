@@ -241,8 +241,23 @@ void GameTechRenderer::RenderCamera() {
 		OGLShader* shader = (OGLShader*)(*i).GetShader();
 		BindShader(*shader);
 
-		if ((*i).GetDefaultTexture()) {
-			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(), "mainTex", 0);
+		if ((*i).GetDefaultTexture(0)) {
+			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(0), "mainTex", 0);
+		}
+		if ((*i).GetDefaultTexture(1)) {
+			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(1), "normalTex", 1);
+		}
+		if ((*i).GetDefaultTexture(2)) {
+			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(2), "metalTex", 2);
+		}
+		if ((*i).GetDefaultTexture(3)) {
+			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(3), "roughTex", 3);
+		}
+		if ((*i).GetDefaultTexture(4)) {
+			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(4), "aoTex", 4);
+		}
+		if ((*i).GetDefaultTexture(5)) {
+			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(5), "heightTex", 5);
 		}
 
 		if (activeShader != shader) {
@@ -287,7 +302,7 @@ void GameTechRenderer::RenderCamera() {
 
 		glUniform1i(hasVColLocation, !(*i).GetMesh()->GetColourData().empty());
 
-		glUniform1i(hasTexLocation, (OGLTexture*)(*i).GetDefaultTexture() ? 1:0);
+		glUniform1i(hasTexLocation, (OGLTexture*)(*i).GetDefaultTexture(0) ? 1:0);
 
 		BindMesh((OGLMesh&)*(*i).GetMesh());
 		size_t layerCount = (*i).GetMesh()->GetSubMeshCount();

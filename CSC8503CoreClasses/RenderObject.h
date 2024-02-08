@@ -16,12 +16,12 @@ namespace NCL {
 			RenderObject(Transform* parentTransform, Mesh* mesh, Texture* tex, Shader* shader);
 			~RenderObject();
 
-			void SetDefaultTexture(Texture* t) {
-				texture = t;
+			void SetDefaultTexture(Texture* t, int i) {
+				texture[i] = t;
 			}
 
-			Texture* GetDefaultTexture() const {
-				return texture;
+			Texture* GetDefaultTexture(int i) const {
+				return texture[i];
 			}
 
 			Mesh*	GetMesh() const {
@@ -46,7 +46,7 @@ namespace NCL {
 
 		protected:
 			Mesh*		mesh;
-			Texture*	texture;
+			Texture*	texture[6];
 			Shader*		shader;
 			Transform*	transform;
 			Vector4		colour;
