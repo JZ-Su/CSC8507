@@ -124,3 +124,19 @@ GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeig
 
 	return capsule;
 }
+
+GameObject* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	Player* character = new Player("player");
+
+	AABBVolume* volume = new AABBVolume(dimensions);
+	character->SetBoundingVolume((CollisionVolume*)volume);
+
+	character->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	character->SetRenderObject(new RenderObject(&character->GetTransform(), charMesh, basicTexture, basicShader));
+	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
+	character->GetRenderObject()->SetColour(Vector4(1, 0, 0.5, 1));
+	character->GetPhysicsObject()->SetInverseMass(inverseMass);
+	character->GetPhysicsObject()->InitCubeInertia();
+	player = character;
+	return player;
+}

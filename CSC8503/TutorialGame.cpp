@@ -66,6 +66,11 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
+
+	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
+	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
+	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
+
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
 		return;
@@ -365,7 +370,11 @@ void TutorialGame::InitWorld() {
 	blocker = nullptr;
 
 	gameLevel = new GameLevel(renderer);
+	
 	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
+	player = gameLevel->GetPlayer();
+	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
+	lockedObject = player;
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel4());

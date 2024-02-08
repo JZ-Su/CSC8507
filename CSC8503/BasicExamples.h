@@ -9,6 +9,8 @@
 
 #include "NavigationGrid.h"
 
+#include "Player.h"
+
 namespace NCL {
 	class BasicExamples
 	{
@@ -21,6 +23,11 @@ namespace NCL {
 		GameObject* CreateChar(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateGoat(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
+		GameObject* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		Player* GetPlayer()
+		{
+			return player;
+		}
 
 	protected:
 		Mesh* cubeMesh = nullptr;
@@ -28,8 +35,9 @@ namespace NCL {
 		Mesh* charMesh = nullptr;
 		Mesh* goatMesh = nullptr;
 		Mesh* capsuleMesh = nullptr;
-
+	
 		Texture* basicTexture = nullptr;
 		Shader* basicShader = nullptr;
+		Player* player;
 	};
 }

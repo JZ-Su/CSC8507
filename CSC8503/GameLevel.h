@@ -9,7 +9,7 @@ namespace NCL {
 		int listSize;
 	};
 
-	class GameLevel : public BasicExamples
+	class GameLevel : public  BasicExamples
 	{
 	public:
 		GameLevel(GameTechRenderer* render);
@@ -20,16 +20,22 @@ namespace NCL {
 		void CreateLevel2();
 		void CreateLevel3();
 		void CreateLevel4();
+		void CreateGeneric();
+
+
+		
 
 		Level GetLevel1() { return level1; }
 		Level GetLevel2() { return level2; }
 		Level GetLevel3() { return level3; }
 		Level GetLevel4() { return level4; }
+		Level GetGeneric() { return Generic; }
 
 	protected:
 		Level level1;
 		Level level2;
 		Level level3;
 		Level level4;
+		Level Generic;
 	};
 }
