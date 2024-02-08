@@ -145,6 +145,7 @@ namespace NCL {
 			std::string nameString;
 			std::vector<RankScore> TimeTable, ScoreTable;
 			void LoadRankingFile();
+			float h = 0, v = 0;
 		};
 	}
 }

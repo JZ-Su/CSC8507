@@ -86,19 +86,21 @@ void TutorialGame::UpdateGame(float dt) {
 		world->GetMainCamera().UpdateCamera(dt);
 	}
 	if (lockedObject != nullptr) {
-		Vector3 objPos = lockedObject->GetTransform().GetPosition();
-		Vector3 camPos = objPos + lockedOffset;
+		//Vector3 objPos = lockedObject->GetTransform().GetPosition();
+		//Vector3 camPos = objPos + lockedOffset;
 
-		Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0, 1, 0));
+		//Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0, 1, 0));
 
-		Matrix4 modelMat = temp.Inverse();
+		//Matrix4 modelMat = temp.Inverse();
 
-		Quaternion q(modelMat);
-		Vector3 angles = q.ToEuler(); //nearly there now!
+		//Quaternion q(modelMat);
+		//Vector3 angles = q.ToEuler(); //nearly there now!
 
-		world->GetMainCamera().SetPosition(camPos);
-		world->GetMainCamera().SetPitch(angles.x);
-		world->GetMainCamera().SetYaw(angles.y);
+		//world->GetMainCamera().SetPosition(camPos);
+		//world->GetMainCamera().SetPitch(angles.x);
+		//world->GetMainCamera().SetYaw(angles.y);
+
+		LockedObjectMovement();
 	}
 
 	UpdateKeys();
@@ -221,31 +223,111 @@ void TutorialGame::UpdateKeys() {
 }
 
 void TutorialGame::LockedObjectMovement() {
+	//Matrix4 view = world->GetMainCamera().BuildViewMatrix();
+	//Matrix4 camWorld = view.Inverse();
+
+	//Vector3 rightAxis = Vector3(camWorld.GetColumn(0)); //view is inverse of model!
+
+	////forward is more tricky -  camera forward is 'into' the screen...
+	////so we can take a guess, and use the cross of straight up, and
+	////the right axis, to hopefully get a vector that's good enough!
+
+	//Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
+	//fwdAxis.y = 0.0f;
+	//fwdAxis.Normalise();
+
+
+	//if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
+	//	selectionObject->GetPhysicsObject()->AddForce(fwdAxis);
+	//}
+
+	//if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
+	//	selectionObject->GetPhysicsObject()->AddForce(-fwdAxis);
+	//}
+
+	//if (Window::GetKeyboard()->KeyDown(KeyCodes::NEXT)) {
+	//	selectionObject->GetPhysicsObject()->AddForce(Vector3(0, -10, 0));
+	//}
+
 	Matrix4 view = world->GetMainCamera().BuildViewMatrix();
 	Matrix4 camWorld = view.Inverse();
 
-	Vector3 rightAxis = Vector3(camWorld.GetColumn(0)); //view is inverse of model!
-
+	Vector3 camRightAxis = Vector3(camWorld.GetColumn(0)); //view is inverse of model!
+	//Vector3 xdirAxis = Vector3(camWorld.GetRow(0));
 	//forward is more tricky -  camera forward is 'into' the screen...
 	//so we can take a guess, and use the cross of straight up, and
 	//the right axis, to hopefully get a vector that's good enough!
+	Vector3 pos = lockedObject->GetTransform().GetPosition();
+	Quaternion ObjOrientation = lockedObject->GetTransform().GetOrientation();
 
-	Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
+	//fwd axis of camera
+	Vector3 UpAxis = Vector3(0, 1, 0);
+	Vector3 fwdAxis = Vector3::Cross(camRightAxis, UpAxis);
 	fwdAxis.y = 0.0f;
 	fwdAxis.Normalise();
 
+	//fwd axis of player
+	//Vector3 fwdAxis = ObjOrientation * Vector3(0, 0, 1)  ;
+	Vector3 rightAxis = Vector3::Cross(UpAxis, fwdAxis);
+	//Vector3 rightAxis = ObjOrientation * Vector3(1, 0, 0)  ;
+
+	v -= (Window::GetMouse()->GetRelativePosition().y);
+	v = std::clamp(v, -45.0f, 45.0f);
+
+	h -= (Window::GetMouse()->GetRelativePosition().x);
+	if (h < 0) h += 360.0f;
+	if (h < 360) h -= 360.0f;
+
+	Matrix4 Myaw = Matrix4::Rotation(h, Vector3(0, 1, 0));
+	Matrix4 Mpitch = Matrix4::Rotation(v, Myaw * Vector3(-1, 0, 0));
+	Matrix4 Mrot = Mpitch * Myaw;
+
+	Vector3 targetpos = lockedObject->GetTransform().GetPosition();
+	Vector3 camdir = Mrot * Vector3(0, 0, -1);
+
+	Vector3 campos = targetpos - camdir * 20.0f;
+
+
+	Ray collisionRay = Ray(targetpos, -camdir);
+	RayCollision collisionRayData;
+	if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
+	{
+		if (collisionRayData.rayDistance < 6)
+			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
+	}
+
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
-		selectionObject->GetPhysicsObject()->AddForce(fwdAxis);
+		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 3);
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
-		selectionObject->GetPhysicsObject()->AddForce(-fwdAxis);
+		lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3);
+	}
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
+		lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3);
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::NEXT)) {
-		selectionObject->GetPhysicsObject()->AddForce(Vector3(0, -10, 0));
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
+		lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3);
 	}
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
+		if (player->GetCanJump())
+		{
+			lockedObject->GetPhysicsObject()->AddForce(Vector3(3, 35, 0));
+		}
+
+
+	}
+
+	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
+	Quaternion q(viewMat);
+	float pitch = q.ToEuler().x + 10.0f;
+	float yaw = q.ToEuler().y;
+
+	world->GetMainCamera().SetPosition(campos);
+	world->GetMainCamera().SetPitch(pitch);
+	world->GetMainCamera().SetYaw(yaw);
 }
 
 void TutorialGame::DebugObjectMovement() {

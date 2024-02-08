@@ -128,7 +128,7 @@ GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeig
 GameObject* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	Player* character = new Player("player");
 
-	AABBVolume* volume = new AABBVolume(dimensions);
+	AABBVolume* volume = new AABBVolume(Vector3(0.6, 1.4, 0.6) * dimensions);
 	character->SetBoundingVolume((CollisionVolume*)volume);
 
 	character->GetTransform().SetScale(dimensions * 2).SetPosition(position);
