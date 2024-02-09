@@ -176,9 +176,7 @@ void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateCube(Vector3(-68, 11.5, -29), Vector3(6, 1.5, 2), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(-98, 11.5, -78), Vector3(2, 1.5, 6), 0.0f));
 
-	player = CreateSphere(Vector3(20, 5, 20), 5, 0.0f);
-	player->GetRenderObject()->SetColour(Debug::GREEN);
-	level1.objectList.push_back(player);
+	//level1.objectList.push_back(player);
 	testAI = CreateAItest(Vector3(0, 0, 0), Vector3(5, 5, 5), player, 0.0f);
 	testAI->GetRenderObject()->SetColour(Debug::BLUE);
 	level1.objectList.push_back(testAI);

@@ -43,8 +43,5 @@ namespace NCL {
 		Shader* basicShader = nullptr;
 		Shader* testShader = nullptr;
 		Player* player;
-
-
-		GameObject* player;
 	};
 }
