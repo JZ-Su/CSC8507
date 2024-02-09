@@ -12,9 +12,15 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	capsuleMesh = render->LoadMesh("capsule.msh");
 
 	basicTexture = render->LoadTexture("checkerboard.png");
+	MetalTexture[0] = render->LoadTexture("white.jpg");
+	MetalTexture[1] = render->LoadTexture("grey.jpg");
+	MetalTexture[2] = render->LoadTexture("black.jpg");
 	floorTexture[0] = render->LoadTexture("Floor/floor_color.jpg");
 	floorTexture[1] = render->LoadTexture("Floor/floor_normal.png");
+	floorTexture[2] = MetalTexture[1];
 	floorTexture[3] = render->LoadTexture("Floor/floor_roughness.jpg");
+	floorTexture[4] = render->LoadTexture("Floor/floor_ao.jpg");
+	floorTexture[5] = render->LoadTexture("Floor/floor_height.png");
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	testShader = render->LoadShader("scene.vert", "scene_uv.frag");
 }
@@ -55,7 +61,10 @@ GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& d
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, floorTexture[0], testShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[1], 1);
+	cube->GetRenderObject()->SetDefaultTexture(floorTexture[2], 2);
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[3], 3);
+	cube->GetRenderObject()->SetDefaultTexture(floorTexture[4], 4);
+	cube->GetRenderObject()->SetDefaultTexture(floorTexture[5], 5);
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();

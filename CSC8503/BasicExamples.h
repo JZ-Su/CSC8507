@@ -39,6 +39,7 @@ namespace NCL {
 		Mesh* capsuleMesh = nullptr;
 	
 		Texture* basicTexture = nullptr;
+		Texture* MetalTexture[3] = { nullptr,nullptr,nullptr };
 		Texture* floorTexture[6] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
 		Shader* basicShader = nullptr;
 		Shader* testShader = nullptr;
