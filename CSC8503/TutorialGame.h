@@ -58,6 +58,7 @@ namespace NCL {
 			void ShowPause(float dt);
 			void ShowWin(float dt);
 			void ShowLose(float dt);
+			
 
 		protected:
 			void InitialiseAssets();
@@ -125,6 +126,7 @@ namespace NCL {
 			Player* player;
 			GameObject* floor;
 			GameObject* goalArea;
+
 			std::vector<GameObject*> linkObjects;
 
 			NavigationGrid* GRID;

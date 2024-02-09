@@ -11,7 +11,7 @@
 #include <fstream>
 #include <iostream>
 #include "Assets.h"
-
+#include "BasicExamples.h"
 using namespace NCL;
 using namespace CSC8503;
 
@@ -54,6 +54,7 @@ and the same texture and shader. There's no need to ever load in anything else
 for this module, even in the coursework, but you can add it if you like!
 
 */
+
 void TutorialGame::InitialiseAssets() {
 	InitCamera();
 	InitWorld();
@@ -161,14 +162,16 @@ void TutorialGame::UpdateGame(float dt) {
 	SelectObject();
 	MoveSelectedObject();
 
+	//Debug::DrawLine(Vector3(0, 0, 0), Vector3(50, 0, 20));
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);
 
+	gameLevel->GetAI()->Update(dt);
+
 	Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
 	Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
 	Debug::Print("Press P to Pause!", Vector2(70, 90));
-
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
 }
@@ -436,6 +439,8 @@ Builds a game object that uses a sphere mesh for its graphics, and a bounding sp
 rigid body representation. This and the cube function will let you build a lot of 'simple'
 physics worlds. You'll probably need another function for the creation of OBB cubes too.
 */
+
+
 void TutorialGame::InitCamera() {
 	world->GetMainCamera().SetNearPlane(0.1f);
 	world->GetMainCamera().SetFarPlane(500.0f);
@@ -460,11 +465,13 @@ void TutorialGame::InitWorld() {
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel4());
-
+	
+	
 	score = 0;
 	totalTime = 0.0f;
 	timeInterval = 5.0f;
 	GRID = new NavigationGrid("TestGrid3.txt", Vector3(-95, 2, -95));
+	
 }
 
 //void TutorialGame::BridgeConstraintTest() {

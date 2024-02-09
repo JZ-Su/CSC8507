@@ -162,3 +162,21 @@ GameObject* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& 
 	player = character;
 	return player;
 }
+
+StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vector3& dimensions, GameObject* player, float inverseMass) {
+	//GameObject* cube = new GameObject("cube");
+	AABBVolume* volume = new AABBVolume(dimensions); 
+	StateGameObject* ghost = new StateGameObject(player);
+
+	ghost->SetBoundingVolume((CollisionVolume*)volume);
+	ghost->GetTransform().SetPosition(position).SetScale(dimensions * 2);
+	ghost->SetRenderObject(new RenderObject(&ghost->GetTransform(), cubeMesh, basicTexture, basicShader));
+
+	ghost->SetPhysicsObject(new PhysicsObject(&ghost->GetTransform(), ghost->GetBoundingVolume()));
+
+	ghost->GetPhysicsObject()->SetInverseMass(inverseMass);
+	ghost->GetPhysicsObject()->InitCubeInertia();
+	ghost->SetCollisionResponse(false);
+
+	return ghost;
+}
