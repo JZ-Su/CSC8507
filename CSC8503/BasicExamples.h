@@ -46,7 +46,6 @@ namespace NCL {
 		{
 			return player;
 		}
-		Player* GetPlayer() { return player; }
 
 		StateGameObject* CreateAItest(const Vector3& position, const Vector3& dimensions,  GameObject* player,float inverseMass = 10.0f);
 
