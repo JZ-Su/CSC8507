@@ -20,6 +20,7 @@ namespace NCL {
 	{
 	public:
 		BasicExamples(GameTechRenderer* render);
+		BasicExamples();
 		~BasicExamples();
 		GameObject* CreateCube(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateFloor(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
@@ -28,6 +29,7 @@ namespace NCL {
 		GameObject* CreateChar(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateGoat(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
+		
 		GameObject* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateRole(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* role;
@@ -44,6 +46,9 @@ namespace NCL {
 		{
 			return player;
 		}
+		Player* GetPlayer() { return player; }
+
+		StateGameObject* CreateAItest(const Vector3& position, const Vector3& dimensions,  GameObject* player,float inverseMass = 10.0f);
 
 		void LoadMaterialTextures(GameObject* character, Mesh* mesh,MeshMaterial* material, GameTechRenderer* renderer);
 
@@ -57,6 +62,7 @@ namespace NCL {
 
 	
 		Texture* basicTexture = nullptr;
+		Texture* MetalTexture[3] = { nullptr,nullptr,nullptr };
 		Texture* floorTexture[6] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
 		Shader* basicShader = nullptr;
 		Shader* roleShader = nullptr;

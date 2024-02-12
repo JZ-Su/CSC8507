@@ -1,6 +1,6 @@
 #include "GameLevel.h"
 #include "BasicExamples.h"
-
+#include "RenderObject.h"
 using namespace NCL;
 
 GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
@@ -34,7 +34,7 @@ void GameLevel::RemoveLevel(GameWorld* world, Level l, bool andDelete) {
 void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
 	//layers
-	level1.objectList.push_back(CreateCube(Vector3(-80, 5, -56), Vector3(20, 5, 44), 0.0f));
+	level1.objectList.push_back(CreateCube(Vector3(-80, 5, -56), Vector3(20, 5, 44), 0.0f)); 
 	level1.objectList.push_back(CreateCube(Vector3(80, 5, -56), Vector3(20, 5, 44), 0));
 	level1.objectList.push_back(CreateCube(Vector3(0, 5, 45), Vector3(40, 5, 55), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(0, 15, 90), Vector3(40, 5, 10), 0.0f));
@@ -43,12 +43,12 @@ void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(role=CreateRole(Vector3(0, 40, 10), Vector3(5, 5, 5), 0.0f));
 
 	//wall
-	level1.objectList.push_back(CreateCube(Vector3(0, 30, 101), Vector3(100, 30, 1), 0.0f));
+	/*level1.objectList.push_back(CreateCube(Vector3(0, 30, 101), Vector3(100, 30, 1), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(0, 30, -101), Vector3(100, 30, 1), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(101, 30, 0), Vector3(1, 30, 100), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(-101, 30, 0), Vector3(1, 30, 100), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(70, 30, 77), Vector3(30, 30, 23), 0.0f));
-	level1.objectList.push_back(CreateCube(Vector3(-70, 30, 77), Vector3(30, 30, 23), 0.0f));
+	level1.objectList.push_back(CreateCube(Vector3(-70, 30, 77), Vector3(30, 30, 23), 0.0f));*/
 	//room
 	level1.objectList.push_back(CreateCube(Vector3(-20, 5, -20), Vector3(1, 5, 10), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(-20, 5, -50), Vector3(1, 5, 10), 0.0f));
@@ -179,6 +179,11 @@ void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateCube(Vector3(-68, 11.5, -29), Vector3(6, 1.5, 2), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(-98, 11.5, -78), Vector3(2, 1.5, 6), 0.0f));
 
+	//level1.objectList.push_back(player);
+	testAI = CreateAItest(Vector3(0, 0, 0), Vector3(5, 5, 5), player, 0.0f);
+	testAI->GetRenderObject()->SetColour(Debug::BLUE);
+	level1.objectList.push_back(testAI);
+
 	level1.listSize = level1.objectList.size();
 }
 
@@ -214,13 +219,28 @@ void GameLevel::CreateLevel2() {
 	level2.objectList.push_back(CreateCube(Vector3(0, 15, -41), Vector3(60, 15, 1), 0.0f));
 	level2.objectList.push_back(CreateCube(Vector3(0, 15, -60), Vector3(40, 15, 1), 0.0f));
 
+
+	//player = CreateSphere(Vector3(20, 5, 20), 5, 0.0f);
+	//level2.objectList.push_back(player);
+	//testAI = CreateAItest(Vector3(-10, 10, -10), Vector3(5, 5, 5), player, 1.0f);
+	//level2.objectList.push_back(testAI);
+
 	level2.listSize = level2.objectList.size();
 }
 
 void GameLevel::CreateLevel3() {
-	level3.objectList.push_back(CreateCube(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
+	// level3.objectList.push_back(CreateCube(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
+	level3.objectList.push_back(CreateCube(Vector3(70, 0, 77), Vector3(10, 10,5 ), 0.0f));
+	//level3.objectList.push_back(CreateCube(Vector3(0, 0, 0), Vector3(5, 5, 5), 0.0f));
+
+	//player = CreateSphere(Vector3(20, 5, 20), 5, 0.0f);
+	//level3.objectList.push_back(player);
+	//testAI = CreateAItest(Vector3(0, 0, 0), Vector3(5, 5, 5), player, 0.0f);
+	//level3.objectList.push_back(testAI);
+	level3.objectList.push_back(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
 
 	level3.listSize = level3.objectList.size();
+
 }
 
 void GameLevel::CreateLevel4() {

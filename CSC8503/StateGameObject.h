@@ -15,15 +15,16 @@ namespace NCL {
         public:
             StateGameObject();
             StateGameObject(Vector3 startPos, Vector3 endPos, GameObject* player, const std::string& name = "");
+            StateGameObject( GameObject* player, const std::string& name = "");
             ~StateGameObject();
 
             virtual void Update(float dt);
 
         protected:
-            void MoveLeft(float dt);
-            void MoveRight(float dt);
-            void MoveFront(float dt);
-            void MoveBack(float dt);
+            void MoveLeft(float dt,Vector3 ownpos);
+            void MoveRight(float dt, Vector3 ownpos);
+            void MoveFront(float dt, Vector3 ownpos);
+            void MoveBack(float dt, Vector3 ownpos);
             void FollowPath(float dt, NavigationPath path, bool inversePath);
 
             formerState state;

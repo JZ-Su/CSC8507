@@ -16,6 +16,7 @@ GameObject::GameObject(const std::string& objectName)	{
 	networkObject	= nullptr;
 	isConnected     = false;
 	isScore         = false;
+	isCollision     = true;
 }
 
 GameObject::~GameObject()	{

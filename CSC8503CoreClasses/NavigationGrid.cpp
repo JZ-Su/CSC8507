@@ -137,11 +137,17 @@ NavigationGrid::~NavigationGrid()	{
 
 bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) {
 	//need to work out which node 'from' sits in, and 'to' sits in
-	int fromX = ((int)(from.x - offset.x + nodeSize / 2) / nodeSize);
-	int fromZ = ((int)(from.z - offset.z + nodeSize / 2) / nodeSize);
+	//int fromX = ((int)(from.x - offset.x + nodeSize / 2) / nodeSize);
+	//int fromZ = ((int)(from.z - offset.z + nodeSize / 2) / nodeSize);
 
-	int toX = ((int)(to.x - offset.x + nodeSize / 2 ) / nodeSize);
-	int toZ = ((int)(to.z - offset.z + nodeSize / 2 ) / nodeSize);
+	//int toX = ((int)(to.x - offset.x + nodeSize / 2 ) / nodeSize);
+	//int toZ = ((int)(to.z - offset.z + nodeSize / 2 ) / nodeSize);
+
+	int fromX = ((int)(from.x - offset.x) / nodeSize);
+	int fromZ = ((int)(from.z - offset.z) / nodeSize);
+
+	int toX = ((int)(to.x - offset.x) / nodeSize);
+	int toZ = ((int)(to.z - offset.z) / nodeSize);
 
 	if (fromX < 0 || fromX > gridWidth - 1 ||
 		fromZ < 0 || fromZ > gridHeight - 1) {

@@ -38,7 +38,7 @@ namespace NCL::CSC8503 {
 		}
 
 		PhysicsObject* GetPhysicsObject() const {
-			return physicsObject;
+ 			return physicsObject;
 		}
 
 		NetworkObject* GetNetworkObject() const {
@@ -87,6 +87,9 @@ namespace NCL::CSC8503 {
 		bool isConnected;
 		bool isScore;
 
+		void SetCollisionResponse(bool b) { isCollision = b; }
+		bool GetCollisionResponse() const { return isCollision; }
+
 	protected:
 		Transform			transform;
 
@@ -101,6 +104,8 @@ namespace NCL::CSC8503 {
 		std::string	tag;
 
 		Vector3 broadphaseAABB;
+
+		bool isCollision;
 	};
 }
 

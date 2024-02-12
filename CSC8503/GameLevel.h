@@ -31,11 +31,15 @@ namespace NCL {
 		Level GetLevel4() { return level4; }
 		Level GetGeneric() { return Generic; }
 
+		StateGameObject* GetAI() { return testAI; }
+
 	protected:
 		Level level1;
 		Level level2;
 		Level level3;
 		Level level4;
 		Level Generic;
+
+		StateGameObject* testAI;
 	};
 }

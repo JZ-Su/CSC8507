@@ -15,10 +15,10 @@ StateGameObject::StateGameObject() {
 	stateMachine = new StateMachine();
 
 	State* stateA = new State([&](float dt)->void {
-		this->MoveLeft(dt);
+		this->MoveLeft(dt, GetRenderObject()->GetTransform()->GetPosition());
 		});
 	State* stateB = new State([&](float dt)->void {
-		this->MoveRight(dt);
+		this->MoveRight(dt, GetRenderObject()->GetTransform()->GetPosition());
 		});
 	stateMachine->AddState(stateA);
 	stateMachine->AddState(stateB);
@@ -169,6 +169,26 @@ StateGameObject::StateGameObject(Vector3 startPos, Vector3 endPos, GameObject* p
 	}
 }
 
+StateGameObject::StateGameObject(GameObject* player, const std::string& objectName) : GameObject(objectName) {
+	stateMachine = new StateMachine();
+	patrolPath = new NavigationPath();
+	chasingPath = new NavigationPath();
+	counter = 0.0f;
+	nodeIndex = 0;
+
+	State* stateChasing = new State([&](float dt, GameObject* player)->void {
+		NavigationGrid* grid = new NavigationGrid("TestGrid3.txt", Vector3(-100, 2, -100));
+		bool found = (*grid).FindPath(GetRenderObject()->GetTransform()->GetPosition(), Vector3(10,-2,10), *chasingPath);
+		std::cout << found << std::endl;
+		//Debug::DrawLine(GetRenderObject()->GetTransform()->GetPosition() + Vector3(0,5,0), player->GetRenderObject()->GetTransform()->GetPosition() + Vector3(0, 5, 0), Debug::GREEN);
+
+		FollowPath(dt, *chasingPath, false);
+		}, player
+	);
+	stateMachine->AddState(stateChasing);
+
+}
+
 StateGameObject::~StateGameObject() {
 	delete stateMachine;
 }
@@ -177,24 +197,35 @@ void StateGameObject::Update(float dt) {
 	stateMachine->Update(dt);
 }
 
-void StateGameObject::MoveLeft(float dt) {
-	GetPhysicsObject()->AddForce({ -10,0,0 });
-	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 1.0f));
-}
-
-void StateGameObject::MoveRight(float dt) {
-	GetPhysicsObject()->AddForce({ 10,0,0 });
-	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 1.0f));
-}
-
-void StateGameObject::MoveFront(float dt) {
-	GetPhysicsObject()->AddForce({ 0,0,-10 });
-	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
-}
-
-void StateGameObject::MoveBack(float dt) {
-	GetPhysicsObject()->AddForce({ 0,0,10 });
+void StateGameObject::MoveLeft(float dt,Vector3 ownpos) {
+	//GetPhysicsObject()->AddForce({ -10,0,0 });
+	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x-(dt*10), ownpos.y, ownpos.z));
+	std::cout << "move left" << std::endl;
 	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+}
+
+void StateGameObject::MoveRight(float dt, Vector3 ownpos) {
+	//GetPhysicsObject()->AddForce({ 10,0,0 });
+	std::cout << "move right" << std::endl;
+
+	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x + (dt*10) , ownpos.y, ownpos.z));
+	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 0.0f));
+}
+
+void StateGameObject::MoveFront(float dt, Vector3 ownpos) {
+	//GetPhysicsObject()->AddForce({ 0,0,-10 });
+	std::cout << "move front" << std::endl;
+
+	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x, ownpos.y, ownpos.z - (dt*10)) );
+	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 0.0f, 1.0f, 0.0f));
+}
+
+void StateGameObject::MoveBack(float dt, Vector3 ownpos) {
+	//GetPhysicsObject()->AddForce({ 0,0,10 });
+	std::cout << "move back" << std::endl;
+
+	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x, ownpos.y, ownpos.z +(10* dt)) );
+	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 0.0f, -1.0f, 0.0f));
 }
 
 void StateGameObject::FollowPath(float dt, NavigationPath path, bool inversePath) {
@@ -217,19 +248,19 @@ void StateGameObject::FollowPath(float dt, NavigationPath path, bool inversePath
 		Vector3 direction = end - begin;
 		if (GetRenderObject()->GetTransform()->GetPosition() != end) {
 			if (direction.x > 0) {
-				this->MoveRight(dt);
+				this->MoveRight(dt, GetRenderObject()->GetTransform()->GetPosition());
 			}
 			if (direction.x < 0) {
-				this->MoveLeft(dt);
+				this->MoveLeft(dt, GetRenderObject()->GetTransform()->GetPosition());
 			}
 			if (direction.z > 0) {
-				this->MoveBack(dt);
+				this->MoveBack(dt, GetRenderObject()->GetTransform()->GetPosition());
 			}
 			if (direction.z < 0) {
-				this->MoveFront(dt);
+				this->MoveFront(dt, GetRenderObject()->GetTransform()->GetPosition());
 			}
 		}
-		if ((GetRenderObject()->GetTransform()->GetPosition() - end).Length() <= 0.5) {
+		/*if ((GetRenderObject()->GetTransform()->GetPosition() - end).Length() <= 0.5) {
 			if (!isChasing) {
 				GetRenderObject()->GetTransform()->SetPosition(end);
 				GetPhysicsObject()->ClearForces();
@@ -238,28 +269,30 @@ void StateGameObject::FollowPath(float dt, NavigationPath path, bool inversePath
 
 			nodeIndex--;
 			nodeIndex = std::max(nodeIndex, 0);
-		}
+		}*/
 	}
 	else {
 		Vector3 begin = pathNodes[nodeIndex];
 		Vector3 end = pathNodes[nodeIndex + 1];
 		Vector3 direction = end - begin;
 		Vector3 velocity = GetPhysicsObject()->GetLinearVelocity();
-		if (GetRenderObject()->GetTransform()->GetPosition() != end) {
-			if (direction.x > 0) {
-				this->MoveRight(dt);
-			}
-			if (direction.x < 0) {
-				this->MoveLeft(dt);
-			}
-			if (direction.z > 0) {
-				this->MoveBack(dt);
-			}
-			if (direction.z < 0) {
-				this->MoveFront(dt);
-			}
-		}
-		if ((GetRenderObject()->GetTransform()->GetPosition() - end).Length() <= 0.5) {
+
+		this->MoveRight(dt, GetRenderObject()->GetTransform()->GetPosition());
+		//if (GetRenderObject()->GetTransform()->GetPosition() != end) {
+		//	if (direction.x > 0) {
+		//		this->MoveRight(dt, GetRenderObject()->GetTransform()->GetPosition());
+		//	}
+		//	if (direction.x < 0) {
+		//		this->MoveLeft(dt, GetRenderObject()->GetTransform()->GetPosition());
+		//	}
+		//	if (direction.z > 0) {
+		//		this->MoveBack(dt, GetRenderObject()->GetTransform()->GetPosition());
+		//	}
+		//	if (direction.z < 0) {
+		//		this->MoveFront(dt, GetRenderObject()->GetTransform()->GetPosition());
+		//	}
+		//}
+		/*if ((GetRenderObject()->GetTransform()->GetPosition() - end).Length() <= 0.5) {
 			if (!isChasing) {
 				GetRenderObject()->GetTransform()->SetPosition(end);
 				GetPhysicsObject()->ClearForces();
@@ -267,7 +300,7 @@ void StateGameObject::FollowPath(float dt, NavigationPath path, bool inversePath
 			}
 			nodeIndex++;
 			nodeIndex = std::min(nodeIndex, (int)pathNodes.size() - 1);
-		}
+		}*/
 	}
 	pathNodes.clear();
 }
