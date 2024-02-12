@@ -393,22 +393,22 @@ void TutorialGame::DebugObjectMovement() {
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
 			player->GetPhysicsObject()->AddForce(Vector3(0, 0, -10));
-			player->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
+			player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 		}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
 			player->GetPhysicsObject()->AddForce(Vector3(0, 0, 10));
-			player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+			player->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
 		}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
 			player->GetPhysicsObject()->AddForce(Vector3(-10, 0, 0));
-			player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 1.0f));
+			player->GetTransform().SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 1.0f));
 		}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
 			player->GetPhysicsObject()->AddForce(Vector3(10, 0, 0));
-			player->GetTransform().SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 1.0f));
+			player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 1.0f));
 		}
 	}
 }

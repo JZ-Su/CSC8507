@@ -25,9 +25,10 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	floorTexture[1] = render->LoadTexture("Floor/floor_normal.png");
 	floorTexture[2] = MetalTexture[1];
 	floorTexture[3] = render->LoadTexture("Floor/floor_roughness.jpg");
-
 	floorTexture[4] = render->LoadTexture("Floor/floor_ao.jpg");
 	floorTexture[5] = render->LoadTexture("Floor/floor_height.png");
+	roleMat = new MeshMaterial("Role_T.mat");
+
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	roleShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	testShader = render->LoadShader("scene.vert", "scene_uv.frag");
@@ -161,7 +162,6 @@ GameObject* BasicExamples::CreateRole(const Vector3& position, const Vector3& di
 	character->SetRenderObject(new RenderObject(&character->GetTransform(), roleMesh, nullptr, roleShader));
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
 	character->GetRenderObject()->isAnimation = true;
-	roleMat = new MeshMaterial("Role_T.mat");
 	LoadMaterialTextures(character, roleMesh, roleMat, render);
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
 	character->GetPhysicsObject()->InitCubeInertia();
@@ -192,9 +192,11 @@ GameObject* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& 
 	character->SetBoundingVolume((CollisionVolume*)volume);
 
 	character->GetTransform().SetScale(dimensions * 2).SetPosition(position);
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), charMesh, basicTexture, basicShader));
+	character->SetRenderObject(new RenderObject(&character->GetTransform(), roleMesh, nullptr, roleShader));
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
-	character->GetRenderObject()->SetColour(Vector4(1, 0, 0.5, 1));
+	character->GetRenderObject()->isAnimation = true;
+	LoadMaterialTextures(character, roleMesh, roleMat, render);
+
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
 	character->GetPhysicsObject()->InitCubeInertia();
 	player = character;
