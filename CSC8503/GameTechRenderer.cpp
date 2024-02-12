@@ -275,6 +275,11 @@ void GameTechRenderer::RenderCamera() {
 
 			cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
 
+			if (i->isAnimation) {
+				int j = glGetUniformLocation(shader->GetProgramID(), "joints");
+				glUniformMatrix4fv(j, i->GetFrameMatrices().size(), false, (float*)i->GetFrameMatrices().data());
+			}
+
 			Vector3 camPos = gameWorld.GetMainCamera().GetPosition();
 			glUniform3fv(cameraLocation, 1, &camPos.x);
 
@@ -306,8 +311,14 @@ void GameTechRenderer::RenderCamera() {
 
 		BindMesh((OGLMesh&)*(*i).GetMesh());
 		size_t layerCount = (*i).GetMesh()->GetSubMeshCount();
-		for (size_t i = 0; i < layerCount; ++i) {
-			DrawBoundMesh((uint32_t)i);
+		for (size_t x = 0; x < layerCount; ++x) {
+			if ((*i).isAnimation) {
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matTextures[x])->GetObjectID());
+				glUniform1i(glGetUniformLocation(shader->GetProgramID(), "diffuseTex"), 0);
+
+			}
+			DrawBoundMesh((uint32_t)x);
 		}
 	}
 }

@@ -39,6 +39,9 @@ void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateCube(Vector3(0, 5, 45), Vector3(40, 5, 55), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(0, 15, 90), Vector3(40, 5, 10), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(0, 25, 95), Vector3(20, 5, 5.1), 0.0f));
+
+	level1.objectList.push_back(role=CreateRole(Vector3(0, 40, 10), Vector3(5, 5, 5), 0.0f));
+
 	//wall
 	level1.objectList.push_back(CreateCube(Vector3(0, 30, 101), Vector3(100, 30, 1), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(0, 30, -101), Vector3(100, 30, 1), 0.0f));

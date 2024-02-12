@@ -1,13 +1,19 @@
 #include "BasicExamples.h"
 #include "RenderObject.h"
 #include "PhysicsObject.h"
+#include "MeshMaterial.h"
 
 using namespace NCL;
+using namespace CSC8503;
 
 BasicExamples::BasicExamples(GameTechRenderer* render) {
+
+	this->render = render; 
+
 	cubeMesh    = render->LoadMesh("cube.msh");
 	sphereMesh  = render->LoadMesh("sphere.msh");
 	charMesh    = render->LoadMesh("Keeper.msh");
+	roleMesh	= render->LoadMesh("Role_T.msh");
 	goatMesh    = render->LoadMesh("goat.msh");
 	capsuleMesh = render->LoadMesh("capsule.msh");
 
@@ -15,8 +21,12 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	floorTexture[0] = render->LoadTexture("Floor/floor_color.jpg");
 	floorTexture[1] = render->LoadTexture("Floor/floor_normal.png");
 	floorTexture[3] = render->LoadTexture("Floor/floor_roughness.jpg");
+
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
+	roleShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	testShader = render->LoadShader("scene.vert", "scene_uv.frag");
+
+	roleAnimation = new MeshAnimation("Role_T.anm");
 }
 
 BasicExamples::~BasicExamples() {
@@ -24,6 +34,7 @@ BasicExamples::~BasicExamples() {
 	sphereMesh = nullptr;
 	charMesh = nullptr;
 	goatMesh = nullptr;
+	roleShader = nullptr;
 	capsuleMesh = nullptr;
 	basicTexture = nullptr;
 	basicShader = nullptr;
@@ -131,6 +142,24 @@ GameObject* BasicExamples::CreateGoat(const Vector3& position, const Vector3& di
 	return goat;
 }
 
+GameObject* BasicExamples::CreateRole(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* character = new GameObject("role");
+
+	AABBVolume* volume = new AABBVolume(dimensions);
+	character->SetBoundingVolume((CollisionVolume*)volume);
+
+	character->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	character->SetRenderObject(new RenderObject(&character->GetTransform(), roleMesh, nullptr, roleShader));
+	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
+	character->GetRenderObject()->isAnimation = true;
+	roleMat = new MeshMaterial("Role_T.mat");
+	LoadMaterialTextures(character, roleMesh, roleMat, render);
+	character->GetPhysicsObject()->SetInverseMass(inverseMass);
+	character->GetPhysicsObject()->InitCubeInertia();
+
+	return character;
+}
+
 GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass) {
 	GameObject* capsule = new GameObject("capsule");
 
@@ -161,4 +190,20 @@ GameObject* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& 
 	character->GetPhysicsObject()->InitCubeInertia();
 	player = character;
 	return player;
+}
+
+void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, MeshMaterial* material, GameTechRenderer* renderer) {
+
+	for (int i = 0; i < mesh->GetSubMeshCount(); ++i) {
+		const MeshMaterialEntry* matEntry = material->GetMaterialForLayer(i);
+		const std::string* filenameDiffuse = nullptr;
+		matEntry->GetEntry("Diffuse", &filenameDiffuse);
+		std::string pathDiffuse = *filenameDiffuse;
+		std::cout << "Diffuse Texture: " << pathDiffuse << std::endl;
+
+		if (!pathDiffuse.empty()) {
+			character->GetRenderObject()->matTextures.emplace_back(renderer->LoadTexture(pathDiffuse));
+		}
+
+	}
 }

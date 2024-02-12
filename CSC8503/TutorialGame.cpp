@@ -158,6 +158,11 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	}
 
+	if (role!= nullptr) {
+		role->GetRenderObject()->frameTime -= dt;
+		UpdateAnim(role, roleAnimation);
+	}
+
 	SelectObject();
 	MoveSelectedObject();
 
@@ -455,6 +460,8 @@ void TutorialGame::InitWorld() {
 	
 	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
 	player = gameLevel->GetPlayer();
+	role = gameLevel->getRole();
+	roleAnimation = gameLevel->getRoleAnimation();
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 	lockedObject = player;
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
@@ -859,4 +866,24 @@ void TutorialGame::LoadRankingFile() {
 
 	scoreFile.close();
 	timeFile.close();
+}
+
+
+void TutorialGame::DrawAnim(GameObject* g, MeshAnimation* anim) {
+	//const vector <Matrix4 > invBindPose = playerMesh->GetInverseBindPose();
+	const Matrix4* invBindPose = g->GetRenderObject()->GetMesh()->GetInverseBindPose().data();
+	const Matrix4* frameData = anim->GetJointData(g->GetRenderObject()->currentFrame % anim->GetFrameCount());
+	vector <Matrix4 > tempMatrices;
+	for (unsigned int i = 0; i < g->GetRenderObject()->GetMesh()->GetJointCount(); ++i) {
+		tempMatrices.emplace_back(frameData[i] * invBindPose[i]);
+	}
+	g->GetRenderObject()->SetFrameMatrices(tempMatrices);
+}
+
+void TutorialGame::UpdateAnim(GameObject* g, MeshAnimation* anim) {
+	while (g->GetRenderObject()->frameTime < 0.0f) {
+		g->GetRenderObject()->currentFrame = (g->GetRenderObject()->currentFrame + 1) % anim->GetFrameCount();
+		g->GetRenderObject()->frameTime += 1.0f / anim->GetFrameTime();
+	}
+	DrawAnim(g, anim);
 }

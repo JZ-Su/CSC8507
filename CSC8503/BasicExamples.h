@@ -11,6 +11,10 @@
 
 #include "Player.h"
 
+#include "MeshMaterial.h"
+
+#include "MeshAnimation.h"
+
 namespace NCL {
 	class BasicExamples
 	{
@@ -25,23 +29,44 @@ namespace NCL {
 		GameObject* CreateGoat(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
 		GameObject* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		GameObject* CreateRole(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		GameObject* role;
+
+		GameObject* getRole() {
+			return role;
+		}
+
+		MeshAnimation* getRoleAnimation() {
+			return roleAnimation;
+		}
+
 		Player* GetPlayer()
 		{
 			return player;
 		}
 
+		void LoadMaterialTextures(GameObject* character, Mesh* mesh,MeshMaterial* material, GameTechRenderer* renderer);
+
 	protected:
 		Mesh* cubeMesh = nullptr;
 		Mesh* sphereMesh = nullptr;
 		Mesh* charMesh = nullptr;
+		Mesh* roleMesh = nullptr;
 		Mesh* goatMesh = nullptr;
 		Mesh* capsuleMesh = nullptr;
+
 	
 		Texture* basicTexture = nullptr;
 		Texture* floorTexture[6] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
 		Shader* basicShader = nullptr;
+		Shader* roleShader = nullptr;
 		Shader* testShader = nullptr;
 		Player* player;
+
+		MeshMaterial* roleMat = nullptr;
+
+		MeshAnimation* roleAnimation = nullptr;
+		GameTechRenderer* render;  // new render variable
 
 	};
 }

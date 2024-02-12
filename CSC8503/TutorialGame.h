@@ -15,6 +15,8 @@
 
 #include "BasicExamples.h"
 
+#include "MeshAnimation.h"
+
 namespace NCL {
 	namespace CSC8503 {
 		enum GameState {
@@ -123,6 +125,9 @@ namespace NCL {
 
 			int score;
 			Player* player;
+
+			GameObject* role;
+			MeshAnimation* roleAnimation;
 			GameObject* floor;
 			GameObject* goalArea;
 			std::vector<GameObject*> linkObjects;
@@ -145,6 +150,10 @@ namespace NCL {
 			std::string nameString;
 			std::vector<RankScore> TimeTable, ScoreTable;
 			void LoadRankingFile();
+
+			void DrawAnim(GameObject* g, MeshAnimation* anim);
+			void UpdateAnim(GameObject* g, MeshAnimation* anim);
+
 			float h = 0, v = 0;
 		};
 	}
