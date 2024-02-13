@@ -6,7 +6,7 @@ using namespace NCL;
 using namespace CSC8503;
 Player::Player( const std::string& objectname)
 {
-
+	ResetJumpTimer(1.0f);
 	name = "player";
 	tag = objectname;
 	if (name == tag)

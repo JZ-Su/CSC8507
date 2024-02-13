@@ -50,6 +50,10 @@ namespace NCL {
 			{
 				canJump = inCanJump;
 			}
+			void  ResetJumpTimer(float intimer)
+			{
+				jumpTimer = intimer;
+			}
 			bool updateJumpTimer(float dt);
 			float updateTimer(float dt);
 			float updateHealth(float inhealth);
