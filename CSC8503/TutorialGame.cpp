@@ -67,7 +67,7 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-
+	player->UpdatePlayer(dt);
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
@@ -87,19 +87,7 @@ void TutorialGame::UpdateGame(float dt) {
 		world->GetMainCamera().UpdateCamera(dt);
 	}
 	if (lockedObject != nullptr) {
-		//Vector3 objPos = lockedObject->GetTransform().GetPosition();
-		//Vector3 camPos = objPos + lockedOffset;
-
-		//Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0, 1, 0));
-
-		//Matrix4 modelMat = temp.Inverse();
-
-		//Quaternion q(modelMat);
-		//Vector3 angles = q.ToEuler(); //nearly there now!
-
-		//world->GetMainCamera().SetPosition(camPos);
-		//world->GetMainCamera().SetPitch(angles.x);
-		//world->GetMainCamera().SetYaw(angles.y);
+	
 
 		LockedObjectMovement();
 	}
@@ -305,32 +293,32 @@ void TutorialGame::LockedObjectMovement() {
 	}
 
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis );
 		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 1.0f));
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		lockedObject->GetPhysicsObject()->AddForce(fwdAxis);
-		//player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 0.0f));
+		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 0.0f));
 	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		lockedObject->GetPhysicsObject()->AddForce(-rightAxis);
-		//player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
+	player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		lockedObject->GetPhysicsObject()->AddForce(rightAxis);
-		//player->GetTransform().SetOrientation(Quaternion(0, -rightAxis.x, 0, 1.0f));
+		player->GetTransform().SetOrientation(Quaternion(0, -rightAxis.x, 0, 1.0f));
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
 		{
-			lockedObject->GetPhysicsObject()->AddForce(Vector3(3, 35, 0));
-			player->ResetJumpTimer(1.0f);
-			player->SetCanJump(false);
+			Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
+			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 10, velocity.z));
+			//player->ResetJumpTimer(2.0f);
+			//player->SetCanJump(false);
 		}
-
 
 	}
 

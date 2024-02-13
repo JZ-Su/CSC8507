@@ -13,7 +13,6 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 
 void GameLevel::CreateGeneric() {
 	Generic.objectList.push_back(CreatePlayer(Vector3(0, 10, 0), Vector3(1, 1, 1)));
-	
 }
 
 void GameLevel::AddLevelToWorld(GameWorld* world, Level l) {

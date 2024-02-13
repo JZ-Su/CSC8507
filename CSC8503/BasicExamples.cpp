@@ -80,7 +80,7 @@ GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& d
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
-
+	cube->SetTag("Ground");
 	return cube;
 }
 
