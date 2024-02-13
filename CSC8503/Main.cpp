@@ -63,27 +63,34 @@ void TestNetworking() {
 	NetworkBase::Initialise();
 	
 	TestPacketReceiver serverReceiver(" Server ");
-	TestPacketReceiver clientReceiver(" Client ");
+	TestPacketReceiver clientAReceiver(" Client A");
+	TestPacketReceiver clientBReceiver(" Client B");
 	
 	 int port = NetworkBase::GetDefaultPort();
 	
-	 GameServer * server = new GameServer(port, 1);
-	 GameClient * client = new GameClient();
+	 GameServer * server = new GameServer(port, 3);
+	 GameClient * clientA = new GameClient();
+	 GameClient * clientB = new GameClient();
 	
 	 server -> RegisterPacketHandler(String_Message, &serverReceiver);
-	 client ->RegisterPacketHandler(String_Message, &clientReceiver);
+	 clientA ->RegisterPacketHandler(String_Message, &clientAReceiver);
+	 clientB ->RegisterPacketHandler(String_Message, &clientBReceiver);
 	
-	 bool canConnect = client -> Connect(127, 0, 0, 1, port);
+	 bool canConnectA = clientA -> Connect(127, 0, 0, 1, port);
+	 bool canConnectB = clientB -> Connect(127, 0, 0, 1, port);
 	
 		 for (int i = 0; i < 100; ++i) {
 			 StringPacket* a = new StringPacket(" Server says hello ! " + std::to_string(i));
 			 server->SendGlobalPacket(*a);
 		
-			 StringPacket*b = new StringPacket(" Client says hello ! " + std::to_string(i));
-			 client->SendPacket(*b);
+			 StringPacket*b = new StringPacket(" Client A says hello ! " + std::to_string(i));
+			 StringPacket*c = new StringPacket(" Client B says hello ! " + std::to_string(i));
+			 clientA->SendPacket(*b);
+			 clientB->SendPacket(*c);
 		
 		 server -> UpdateServer();
-		 client -> UpdateClient();
+		 clientA -> UpdateClient();
+		 clientB -> UpdateClient();
 		
 		 std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		

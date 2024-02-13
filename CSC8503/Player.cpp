@@ -69,35 +69,19 @@ void Player::OnCollisionBegin(GameObject* otherObject) {
 	if ( otherObject->GetTag() == "Ground")
 	{
 		//changeLevel = true;
-		canJump = true;
 
+		canJump = true;
 	}
 	
 }
 
 void Player::OnCollisionEnd(GameObject* otherObject) {
-	//if (otherObject->GetTag() == "Bonus")
-	//{
-	//	otherObject->Deactivate();
-	//	this->updateCollectibles(1);
-	//	//std::cout << "the collectible updated.......:" << this->GetCollectibles();
-	//}
-	//if (otherObject->GetTag() == "Enemy")
-	//{
-	//	this->updateHealth(-0.2);
-	//	//std::cout << "the Health updated.......:" << this->GetHealth();
-	//}
-	std::cout << "ending";
+	
 	if (otherObject->GetTag() == "Ground")
 	{
 		//changeLevel = true;
 		canJump = false;
 
 	}
-	/*if (this->tag == "player" && otherObject->GetName() == "Key2")
-	{
-		otherObject->deactivate();
-		changeLevel = true;
-
-	}*/
+	
 }
