@@ -139,35 +139,75 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	}
 
-	if (lockedObject != nullptr) {
-		Ray ray = CollisionDetection::BuildRayFromScreenCenter(world->GetMainCamera());
-		RayCollision blockCollision;
-		if (world->Raycast(ray, blockCollision, true)) {
-			if ((GameObject*)blockCollision.node != player) {
-				blocker = (GameObject*)blockCollision.node;
-				Vector4 color = blocker->GetRenderObject()->GetColour();
-				blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 0.5));
-			}
-			else {
-				if (blocker != nullptr) {
-					Vector4 color = blocker->GetRenderObject()->GetColour();
-					blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 1));
-					blocker = nullptr;
-				}
-			}
-		}
-	}
+	//if (lockedObject != nullptr) {
+	//	Ray ray = CollisionDetection::BuildRayFromScreenCenter(world->GetMainCamera());
+	//	RayCollision blockCollision;
+	//	if (world->Raycast(ray, blockCollision, true)) {
+	//		if ((GameObject*)blockCollision.node != player) {
+	//			blocker = (GameObject*)blockCollision.node;
+	//			Vector4 color = blocker->GetRenderObject()->GetColour();
+	//			blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 0.5));
+	//		}
+	//		else {
+	//			if (blocker != nullptr) {
+	//				Vector4 color = blocker->GetRenderObject()->GetColour();
+	//				blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 1));
+	//				blocker = nullptr;
+	//			}
+	//		}
+	//	}
+	//}
 
 	SelectObject();
 	MoveSelectedObject();
+
+	// Level 4 stuff
+	GameObject* beginDet = gameLevel->GetBeginArea();
+	GameObject* trueEndDet = gameLevel->GetTrueEndArea();
+	GameObject* falseEndDet = gameLevel->GetFalseEndArea();
+	trueEndDet->GetRenderObject()->SetColour(Debug::RED);
+	if (!physics->GetCollisionDetectionList(beginDet).empty() && physics->GetCollisionDetectionList(beginDet)[0] == player && beginDet->isEnable == true) {
+		beginDet->isEnable = false;
+		trueEndDet->isEnable = true;
+		falseEndDet->isEnable = true;
+		if (!hasRotation) {
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel4(), true, false);
+		}
+		else {
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel4r(), true, false);
+		}
+	}
+	if (!physics->GetCollisionDetectionList(trueEndDet).empty() && physics->GetCollisionDetectionList(trueEndDet)[0] == player && trueEndDet->isEnable == true) {
+		trueEndDet->isEnable = false;
+		falseEndDet->isEnable = false;
+		if (mapIndex >= 1) {
+			hasReverse = !hasReverse;
+		}
+		score++;
+		mapIndex = static_cast<int>(RandomValue(-4, 5));
+		gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
+		hasRotation = !hasRotation;
+	}
+	if (!physics->GetCollisionDetectionList(falseEndDet).empty() && physics->GetCollisionDetectionList(falseEndDet)[0] == player && falseEndDet->isEnable == true) {
+		trueEndDet->isEnable = false;
+		falseEndDet->isEnable = false;
+		if (mapIndex < 1) {
+			hasReverse = !hasReverse;
+		}
+		score = 0;
+		mapIndex = 0;
+		gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
+		hasRotation = !hasRotation;
+	}
+
 
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);
 
 	Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
-	Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
-	Debug::Print("Press P to Pause!", Vector2(70, 90));
+	//Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
+	//Debug::Print("Press P to Pause!", Vector2(70, 90));
 
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
@@ -453,13 +493,15 @@ void TutorialGame::InitWorld() {
 
 	gameLevel = new GameLevel(renderer);
 	
-	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
-	player = gameLevel->GetPlayer();
+	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
+	player = gameLevel->GetPlayer();
 	lockedObject = player;
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
-	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel4());
+
+	gameLevel->AddLevelToWorld(world, 0, true, false);
+	gameLevel->AddLevelToWorld(world, 0, false, false);
 
 	score = 0;
 	totalTime = 0.0f;
@@ -574,30 +616,6 @@ void TutorialGame::MoveSelectedObject() {
 		}
 	}
 }
-
-//void TutorialGame::BonusCollisionDetection() {
-//	std::vector<GameObject*> collisionList = physics->GetCollisionDetectionList(player);
-//	for (int i = 0; i < collisionList.size(); i++) {
-//		if (collisionList[i]->GetName() == "Bonus" && collisionList[i]->isConnected == false) {
-//			// Build Constraint
-//			collisionList[i]->isConnected = true;
-//			collisionList[i]->GetRenderObject()->SetColour(Vector4(0.3, 0.3, 1, 1));
-//			PositionConstraint* constraint = new PositionConstraint(linkObjects[linkObjects.size() - 1], collisionList[i], 5);
-//			world->AddConstraint(constraint);
-//			linkObjects.push_back(collisionList[i]);
-//		}
-//		if (collisionList[i] == goalArea) {
-//			world->ClearConstraint();
-//			for (int i = linkObjects.size() - 1; i > 0; i--) {
-//				if (linkObjects[i] == player) continue;
-//				linkObjects[i]->isConnected = false;
-//				linkObjects[i]->GetRenderObject()->SetColour(Vector4(1, 0, 1, 1));
-//			}
-//			linkObjects.clear();
-//			linkObjects.push_back(player);
-//		}
-//	}
-//}
 
 /*
 	Game State

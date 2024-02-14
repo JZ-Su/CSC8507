@@ -24,11 +24,9 @@ namespace NCL {
 		GameObject* CreateChar(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateGoat(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
+
 		GameObject* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		Player* GetPlayer()
-		{
-			return player;
-		}
+		Player* GetPlayer() { return player; }
 
 	protected:
 		Mesh* cubeMesh = nullptr;
@@ -41,7 +39,7 @@ namespace NCL {
 		Texture* floorTexture[6] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
 		Shader* basicShader = nullptr;
 		Shader* testShader = nullptr;
-		Player* player;
+		Player* player = nullptr;
 
 	};
 }

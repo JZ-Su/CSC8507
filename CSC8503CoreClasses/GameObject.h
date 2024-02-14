@@ -84,8 +84,7 @@ namespace NCL::CSC8503 {
 			return worldID;
 		}
 
-		bool isConnected;
-		bool isScore;
+		bool isEnable = true;
 
 	protected:
 		Transform			transform;

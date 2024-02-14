@@ -4,30 +4,78 @@
 using namespace NCL;
 
 GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
+	CreateGeneric();
 	CreateLevel1();
 	CreateLevel2();
 	CreateLevel3();
+	CreateLevel4_Reverse();
 	CreateLevel4();
-	CreateGeneric();
 }
 
 void GameLevel::CreateGeneric() {
-	Generic.objectList.push_back(CreatePlayer(Vector3(0, 10, 0), Vector3(1, 1, 1)));
-	
+	Generic.objectList.push_back(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
 }
 
 void GameLevel::AddLevelToWorld(GameWorld* world, Level l) {
 	for (auto element : l.objectList) {
 		world->AddGameObject(element);
-		//element->SetWorldID(world->GetWorldIDCounter());
-		//world->SetWorldIDCounter(world->GetWorldIDCounter() + 1);
-		//world->SetWorldStateID(world->GetWorldStateID() + 1);
 	}
 }
 
-void GameLevel::RemoveLevel(GameWorld* world, Level l, bool andDelete) {
-	for (auto element : l.objectList) {
+void GameLevel::AddLevelToWorld(GameWorld* world, int i, bool isRotate, bool isReverse) { 
+	if (i > 5) {
+		i = i % 5;
+	}
+	else if (i < 0) {
+		i = 0;
+	}
+	if (!isRotate) {
+		if (isReverse) level4 = level4_reverse[i];
+		else level4 = level4_normal[i];
+
+		beginArea = level4.objectList[7];
+		if (i == 0) {
+			trueEndArea = level4.objectList[12];
+			trueEndArea->isEnable = false;
+			falseEndArea = level4.objectList[2];
+			falseEndArea->isEnable = false;
+		}
+		else {
+			trueEndArea = level4.objectList[2];
+			trueEndArea->isEnable = false;
+			falseEndArea = level4.objectList[12];
+			falseEndArea->isEnable = false;
+		}
+		AddLevelToWorld(world, level4);
+	}
+	else {
+		if (isReverse) level4r = level4_reverse_rotate[i];
+		else level4r = level4_rotate[i];
+
+		beginArea = level4r.objectList[7];
+		if (i == 0) {
+			trueEndArea = level4r.objectList[12];
+			trueEndArea->isEnable = false;
+			falseEndArea = level4r.objectList[2];
+			falseEndArea->isEnable = false;
+		}
+		else {
+			trueEndArea = level4r.objectList[2];
+			trueEndArea->isEnable = false;
+			falseEndArea = level4r.objectList[12];
+			falseEndArea->isEnable = false;
+		}
+
+		AddLevelToWorld(world, level4r);
+	}
+}
+
+void GameLevel::RemoveLevel(GameWorld* world, Level* l, bool andClear, bool andDelete) {
+	for (auto element : (*l).objectList) {
 		world->RemoveGameObject(element, andDelete);
+	}
+	if (andClear) {
+		(*l).objectList.clear();
 	}
 }
 
@@ -175,8 +223,6 @@ void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateCube(Vector3(-68, 11.5, -43), Vector3(6, 1.5, 2), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(-68, 11.5, -29), Vector3(6, 1.5, 2), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(-98, 11.5, -78), Vector3(2, 1.5, 6), 0.0f));
-
-	level1.listSize = level1.objectList.size();
 }
 
 void GameLevel::CreateLevel2() {
@@ -210,66 +256,591 @@ void GameLevel::CreateLevel2() {
 	level2.objectList.push_back(CreateCube(Vector3(0, 15, 101), Vector3(60, 15, 1), 0.0f));
 	level2.objectList.push_back(CreateCube(Vector3(0, 15, -41), Vector3(60, 15, 1), 0.0f));
 	level2.objectList.push_back(CreateCube(Vector3(0, 15, -60), Vector3(40, 15, 1), 0.0f));
-
-	level2.listSize = level2.objectList.size();
 }
 
 void GameLevel::CreateLevel3() {
 	level3.objectList.push_back(CreateCube(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
-
-	level3.listSize = level3.objectList.size();
 }
 
 void GameLevel::CreateLevel4() {
-	level4.objectList.push_back(CreateCube(Vector3(0, -2, 0), Vector3(60, 2, 60), 0.0f));
-	level4.objectList.push_back(CreateCube(Vector3(-61, 15, 0), Vector3(1, 15, 50), 0.0f));
-	level4.objectList.push_back(CreateCube(Vector3(-49, 15, 0), Vector3(1, 15, 40), 0.0f));
-	level4.objectList.push_back(CreateCube(Vector3(-44, 15, 39), Vector3(4, 15, 1), 0.0f));
-	level4.objectList.push_back(CreateCube(Vector3(-56, 15, 51), Vector3(4, 15, 1), 0.0f));
-	level4.objectList.push_back(CreateCube(Vector3(-51, 15, 55), Vector3(1, 15, 5), 0.0f));
-	level4.objectList.push_back(CreateCube(Vector3(-39, 15, 44), Vector3(1, 15, 4), 0.0f));
-		 
-	level4.objectList.push_back(CreateCube(Vector3(0, 15, 61), Vector3(50, 15, 1), 0.0f));
-	level4.objectList.push_back(CreateCube(Vector3(0, 15, 49), Vector3(40, 15, 1), 0.0f));
-		 
-	level4.objectList.push_back(CreateCube(Vector3(-39, 15, -44), Vector3(1, 15, 4), 0.0f));
-	level4.objectList.push_back(CreateCube(Vector3(-44, 15, -39), Vector3(4, 15, 1), 0.0f));
-	level4.objectList.push_back(CreateCube(Vector3(-56, 15, -51), Vector3(4, 15, 1), 0.0f));
-	level4.objectList.push_back(CreateCube(Vector3(51, 15, 56), Vector3(1, 15, 4), 0.0f));
+	CreateLevel4_Normal();
+	CreateLevel4_Reverse();
+	CreateLevel4_Rotate();
+	CreateLevel4_RR();
+}
 
-	//rotation
-	//level4.objectList.push_back(CreateCube(Vector3(61, 15, 0), Vector3(1, 15, 50), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(49, 15, 0), Vector3(1, 15, 40), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(44, 15, -39), Vector3(4, 15, 1), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(56, 15, -51), Vector3(4, 15, 1), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(51, 15, -55), Vector3(1, 15, 5), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(39, 15, -44), Vector3(1, 15, 4), 0.0f));
+void GameLevel::CreateLevel4_Normal() {
+	// ??? <-
+	// ?
+	// ?
+	// ?
+	// ?
+	// ???      ->
+	//   ??????? 
+	Vector3 floorDimensions = Vector3(10, 1, 10);
 
-	//level4.objectList.push_back(CreateCube(Vector3(0, 15, -61), Vector3(50, 15, 1), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(0, 15, -49), Vector3(40, 15, 1), 0.0f));
+	Level l1;
+	//floor
+	l1.objectList.push_back(CreateCube(Vector3(-50, 0, -50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 0, -50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 0, -30), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 0, -10), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 0,  10), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 0,  30), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 0,  50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-50, 0, 50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-50, 0, 70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-30, 0, 70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-10, 0, 70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3( 10, 0, 70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3( 30, 0, 70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3( 50, 0, 70), floorDimensions, 0.0f));
+	//wall
+	l1.objectList.push_back(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-90, 10,   0), Vector3(10, 10, 60), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-50, 10,   0), Vector3(10, 10, 40), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 10,  70), Vector3(10, 10, 10), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(  0, 10,  50), Vector3(40, 10, 10), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(  0, 10,  90), Vector3(60, 10, 10), 0.0f));
+	level4_normal.emplace_back(l1);
 
-	//level4.objectList.push_back(CreateCube(Vector3(39, 15, 44), Vector3(1, 15, 4), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(44, 15, 39), Vector3(4, 15, 1), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(55, 15, 51), Vector3(5, 15, 1), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(-51, 15, -55), Vector3(1, 15, 5), 0.0f));
+	Level l2;
+	//floor
+	l2.objectList.push_back(CreateCube(Vector3(-50, 0, -50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 0, -50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 0, -30), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 0, -10), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 0, 10), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 0, 30), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 0, 50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-50, 0, 50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-50, 0, 70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-30, 0, 70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-10, 0, 70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(10, 0, 70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(30, 0, 70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(50, 0, 70), floorDimensions, 0.0f));
+	//wall
+	l2.objectList.push_back(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(0, 10, 50), Vector3(40, 10, 10), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(0, 10, 90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l2.objectList.push_back(CreateCube(Vector3(-50, 5, -50), Vector3(5, 5, 5), 0.0f));
+	level4_normal.emplace_back(l2);
 
-	//mirror
-	//level4.objectList.push_back(CreateCube(Vector3(0, 15, -61), Vector3(50, 15, 1), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(0, 15, -49), Vector3(40, 15, 1), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(39, 15, -44), Vector3(1, 15, 4), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(51, 15, -56), Vector3(1, 15, 4), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(55, 15, -51), Vector3(5, 15, 1), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(44, 15, -39), Vector3(4, 15, 1), 0.0f));
+	Level l3;
+	//floor
+	l3.objectList.push_back(CreateCube(Vector3(-50, 0, -50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 0, -50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 0, -30), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 0, -10), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 0, 10), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 0, 30), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 0, 50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-50, 0, 50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-50, 0, 70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-30, 0, 70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-10, 0, 70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(10, 0, 70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(30, 0, 70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(50, 0, 70), floorDimensions, 0.0f));
+	//wall
+	l3.objectList.push_back(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(0, 10, 50), Vector3(40, 10, 10), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(0, 10, 90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l3.objectList.push_back(CreateCube(Vector3(-50, 5, -50), Vector3(5, 5, 5), 0.0f));
+	level4_normal.emplace_back(l3);
 
-	//level4.objectList.push_back(CreateCube(Vector3(61, 15, 0), Vector3(1, 15, 50), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(49, 15, 0), Vector3(1, 15, 40), 0.0f));
+	Level l4;
+	//floor
+	l4.objectList.push_back(CreateCube(Vector3(-50, 0, -50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 0, -50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 0, -30), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 0, -10), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 0, 10), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 0, 30), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 0, 50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-50, 0, 50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-50, 0, 70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-30, 0, 70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-10, 0, 70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(10, 0, 70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(30, 0, 70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(50, 0, 70), floorDimensions, 0.0f));
+	//wall
+	l4.objectList.push_back(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(0, 10, 50), Vector3(40, 10, 10), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(0, 10, 90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l4.objectList.push_back(CreateCube(Vector3(-50, 5, -50), Vector3(5, 5, 5), 0.0f));
+	level4_normal.emplace_back(l4);
 
-	//level4.objectList.push_back(CreateCube(Vector3(-44, 15, -39), Vector3(4, 15, 1), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(-39, 15, -44), Vector3(1, 15, 4), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(-51, 15, -55), Vector3(1, 15, 5), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(55, 15, 51), Vector3(5, 15, 1), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(39, 15, 44), Vector3(1, 15, 4), 0.0f));
-	//level4.objectList.push_back(CreateCube(Vector3(44, 15, 39), Vector3(4, 15, 1), 0.0f));
+	Level l5;
+	//floor
+	l5.objectList.push_back(CreateCube(Vector3(-50, 0, -50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 0, -50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 0, -30), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 0, -10), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 0, 10), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 0, 30), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 0, 50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-50, 0, 50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-50, 0, 70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-30, 0, 70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-10, 0, 70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(10, 0, 70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(30, 0, 70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(50, 0, 70), floorDimensions, 0.0f));
+	//wall
+	l5.objectList.push_back(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(0, 10, 50), Vector3(40, 10, 10), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(0, 10, 90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l5.objectList.push_back(CreateCube(Vector3(-50, 5, -50), Vector3(5, 5, 5), 0.0f));
+	level4_normal.emplace_back(l5);
+	
+}
 
-	level4.listSize = level4.objectList.size();
+void GameLevel::CreateLevel4_Rotate() {
+	// <- ???????
+	//          ???
+	//            ?
+	//            ?
+	//            ?
+	//            ?
+	//       -> ???
+	Vector3 floorDimensions = Vector3(10, 1, 10);
+	Level l1;
+	//floor
+	l1.objectList.push_back(CreateCube(Vector3(50, 0, 50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 0, 50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 0, 30), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 0,  10), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 0, -10), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 0, -30), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 0, -50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(50, 0, -50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(50, 0, -70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(30, 0, -70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(10, 0, -70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-10, 0, -70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-30, 0, -70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
+	//wall
+	l1.objectList.push_back(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(0, 10, -50), Vector3(40, 10, 10), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(0, 10, -90), Vector3(60, 10, 10), 0.0f));
+	level4_rotate.emplace_back(l1);
+
+	Level l2;
+	//floor
+	l2.objectList.push_back(CreateCube(Vector3(50, 0, 50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 0, 50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 0, 30), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 0, 10), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 0, -10), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 0, -30), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 0, -50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(50, 0, -50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(50, 0, -70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(30, 0, -70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(10, 0, -70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-10, 0, -70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-30, 0, -70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
+	//wall
+	l2.objectList.push_back(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(0, 10, -50), Vector3(40, 10, 10), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(0, 10, -90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l2.objectList.push_back(CreateCube(Vector3(-50, 5, -70), Vector3(5, 5, 5), 0.0f));
+	level4_rotate.emplace_back(l2);
+
+	Level l3;
+	//floor
+	l3.objectList.push_back(CreateCube(Vector3(50, 0, 50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 0, 50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 0, 30), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 0, 10), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 0, -10), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 0, -30), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 0, -50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(50, 0, -50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(50, 0, -70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(30, 0, -70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(10, 0, -70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-10, 0, -70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-30, 0, -70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
+	//wall
+	l3.objectList.push_back(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(0, 10, -50), Vector3(40, 10, 10), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(0, 10, -90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l3.objectList.push_back(CreateCube(Vector3(-50, 5, -70), Vector3(5, 5, 5), 0.0f));
+	level4_rotate.emplace_back(l3);
+
+	Level l4;
+	//floor
+	l4.objectList.push_back(CreateCube(Vector3(50, 0, 50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 0, 50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 0, 30), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 0, 10), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 0, -10), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 0, -30), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 0, -50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(50, 0, -50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(50, 0, -70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(30, 0, -70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(10, 0, -70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-10, 0, -70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-30, 0, -70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
+	//wall
+	l4.objectList.push_back(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(0, 10, -50), Vector3(40, 10, 10), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(0, 10, -90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l4.objectList.push_back(CreateCube(Vector3(-50, 5, -70), Vector3(5, 5, 5), 0.0f));
+	level4_rotate.emplace_back(l4);
+
+	Level l5;
+	//floor
+	l5.objectList.push_back(CreateCube(Vector3(50, 0, 50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 0, 50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 0, 30), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 0, 10), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 0, -10), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 0, -30), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 0, -50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(50, 0, -50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(50, 0, -70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(30, 0, -70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(10, 0, -70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-10, 0, -70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-30, 0, -70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
+	//wall
+	l5.objectList.push_back(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(0, 10, -50), Vector3(40, 10, 10), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(0, 10, -90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l5.objectList.push_back(CreateCube(Vector3(-50, 5, -70), Vector3(5, 5, 5), 0.0f));
+	level4_rotate.emplace_back(l5);
+
+}
+
+void GameLevel::CreateLevel4_Reverse() {
+	// ??? ->
+	// ?
+	// ?
+	// ?
+	// ?  
+	// ???      <-
+	//   ???????
+	Vector3 floorDimensions = Vector3(10, 1, 10);
+	Level l1;
+	//floor
+	l1.objectList.push_back(CreateCube(Vector3(50, 0, 70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(30, 0, 70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(10, 0, 70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-10, 0, 70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-30, 0, 70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-50, 0, 70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-50, 0, 50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 0, 50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 0, 30), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 0, 10), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 0, -10), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 0, -30), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 0, -50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-50, 0, -50), floorDimensions, 0.0f));
+	//wall
+	l1.objectList.push_back(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(0, 10, 50), Vector3(40, 10, 10), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(0, 10, 90), Vector3(60, 10, 10), 0.0f));
+	level4_reverse.emplace_back(l1);
+
+	Level l2;
+	//floor
+	l2.objectList.push_back(CreateCube(Vector3(50, 0, 70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(30, 0, 70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(10, 0, 70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-10, 0, 70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-30, 0, 70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-50, 0, 70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-50, 0, 50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 0, 50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 0, 30), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 0, 10), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 0, -10), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 0, -30), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 0, -50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-50, 0, -50), floorDimensions, 0.0f));
+	//wall
+	l2.objectList.push_back(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(0, 10, 50), Vector3(40, 10, 10), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(0, 10, 90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l2.objectList.push_back(CreateCube(Vector3(-50, 5, -50), Vector3(5, 5, 5), 0.0f));
+	level4_reverse.emplace_back(l2);
+
+	Level l3;
+	//floor
+	l3.objectList.push_back(CreateCube(Vector3(50, 0, 70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(30, 0, 70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(10, 0, 70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-10, 0, 70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-30, 0, 70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-50, 0, 70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-50, 0, 50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 0, 50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 0, 30), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 0, 10), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 0, -10), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 0, -30), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 0, -50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-50, 0, -50), floorDimensions, 0.0f));
+	//wall
+	l3.objectList.push_back(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(0, 10, 50), Vector3(40, 10, 10), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(0, 10, 90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l3.objectList.push_back(CreateCube(Vector3(-50, 5, -50), Vector3(5, 5, 5), 0.0f));
+	level4_reverse.emplace_back(l3);
+
+	Level l4;
+	//floor
+	l4.objectList.push_back(CreateCube(Vector3(50, 0, 70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(30, 0, 70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(10, 0, 70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-10, 0, 70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-30, 0, 70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-50, 0, 70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-50, 0, 50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 0, 50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 0, 30), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 0, 10), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 0, -10), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 0, -30), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 0, -50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-50, 0, -50), floorDimensions, 0.0f));
+	//wall
+	l4.objectList.push_back(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(0, 10, 50), Vector3(40, 10, 10), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(0, 10, 90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l4.objectList.push_back(CreateCube(Vector3(-50, 5, -50), Vector3(5, 5, 5), 0.0f));
+	level4_reverse.emplace_back(l4);
+
+	Level l5;
+	//floor
+	l5.objectList.push_back(CreateCube(Vector3(50, 0, 70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(30, 0, 70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(10, 0, 70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-10, 0, 70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-30, 0, 70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-50, 0, 70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-50, 0, 50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 0, 50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 0, 30), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 0, 10), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 0, -10), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 0, -30), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 0, -50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-50, 0, -50), floorDimensions, 0.0f));
+	//wall
+	l5.objectList.push_back(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(0, 10, 50), Vector3(40, 10, 10), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(0, 10, 90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l5.objectList.push_back(CreateCube(Vector3(-50, 5, -50), Vector3(5, 5, 5), 0.0f));
+	level4_reverse.emplace_back(l5);
+
+}
+
+void GameLevel::CreateLevel4_RR() {
+	// -> ???????
+	//          ???
+	//            ?
+	//            ?
+	//            ?
+	//            ?
+	//       <- ???
+	Vector3 floorDimensions = Vector3(10, 1, 10);
+	Level l1;
+	//floor
+	l1.objectList.push_back(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-30, 0, -70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(-10, 0, -70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(10, 0, -70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(30, 0, -70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(50, 0, -70), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(50, 0, -50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 0, -50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 0, -30), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 0, -10), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 0, 10), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 0, 30), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 0, 50), floorDimensions, 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(50, 0, 50), floorDimensions, 0.0f));
+	//wall
+	l1.objectList.push_back(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(0, 10, -50), Vector3(40, 10, 10), 0.0f));
+	l1.objectList.push_back(CreateCube(Vector3(0, 10, -90), Vector3(60, 10, 10), 0.0f));
+	level4_reverse_rotate.emplace_back(l1);
+
+	Level l2;
+	//floor
+	l2.objectList.push_back(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-30, 0, -70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(-10, 0, -70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(10, 0, -70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(30, 0, -70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(50, 0, -70), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(50, 0, -50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 0, -50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 0, -30), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 0, -10), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 0, 10), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 0, 30), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 0, 50), floorDimensions, 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(50, 0, 50), floorDimensions, 0.0f));
+	//wall
+	l2.objectList.push_back(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(0, 10, -50), Vector3(40, 10, 10), 0.0f));
+	l2.objectList.push_back(CreateCube(Vector3(0, 10, -90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l2.objectList.push_back(CreateCube(Vector3(-50, 5, -70), Vector3(5, 5, 5), 0.0f));
+	level4_reverse_rotate.emplace_back(l2);
+
+	Level l3;
+	//floor
+	l3.objectList.push_back(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-30, 0, -70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(-10, 0, -70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(10, 0, -70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(30, 0, -70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(50, 0, -70), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(50, 0, -50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 0, -50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 0, -30), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 0, -10), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 0, 10), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 0, 30), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 0, 50), floorDimensions, 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(50, 0, 50), floorDimensions, 0.0f));
+	//wall
+	l3.objectList.push_back(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(0, 10, -50), Vector3(40, 10, 10), 0.0f));
+	l3.objectList.push_back(CreateCube(Vector3(0, 10, -90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l3.objectList.push_back(CreateCube(Vector3(-50, 5, -70), Vector3(5, 5, 5), 0.0f));
+	level4_reverse_rotate.emplace_back(l3);
+
+	Level l4;
+	//floor
+	l4.objectList.push_back(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-30, 0, -70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(-10, 0, -70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(10, 0, -70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(30, 0, -70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(50, 0, -70), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(50, 0, -50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 0, -50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 0, -30), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 0, -10), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 0, 10), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 0, 30), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 0, 50), floorDimensions, 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(50, 0, 50), floorDimensions, 0.0f));
+	//wall
+	l4.objectList.push_back(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(0, 10, -50), Vector3(40, 10, 10), 0.0f));
+	l4.objectList.push_back(CreateCube(Vector3(0, 10, -90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l4.objectList.push_back(CreateCube(Vector3(-50, 5, -70), Vector3(5, 5, 5), 0.0f));
+	level4_reverse_rotate.emplace_back(l4);
+
+	Level l5;
+	//floor
+	l5.objectList.push_back(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-30, 0, -70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(-10, 0, -70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(10, 0, -70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(30, 0, -70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(50, 0, -70), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(50, 0, -50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 0, -50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 0, -30), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 0, -10), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 0, 10), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 0, 30), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 0, 50), floorDimensions, 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(50, 0, 50), floorDimensions, 0.0f));
+	//wall
+	l5.objectList.push_back(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(90, 10, 0), Vector3(10, 10, 60), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(50, 10, 0), Vector3(10, 10, 40), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(0, 10, -50), Vector3(40, 10, 10), 0.0f));
+	l5.objectList.push_back(CreateCube(Vector3(0, 10, -90), Vector3(60, 10, 10), 0.0f));
+	//other objects
+	l5.objectList.push_back(CreateCube(Vector3(-50, 5, -70), Vector3(5, 5, 5), 0.0f));
+	level4_reverse_rotate.emplace_back(l5);
 }
