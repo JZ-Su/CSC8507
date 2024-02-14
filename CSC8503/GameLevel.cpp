@@ -8,7 +8,6 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 	CreateLevel1();
 	CreateLevel2();
 	CreateLevel3();
-	CreateLevel4_Reverse();
 	CreateLevel4();
 }
 
@@ -230,7 +229,7 @@ void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateCube(Vector3(-98, 11.5, -78), Vector3(2, 1.5, 6), 0.0f));
 
 	//level1.objectList.push_back(player);
-	testAI = CreateAItest(Vector3(0, 0, 0), Vector3(5, 5, 5), player, 0.0f);
+	testAI = CreateAItest(Vector3(10, 50, 10), Vector3(5, 5, 5), player, 0.0f);
 	testAI->GetRenderObject()->SetColour(Debug::BLUE);
 	level1.objectList.push_back(testAI);
 }

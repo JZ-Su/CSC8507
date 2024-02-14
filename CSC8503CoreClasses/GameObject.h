@@ -93,8 +93,8 @@ namespace NCL::CSC8503 {
 
 		bool isEnable = true;
 
-		void SetCollisionResponse(bool b) { isCollision = b; }
-		bool GetCollisionResponse() const { return isCollision; }
+		void SetCollisionResponse(bool b) { hasCollision = b; }
+		bool GetCollisionResponse() const { return hasCollision; }
 
 	protected:
 		Transform			transform;
@@ -112,7 +112,7 @@ namespace NCL::CSC8503 {
 
 		Vector3 broadphaseAABB;
 
-		bool isCollision;
+		bool hasCollision;
 	};
 }
 

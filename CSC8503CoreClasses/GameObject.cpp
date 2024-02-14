@@ -14,6 +14,7 @@ GameObject::GameObject(const std::string& objectName)	{
 	physicsObject	= nullptr;
 	renderObject	= nullptr;
 	networkObject	= nullptr;
+	hasCollision    = true;
 }
 
 GameObject::~GameObject()	{
