@@ -25,12 +25,26 @@ namespace NCL {
 			Vector4 colourB;
 		};
 
+		struct DebugBLineEntry {
+			Vector3 startpoint;
+			Vector3 Bpoint;
+			Vector3 Cpoint;
+			//Vector3 Dpoint;
+			float	padding;
+			Vector4 colourA;
+			float	time;
+			Vector4 colourB;
+		};
+
 		static void Print(const std::string& text, const Vector2& pos, const Vector4& colour = Vector4(1, 1, 1, 1));
 		static void DrawLine(const Vector3& startpoint, const Vector3& endpoint, const Vector4& colour = Vector4(1, 1, 1, 1), float time = 0.0f);
+
+		static void DrawBLine(const Vector3& startpoint,float length,float height, const Vector4& colour = Vector4(1, 1, 1, 1), float time = 0.0f);
 
 		static void DrawAxisLines(const Matrix4& modelMatrix, float scaleBoost = 1.0f, float time = 0.0f);
 
 		static void UpdateRenderables(float dt);
+		static void UpdateRenderablesBB(float dt);
 
 		static SimpleFont* GetDebugFont();
 
@@ -38,7 +52,7 @@ namespace NCL {
 
 		static const std::vector<DebugStringEntry>& GetDebugStrings();
 		static const std::vector<DebugLineEntry>& GetDebugLines();
-
+		static const std::vector<DebugBLineEntry>& GetDebugBLines();
 
 		static const Vector4 RED;
 		static const Vector4 GREEN;
@@ -57,6 +71,7 @@ namespace NCL {
 
 		static std::vector<DebugStringEntry>	stringEntries;
 		static std::vector<DebugLineEntry>		lineEntries;
+		static std::vector<DebugBLineEntry>		BlineEntries;
 
 		static SimpleFont* debugFont;
 		static Texture* fontTexture;

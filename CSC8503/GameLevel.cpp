@@ -12,6 +12,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {
+
 	Generic.objectList.push_back(CreatePlayer(Vector3(0, 10, 0), Vector3(1, 1, 1)));
 	
 }
@@ -177,9 +178,9 @@ void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateCube(Vector3(-98, 11.5, -78), Vector3(2, 1.5, 6), 0.0f));
 
 	//level1.objectList.push_back(player);
-	testAI = CreateAItest(Vector3(0, 0, 0), Vector3(5, 5, 5), player, 0.0f);
-	testAI->GetRenderObject()->SetColour(Debug::BLUE);
-	level1.objectList.push_back(testAI);
+	//testAI = CreateAItest(Vector3(0, 0, 0), Vector3(5, 5, 5), player, 0.0f);
+    //	testAI->GetRenderObject()->SetColour(Debug::BLUE);
+	//level1.objectList.push_back(testAI);
 
 	level1.listSize = level1.objectList.size();
 }

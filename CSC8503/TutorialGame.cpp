@@ -72,6 +72,9 @@ void TutorialGame::UpdateGame(float dt) {
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
 
+
+	Debug::DrawBLine(Vector3(10,10,10),100,100, Debug::RED);
+
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
 		return;
@@ -174,6 +177,7 @@ void TutorialGame::UpdateGame(float dt) {
 	Debug::Print("Press P to Pause!", Vector2(70, 90));
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
+	Debug::UpdateRenderablesBB(dt);
 }
 
 void TutorialGame::UpdateKeys() {
@@ -299,20 +303,27 @@ void TutorialGame::LockedObjectMovement() {
 			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
 	}
 
-
+	Vector3 position = lockedObject->GetRenderObject()->GetTransform()->GetPosition();
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
-		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 3);
+		//lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 3);
+		lockedObject->GetRenderObject()->GetTransform()->SetPosition(position + Vector3(0, 0, -1));
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
-		lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3);
+		//lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3);
+		lockedObject->GetRenderObject()->GetTransform()->SetPosition(position + Vector3(0, 0, 1));
+
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
-		lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3);
+		//lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3);
+		lockedObject->GetRenderObject()->GetTransform()->SetPosition(position + Vector3(-1, 0, 0));
+
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
-		lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3);
+		//lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3);
+		lockedObject->GetRenderObject()->GetTransform()->SetPosition(position + Vector3(1, 0, 0));
+
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
@@ -462,6 +473,8 @@ void TutorialGame::InitWorld() {
 	player = gameLevel->GetPlayer();
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 	lockedObject = player;
+	gameLevel->creatai();
+	world->AddGameObject(gameLevel->GetAI());
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel4());

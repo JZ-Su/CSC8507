@@ -25,6 +25,8 @@ namespace NCL {
 			void NewRenderLines();
 			void NewRenderText();
 
+			void Newbloodline();
+
 			void RenderFrame()	override;
 
 			OGLShader*		defaultShader;
@@ -41,6 +43,7 @@ namespace NCL {
 
 			void SetDebugStringBufferSizes(size_t newVertCount);
 			void SetDebugLineBufferSizes(size_t newVertCount);
+			void SetDebugBLineBufferSizes(size_t newVertCount);
 
 			vector<const RenderObject*> activeObjects;
 
@@ -61,7 +64,7 @@ namespace NCL {
 
 			//Debug data storage things
 			vector<Vector3> debugLineData;
-
+			vector<Vector3> debugBLineData;
 			vector<Vector3> debugTextPos;
 			vector<Vector4> debugTextColours;
 			vector<Vector2> debugTextUVs;
@@ -75,6 +78,12 @@ namespace NCL {
 			GLuint textColourVBO;
 			GLuint textTexVBO;
 			size_t textCount;
+
+			//UI
+			OGLShader* UIShader;
+			GLuint BlineVAO;
+			GLuint BlineVertVBO;
+			size_t BlineCount;
 		};
 	}
 }

@@ -178,7 +178,7 @@ StateGameObject::StateGameObject(GameObject* player, const std::string& objectNa
 
 	State* stateChasing = new State([&](float dt, GameObject* player)->void {
 		NavigationGrid* grid = new NavigationGrid("TestGrid3.txt", Vector3(-100, 2, -100));
-		bool found = (*grid).FindPath(GetRenderObject()->GetTransform()->GetPosition(), Vector3(10,-2,10), *chasingPath);
+		bool found = (*grid).FindPath(GetRenderObject()->GetTransform()->GetPosition(), player->GetRenderObject()->GetTransform()->GetPosition(), *chasingPath);
 		std::cout << found << std::endl;
 		//Debug::DrawLine(GetRenderObject()->GetTransform()->GetPosition() + Vector3(0,5,0), player->GetRenderObject()->GetTransform()->GetPosition() + Vector3(0, 5, 0), Debug::GREEN);
 
@@ -277,21 +277,21 @@ void StateGameObject::FollowPath(float dt, NavigationPath path, bool inversePath
 		Vector3 direction = end - begin;
 		Vector3 velocity = GetPhysicsObject()->GetLinearVelocity();
 
-		this->MoveRight(dt, GetRenderObject()->GetTransform()->GetPosition());
-		//if (GetRenderObject()->GetTransform()->GetPosition() != end) {
-		//	if (direction.x > 0) {
-		//		this->MoveRight(dt, GetRenderObject()->GetTransform()->GetPosition());
-		//	}
-		//	if (direction.x < 0) {
-		//		this->MoveLeft(dt, GetRenderObject()->GetTransform()->GetPosition());
-		//	}
-		//	if (direction.z > 0) {
-		//		this->MoveBack(dt, GetRenderObject()->GetTransform()->GetPosition());
-		//	}
-		//	if (direction.z < 0) {
-		//		this->MoveFront(dt, GetRenderObject()->GetTransform()->GetPosition());
-		//	}
-		//}
+		
+		if (GetRenderObject()->GetTransform()->GetPosition() != end) {
+			if (direction.x > 0) {
+				this->MoveRight(dt, GetRenderObject()->GetTransform()->GetPosition());
+			}
+		if (direction.x < 0) {
+			this->MoveLeft(dt, GetRenderObject()->GetTransform()->GetPosition());
+			}
+			if (direction.z > 0) {
+				this->MoveBack(dt, GetRenderObject()->GetTransform()->GetPosition());
+			}
+			if (direction.z < 0) {
+			this->MoveFront(dt, GetRenderObject()->GetTransform()->GetPosition());
+		}
+		}
 		/*if ((GetRenderObject()->GetTransform()->GetPosition() - end).Length() <= 0.5) {
 			if (!isChasing) {
 				GetRenderObject()->GetTransform()->SetPosition(end);

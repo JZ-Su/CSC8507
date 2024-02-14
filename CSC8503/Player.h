@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Window.h"
 #include "GameWorld.h"
+
 namespace NCL {
 	namespace CSC8503 {
 		class Player :public GameObject
@@ -47,7 +48,7 @@ namespace NCL {
 				return canJump;
 			}
 			void SetCanJump(bool inCanJump)
-			{
+			{ 
 				canJump = inCanJump;
 			}
 			bool updateJumpTimer(float dt);

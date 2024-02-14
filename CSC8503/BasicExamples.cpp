@@ -160,6 +160,7 @@ GameObject* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& 
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
 	character->GetPhysicsObject()->InitCubeInertia();
 	player = character;
+
 	return player;
 }
 

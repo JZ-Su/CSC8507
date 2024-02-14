@@ -1,5 +1,6 @@
 #pragma once
 #include "BasicExamples.h"
+#include "RenderObject.h"
 #include "GameTechRenderer.h"
 
 namespace NCL {
@@ -22,8 +23,10 @@ namespace NCL {
 		void CreateLevel4();
 		void CreateGeneric();
 
-
-		
+		void creatai() {
+			testAI = CreateAItest(Vector3(50, 0, 50), Vector3(5, 5, 5), player, 0.0f);
+			testAI->GetRenderObject()->SetColour(Debug::BLUE);
+		}
 
 		Level GetLevel1() { return level1; }
 		Level GetLevel2() { return level2; }

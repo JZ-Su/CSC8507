@@ -3,6 +3,7 @@ using namespace NCL;
 
 std::vector<Debug::DebugStringEntry>	Debug::stringEntries;
 std::vector<Debug::DebugLineEntry>		Debug::lineEntries;
+std::vector<Debug::DebugBLineEntry>		Debug::BlineEntries;
 
 SimpleFont* Debug::debugFont = nullptr;
 
@@ -37,6 +38,20 @@ void Debug::DrawLine(const Vector3& startpoint, const Vector3& endpoint, const V
 	newEntry.time = time;
 
 	lineEntries.emplace_back(newEntry);
+}
+
+void Debug::DrawBLine(const Vector3& startpoint, float l, float h, const Vector4& colour , float time) {
+	DebugBLineEntry newEntry;
+
+	newEntry.startpoint = startpoint;
+	newEntry.Bpoint = startpoint+Vector3(0,l,0);
+	newEntry.Cpoint = startpoint + Vector3(h, 0, 0);
+	//newEntry.Dpoint = startpoint + Vector3(h, l, 0);
+	newEntry.colourA = colour;
+	newEntry.colourB = colour;
+	newEntry.time = time;
+
+	BlineEntries.emplace_back(newEntry);
 }
 
 void Debug::DrawAxisLines(const Matrix4& modelMatrix, float scaleBoost, float time) {
@@ -74,6 +89,26 @@ void Debug::UpdateRenderables(float dt) {
 	stringEntries.clear();
 }
 
+void Debug::UpdateRenderablesBB(float dt) {
+	int trim = 0;
+	for (int S = 0; S < BlineEntries.size(); ) {
+		DebugBLineEntry* e = &BlineEntries[S];
+		e->time -= dt;
+		if (e->time < 0) {
+			trim++;
+			BlineEntries[S] = BlineEntries[BlineEntries.size() - trim];
+		}
+		else {
+			++S;
+		}
+		if (S + trim >= BlineEntries.size()) {
+			break;
+		}
+	}
+	BlineEntries.resize(BlineEntries.size() - trim);
+	stringEntries.clear();
+}
+
 SimpleFont* Debug::GetDebugFont() {
 	return debugFont;
 }
@@ -88,4 +123,8 @@ const std::vector<Debug::DebugStringEntry>& Debug::GetDebugStrings() {
 
 const std::vector<Debug::DebugLineEntry>& Debug::GetDebugLines() {
 	return lineEntries;
+}
+
+const std::vector<Debug::DebugBLineEntry>& Debug::GetDebugBLines() {
+	return BlineEntries;
 }

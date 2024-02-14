@@ -16,6 +16,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glEnable(GL_DEPTH_TEST);
 
 	debugShader  = new OGLShader("debug.vert", "debug.frag");
+	UIShader = new OGLShader("UI.vert", "UI.frag");
 	shadowShader = new OGLShader("shadow.vert", "shadow.frag");
 
 	glGenTextures(1, &shadowTex);
@@ -55,15 +56,20 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glGenVertexArrays(1, &lineVAO);
 	glGenVertexArrays(1, &textVAO);
 
+	glGenVertexArrays(1, &BlineVAO);
+
 	glGenBuffers(1, &lineVertVBO);
 	glGenBuffers(1, &textVertVBO);
 	glGenBuffers(1, &textColourVBO);
 	glGenBuffers(1, &textTexVBO);
 
+	glGenBuffers(1, &BlineVertVBO);
+
 	Debug::CreateDebugFont("PressStart2P.fnt", *LoadTexture("PressStart2P.png"));
 
 	SetDebugStringBufferSizes(10000);
 	SetDebugLineBufferSizes(1000);
+	SetDebugBLineBufferSizes(1000);
 }
 
 GameTechRenderer::~GameTechRenderer()	{
@@ -125,6 +131,7 @@ void GameTechRenderer::RenderFrame() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	NewRenderLines();
 	NewRenderText();
+	Newbloodline();
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -353,6 +360,42 @@ void GameTechRenderer::NewRenderLines() {
 	glBindVertexArray(0);
 }
 
+void GameTechRenderer::Newbloodline() {
+	const std::vector<Debug::DebugBLineEntry>& Blines = Debug::GetDebugBLines();
+
+	if (Blines.empty()) {
+		return;
+	}
+
+	Matrix4 viewMatrix = gameWorld.GetMainCamera().BuildViewMatrix();
+	//Matrix4 viewMatrix = Matrix4::Orthographic(-1.0f,10000.0f,this->windowSize.x/2.0, -(this->windowSize.x) / 2.0, this->windowSize.y/2.0,-(this->windowSize.y)/2.0);
+	Matrix4 projMatrix = gameWorld.GetMainCamera().BuildProjectionMatrix(hostWindow.GetScreenAspect());
+
+	Matrix4 viewProj = projMatrix * viewMatrix;
+
+	BindShader(*UIShader);
+	int matSlot = glGetUniformLocation(UIShader->GetProgramID(), "viewProjMatrix");
+	GLuint texSlot = glGetUniformLocation(UIShader->GetProgramID(), "useTexture");
+	glUniform1i(texSlot, 0);
+
+	glUniformMatrix4fv(matSlot, 1, false, (float*)viewProj.array);
+
+	//debugBLineData.clear();
+
+	size_t frameLineCount =	Blines.size() * 3;
+
+	SetDebugBLineBufferSizes(frameLineCount);
+
+	glBindBuffer(GL_ARRAY_BUFFER, BlineVertVBO);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, Blines.size() * sizeof(Debug::DebugBLineEntry), Blines.data());
+
+
+	glBindVertexArray(BlineVAO);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDrawArrays(GL_LINES, 0, (GLsizei)frameLineCount);
+	glBindVertexArray(0);
+}
+
 void GameTechRenderer::NewRenderText() {
 	const std::vector<Debug::DebugStringEntry>& strings = Debug::GetDebugStrings();
 	if (strings.empty()) {
@@ -454,7 +497,7 @@ void GameTechRenderer::SetDebugStringBufferSizes(size_t newVertCount) {
 }
 
 void GameTechRenderer::SetDebugLineBufferSizes(size_t newVertCount) {
-	if (newVertCount > lineCount) {
+	if (newVertCount > BlineCount) {
 		lineCount = newVertCount;
 
 		glBindBuffer(GL_ARRAY_BUFFER, lineVertVBO);
@@ -478,5 +521,50 @@ void GameTechRenderer::SetDebugLineBufferSizes(size_t newVertCount) {
 		glEnableVertexAttribArray(1);
 
 		glBindVertexArray(0);
+	}
+}
+
+void GameTechRenderer::SetDebugBLineBufferSizes(size_t newVertCount) {
+
+	if (newVertCount > BlineCount) {
+		BlineCount = newVertCount;
+
+		glBindBuffer(GL_ARRAY_BUFFER, BlineVertVBO);
+		glBufferData(GL_ARRAY_BUFFER, BlineCount * sizeof(Debug::DebugBLineEntry), nullptr, GL_DYNAMIC_DRAW);
+
+		debugBLineData.reserve(BlineCount);
+
+		glBindVertexArray(BlineVAO);
+
+		int realStride = sizeof(Debug::DebugBLineEntry)/2;
+
+		glVertexAttribFormat(0, 3, GL_FLOAT, false, offsetof(Debug::DebugBLineEntry, startpoint));
+		glVertexAttribBinding(0, 0);
+		glBindVertexBuffer(0, BlineVertVBO, 0, realStride);
+
+		//glVertexAttribFormat(1, 3, GL_FLOAT, false, offsetof(Debug::DebugBLineEntry, Bpoint));
+		//glVertexAttribBinding(1, 0);
+		//glBindVertexBuffer(1, BlineVertVBO, 0, realStride);
+
+		//glVertexAttribFormat(2, 3, GL_FLOAT, false, offsetof(Debug::DebugBLineEntry, Cpoint));
+		//glVertexAttribBinding(2, 0);
+		//glBindVertexBuffer(2, BlineVertVBO, 0, realStride);
+
+		//glVertexAttribFormat(3, 3, GL_FLOAT, false, offsetof(Debug::DebugBLineEntry, Dpoint));
+		//glVertexAttribBinding(3, 0);
+		//glBindVertexBuffer(3, BlineVertVBO, 0, realStride);
+
+		glVertexAttribFormat(1, 4, GL_FLOAT, false, offsetof(Debug::DebugBLineEntry, colourA));
+		glVertexAttribBinding(1, 0);
+		glBindVertexBuffer(1, BlineVertVBO, sizeof(Vector4), realStride);
+
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		//glEnableVertexAttribArray(2);
+		//glEnableVertexAttribArray(3);
+		//glEnableVertexAttribArray(4);
+	
+		glBindVertexArray(0);
+		
 	}
 }
