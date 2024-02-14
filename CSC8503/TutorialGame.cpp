@@ -11,7 +11,7 @@
 #include <fstream>
 #include <iostream>
 #include "Assets.h"
-
+#include "BasicExamples.h"
 using namespace NCL;
 using namespace CSC8503;
 
@@ -54,6 +54,7 @@ and the same texture and shader. There's no need to ever load in anything else
 for this module, even in the coursework, but you can add it if you like!
 
 */
+
 void TutorialGame::InitialiseAssets() {
 	InitCamera();
 	InitWorld();
@@ -66,7 +67,7 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-
+	player->UpdatePlayer(dt);
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
@@ -86,19 +87,7 @@ void TutorialGame::UpdateGame(float dt) {
 		world->GetMainCamera().UpdateCamera(dt);
 	}
 	if (lockedObject != nullptr) {
-		//Vector3 objPos = lockedObject->GetTransform().GetPosition();
-		//Vector3 camPos = objPos + lockedOffset;
-
-		//Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0, 1, 0));
-
-		//Matrix4 modelMat = temp.Inverse();
-
-		//Quaternion q(modelMat);
-		//Vector3 angles = q.ToEuler(); //nearly there now!
-
-		//world->GetMainCamera().SetPosition(camPos);
-		//world->GetMainCamera().SetPitch(angles.x);
-		//world->GetMainCamera().SetYaw(angles.y);
+	
 
 		LockedObjectMovement();
 	}
@@ -158,6 +147,11 @@ void TutorialGame::UpdateGame(float dt) {
 	//	}
 	//}
 
+	if (role!= nullptr) {
+		role->GetRenderObject()->frameTime -= dt;
+		UpdateAnim(role, roleAnimation);
+	}
+
 	SelectObject();
 	MoveSelectedObject();
 
@@ -204,6 +198,8 @@ void TutorialGame::UpdateGame(float dt) {
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);
+
+	gameLevel->GetAI()->Update(dt);
 
 	Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
 	//Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
@@ -254,12 +250,12 @@ void TutorialGame::UpdateKeys() {
 		}
 	}
 
-	//if (lockedObject) {
-		//LockedObjectMovement();
-	//}
-	//else {
+	if (lockedObject) {
+		LockedObjectMovement();
+	}
+	else {
 	DebugObjectMovement();
-	//}
+	}
 }
 
 void TutorialGame::LockedObjectMovement() {
@@ -337,26 +333,32 @@ void TutorialGame::LockedObjectMovement() {
 	}
 
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
-		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 3);
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
+		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis );
+		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 1.0f));
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
-		lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3);
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
+		lockedObject->GetPhysicsObject()->AddForce(fwdAxis);
+		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 0.0f));
 	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
-		lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3);
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
+		lockedObject->GetPhysicsObject()->AddForce(-rightAxis);
+	player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
-		lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3);
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
+		lockedObject->GetPhysicsObject()->AddForce(rightAxis);
+		player->GetTransform().SetOrientation(Quaternion(0, -rightAxis.x, 0, 1.0f));
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
 		{
-			lockedObject->GetPhysicsObject()->AddForce(Vector3(3, 35, 0));
+			Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
+			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 10, velocity.z));
+			//player->ResetJumpTimer(2.0f);
+			//player->SetCanJump(false);
 		}
-
 
 	}
 
@@ -425,22 +427,22 @@ void TutorialGame::DebugObjectMovement() {
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
 			player->GetPhysicsObject()->AddForce(Vector3(0, 0, -10));
-			player->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
+			player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 		}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
 			player->GetPhysicsObject()->AddForce(Vector3(0, 0, 10));
-			player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+			player->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
 		}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
 			player->GetPhysicsObject()->AddForce(Vector3(-10, 0, 0));
-			player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 1.0f));
+			player->GetTransform().SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 1.0f));
 		}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
 			player->GetPhysicsObject()->AddForce(Vector3(10, 0, 0));
-			player->GetTransform().SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 1.0f));
+			player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 1.0f));
 		}
 	}
 }
@@ -476,6 +478,8 @@ Builds a game object that uses a sphere mesh for its graphics, and a bounding sp
 rigid body representation. This and the cube function will let you build a lot of 'simple'
 physics worlds. You'll probably need another function for the creation of OBB cubes too.
 */
+
+
 void TutorialGame::InitCamera() {
 	world->GetMainCamera().SetNearPlane(0.1f);
 	world->GetMainCamera().SetFarPlane(500.0f);
@@ -493,20 +497,25 @@ void TutorialGame::InitWorld() {
 
 	gameLevel = new GameLevel(renderer);
 	
-	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
+	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
+	player = gameLevel->GetPlayer();
+	role = gameLevel->getRole();
+	roleAnimation = gameLevel->getRoleAnimation();
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 	player = gameLevel->GetPlayer();
 	lockedObject = player;
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
 
-	gameLevel->AddLevelToWorld(world, 0, true, false);
-	gameLevel->AddLevelToWorld(world, 0, false, false);
+	//Level 4 initalize function
+	//gameLevel->AddLevelToWorld(world, 0, true, false);
+	//gameLevel->AddLevelToWorld(world, 0, false, false);
 
 	score = 0;
 	totalTime = 0.0f;
 	timeInterval = 5.0f;
 	GRID = new NavigationGrid("TestGrid3.txt", Vector3(-95, 2, -95));
+	
 }
 
 //void TutorialGame::BridgeConstraintTest() {
@@ -877,4 +886,24 @@ void TutorialGame::LoadRankingFile() {
 
 	scoreFile.close();
 	timeFile.close();
+}
+
+
+void TutorialGame::DrawAnim(GameObject* g, MeshAnimation* anim) {
+	//const vector <Matrix4 > invBindPose = playerMesh->GetInverseBindPose();
+	const Matrix4* invBindPose = g->GetRenderObject()->GetMesh()->GetInverseBindPose().data();
+	const Matrix4* frameData = anim->GetJointData(g->GetRenderObject()->currentFrame % anim->GetFrameCount());
+	vector <Matrix4 > tempMatrices;
+	for (unsigned int i = 0; i < g->GetRenderObject()->GetMesh()->GetJointCount(); ++i) {
+		tempMatrices.emplace_back(frameData[i] * invBindPose[i]);
+	}
+	g->GetRenderObject()->SetFrameMatrices(tempMatrices);
+}
+
+void TutorialGame::UpdateAnim(GameObject* g, MeshAnimation* anim) {
+	while (g->GetRenderObject()->frameTime < 0.0f) {
+		g->GetRenderObject()->currentFrame = (g->GetRenderObject()->currentFrame + 1) % anim->GetFrameCount();
+		g->GetRenderObject()->frameTime += 1.0f / anim->GetFrameTime();
+	}
+	DrawAnim(g, anim);
 }

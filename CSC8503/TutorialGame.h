@@ -15,6 +15,8 @@
 
 #include "BasicExamples.h"
 
+#include "MeshAnimation.h"
+
 namespace NCL {
 	namespace CSC8503 {
 		enum GameState {
@@ -58,6 +60,7 @@ namespace NCL {
 			void ShowPause(float dt);
 			void ShowWin(float dt);
 			void ShowLose(float dt);
+			
 
 		protected:
 			void InitialiseAssets();
@@ -123,8 +126,12 @@ namespace NCL {
 
 			int score;
 			Player* player;
+
+			GameObject* role;
+			MeshAnimation* roleAnimation;
 			GameObject* floor;
 			GameObject* goalArea;
+
 			std::vector<GameObject*> linkObjects;
 
 			NavigationGrid* GRID;
@@ -145,6 +152,10 @@ namespace NCL {
 			std::string nameString;
 			std::vector<RankScore> TimeTable, ScoreTable;
 			void LoadRankingFile();
+
+			void DrawAnim(GameObject* g, MeshAnimation* anim);
+			void UpdateAnim(GameObject* g, MeshAnimation* anim);
+
 			float h = 0, v = 0;
 
 			bool hasRotation = true;

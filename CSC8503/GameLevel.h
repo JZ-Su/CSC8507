@@ -58,6 +58,7 @@ namespace NCL {
 		GameObject* GetBeginArea() const { return beginArea; }
 		GameObject* GetTrueEndArea() const { return trueEndArea; }
 		GameObject* GetFalseEndArea() const { return falseEndArea; }
+		StateGameObject* GetAI() { return testAI; }
 
 	protected:
 		Level level1;
@@ -75,5 +76,6 @@ namespace NCL {
 		vector<Level> level4_reverse;
 		vector<Level> level4_rotate;
 		vector<Level> level4_reverse_rotate;
+		StateGameObject* testAI;
 	};
 }

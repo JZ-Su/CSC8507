@@ -44,12 +44,29 @@ namespace NCL {
 				return colour;
 			}
 
+			void SetFrameMatrices(const std::vector <Matrix4>& fmatrices) {
+				frameMatrices = fmatrices;
+			}
+
+			std::vector<Matrix4> GetFrameMatrices() const {
+				return frameMatrices;
+			}
+
+			std::vector<Texture*> matTextures;
+			bool isAnimation = false;
+
+			int			currentFrame;
+			float		frameTime;
+
 		protected:
 			Mesh*		mesh;
 			Texture*	texture[6];
 			Shader*		shader;
 			Transform*	transform;
 			Vector4		colour;
+
+			std::vector <Matrix4 > frameMatrices;
+
 		};
 	}
 }

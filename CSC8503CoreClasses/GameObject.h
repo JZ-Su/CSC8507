@@ -38,7 +38,7 @@ namespace NCL::CSC8503 {
 		}
 
 		PhysicsObject* GetPhysicsObject() const {
-			return physicsObject;
+ 			return physicsObject;
 		}
 
 		NetworkObject* GetNetworkObject() const {
@@ -63,6 +63,13 @@ namespace NCL::CSC8503 {
 		void SetTag(std::string inTag) {
 			tag = inTag;
 		}
+		const std::string& GetLayer() const {
+			return layer;
+		}
+
+		void SetLayer(std::string inLayer) {
+			layer = inLayer;
+		}
 
 		virtual void OnCollisionBegin(GameObject* otherObject) {
 			//std::cout << "OnCollisionBegin event occured!\n";
@@ -86,6 +93,9 @@ namespace NCL::CSC8503 {
 
 		bool isEnable = true;
 
+		void SetCollisionResponse(bool b) { isCollision = b; }
+		bool GetCollisionResponse() const { return isCollision; }
+
 	protected:
 		Transform			transform;
 
@@ -98,8 +108,11 @@ namespace NCL::CSC8503 {
 		int			worldID;
 		std::string	name;
 		std::string	tag;
+		std::string	layer;
 
 		Vector3 broadphaseAABB;
+
+		bool isCollision;
 	};
 }
 

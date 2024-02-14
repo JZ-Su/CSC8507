@@ -6,7 +6,7 @@ using namespace NCL;
 using namespace CSC8503;
 Player::Player( const std::string& objectname)
 {
-
+	//ResetJumpTimer(1.0f);
 	name = "player";
 	tag = objectname;
 	if (name == tag)
@@ -17,7 +17,10 @@ Player::Player( const std::string& objectname)
 	}
 
 }
-
+void Player::UpdatePlayer(float dt)
+{
+	//updateJumpTimer(dt);
+}
 float Player::updateTimer(float dt)
 {
 	if (timer > 0)
@@ -27,18 +30,19 @@ float Player::updateTimer(float dt)
 
 	return timer;
 }
-bool Player::updateJumpTimer(float dt)
-{
-	if (jumpTimer > 0)
-	{
-		timer -= dt;
-	}
-	else
-	{
-		canJump = true;
-	}
-	return canJump;
-}
+//bool Player::updateJumpTimer(float dt)
+//{
+//	if (jumpTimer <= 0)
+//	{
+//		canJump = true;
+//		
+//	}
+//	else
+//	{
+//		jumpTimer -= dt;
+//	}
+//	return canJump;
+//}
 float Player::updateHealth(float inhealth)
 {
 	health += inhealth;
@@ -51,27 +55,33 @@ float Player::updateCollectibles(int collected)
 }
 
 void Player::OnCollisionBegin(GameObject* otherObject) {
-	if (this->tag == "player" && otherObject->GetTag() == "Bonus")
+	if (otherObject->GetTag() == "Bonus")
 	{
 		otherObject->Deactivate();
 		this->updateCollectibles(1);
 		//std::cout << "the collectible updated.......:" << this->GetCollectibles();
 	}
-	if (this->tag == "player" && otherObject->GetTag() == "Enemy")
+	if ( otherObject->GetTag() == "Enemy")
 	{
 		this->updateHealth(-0.2);
 		//std::cout << "the Health updated.......:" << this->GetHealth();
 	}
-	/*if (this->tag == "player" && otherObject->GetName() == "Key1")
+	if ( otherObject->GetTag() == "Ground")
 	{
-		otherObject->deactivate();
-		changeLevel = true;
+		//changeLevel = true;
+
+		canJump = true;
+	}
+	
+}
+
+void Player::OnCollisionEnd(GameObject* otherObject) {
+	
+	if (otherObject->GetTag() == "Ground")
+	{
+		//changeLevel = true;
+		canJump = false;
 
 	}
-	if (this->tag == "player" && otherObject->GetName() == "Key2")
-	{
-		otherObject->deactivate();
-		changeLevel = true;
-
-	}*/
+	
 }

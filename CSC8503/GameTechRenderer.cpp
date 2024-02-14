@@ -244,20 +244,38 @@ void GameTechRenderer::RenderCamera() {
 		if ((*i).GetDefaultTexture(0)) {
 			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(0), "mainTex", 0);
 		}
+		else {
+			BindTextureToShader(0, "mainTex", 0);
+		}
 		if ((*i).GetDefaultTexture(1)) {
-			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(1), "normalTex", 1);
+			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(1), "normalTex", 2);
+		}
+		else {
+			BindTextureToShader(0, "normalTex", 2);
 		}
 		if ((*i).GetDefaultTexture(2)) {
-			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(2), "metalTex", 2);
+			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(2), "metalTex", 3);
+		}
+		else {
+			BindTextureToShader(0, "metalTex", 3);
 		}
 		if ((*i).GetDefaultTexture(3)) {
-			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(3), "roughTex", 3);
+			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(3), "roughTex", 4);
+		}
+		else {
+			BindTextureToShader(0, "roughTex", 4);
 		}
 		if ((*i).GetDefaultTexture(4)) {
-			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(4), "aoTex", 4);
+			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(4), "aoTex", 5);
+		}
+		else {
+			BindTextureToShader(0, "aoTex", 5);
 		}
 		if ((*i).GetDefaultTexture(5)) {
-			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(5), "heightTex", 5);
+			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(5), "heightTex", 6);
+		}
+		else {
+			BindTextureToShader(0, "heightTex", 6);
 		}
 
 		if (activeShader != shader) {
@@ -274,6 +292,11 @@ void GameTechRenderer::RenderCamera() {
 			lightRadiusLocation = glGetUniformLocation(shader->GetProgramID(), "lightRadius");
 
 			cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
+
+			if (i->isAnimation) {
+				int j = glGetUniformLocation(shader->GetProgramID(), "joints");
+				glUniformMatrix4fv(j, i->GetFrameMatrices().size(), false, (float*)i->GetFrameMatrices().data());
+			}
 
 			Vector3 camPos = gameWorld.GetMainCamera().GetPosition();
 			glUniform3fv(cameraLocation, 1, &camPos.x);
@@ -306,8 +329,14 @@ void GameTechRenderer::RenderCamera() {
 
 		BindMesh((OGLMesh&)*(*i).GetMesh());
 		size_t layerCount = (*i).GetMesh()->GetSubMeshCount();
-		for (size_t i = 0; i < layerCount; ++i) {
-			DrawBoundMesh((uint32_t)i);
+		for (size_t x = 0; x < layerCount; ++x) {
+			if ((*i).isAnimation) {
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matTextures[x])->GetObjectID());
+				glUniform1i(glGetUniformLocation(shader->GetProgramID(), "diffuseTex"), 0);
+
+			}
+			DrawBoundMesh((uint32_t)x);
 		}
 	}
 }
