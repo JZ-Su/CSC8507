@@ -161,6 +161,8 @@ namespace NCL {
 			bool hasRotation = true;
 			bool hasReverse = false;
 			int mapIndex = 0;
+
+			int currentLevel = 1;
 		};
 	}
 }

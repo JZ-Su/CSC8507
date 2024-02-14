@@ -87,7 +87,7 @@ void TutorialGame::UpdateGame(float dt) {
 		world->GetMainCamera().UpdateCamera(dt);
 	}
 	if (lockedObject != nullptr) {
-	
+
 
 		LockedObjectMovement();
 	}
@@ -147,7 +147,7 @@ void TutorialGame::UpdateGame(float dt) {
 	//	}
 	//}
 
-	if (role!= nullptr) {
+	if (role != nullptr) {
 		role->GetRenderObject()->frameTime -= dt;
 		UpdateAnim(role, roleAnimation);
 	}
@@ -156,42 +156,44 @@ void TutorialGame::UpdateGame(float dt) {
 	MoveSelectedObject();
 
 	// Level 4 stuff
-	GameObject* beginDet = gameLevel->GetBeginArea();
-	GameObject* trueEndDet = gameLevel->GetTrueEndArea();
-	GameObject* falseEndDet = gameLevel->GetFalseEndArea();
-	trueEndDet->GetRenderObject()->SetColour(Debug::RED);
-	if (!physics->GetCollisionDetectionList(beginDet).empty() && physics->GetCollisionDetectionList(beginDet)[0] == player && beginDet->isEnable == true) {
-		beginDet->isEnable = false;
-		trueEndDet->isEnable = true;
-		falseEndDet->isEnable = true;
-		if (!hasRotation) {
-			gameLevel->RemoveLevel(world, gameLevel->GetLevel4(), true, false);
+	if (currentLevel == 4) {
+		GameObject* beginDet = gameLevel->GetBeginArea();
+		GameObject* trueEndDet = gameLevel->GetTrueEndArea();
+		GameObject* falseEndDet = gameLevel->GetFalseEndArea();
+		trueEndDet->GetRenderObject()->SetColour(Debug::RED);
+		if (!physics->GetCollisionDetectionList(beginDet).empty() && physics->GetCollisionDetectionList(beginDet)[0] == player && beginDet->isEnable == true) {
+			beginDet->isEnable = false;
+			trueEndDet->isEnable = true;
+			falseEndDet->isEnable = true;
+			if (!hasRotation) {
+				gameLevel->RemoveLevel(world, gameLevel->GetLevel4(), true, false);
+			}
+			else {
+				gameLevel->RemoveLevel(world, gameLevel->GetLevel4r(), true, false);
+			}
 		}
-		else {
-			gameLevel->RemoveLevel(world, gameLevel->GetLevel4r(), true, false);
+		if (!physics->GetCollisionDetectionList(trueEndDet).empty() && physics->GetCollisionDetectionList(trueEndDet)[0] == player && trueEndDet->isEnable == true) {
+			trueEndDet->isEnable = false;
+			falseEndDet->isEnable = false;
+			if (mapIndex >= 1) {
+				hasReverse = !hasReverse;
+			}
+			score++;
+			mapIndex = static_cast<int>(RandomValue(-4, 5));
+			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
+			hasRotation = !hasRotation;
 		}
-	}
-	if (!physics->GetCollisionDetectionList(trueEndDet).empty() && physics->GetCollisionDetectionList(trueEndDet)[0] == player && trueEndDet->isEnable == true) {
-		trueEndDet->isEnable = false;
-		falseEndDet->isEnable = false;
-		if (mapIndex >= 1) {
-			hasReverse = !hasReverse;
+		if (!physics->GetCollisionDetectionList(falseEndDet).empty() && physics->GetCollisionDetectionList(falseEndDet)[0] == player && falseEndDet->isEnable == true) {
+			trueEndDet->isEnable = false;
+			falseEndDet->isEnable = false;
+			if (mapIndex < 1) {
+				hasReverse = !hasReverse;
+			}
+			score = 0;
+			mapIndex = 0;
+			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
+			hasRotation = !hasRotation;
 		}
-		score++;
-		mapIndex = static_cast<int>(RandomValue(-4, 5));
-		gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
-		hasRotation = !hasRotation;
-	}
-	if (!physics->GetCollisionDetectionList(falseEndDet).empty() && physics->GetCollisionDetectionList(falseEndDet)[0] == player && falseEndDet->isEnable == true) {
-		trueEndDet->isEnable = false;
-		falseEndDet->isEnable = false;
-		if (mapIndex < 1) {
-			hasReverse = !hasReverse;
-		}
-		score = 0;
-		mapIndex = 0;
-		gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
-		hasRotation = !hasRotation;
 	}
 
 
@@ -254,7 +256,7 @@ void TutorialGame::UpdateKeys() {
 		LockedObjectMovement();
 	}
 	else {
-	DebugObjectMovement();
+		DebugObjectMovement();
 	}
 }
 
@@ -334,7 +336,7 @@ void TutorialGame::LockedObjectMovement() {
 
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
-		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis );
+		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
 		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 1.0f));
 	}
 
@@ -344,7 +346,7 @@ void TutorialGame::LockedObjectMovement() {
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		lockedObject->GetPhysicsObject()->AddForce(-rightAxis);
-	player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
+		player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
@@ -496,7 +498,7 @@ void TutorialGame::InitWorld() {
 	blocker = nullptr;
 
 	gameLevel = new GameLevel(renderer);
-	
+
 	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
 	player = gameLevel->GetPlayer();
 	role = gameLevel->getRole();
@@ -515,7 +517,7 @@ void TutorialGame::InitWorld() {
 	totalTime = 0.0f;
 	timeInterval = 5.0f;
 	GRID = new NavigationGrid("TestGrid3.txt", Vector3(-95, 2, -95));
-	
+
 }
 
 //void TutorialGame::BridgeConstraintTest() {
