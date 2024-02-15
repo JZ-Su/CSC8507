@@ -162,6 +162,12 @@ namespace NCL {
 			void UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAnimation, MeshAnimation* playerWalkAnimation, float dt);
 
 			float h = 0, v = 0;
+
+			bool hasRotation = true;
+			bool hasReverse = false;
+			int mapIndex = 0;
+
+			int currentLevel = 1;
 		};
 	}
 }

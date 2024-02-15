@@ -46,14 +46,13 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 }
 
 BasicExamples::~BasicExamples() {
-	cubeMesh = nullptr;
-	sphereMesh = nullptr;
-	charMesh = nullptr;
-	goatMesh = nullptr;
-	bossShader = nullptr;
-	capsuleMesh = nullptr;
-	basicTexture = nullptr;
-	basicShader = nullptr;
+	delete cubeMesh;
+	delete sphereMesh;
+	delete charMesh;
+	delete goatMesh;
+	delete capsuleMesh;
+	delete basicTexture;
+	delete basicShader;
 }
 
 GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& dimensions, float inverseMass) {
@@ -89,7 +88,7 @@ GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& d
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
-
+	cube->SetTag("Ground");
 	return cube;
 }
 

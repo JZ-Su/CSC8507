@@ -67,7 +67,7 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-
+	player->UpdatePlayer(dt);
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
@@ -87,19 +87,7 @@ void TutorialGame::UpdateGame(float dt) {
 		world->GetMainCamera().UpdateCamera(dt);
 	}
 	if (lockedObject != nullptr) {
-		//Vector3 objPos = lockedObject->GetTransform().GetPosition();
-		//Vector3 camPos = objPos + lockedOffset;
 
-		//Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0, 1, 0));
-
-		//Matrix4 modelMat = temp.Inverse();
-
-		//Quaternion q(modelMat);
-		//Vector3 angles = q.ToEuler(); //nearly there now!
-
-		//world->GetMainCamera().SetPosition(camPos);
-		//world->GetMainCamera().SetPitch(angles.x);
-		//world->GetMainCamera().SetYaw(angles.y);
 
 		LockedObjectMovement();
 	}
@@ -140,34 +128,75 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	}
 
-	if (lockedObject != nullptr) {
-		Ray ray = CollisionDetection::BuildRayFromScreenCenter(world->GetMainCamera());
-		RayCollision blockCollision;
-		if (world->Raycast(ray, blockCollision, true)) {
-			if ((GameObject*)blockCollision.node != player) {
-				blocker = (GameObject*)blockCollision.node;
-				Vector4 color = blocker->GetRenderObject()->GetColour();
-				blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 0.5));
-			}
-			else {
-				if (blocker != nullptr) {
-					Vector4 color = blocker->GetRenderObject()->GetColour();
-					blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 1));
-					blocker = nullptr;
-				}
-			}
-		}
-	}
+	//if (lockedObject != nullptr) {
+	//	Ray ray = CollisionDetection::BuildRayFromScreenCenter(world->GetMainCamera());
+	//	RayCollision blockCollision;
+	//	if (world->Raycast(ray, blockCollision, true)) {
+	//		if ((GameObject*)blockCollision.node != player) {
+	//			blocker = (GameObject*)blockCollision.node;
+	//			Vector4 color = blocker->GetRenderObject()->GetColour();
+	//			blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 0.5));
+	//		}
+	//		else {
+	//			if (blocker != nullptr) {
+	//				Vector4 color = blocker->GetRenderObject()->GetColour();
+	//				blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 1));
+	//				blocker = nullptr;
+	//			}
+	//		}
+	//	}
+	//}
 
 	UpdateBossAnim(boss, bossAnimation, dt);
 
-	// 更新player动画
+	// update player animation
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
 	SelectObject();
 	MoveSelectedObject();
 
-	//Debug::DrawLine(Vector3(0, 0, 0), Vector3(50, 0, 20));
+	// Level 4 stuff
+	if (currentLevel == 4) {
+		GameObject* beginDet = gameLevel->GetBeginArea();
+		GameObject* trueEndDet = gameLevel->GetTrueEndArea();
+		GameObject* falseEndDet = gameLevel->GetFalseEndArea();
+		trueEndDet->GetRenderObject()->SetColour(Debug::RED);
+		if (!physics->GetCollisionDetectionList(beginDet).empty() && physics->GetCollisionDetectionList(beginDet)[0] == player && beginDet->isEnable == true) {
+			beginDet->isEnable = false;
+			trueEndDet->isEnable = true;
+			falseEndDet->isEnable = true;
+			if (!hasRotation) {
+				gameLevel->RemoveLevel(world, gameLevel->GetLevel4(), true, false);
+			}
+			else {
+				gameLevel->RemoveLevel(world, gameLevel->GetLevel4r(), true, false);
+			}
+		}
+		if (!physics->GetCollisionDetectionList(trueEndDet).empty() && physics->GetCollisionDetectionList(trueEndDet)[0] == player && trueEndDet->isEnable == true) {
+			trueEndDet->isEnable = false;
+			falseEndDet->isEnable = false;
+			if (mapIndex >= 1) {
+				hasReverse = !hasReverse;
+			}
+			score++;
+			mapIndex = static_cast<int>(RandomValue(-4, 5));
+			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
+			hasRotation = !hasRotation;
+		}
+		if (!physics->GetCollisionDetectionList(falseEndDet).empty() && physics->GetCollisionDetectionList(falseEndDet)[0] == player && falseEndDet->isEnable == true) {
+			trueEndDet->isEnable = false;
+			falseEndDet->isEnable = false;
+			if (mapIndex < 1) {
+				hasReverse = !hasReverse;
+			}
+			score = 0;
+			mapIndex = 0;
+			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
+			hasRotation = !hasRotation;
+		}
+	}
+
+
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);
@@ -175,8 +204,9 @@ void TutorialGame::UpdateGame(float dt) {
 	gameLevel->GetAI()->Update(dt);
 
 	Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
-	Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
-	Debug::Print("Press P to Pause!", Vector2(70, 90));
+	//Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
+	//Debug::Print("Press P to Pause!", Vector2(70, 90));
+
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
 }
@@ -222,12 +252,12 @@ void TutorialGame::UpdateKeys() {
 		}
 	}
 
-	//if (lockedObject) {
-		//LockedObjectMovement();
-	//}
-	//else {
-	DebugObjectMovement();
-	//}
+	if (lockedObject) {
+		LockedObjectMovement();
+	}
+	else {
+		DebugObjectMovement();
+	}
 }
 
 void TutorialGame::LockedObjectMovement() {
@@ -305,26 +335,32 @@ void TutorialGame::LockedObjectMovement() {
 	}
 
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
-		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 3);
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
+		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
+		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 1.0f));
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
-		lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3);
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
+		lockedObject->GetPhysicsObject()->AddForce(fwdAxis);
+		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 0.0f));
 	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
-		lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3);
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
+		lockedObject->GetPhysicsObject()->AddForce(-rightAxis);
+		player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
-		lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3);
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
+		lockedObject->GetPhysicsObject()->AddForce(rightAxis);
+		player->GetTransform().SetOrientation(Quaternion(0, -rightAxis.x, 0, 1.0f));
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
 		{
-			lockedObject->GetPhysicsObject()->AddForce(Vector3(3, 35, 0));
+			Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
+			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 10, velocity.z));
+			//player->ResetJumpTimer(2.0f);
+			//player->SetCanJump(false);
 		}
-
 
 	}
 
@@ -469,7 +505,7 @@ void TutorialGame::InitWorld() {
 	blocker = nullptr;
 
 	gameLevel = new GameLevel(renderer);
-	
+
 	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
 	player = gameLevel->GetPlayer();
 	boss = gameLevel->getBoss();
@@ -477,17 +513,20 @@ void TutorialGame::InitWorld() {
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
+	player = gameLevel->GetPlayer();
 	lockedObject = player;
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
-	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel4());
-	
-	
+
+	//Level 4 initalize function
+	//gameLevel->AddLevelToWorld(world, 0, true, false);
+	//gameLevel->AddLevelToWorld(world, 0, false, false);
+
 	score = 0;
 	totalTime = 0.0f;
 	timeInterval = 5.0f;
 	GRID = new NavigationGrid("TestGrid3.txt", Vector3(-95, 2, -95));
-	
+
 }
 
 //void TutorialGame::BridgeConstraintTest() {
@@ -597,30 +636,6 @@ void TutorialGame::MoveSelectedObject() {
 		}
 	}
 }
-
-//void TutorialGame::BonusCollisionDetection() {
-//	std::vector<GameObject*> collisionList = physics->GetCollisionDetectionList(player);
-//	for (int i = 0; i < collisionList.size(); i++) {
-//		if (collisionList[i]->GetName() == "Bonus" && collisionList[i]->isConnected == false) {
-//			// Build Constraint
-//			collisionList[i]->isConnected = true;
-//			collisionList[i]->GetRenderObject()->SetColour(Vector4(0.3, 0.3, 1, 1));
-//			PositionConstraint* constraint = new PositionConstraint(linkObjects[linkObjects.size() - 1], collisionList[i], 5);
-//			world->AddConstraint(constraint);
-//			linkObjects.push_back(collisionList[i]);
-//		}
-//		if (collisionList[i] == goalArea) {
-//			world->ClearConstraint();
-//			for (int i = linkObjects.size() - 1; i > 0; i--) {
-//				if (linkObjects[i] == player) continue;
-//				linkObjects[i]->isConnected = false;
-//				linkObjects[i]->GetRenderObject()->SetColour(Vector4(1, 0, 1, 1));
-//			}
-//			linkObjects.clear();
-//			linkObjects.push_back(player);
-//		}
-//	}
-//}
 
 /*
 	Game State

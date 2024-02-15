@@ -80,7 +80,7 @@ namespace NCL {
 		Shader* testShader = nullptr;
 		Shader* ghostShader = nullptr;
 
-		Player* player;
+		Player* player = nullptr;
 
 		MeshMaterial* bossMat = nullptr;
 		MeshMaterial* playerMat = nullptr;

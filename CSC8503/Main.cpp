@@ -35,6 +35,68 @@ using namespace irrklang;
 #include <thread>
 #include <sstream>
 
+
+class TestPacketReceiver : public PacketReceiver{
+ public:
+	 TestPacketReceiver(string name) {
+ this -> name = name;
+
+ }
+
+ void ReceivePacket(int type , GamePacket * payload , int source) {
+ if (type == String_Message) {
+ StringPacket* realPacket = (StringPacket*)payload;
+
+ string msg = realPacket -> GetStringFromData();
+
+ std::cout << name << " received message : " << msg << std::endl;
+
+ }
+
+ }
+ protected:
+ string name;
+ };
+
+
+void TestNetworking() {
+	NetworkBase::Initialise();
+	
+	TestPacketReceiver serverReceiver(" Server ");
+	TestPacketReceiver clientAReceiver(" Client A");
+	TestPacketReceiver clientBReceiver(" Client B");
+	
+	 int port = NetworkBase::GetDefaultPort();
+	
+	 GameServer * server = new GameServer(port, 3);
+	 GameClient * clientA = new GameClient();
+	 GameClient * clientB = new GameClient();
+	
+	 server -> RegisterPacketHandler(String_Message, &serverReceiver);
+	 clientA ->RegisterPacketHandler(String_Message, &clientAReceiver);
+	 clientB ->RegisterPacketHandler(String_Message, &clientBReceiver);
+	
+	 bool canConnectA = clientA -> Connect(127, 0, 0, 1, port);
+	 bool canConnectB = clientB -> Connect(127, 0, 0, 1, port);
+	
+		 for (int i = 0; i < 100; ++i) {
+			 StringPacket* a = new StringPacket(" Server says hello ! " + std::to_string(i));
+			 server->SendGlobalPacket(*a);
+		
+			 StringPacket*b = new StringPacket(" Client A says hello ! " + std::to_string(i));
+			 StringPacket*c = new StringPacket(" Client B says hello ! " + std::to_string(i));
+			 clientA->SendPacket(*b);
+			 clientB->SendPacket(*c);
+		
+		 server -> UpdateServer();
+		 clientA -> UpdateClient();
+		 clientB -> UpdateClient();
+		
+		 std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		
+	}
+		 NetworkBase::Destroy();	
+}
 //void TestBehaviourTree() {
 //	float behaviourTimer;
 //	float distanceToTarget;
@@ -249,7 +311,7 @@ int main() {
 	}
 	engine->play2D("../externals/media/getout.ogg", true);
 
-
+	TestNetworking();
 	//TestBehaviourTree();
 	//TestPushdownAutomata(w); 
 
