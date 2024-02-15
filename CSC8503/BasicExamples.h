@@ -34,7 +34,6 @@ namespace NCL {
 		
 		GameObject* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		Boss* CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		GameObject* boss;
 		GameObject* ghost;
 
 

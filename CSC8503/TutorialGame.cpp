@@ -515,7 +515,7 @@ void TutorialGame::InitWorld() {
 	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
 	player = gameLevel->GetPlayer();
 
-	boss = gameLevel->getBoss();
+	boss = gameLevel->GetBoss();
 	ghost = gameLevel->getGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
 
