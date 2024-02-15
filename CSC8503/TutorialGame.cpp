@@ -336,24 +336,28 @@ void TutorialGame::LockedObjectMovement() {
 
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
+		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
 		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 1.0f));
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
+	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
+		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(fwdAxis);
 		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 0.0f));
 	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
+	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
+		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(-rightAxis);
 		player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
+	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
+		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(rightAxis);
 		player->GetTransform().SetOrientation(Quaternion(0, -rightAxis.x, 0, 1.0f));
 	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
+	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
 		{
 			Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
@@ -363,7 +367,9 @@ void TutorialGame::LockedObjectMovement() {
 		}
 
 	}
-
+	else {
+		player->SetIsWalk(false);
+	}
 	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
 	Quaternion q(viewMat);
 	float pitch = q.ToEuler().x + 10.0f;
@@ -506,7 +512,7 @@ void TutorialGame::InitWorld() {
 
 	gameLevel = new GameLevel(renderer);
 
-	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
+	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
 	player = gameLevel->GetPlayer();
 	boss = gameLevel->getBoss();
 	bossAnimation = gameLevel->getBossAnimation();

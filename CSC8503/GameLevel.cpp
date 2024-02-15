@@ -12,7 +12,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {	
-	Generic.objectList.push_back(CreatePlayer(Vector3(0, 10, 0), Vector3(1, 1, 1)));
+	Generic.objectList.push_back(CreatePlayer(Vector3(0, 10, 0), Vector3(4, 4, 4)));
 	//Level 4 player: 
 	//Generic.objectList.push_back(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
 }
@@ -275,7 +275,7 @@ void GameLevel::CreateLevel2() {
 
 void GameLevel::CreateLevel3() {	
 	// level3.objectList.push_back(CreateCube(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
-	level3.objectList.push_back(CreateCube(Vector3(70, 0, 77), Vector3(10, 10,5 ), 0.0f));
+	//level3.objectList.push_back(CreateCube(Vector3(70, 0, 77), Vector3(10, 10,5 ), 0.0f));
 	level3.objectList.push_back(CreateCube(Vector3(100, 30, 0), Vector3(2, 30, 100), 0.0f));
 	level3.objectList.push_back(CreateCube(Vector3(-100, 30, 0), Vector3(2, 30, 100), 0.0f));
 	level3.objectList.push_back(CreateCube(Vector3(0, 30, -100), Vector3(100,30, 2), 0.0f));
