@@ -30,9 +30,13 @@ namespace NCL {
 		GameObject* CreateChar(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateGoat(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
+		GameObject* CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		
 		GameObject* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		Boss* CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		GameObject* boss;
+		GameObject* ghost;
+
 
 		Boss* GetBoss() {
 			return boss;
@@ -40,6 +44,14 @@ namespace NCL {
 
 		MeshAnimation* getBossAnimation() {
 			return bossAnimation;
+		}
+
+		GameObject* getGhost() {
+			return ghost;
+		}
+
+		MeshAnimation* getGhostAnimation() {
+			return ghostAnimation;
 		}
 
 		MeshAnimation* getplayerIdleAnimation() {

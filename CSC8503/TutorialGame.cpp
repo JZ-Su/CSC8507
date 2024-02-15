@@ -149,6 +149,8 @@ void TutorialGame::UpdateGame(float dt) {
 
 	UpdateBossAnim(boss, bossAnimation, dt);
 
+	UpdateGhostAnim(ghost, ghostAnimation, dt);
+
 	// update player animation
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
@@ -510,9 +512,13 @@ void TutorialGame::InitWorld() {
 
 	gameLevel = new GameLevel(renderer);
 
-	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
+	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
 	player = gameLevel->GetPlayer();
-	boss = gameLevel->GetBoss();
+
+	boss = gameLevel->getBoss();
+	ghost = gameLevel->getGhost();
+	ghostAnimation = gameLevel->getGhostAnimation();
+
 	bossAnimation = gameLevel->getBossAnimation();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
@@ -940,5 +946,12 @@ void TutorialGame::UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAni
 			player->GetRenderObject()->frameTime -= dt;
 			UpdateAnim(player, playerIdleAnimation);
 		}
+	}
+}
+
+void TutorialGame::UpdateGhostAnim(GameObject* ghost, MeshAnimation* ghostAnimation, float dt) {
+	if (ghost != nullptr) {
+		ghost->GetRenderObject()->frameTime -= dt;
+		UpdateAnim(ghost, ghostAnimation);
 	}
 }
