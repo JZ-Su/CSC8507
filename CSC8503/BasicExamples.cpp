@@ -29,14 +29,15 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	floorTexture[3] = render->LoadTexture("Floor/floor_roughness.jpg");
 	floorTexture[4] = render->LoadTexture("Floor/floor_ao.jpg");
 	floorTexture[5] = render->LoadTexture("Floor/floor_height.png");
+	
 	bossMat = new MeshMaterial("Role_T.mat");
 	playerMat = new MeshMaterial("Male_Guard.mat");
 	//ghostMat = new MeshMaterial("Ghost_animation");
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
+	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
 	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	playerShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
-	testShader = render->LoadShader("scene.vert", "scene_uv.frag");
 	//ghostShader = render->LoadShader("ghostVertex.vert", "TexturedFragment.frag");
 
 	bossAnimation = new MeshAnimation("Role_T.anm");
@@ -52,7 +53,13 @@ BasicExamples::~BasicExamples() {
 	delete goatMesh;
 	delete capsuleMesh;
 	delete basicTexture;
+	for (int i = 0; i < 3; i++)
+		delete MetalTexture[i];
+	for (int i = 0; i < 6; i++)
+		delete floorTexture[i];
 	delete basicShader;
+	delete floorShader;
+	delete ghostShader;
 }
 
 GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& dimensions, float inverseMass) {
@@ -78,7 +85,7 @@ GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& d
 	cube->SetBoundingVolume((CollisionVolume*)volume);
 
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, floorTexture[0], testShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, floorTexture[0], floorShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[1], 1);
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[2], 2);

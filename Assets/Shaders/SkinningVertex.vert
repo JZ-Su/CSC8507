@@ -3,7 +3,7 @@
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projMatrix;
-
+uniform mat4 shadowMatrix 	= mat4(1.0f);
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec4 colour;
@@ -17,6 +17,11 @@ uniform mat4 joints [128];
 
 out Vertex {
 	vec2 texCoord;
+	vec4 shadowProj;
+	vec3 normal;
+	vec3 tangent;
+	vec3 binormal;
+	vec3 worldPos;
 } OUT;
 
 void main (void) {
@@ -32,4 +37,8 @@ void main (void) {
 	//gl_Position = mvp * vec4 (position,1.0f);
 
 	OUT.texCoord = texCoord;
+	mat3 normalMatrix = transpose ( inverse ( mat3 ( modelMatrix )));
+	OUT.normal 		= normalize ( normalMatrix * normalize ( normal ));
+	OUT.tangent = normalize(normalMatrix * normalize(tangent.xyz));
+	OUT.binormal = cross(OUT.tangent, OUT.normal) * tangent.w;
 }
