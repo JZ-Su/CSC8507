@@ -1,5 +1,6 @@
 #pragma once
 #include "NetworkBase.h"
+#include <list>
 
 namespace NCL {
 	namespace CSC8503 {
@@ -16,6 +17,7 @@ namespace NCL {
 
 			bool SendGlobalPacket(int msgID);
 			bool SendGlobalPacket(GamePacket& packet);
+			void SendPacketToPeer(GamePacket& packet);
 
 			virtual void UpdateServer();
 
@@ -27,6 +29,9 @@ namespace NCL {
 
 			int incomingDataRate;
 			int outgoingDataRate;
+
+			_ENetPeer* netPeer;
+			std::list<int> clientAddList;
 		};
 	}
 }

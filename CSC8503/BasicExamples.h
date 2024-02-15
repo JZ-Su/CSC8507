@@ -31,15 +31,23 @@ namespace NCL {
 		GameObject* CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
 		
 		GameObject* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		GameObject* CreateRole(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		GameObject* role;
+		GameObject* CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		GameObject* boss;
 
-		GameObject* getRole() {
-			return role;
+		GameObject* getBoss() {
+			return boss;
 		}
 
-		MeshAnimation* getRoleAnimation() {
-			return roleAnimation;
+		MeshAnimation* getBossAnimation() {
+			return bossAnimation;
+		}
+
+		MeshAnimation* getplayerIdleAnimation() {
+			return playerIdleAnimation;
+		}
+
+		MeshAnimation* getplayerWalkAnimation() {
+			return playerWalkAnimation;
 		}
 
 		Player* GetPlayer()
@@ -49,13 +57,16 @@ namespace NCL {
 
 		StateGameObject* CreateAItest(const Vector3& position, const Vector3& dimensions,  GameObject* player,float inverseMass = 10.0f);
 
+		GameObject* CreateTestMesh(const Vector3& position, const Vector3& dimensions, float inverseMass);
 		void LoadMaterialTextures(GameObject* character, Mesh* mesh,MeshMaterial* material, GameTechRenderer* renderer);
 
 	protected:
 		Mesh* cubeMesh = nullptr;
 		Mesh* sphereMesh = nullptr;
 		Mesh* charMesh = nullptr;
-		Mesh* roleMesh = nullptr;
+		Mesh* bossMesh = nullptr;
+		Mesh* playerMesh = nullptr;
+		Mesh* ghostMesh = nullptr;
 		Mesh* goatMesh = nullptr;
 		Mesh* capsuleMesh = nullptr;
 
@@ -67,11 +78,20 @@ namespace NCL {
 		Shader* roleShader = nullptr;
 		Shader* floorShader = nullptr;
 		Shader* ghostShader = nullptr;
-		Player* player;
+		Shader* bossShader = nullptr;
+		Shader* playerShader = nullptr;
 
-		MeshMaterial* roleMat = nullptr;
+		Player* player = nullptr;
 
-		MeshAnimation* roleAnimation = nullptr;
+		MeshMaterial* bossMat = nullptr;
+		MeshMaterial* playerMat = nullptr;
+		MeshMaterial* ghostMat = nullptr;
+
+		MeshAnimation* bossAnimation = nullptr;
+		MeshAnimation* playerIdleAnimation = nullptr;
+		MeshAnimation* ghostAnimation = nullptr;
+		MeshAnimation* playerWalkAnimation = nullptr;
+		
 		GameTechRenderer* render;  // new render variable
 
 	};

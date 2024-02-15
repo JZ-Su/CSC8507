@@ -127,8 +127,11 @@ namespace NCL {
 			int score;
 			Player* player;
 
-			GameObject* role;
-			MeshAnimation* roleAnimation;
+			GameObject* boss;
+			MeshAnimation* bossAnimation;
+			MeshAnimation* playerIdleAnimation;
+			MeshAnimation* playerWalkAnimation;
+
 			GameObject* floor;
 			GameObject* goalArea;
 
@@ -155,8 +158,16 @@ namespace NCL {
 
 			void DrawAnim(GameObject* g, MeshAnimation* anim);
 			void UpdateAnim(GameObject* g, MeshAnimation* anim);
+			void UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation, float dt);
+			void UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAnimation, MeshAnimation* playerWalkAnimation, float dt);
 
 			float h = 0, v = 0;
+
+			bool hasRotation = true;
+			bool hasReverse = false;
+			int mapIndex = 0;
+
+			int currentLevel = 1;
 		};
 	}
 }
