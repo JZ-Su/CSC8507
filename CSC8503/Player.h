@@ -50,6 +50,14 @@ namespace NCL {
 			{
 				canJump = inCanJump;
 			}
+			int  GetIsWalk()
+			{
+				return isWalk;
+			}
+			void SetIsWalk(bool inIsWalk)
+			{
+				isWalk = inIsWalk;
+			}
 			bool updateJumpTimer(float dt);
 			float updateTimer(float dt);
 			float updateHealth(float inhealth);
@@ -63,6 +71,7 @@ namespace NCL {
 			float jumpTimer = 0;
 			bool isDead = false;
 			bool canJump = false;
+			bool isWalk = false;
 			//add timer
 		};
 	}

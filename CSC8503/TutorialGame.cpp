@@ -1,4 +1,4 @@
-#include "TutorialGame.h"
+﻿#include "TutorialGame.h"
 #include "GameWorld.h"
 #include "PhysicsObject.h"
 #include "RenderObject.h"
@@ -159,10 +159,10 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	}
 
-	if (role!= nullptr) {
-		role->GetRenderObject()->frameTime -= dt;
-		UpdateAnim(role, roleAnimation);
-	}
+	UpdateBossAnim(boss, bossAnimation, dt);
+
+	// 更新player动画
+	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
 	SelectObject();
 	MoveSelectedObject();
@@ -391,24 +391,31 @@ void TutorialGame::DebugObjectMovement() {
 			player->GetPhysicsObject()->AddTorque(Vector3(0, 0, -10));
 		}
 
-		if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
-			player->GetPhysicsObject()->AddForce(Vector3(0, 0, -10));
-			player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
-		}
-
-		if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
-			player->GetPhysicsObject()->AddForce(Vector3(0, 0, 10));
+		else if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
+			player->GetPhysicsObject()->AddForce(Vector3(0, 0, -2));
 			player->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
+			player->SetIsWalk(true);
 		}
 
-		if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
-			player->GetPhysicsObject()->AddForce(Vector3(-10, 0, 0));
-			player->GetTransform().SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 1.0f));
+		else if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
+			player->GetPhysicsObject()->AddForce(Vector3(0, 0, 2));
+			player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+			player->SetIsWalk(true);
 		}
 
-		if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
-			player->GetPhysicsObject()->AddForce(Vector3(10, 0, 0));
+		else if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
+			player->GetPhysicsObject()->AddForce(Vector3(-2, 0, 0));
 			player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 1.0f));
+			player->SetIsWalk(true);
+		}
+
+		else if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
+			player->GetPhysicsObject()->AddForce(Vector3(2, 0, 0));
+			player->GetTransform().SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 1.0f));
+			player->SetIsWalk(true);
+		}
+		else {
+			player->SetIsWalk(false);
 		}
 	}
 }
@@ -465,8 +472,10 @@ void TutorialGame::InitWorld() {
 	
 	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
 	player = gameLevel->GetPlayer();
-	role = gameLevel->getRole();
-	roleAnimation = gameLevel->getRoleAnimation();
+	boss = gameLevel->getBoss();
+	bossAnimation = gameLevel->getBossAnimation();
+	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
+	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 	lockedObject = player;
 	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
@@ -893,4 +902,25 @@ void TutorialGame::UpdateAnim(GameObject* g, MeshAnimation* anim) {
 		g->GetRenderObject()->frameTime += 1.0f / anim->GetFrameTime();
 	}
 	DrawAnim(g, anim);
+}
+
+void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation, float dt) {
+	if (boss != nullptr) {
+		boss->GetRenderObject()->frameTime -= dt;
+		UpdateAnim(boss, bossAnimation);
+	}
+}
+
+void TutorialGame::UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAnimation, MeshAnimation* playerWalkAnimation, float dt) {
+	std::cout<< player->GetIsWalk()<<std::endl;
+	if (player != nullptr) {
+		if (player->GetIsWalk()) {
+			player->GetRenderObject()->frameTime -= dt;
+			UpdateAnim(player, playerWalkAnimation);
+		}
+		else {
+			player->GetRenderObject()->frameTime -= dt;
+			UpdateAnim(player, playerIdleAnimation);
+		}
+	}
 }

@@ -12,7 +12,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {
-	Generic.objectList.push_back(CreatePlayer(Vector3(0, 10, 0), Vector3(1, 1, 1)));
+	Generic.objectList.push_back(CreatePlayer(Vector3(0, 0, 0), Vector3(1, 1, 1)));
 	
 }
 
@@ -40,7 +40,7 @@ void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateCube(Vector3(0, 15, 90), Vector3(40, 5, 10), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(0, 25, 95), Vector3(20, 5, 5.1), 0.0f));
 
-	level1.objectList.push_back(role=CreateRole(Vector3(0, 40, 10), Vector3(5, 5, 5), 0.0f));
+	//level1.objectList.push_back(role=CreateRole(Vector3(0, 40, 10), Vector3(5, 5, 5), 0.0f));
 
 	//wall
 	/*level1.objectList.push_back(CreateCube(Vector3(0, 30, 101), Vector3(100, 30, 1), 0.0f));
@@ -228,9 +228,13 @@ void GameLevel::CreateLevel2() {
 	level2.listSize = level2.objectList.size();
 }
 
-void GameLevel::CreateLevel3() {
+void GameLevel::CreateLevel3() {	
 	// level3.objectList.push_back(CreateCube(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
 	level3.objectList.push_back(CreateCube(Vector3(70, 0, 77), Vector3(10, 10,5 ), 0.0f));
+	level3.objectList.push_back(CreateCube(Vector3(100, 30, 0), Vector3(2, 30, 100), 0.0f));
+	level3.objectList.push_back(CreateCube(Vector3(-100, 30, 0), Vector3(2, 30, 100), 0.0f));
+	level3.objectList.push_back(CreateCube(Vector3(0, 30, -100), Vector3(100,30, 2), 0.0f));
+	level3.objectList.push_back(CreateCube(Vector3(0, 30, 100), Vector3(100, 30, 2), 0.0f));
 	//level3.objectList.push_back(CreateCube(Vector3(0, 0, 0), Vector3(5, 5, 5), 0.0f));
 
 	//player = CreateSphere(Vector3(20, 5, 20), 5, 0.0f);
@@ -238,7 +242,7 @@ void GameLevel::CreateLevel3() {
 	//testAI = CreateAItest(Vector3(0, 0, 0), Vector3(5, 5, 5), player, 0.0f);
 	//level3.objectList.push_back(testAI);
 	level3.objectList.push_back(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
-
+	level3.objectList.push_back(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
 	level3.listSize = level3.objectList.size();
 
 }

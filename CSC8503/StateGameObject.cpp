@@ -179,7 +179,7 @@ StateGameObject::StateGameObject(GameObject* player, const std::string& objectNa
 	State* stateChasing = new State([&](float dt, GameObject* player)->void {
 		NavigationGrid* grid = new NavigationGrid("TestGrid3.txt", Vector3(-100, 2, -100));
 		bool found = (*grid).FindPath(GetRenderObject()->GetTransform()->GetPosition(), Vector3(10,-2,10), *chasingPath);
-		std::cout << found << std::endl;
+		//std::cout << found << std::endl;
 		//Debug::DrawLine(GetRenderObject()->GetTransform()->GetPosition() + Vector3(0,5,0), player->GetRenderObject()->GetTransform()->GetPosition() + Vector3(0, 5, 0), Debug::GREEN);
 
 		FollowPath(dt, *chasingPath, false);
@@ -200,13 +200,13 @@ void StateGameObject::Update(float dt) {
 void StateGameObject::MoveLeft(float dt,Vector3 ownpos) {
 	//GetPhysicsObject()->AddForce({ -10,0,0 });
 	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x-(dt*10), ownpos.y, ownpos.z));
-	std::cout << "move left" << std::endl;
+	//std::cout << "move left" << std::endl;
 	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
 void StateGameObject::MoveRight(float dt, Vector3 ownpos) {
 	//GetPhysicsObject()->AddForce({ 10,0,0 });
-	std::cout << "move right" << std::endl;
+	//std::cout << "move right" << std::endl;
 
 	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x + (dt*10) , ownpos.y, ownpos.z));
 	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 0.0f));
@@ -214,7 +214,7 @@ void StateGameObject::MoveRight(float dt, Vector3 ownpos) {
 
 void StateGameObject::MoveFront(float dt, Vector3 ownpos) {
 	//GetPhysicsObject()->AddForce({ 0,0,-10 });
-	std::cout << "move front" << std::endl;
+	//std::cout << "move front" << std::endl;
 
 	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x, ownpos.y, ownpos.z - (dt*10)) );
 	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 0.0f, 1.0f, 0.0f));
@@ -222,7 +222,7 @@ void StateGameObject::MoveFront(float dt, Vector3 ownpos) {
 
 void StateGameObject::MoveBack(float dt, Vector3 ownpos) {
 	//GetPhysicsObject()->AddForce({ 0,0,10 });
-	std::cout << "move back" << std::endl;
+	//std::cout << "move back" << std::endl;
 
 	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x, ownpos.y, ownpos.z +(10* dt)) );
 	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 0.0f, -1.0f, 0.0f));
