@@ -140,7 +140,7 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	}
 
-	if (lockedObject != nullptr) {
+	/*if (lockedObject != nullptr) {
 		Ray ray = CollisionDetection::BuildRayFromScreenCenter(world->GetMainCamera());
 		RayCollision blockCollision;
 		if (world->Raycast(ray, blockCollision, true)) {
@@ -157,7 +157,7 @@ void TutorialGame::UpdateGame(float dt) {
 				}
 			}
 		}
-	}
+	}*/
 
 	if (role!= nullptr) {
 		role->GetRenderObject()->frameTime -= dt;

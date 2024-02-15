@@ -65,7 +65,8 @@ namespace NCL {
 		Texture* floorTexture[6] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
 		Shader* basicShader = nullptr;
 		Shader* roleShader = nullptr;
-		Shader* testShader = nullptr;
+		Shader* floorShader = nullptr;
+		Shader* ghostShader = nullptr;
 		Player* player;
 
 		MeshMaterial* roleMat = nullptr;

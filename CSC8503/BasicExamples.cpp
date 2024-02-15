@@ -13,7 +13,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	cubeMesh    = render->LoadMesh("cube.msh");
 	sphereMesh  = render->LoadMesh("sphere.msh");
 	charMesh    = render->LoadMesh("Keeper.msh");
-	roleMesh	= render->LoadMesh("Role_T.msh");
+	roleMesh	= render->LoadMesh("Ghost_animation.msh");
 	goatMesh    = render->LoadMesh("goat.msh");
 	capsuleMesh = render->LoadMesh("capsule.msh");
 
@@ -27,13 +27,13 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	floorTexture[3] = render->LoadTexture("Floor/floor_roughness.jpg");
 	floorTexture[4] = render->LoadTexture("Floor/floor_ao.jpg");
 	floorTexture[5] = render->LoadTexture("Floor/floor_height.png");
-	roleMat = new MeshMaterial("Role_T.mat");
+	roleMat = new MeshMaterial("Ghost_animation.mat");
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	roleShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
-	testShader = render->LoadShader("scene.vert", "scene_uv.frag");
+	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
 
-	roleAnimation = new MeshAnimation("Role_T.anm");
+	roleAnimation = new MeshAnimation("ghost_ani.anm");
 }
 
 BasicExamples::~BasicExamples() {
@@ -41,10 +41,18 @@ BasicExamples::~BasicExamples() {
 	sphereMesh = nullptr;
 	charMesh = nullptr;
 	goatMesh = nullptr;
-	roleShader = nullptr;
 	capsuleMesh = nullptr;
+	roleMat = nullptr;
+	roleAnimation = nullptr;
 	basicTexture = nullptr;
+	for (int i = 0; i < 3; i++)
+		MetalTexture[i] = nullptr;
+	for (int i = 0; i < 6; i++)
+		floorTexture[i] = nullptr;
 	basicShader = nullptr;
+	floorShader = nullptr;
+	roleShader = nullptr;
+	ghostShader = nullptr;
 }
 
 GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& dimensions, float inverseMass) {
@@ -70,7 +78,7 @@ GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& d
 	cube->SetBoundingVolume((CollisionVolume*)volume);
 
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, floorTexture[0], testShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, floorTexture[0], floorShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[1], 1);
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[2], 2);
