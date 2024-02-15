@@ -927,7 +927,6 @@ void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation
 }
 
 void TutorialGame::UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAnimation, MeshAnimation* playerWalkAnimation, float dt) {
-	std::cout<< player->GetIsWalk()<<std::endl;
 	if (player != nullptr) {
 		if (player->GetIsWalk()) {
 			player->GetRenderObject()->frameTime -= dt;
