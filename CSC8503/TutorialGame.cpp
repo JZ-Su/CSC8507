@@ -1,4 +1,4 @@
-﻿#include "TutorialGame.h"
+#include "TutorialGame.h"
 #include "GameWorld.h"
 #include "PhysicsObject.h"
 #include "RenderObject.h"
@@ -338,6 +338,7 @@ void TutorialGame::LockedObjectMovement() {
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
+		//lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
 		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 1.0f));
 	}
 
@@ -455,9 +456,6 @@ void TutorialGame::DebugObjectMovement() {
 			player->GetPhysicsObject()->AddForce(Vector3(2, 0, 0));
 			player->GetTransform().SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 1.0f));
 			player->SetIsWalk(true);
-		}
-		else {
-			player->SetIsWalk(false);
 		}
 	}
 }
