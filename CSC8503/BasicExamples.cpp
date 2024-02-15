@@ -13,7 +13,6 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	cubeMesh    = render->LoadMesh("cube.msh");
 	sphereMesh  = render->LoadMesh("sphere.msh");
 	charMesh    = render->LoadMesh("Keeper.msh");
-	roleMesh	= render->LoadMesh("Ghost_animation.msh");
 	bossMesh	= render->LoadMesh("Role_T.msh");
 	playerMesh = render->LoadMesh("Male_Guard.msh");
 	//ghostMesh = render->LoadMesh("Ghost_animation.msh");
@@ -31,19 +30,16 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	floorTexture[4] = render->LoadTexture("Floor/floor_ao.jpg");
 	floorTexture[5] = render->LoadTexture("Floor/floor_height.png");
 	
-	roleMat = new MeshMaterial("Ghost_animation.mat");
 	bossMat = new MeshMaterial("Role_T.mat");
 	playerMat = new MeshMaterial("Male_Guard.mat");
 	//ghostMat = new MeshMaterial("Ghost_animation");
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
-	roleShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
 	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	playerShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	//ghostShader = render->LoadShader("ghostVertex.vert", "TexturedFragment.frag");
 
-	roleAnimation = new MeshAnimation("ghost_ani.anm");
 	bossAnimation = new MeshAnimation("Role_T.anm");
 	playerIdleAnimation = new MeshAnimation("idle1.anm");
 	playerWalkAnimation = new MeshAnimation("StepForwardTwoHand.anm");
@@ -56,16 +52,13 @@ BasicExamples::~BasicExamples() {
 	delete charMesh;
 	delete goatMesh;
 	delete capsuleMesh;
-	delete roleMat；
-	delete roleAnimation；
 	delete basicTexture;
 	for (int i = 0; i < 3; i++)
 		delete MetalTexture[i];
 	for (int i = 0; i < 6; i++)
 		delete floorTexture[i];
 	delete basicShader;
-	delete floorShader
-	delete roleShader
+	delete floorShader;
 	delete ghostShader;
 }
 

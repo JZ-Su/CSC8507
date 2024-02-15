@@ -75,7 +75,6 @@ namespace NCL {
 		Texture* MetalTexture[3] = { nullptr,nullptr,nullptr };
 		Texture* floorTexture[6] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
 		Shader* basicShader = nullptr;
-		Shader* roleShader = nullptr;
 		Shader* floorShader = nullptr;
 		Shader* ghostShader = nullptr;
 		Shader* bossShader = nullptr;

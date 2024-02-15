@@ -34,20 +34,23 @@ void main(void) {
 	float rFactor = max (0.0 , dot ( halfDir , IN.normal ));
 	float sFactor = pow ( rFactor , 80.0 );
 
-	 vec2 flippedTexCoord = vec2(IN.texCoord.x, 1.0 - IN.texCoord.y);
-    	 vec4 texColor = texture(diffuseTex, flippedTexCoord);
-    	 
-		 fragColour = texColor;
+	float dist = length(lightPos - IN.worldPos);
+	float atten = 1.0 - clamp(dist / lightRadius, 0.0, 1.0);
 
-		 fragColour.rgb = pow(fragColour.rgb, vec3(2.2));
+	vec2 flippedTexCoord = vec2(IN.texCoord.x, 1.0 - IN.texCoord.y);
+	vec4 texColor = texture(diffuseTex, flippedTexCoord);
+    	 
+	fragColour = texColor;
+
+	fragColour.rgb = pow(fragColour.rgb, vec3(2.2));
 	
 	fragColour.rgb = fragColour.rgb * 0.05f; //ambient
 	
-	fragColour.rgb += fragColour.rgb * lightColour.rgb * lambert * shadow; //diffuse light
+	fragColour.rgb += fragColour.rgb * lightColour.rgb * lambert * shadow * atten; //diffuse light
 	
-	fragColour.rgb += lightColour.rgb * sFactor * shadow; //specular light
+	fragColour.rgb += lightColour.rgb * sFactor * shadow * atten; //specular light
 	
 	fragColour.rgb = pow(fragColour.rgb, vec3(1.0 / 2.2f));
 
-	 fragColour.a = 1.0;
+	fragColour.a = 1.0;
 }
