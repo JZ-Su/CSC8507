@@ -15,14 +15,14 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	charMesh    = render->LoadMesh("Keeper.msh");
 	bossMesh	= render->LoadMesh("Role_T.msh");
 	playerMesh = render->LoadMesh("Male_Guard.msh");
-	//ghostMesh = render->LoadMesh("Ghost_animation.msh");
+	ghostMesh = render->LoadMesh("Ghost.msh");
 	goatMesh    = render->LoadMesh("goat.msh");
 	capsuleMesh = render->LoadMesh("capsule.msh");
 
 	basicTexture = render->LoadTexture("checkerboard.png");
-	MetalTexture[0] = render->LoadTexture("white.jpg");
-	MetalTexture[1] = render->LoadTexture("grey.jpg");
-	MetalTexture[2] = render->LoadTexture("black.jpg");
+	MetalTexture[0] = render->LoadTexture("Color/white.jpg");
+	MetalTexture[1] = render->LoadTexture("Color/grey.jpg");
+	MetalTexture[2] = render->LoadTexture("Color/black.jpg");
 	floorTexture[0] = render->LoadTexture("Floor/floor_color.jpg");
 	floorTexture[1] = render->LoadTexture("Floor/floor_normal.png");
 	floorTexture[2] = MetalTexture[1];
@@ -32,18 +32,18 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	
 	bossMat = new MeshMaterial("Role_T.mat");
 	playerMat = new MeshMaterial("Male_Guard.mat");
-	//ghostMat = new MeshMaterial("Ghost_animation");
+	ghostMat = new MeshMaterial("Ghost.mat");
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
 	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	playerShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
-	//ghostShader = render->LoadShader("ghostVertex.vert", "TexturedFragment.frag");
+	ghostShader = render->LoadShader("SkinningVertex.vert", "ghost.frag");
 
 	bossAnimation = new MeshAnimation("Role_T.anm");
 	playerIdleAnimation = new MeshAnimation("idle1.anm");
 	playerWalkAnimation = new MeshAnimation("StepForwardTwoHand.anm");
-	//ghostAnimation = new MeshAnimation("ghost_ani.anm");
+	ghostAnimation = new MeshAnimation("Ghost.anm");
 }
 
 BasicExamples::~BasicExamples() {
@@ -165,6 +165,23 @@ GameObject* BasicExamples::CreateGoat(const Vector3& position, const Vector3& di
 	goat->GetPhysicsObject()->InitCubeInertia();
 
 	return goat;
+}
+
+GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* ghost = new GameObject("ghost");
+
+	AABBVolume* volume = new AABBVolume(dimensions);
+	ghost->SetBoundingVolume((CollisionVolume*)volume);
+
+	ghost->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	ghost->SetRenderObject(new RenderObject(&ghost->GetTransform(), ghostMesh, nullptr, ghostShader));
+	ghost->SetPhysicsObject(new PhysicsObject(&ghost->GetTransform(), ghost->GetBoundingVolume()));
+	ghost->GetRenderObject()->isAnimation = true;
+	LoadMaterialTextures(ghost, ghostMesh, ghostMat, render);
+	ghost->GetPhysicsObject()->SetInverseMass(inverseMass);
+	ghost->GetPhysicsObject()->InitCubeInertia();
+
+	return ghost;
 }
 
 GameObject* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass) {
