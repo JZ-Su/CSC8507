@@ -167,8 +167,8 @@ GameObject* BasicExamples::CreateGoat(const Vector3& position, const Vector3& di
 	return goat;
 }
 
-GameObject* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-	GameObject* character = new GameObject("boss");
+Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	Boss* character = new Boss("boss");
 
 	AABBVolume* volume = new AABBVolume(dimensions);
 	character->SetBoundingVolume((CollisionVolume*)volume);
@@ -180,7 +180,6 @@ GameObject* BasicExamples::CreateBoss(const Vector3& position, const Vector3& di
 	LoadMaterialTextures(character, bossMesh, bossMat, render);
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
 	character->GetPhysicsObject()->InitCubeInertia();
-
 	return character;
 }
 

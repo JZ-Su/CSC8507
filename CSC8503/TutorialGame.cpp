@@ -512,7 +512,7 @@ void TutorialGame::InitWorld() {
 
 	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
 	player = gameLevel->GetPlayer();
-	boss = gameLevel->getBoss();
+	boss = gameLevel->GetBoss();
 	bossAnimation = gameLevel->getBossAnimation();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();

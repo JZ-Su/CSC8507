@@ -14,6 +14,7 @@
 #include "MeshMaterial.h"
 
 #include "MeshAnimation.h"
+#include "Boss.h"
 
 namespace NCL {
 	class BasicExamples
@@ -31,10 +32,9 @@ namespace NCL {
 		GameObject* CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
 		
 		GameObject* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		GameObject* CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		GameObject* boss;
+		Boss* CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 
-		GameObject* getBoss() {
+		Boss* GetBoss() {
 			return boss;
 		}
 
@@ -81,7 +81,7 @@ namespace NCL {
 		Shader* playerShader = nullptr;
 
 		Player* player = nullptr;
-
+		Boss* boss = nullptr;
 		MeshMaterial* bossMat = nullptr;
 		MeshMaterial* playerMat = nullptr;
 		MeshMaterial* ghostMat = nullptr;
