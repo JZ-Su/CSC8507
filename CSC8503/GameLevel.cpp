@@ -1,6 +1,7 @@
 #include "GameLevel.h"
 #include "BasicExamples.h"
 #include "RenderObject.h"
+#include"Boss.h"
 using namespace NCL;
 
 GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
@@ -290,7 +291,8 @@ void GameLevel::CreateLevel3() {
 	//testAI = CreateAItest(Vector3(0, 0, 0), Vector3(5, 5, 5), player, 0.0f);
 	//level3.objectList.push_back(testAI);
 	level3.objectList.push_back(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
-	//level3.objectList.push_back(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
+	level3.objectList.push_back(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
+	BossBehaviourTree(boss,player);
 
 }
 

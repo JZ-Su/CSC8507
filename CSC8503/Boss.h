@@ -2,6 +2,7 @@
 #include "StateGameObject.h"
 #include "Window.h"
 #include "GameWorld.h"
+#include "Player.h"
 
 #include "BehaviourNode.h"
 #include "BehaviourSelector.h"
@@ -85,7 +86,7 @@ namespace NCL {
 			bool canJump = false;
 			bool isWalk = false;
 			//add timer
-			void BossBehaviourTree();
+			/*void BossBehaviourTree(Boss* boss, Player* player);*/
 		};
 	}
 }

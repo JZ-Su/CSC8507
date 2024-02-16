@@ -1,6 +1,7 @@
 #include "GameObject.h"
 #include "Boss.h"
 #include "Window.h"
+#include"BasicExamples.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -86,113 +87,41 @@ void Boss::OnCollisionEnd(GameObject* otherObject) {
 
 }
 
-void BossBehaviourTree() {
-
-}
-
-//void TutorialGame::GooseBehaviourTree() {
-//	float behaviourTimer;
-//	float distanceTotarget;
-//	BehaviourAction* sleep = new BehaviourAction("Sleep", [&](float dt, BehaviourState state)->BehaviourState {
-//		if (state == Initialise) {
-//			behaviourTimer = 100;
-//			std::cout << "sleep!\n";
-//			Debug::Print("Sleep:", Goose->GetTransform().GetPosition());
-//			state = Ongoing;
-//		}
-//		else if (state == Ongoing) {
-//			behaviourTimer -= dt;
-//			Debug::Print("Awake!", Goose->GetTransform().GetPosition());
-//			if (behaviourTimer <= 0.0f || totaltime >= 1) {
-//				std::cout << "awake!\n";
+//float Boss::calculateDistance(const Position& pos1,const  Position& pos2) {
+//	float distance = std::sqrt(std::pow(pos2.x - pos1.x, 2) + std::pow(pos2.y - pos1.y, 2));
+//	return distance;
+//}
 //
-//				return Success;
-//			}
-//		}
-//		return state;//will be ongoing until success
-//		});
-//	BehaviourAction* goToDoor = new BehaviourAction("gotodoor", [&](float dt, BehaviourState state)->BehaviourState {
+//void Boss::BossBehaviourTree(Boss* boss, Player* player) {
+//	float attackRange = 10.0f;
+//	float distanceTotarget=calculateDistance((boss->GetTransform().GetPosition().x,boss->GetTransform().GetPosition().y), player->GetTransform().GetPosition());
+//	BehaviourAction* patrol = new BehaviourAction("patrol", [&](float dt, BehaviourState state)->BehaviourState {
 //		if (state == Initialise) {
-//			std::cout << "Going to the door\n";
-//			Debug::Print("Going to the door", Goose->GetTransform().GetPosition());
+//			Debug::Print("Patrolling", boss->GetTransform().GetPosition());
 //			state = Ongoing;
 //		}
 //		else if (state == Ongoing) {
-//			GoosePathfindingDoor();
-//			while (physics->IsGooseDoor()) {
-//				std::cout << "Going to the door!\n";
-//				return Success;
+//			if (distanceToTarget <= attackRange) {
+//				std::cout << "Player detected close! Switching to attack mode.\n";
+//				return Success; 
 //			}
 //		}
-//		return state;//will be ongoing until success
+//		return state;//will be ongoing until success or condition to switch
 //		});
-//	BehaviourAction* bypassDoor = new BehaviourAction("Bypass Door", [&](float dt, BehaviourState state)->BehaviourState {
+//	BehaviourAction* attack = new BehaviourAction("attack", [&](float dt, BehaviourState state) -> BehaviourState {
 //		if (state == Initialise) {
-//			std::cout << "Bypass Door\n";
-//			Debug::Print("Bypass Door!", Goose->GetTransform().GetPosition());
-//			state == Ongoing;
-//		}
-//		if (state == Ongoing) {
-//			Goose->GetTransform().SetPosition(Vector3(0, -17, 80));
-//			std::cout << "Bypass Door!\n";
-//			return Success;
-//		}
-//		return state;
-//		});
-//	BehaviourAction* speak = new BehaviourAction("speak", [&](float dt, BehaviourState state)->BehaviourState {
-//		if (state == Initialise) {
-//			Debug::Print("I will catch you!", Goose->GetTransform().GetPosition());
-//			std::cout << "I will catch you!\n";
-//			return Ongoing;
+//			Debug::Print("Attacking", boss->GetTransform().GetPosition());
+//			state = Ongoing;
 //		}
 //		else if (state == Ongoing) {
-//			bool found = rand() % 2;
-//			if (found) {
-//				std::cout << "I will catch you!\n";
-//				Debug::Print("I will catch you!", Goose->GetTransform().GetPosition());
-//				return Failure;
-//			}
+//			
 //		}
 //		return state;
 //		});
-//	BehaviourAction* chase = new BehaviourAction("chase player", [&](float dt, BehaviourState state)->BehaviourState {
-//		if (state == Initialise) {
-//			std::cout << "Chasing player!\n";
-//			Debug::Print("Chasing player!", Goose->GetTransform().GetPosition());
-//			return Ongoing;
-//		}
-//		else if (state == Ongoing) {
-//			GoosePathfinding();
-//			while (physics->IsGoosePlayer()) {
-//				std::cout << "Catch you!\n";
-//				return Failure;
-//			}
-//		}
-//		return state;
-//		});
-//	BehaviourSequence* sequence = new BehaviourSequence("Room Sequence");
-//	sequence->AddChild(sleep);
-//	sequence->AddChild(goToDoor);
-//	sequence->AddChild(bypassDoor);
-//	BehaviourSelector* selection = new BehaviourSelector("Loot Selection");
-//	selection->AddChild(speak);
-//	selection->AddChild(chase);
-//	rootSequence = new BehaviourSequence("Root Sequence");
-//	rootSequence->AddChild(sequence);
-//	rootSequence->AddChild(selection);
-//	//for (int i = 0; i < 5; ++i) {
-//	rootSequence->Reset();
-//	state = Ongoing;
-//	/*behaviourTimer = 0.0f;
-//	distanceTotarget = rand() % 250;*/
-//	//BehaviourState state = Ongoing;
-//	//std::cout << "We are going on an adventure!\n";
-//	//if (state == Ongoing) {
-//	//	state = rootSequence->Execute(1.0f);//fake dt
-//	//}
-///*	if (state == Failure) {
-//		std::cout << "What a waste of time!\n";
-//	}*/
-//	//	}
-//		//std::cout << "All done!\n";
+//	if (distanceToTarget > attackRange) {
+//		patrol->execute(0.0f, Initialise); 
+//	}
+//	else {
+//		attack->execute(0.0f, Initialise); 
+//	}
 //}
