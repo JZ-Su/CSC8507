@@ -40,8 +40,8 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	//Set up the light properties
 	lightColour = Vector4(0.8f, 0.8f, 0.5f, 1.0f);
-	lightRadius = 200.0f;
-	lightPosition = Vector3(50.0f, 60.0f, 50.0f);
+	lightRadius = 100.0f;
+	lightPosition = Vector3(50.0f, 40.0f, 0.0f);
 
 	//Skybox!
 	skyboxShader = new OGLShader("skybox.vert", "skybox.frag");
@@ -333,7 +333,7 @@ void GameTechRenderer::RenderCamera() {
 			if ((*i).isAnimation) {
 				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matDiffuseTextures[x])->GetObjectID());
-				glUniform1i(glGetUniformLocation(shader->GetProgramID(), "diffuseTex"), 0);
+				glUniform1i(glGetUniformLocation(shader->GetProgramID(), "mainTex"), 0);
 
 				if (!i->matNormalTextures.empty() && x < i->matNormalTextures.size() && i->matNormalTextures[x] != nullptr) {
 					glActiveTexture(GL_TEXTURE2);

@@ -12,30 +12,45 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 
 	cubeMesh    = render->LoadMesh("cube.msh");
 	sphereMesh  = render->LoadMesh("sphere.msh");
+	capsuleMesh = render->LoadMesh("capsule.msh");
 	charMesh    = render->LoadMesh("Keeper.msh");
 	bossMesh	= render->LoadMesh("Role_T.msh");
 	playerMesh = render->LoadMesh("Male_Guard.msh");
 	ghostMesh = render->LoadMesh("Ghost.msh");
 	goatMesh    = render->LoadMesh("goat.msh");
-	capsuleMesh = render->LoadMesh("capsule.msh");
+	bookshelfMesh = render->LoadMesh("bookshelf.msh");
+	tableMesh = render->LoadMesh("table.msh");
+	columnMesh = render->LoadMesh("column.msh");
 
 	basicTexture = render->LoadTexture("checkerboard.png");
-	MetalTexture[0] = render->LoadTexture("Color/white.jpg");
-	MetalTexture[1] = render->LoadTexture("Color/grey.jpg");
-	MetalTexture[2] = render->LoadTexture("Color/black.jpg");
+	DefualtTexture[0] = render->LoadTexture("Defualt/white.jpg");
+	DefualtTexture[1] = render->LoadTexture("Defualt/grey.jpg");
+	DefualtTexture[2] = render->LoadTexture("Defualt/black.jpg");
+	DefualtTexture[3] = render->LoadTexture("Defualt/halfgrey.jpg");
+	DefualtTexture[4] = render->LoadTexture("Defualt/defualt_normal.png");
 	floorTexture[0] = render->LoadTexture("Floor/floor_color.jpg");
 	floorTexture[1] = render->LoadTexture("Floor/floor_normal.png");
-	floorTexture[2] = MetalTexture[1];
+	floorTexture[2] = DefualtTexture[1];
 	floorTexture[3] = render->LoadTexture("Floor/floor_roughness.jpg");
 	floorTexture[4] = render->LoadTexture("Floor/floor_ao.jpg");
 	floorTexture[5] = render->LoadTexture("Floor/floor_height.png");
+	ceilingTexture[0] = render->LoadTexture("Ceiling/ceiling_color.jpg");
+	ceilingTexture[1] = DefualtTexture[4];//render->LoadTexture("Ceiling/ceiling_normal.png");
+	ceilingTexture[2] = DefualtTexture[2];
+	ceilingTexture[3] = render->LoadTexture("Ceiling/ceiling_roughness.jpg");
+	ceilingTexture[4] = render->LoadTexture("Ceiling/ceiling_ao.jpg");
+	ceilingTexture[5] = render->LoadTexture("Ceiling/ceiling_height.png");
 	
 	bossMat = new MeshMaterial("Role_T.mat");
 	playerMat = new MeshMaterial("Male_Guard.mat");
 	ghostMat = new MeshMaterial("Ghost.mat");
+	bookshelfMat = new MeshMaterial("bookshelf.mat");
+	tableMat = new MeshMaterial("table.mat");
+	columnMat = new MeshMaterial("Column.mat");
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
+	modelShader = render->LoadShader("model.vert", "model.frag");
 	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	playerShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	ghostShader = render->LoadShader("SkinningVertex.vert", "ghost.frag");
@@ -51,15 +66,34 @@ BasicExamples::~BasicExamples() {
 	delete sphereMesh;
 	delete charMesh;
 	delete goatMesh;
-	delete capsuleMesh;
+	delete playerMesh;
+	delete bossMesh;
+	delete ghostMesh;
+	delete bookshelfMesh;
+	delete tableMesh;
+	delete columnMesh;
+
+	delete playerMat;
+	delete bossMat;
+	delete ghostMat;
+	delete bookshelfMat;
+	delete tableMat;
+	delete columnMat;
+
 	delete basicTexture;
-	for (int i = 0; i < 3; i++)
-		delete MetalTexture[i];
+	for (int i = 0; i < 5; i++)
+		delete DefualtTexture[i];
 	for (int i = 0; i < 6; i++)
 		delete floorTexture[i];
+	for (int i = 0; i < 6; i++)
+		delete ceilingTexture[i];
+
 	delete basicShader;
 	delete floorShader;
+	delete modelShader;
 	delete ghostShader;
+	delete bossShader;
+	delete playerShader;
 }
 
 GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& dimensions, float inverseMass) {
@@ -78,8 +112,25 @@ GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& di
 	return cube;
 }
 
+GameObject* BasicExamples::CreateAABB(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* cube = new GameObject("aabb");
+
+	AABBVolume* volume = new AABBVolume(dimensions);
+	cube->SetBoundingVolume((CollisionVolume*)volume);
+
+	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTexture, basicShader));
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+
+	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
+	cube->GetPhysicsObject()->InitCubeInertia();
+	cube->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 0.4));
+
+	return cube;
+}
+
 GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-	GameObject* cube = new GameObject("cube");
+	GameObject* cube = new GameObject("floor");
 
 	AABBVolume* volume = new AABBVolume(dimensions);
 	cube->SetBoundingVolume((CollisionVolume*)volume);
@@ -99,8 +150,30 @@ GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& d
 	return cube;
 }
 
+GameObject* BasicExamples::CreateCeiling(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* cube = new GameObject("ceiling");
+
+	AABBVolume* volume = new AABBVolume(dimensions);
+	cube->SetBoundingVolume((CollisionVolume*)volume);
+
+	//cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
+	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Matrix4::Rotation(45, Vector3(0,1,0)));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, ceilingTexture[0], floorShader));
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+	cube->GetRenderObject()->SetDefaultTexture(ceilingTexture[1], 1);
+	cube->GetRenderObject()->SetDefaultTexture(ceilingTexture[2], 2);
+	cube->GetRenderObject()->SetDefaultTexture(ceilingTexture[3], 3);
+	cube->GetRenderObject()->SetDefaultTexture(ceilingTexture[4], 4);
+	cube->GetRenderObject()->SetDefaultTexture(ceilingTexture[5], 5);
+
+	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
+	cube->GetPhysicsObject()->InitCubeInertia();
+	cube->SetTag("Ground");
+	return cube;
+}
+
 GameObject* BasicExamples::CreateCubeOBB(const Vector3& position, const Vector3& dimensions, float inverseMass, const Vector3& tilt, int angle) {
-	GameObject* cube = new GameObject("cube");
+	GameObject* cube = new GameObject("obb");
 
 	OBBVolume* volume = new OBBVolume(dimensions);
 	cube->SetBoundingVolume((CollisionVolume*)volume);
@@ -167,6 +240,52 @@ GameObject* BasicExamples::CreateGoat(const Vector3& position, const Vector3& di
 	return goat;
 }
 
+GameObject* BasicExamples::CreateColumn(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* column = new GameObject("column");
+
+	column->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	column->SetRenderObject(new RenderObject(&column->GetTransform(), columnMesh, nullptr, modelShader));
+	column->SetPhysicsObject(new PhysicsObject(&column->GetTransform(), column->GetBoundingVolume()));
+
+	column->GetRenderObject()->isAnimation = true;
+	LoadMaterialTextures(column, columnMesh, columnMat, render);
+	column->GetPhysicsObject()->SetInverseMass(inverseMass);
+	column->GetPhysicsObject()->InitCubeInertia();
+
+	return column;
+}
+
+GameObject* BasicExamples::CreateBookshelf(const Vector3& position, float inverseMass, const Vector3& tilt, int angle) {
+	GameObject* bookshelf = new GameObject("bookshelf");
+
+	OBBVolume* volume = new OBBVolume(Vector3(8, 20, 2));
+	bookshelf->SetBoundingVolume((CollisionVolume*)volume);
+
+	bookshelf->GetTransform().SetPosition(position).SetScale(Vector3(1.6, 1.6, 1.6)).SetOrientation(Matrix4::Rotation(angle, tilt));
+	bookshelf->SetRenderObject(new RenderObject(&bookshelf->GetTransform(), bookshelfMesh, nullptr, modelShader));
+	bookshelf->SetPhysicsObject(new PhysicsObject(&bookshelf->GetTransform(), bookshelf->GetBoundingVolume()));
+	bookshelf->GetRenderObject()->isAnimation = true;
+	LoadMaterialTextures(bookshelf, bookshelfMesh, bookshelfMat, render);
+	bookshelf->GetPhysicsObject()->SetInverseMass(inverseMass);
+	bookshelf->GetPhysicsObject()->InitCubeInertia();
+
+	return bookshelf;
+}
+
+GameObject* BasicExamples::CreateTable(const Vector3& position, float inverseMass, const Vector3& tilt, int angle) {
+	GameObject* table = new GameObject("table");
+
+	table->GetTransform().SetPosition(position).SetScale(Vector3(1.6, 1.6, 1.6)).SetOrientation(Matrix4::Rotation(angle, tilt));
+	table->SetRenderObject(new RenderObject(&table->GetTransform(), tableMesh, nullptr, modelShader));
+	table->SetPhysicsObject(new PhysicsObject(&table->GetTransform(), table->GetBoundingVolume()));
+	table->GetRenderObject()->isAnimation = true;
+	LoadMaterialTextures(table, tableMesh, tableMat, render);
+	table->GetPhysicsObject()->SetInverseMass(inverseMass);
+	table->GetPhysicsObject()->InitCubeInertia();
+
+	return table;
+}
+
 GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	GameObject* ghost = new GameObject("ghost");
 
@@ -229,7 +348,7 @@ GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeig
 
 	capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
 	capsule->GetPhysicsObject()->InitSphereInertia();
-
+	capsule->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 0.4));
 	return capsule;
 }
 
@@ -276,7 +395,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 
 		// load metal
 		const std::string* filenameMetal = nullptr;
-		if (matEntry->GetEntry("Metal", &filenameMetal)) {
+		if (matEntry->GetEntry("Metallic", &filenameMetal)) {
 			std::string pathMetal = *filenameMetal;
 			std::cout << "Metal Texture: " << pathMetal << std::endl;
 			if (!pathMetal.empty()) {
@@ -296,7 +415,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 
 		// Load ambient occlusion (Ao)
 		const std::string* filenameAo = nullptr;
-		if (matEntry->GetEntry("Ao", &filenameAo)) {
+		if (matEntry->GetEntry("AO", &filenameAo)) {
 			std::string pathAo = *filenameAo;
 			std::cout << "Ao Texture: " << pathAo << std::endl;
 			if (!pathAo.empty()) {
