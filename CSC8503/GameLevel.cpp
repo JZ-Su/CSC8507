@@ -232,6 +232,9 @@ void GameLevel::CreateLevel1() {
 	testAI = CreateAItest(Vector3(10, 50, 10), Vector3(5, 5, 5), player, 0.0f);
 	testAI->GetRenderObject()->SetColour(Debug::BLUE);
 	level1.objectList.push_back(testAI);
+
+	door = CreateDoor(Vector3(0, 10, -10), Vector3(5, 5, 1), 0.0f);
+	level1.objectList.push_back(door);
 }
 
 void GameLevel::CreateLevel2() {

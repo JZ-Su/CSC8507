@@ -96,6 +96,9 @@ namespace NCL::CSC8503 {
 		void SetCollisionResponse(bool b) { hasCollision = b; }
 		bool GetCollisionResponse() const { return hasCollision; }
 
+		void SetDefaultPos(Vector3 pos) { defaultPosition = pos; }
+		Vector3 GetDefaultPos() const { return defaultPosition; }
+
 	protected:
 		Transform			transform;
 
@@ -113,6 +116,8 @@ namespace NCL::CSC8503 {
 		Vector3 broadphaseAABB;
 
 		bool hasCollision;
+
+		Vector3 defaultPosition;
 	};
 }
 

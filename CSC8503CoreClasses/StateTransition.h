@@ -7,12 +7,14 @@ namespace NCL {
 		enum FunctionType
 		{
 			bool_void,
+			bool_float,
 			bool_Vector3,
 			bool_GameObject
 		};
 
 		class State;
 		typedef std::function<bool()> StateTransitionFunction_bool_void;
+		typedef std::function<bool(float*)> StatetransitionFunction_bool_float;
 		typedef std::function<bool(NCL::Maths::Vector3)> StateTransitionFunction_bool_Vector3;
 		typedef std::function<bool(GameObject*)> StateTransitionFunction_bool_GameObject;
 		class StateTransition	{
@@ -40,11 +42,22 @@ namespace NCL {
 				type                     = bool_GameObject;
 			}
 
+			StateTransition(State* source, State* dest, StatetransitionFunction_bool_float func, float* fl) {
+				sourceState = source;
+				destinationState = dest;
+				function_bool_float = func;
+				f = fl;
+				type = bool_float;
+			}
+
 			bool CanTransition() const {
 				switch (type)
 				{
 				case NCL::CSC8503::bool_void:
 					return function_bool_void();
+					break;
+				case NCL::CSC8503::bool_float:
+					return function_bool_float(f);
 					break;
 				case NCL::CSC8503::bool_Vector3:
 					return function_bool_Vector3(vector3);
@@ -72,10 +85,12 @@ namespace NCL {
 			StateTransitionFunction_bool_void       function_bool_void;
 			StateTransitionFunction_bool_Vector3    function_bool_Vector3;
 			StateTransitionFunction_bool_GameObject function_bool_GameObject;
+			StatetransitionFunction_bool_float      function_bool_float;
 			State* sourceState;
 			State* destinationState;
 			NCL::Maths::Vector3 vector3;
 			GameObject* gameObject;
+			float* f;
 		};
 	}
 }

@@ -166,10 +166,10 @@ void TutorialGame::UpdateGame(float dt) {
 			trueEndDet->isEnable = true;
 			falseEndDet->isEnable = true;
 			if (!hasRotation) {
-				gameLevel->RemoveLevel(world, gameLevel->GetLevel4(), true, false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4(), true, false);
 			}
 			else {
-				gameLevel->RemoveLevel(world, gameLevel->GetLevel4r(), true, false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r(), true, false);
 			}
 		}
 		if (!physics->GetCollisionDetectionList(trueEndDet).empty() && physics->GetCollisionDetectionList(trueEndDet)[0] == player && trueEndDet->isEnable == true) {
@@ -202,10 +202,9 @@ void TutorialGame::UpdateGame(float dt) {
 	physics->Update(dt);
 
 	gameLevel->GetAI()->Update(dt);
+	gameLevel->GetDoor()->Update(dt);
 
 	Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
-	//Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
-	//Debug::Print("Press P to Pause!", Vector2(70, 90));
 
 	renderer->Render();
 	Debug::UpdateRenderables(dt);

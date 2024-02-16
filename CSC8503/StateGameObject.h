@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "NavigationGrid.h"
+#include "Player.h"
 #include "State.h"
 
 namespace NCL {

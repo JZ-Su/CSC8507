@@ -15,6 +15,8 @@
 
 #include "MeshAnimation.h"
 
+#include "Door.h"
+
 namespace NCL {
 	class BasicExamples
 	{
@@ -33,6 +35,9 @@ namespace NCL {
 		GameObject* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* boss;
+
+		Door* CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		Door* GetDoor() const { return door; }
 
 		GameObject* getBoss() {
 			return boss;
@@ -93,5 +98,7 @@ namespace NCL {
 		
 		GameTechRenderer* render;  // new render variable
 
+		Door* door;
+		
 	};
 }

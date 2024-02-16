@@ -15,6 +15,8 @@ GameObject::GameObject(const std::string& objectName)	{
 	renderObject	= nullptr;
 	networkObject	= nullptr;
 	hasCollision    = true;
+
+	defaultPosition = Vector3();
 }
 
 GameObject::~GameObject()	{

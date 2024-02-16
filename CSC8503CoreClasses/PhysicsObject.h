@@ -65,6 +65,9 @@ namespace NCL {
 				return inverseInteriaTensor;
 			}
 
+			void SetApplyAngImp(bool b) { applyAngImp = b; }
+			bool GetApplyAngImp() const { return applyAngImp; }
+
 		protected:
 			const CollisionVolume* volume;
 			Transform*		transform;
@@ -82,6 +85,8 @@ namespace NCL {
 			Vector3 torque;
 			Vector3 inverseInertia;
 			Matrix3 inverseInteriaTensor;
+
+			bool applyAngImp;
 		};
 	}
 }
