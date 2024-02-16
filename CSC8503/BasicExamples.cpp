@@ -286,6 +286,8 @@ GameObject* BasicExamples::CreateTable(const Vector3& position, float inverseMas
 	return table;
 }
 
+
+
 GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	GameObject* ghost = new GameObject("ghost");
 
@@ -303,9 +305,8 @@ GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& d
 	return ghost;
 }
 
-GameObject* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-	GameObject* character = new GameObject("boss");
-
+Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	Boss* character = new Boss("boss");
 	AABBVolume* volume = new AABBVolume(dimensions);
 	character->SetBoundingVolume((CollisionVolume*)volume);
 
@@ -316,7 +317,6 @@ GameObject* BasicExamples::CreateBoss(const Vector3& position, const Vector3& di
 	LoadMaterialTextures(character, bossMesh, bossMat, render);
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
 	character->GetPhysicsObject()->InitCubeInertia();
-
 	return character;
 }
 
@@ -353,20 +353,21 @@ GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeig
 }
 
 GameObject* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-	Player* character = new Player("player");
+	player = new Player("player");
 
 	AABBVolume* volume = new AABBVolume(Vector3(0.6, 0.1, 0.6) * dimensions);
-	character->SetBoundingVolume((CollisionVolume*)volume);
+	player->SetBoundingVolume((CollisionVolume*)volume);
 
-	character->GetTransform().SetScale(dimensions * 2).SetPosition(position);
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), playerMesh, nullptr, playerShader));
-	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
-	character->GetRenderObject()->isAnimation = true;
-	LoadMaterialTextures(character, playerMesh, playerMat, render);
+	player->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	player->SetRenderObject(new RenderObject(&player->GetTransform(), playerMesh, nullptr, playerShader));
+	player->SetPhysicsObject(new PhysicsObject(&player->GetTransform(), player->GetBoundingVolume()));
+	player->GetRenderObject()->isAnimation = true;
+	LoadMaterialTextures(player, playerMesh, playerMat, render);
 
-	character->GetPhysicsObject()->SetInverseMass(inverseMass);
-	character->GetPhysicsObject()->InitCubeInertia();
-	player = character;
+	player->GetPhysicsObject()->SetInverseMass(inverseMass);
+	player->GetPhysicsObject()->InitCubeInertia();
+	player->GetPhysicsObject()->SetApplyAngImp(false);
+
 	return player;
 }
 
@@ -434,6 +435,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 		}
 	}
 }
+
 StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vector3& dimensions, GameObject* player, float inverseMass) {
 	//GameObject* cube = new GameObject("cube");
 	AABBVolume* volume = new AABBVolume(dimensions); 
@@ -450,4 +452,20 @@ StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vect
 	ghost->SetCollisionResponse(false);
 
 	return ghost;
+}
+
+Door* BasicExamples::CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	Door* d = new Door(player);
+	OBBVolume* volume = new OBBVolume(dimensions);
+
+	d->SetBoundingVolume((CollisionVolume*)volume);
+	d->GetTransform().SetPosition(position).SetScale(dimensions * 2);
+	d->SetRenderObject(new RenderObject(&d->GetTransform(), cubeMesh, nullptr, basicShader));
+	d->SetPhysicsObject(new PhysicsObject(&d->GetTransform(), d->GetBoundingVolume()));
+
+	d->GetPhysicsObject()->SetInverseMass(inverseMass);
+	d->GetPhysicsObject()->InitCubeInertia();
+	d->SetDefaultPos(position);
+	
+	return d;
 }

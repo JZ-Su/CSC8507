@@ -11,30 +11,30 @@ using namespace NCL;
 using namespace CSC8503;
 
 StateGameObject::StateGameObject() {
-	counter = 0.0f;
-	stateMachine = new StateMachine();
+	//counter = 0.0f;
+	//stateMachine = new StateMachine();
 
-	State* stateA = new State([&](float dt)->void {
-		this->MoveLeft(dt, GetRenderObject()->GetTransform()->GetPosition());
-		});
-	State* stateB = new State([&](float dt)->void {
-		this->MoveRight(dt, GetRenderObject()->GetTransform()->GetPosition());
-		});
-	stateMachine->AddState(stateA);
-	stateMachine->AddState(stateB);
+	//State* stateA = new State([&](float dt)->void {
+	//	this->MoveLeft(dt, GetRenderObject()->GetTransform()->GetPosition());
+	//	});
+	//State* stateB = new State([&](float dt)->void {
+	//	this->MoveRight(dt, GetRenderObject()->GetTransform()->GetPosition());
+	//	});
+	//stateMachine->AddState(stateA);
+	//stateMachine->AddState(stateB);
 
-	Vector3 pos = Vector3();
-	stateMachine->AddTransition(new StateTransition(stateA, stateB,
-		[&]()->bool {
-			return this->counter > 3.0f;
-		})
-	);
+	//Vector3 pos = Vector3();
+	//stateMachine->AddTransition(new StateTransition(stateA, stateB,
+	//	[&]()->bool {
+	//		return this->counter > 3.0f;
+	//	})
+	//);
 
-	stateMachine->AddTransition(new StateTransition(stateB, stateA,
-		[&]()->bool {
-			return this->counter < 0.0f;
-		})
-	);
+	//stateMachine->AddTransition(new StateTransition(stateB, stateA, 
+	//	[&]()->bool {
+	//		return this->counter < 0.0f;
+	//	})
+	//);
 }
 
 StateGameObject::StateGameObject(Vector3 startPos, Vector3 endPos, GameObject* player, const std::string& objectName) : GameObject(objectName) {
@@ -178,7 +178,7 @@ StateGameObject::StateGameObject(GameObject* player, const std::string& objectNa
 
 	State* stateChasing = new State([&](float dt, GameObject* player)->void {
 		NavigationGrid* grid = new NavigationGrid("TestGrid3.txt", Vector3(-100, 2, -100));
-		bool found = (*grid).FindPath(GetRenderObject()->GetTransform()->GetPosition(), Vector3(10,-2,10), *chasingPath);
+		bool found = (*grid).FindPath(GetRenderObject()->GetTransform()->GetPosition(), Vector3(10, -2, 10), *chasingPath);
 		//Debug::DrawLine(GetRenderObject()->GetTransform()->GetPosition() + Vector3(0,5,0), player->GetRenderObject()->GetTransform()->GetPosition() + Vector3(0, 5, 0), Debug::GREEN);
 
 		FollowPath(dt, *chasingPath, false);
@@ -196,27 +196,27 @@ void StateGameObject::Update(float dt) {
 	stateMachine->Update(dt);
 }
 
-void StateGameObject::MoveLeft(float dt,Vector3 ownpos) {
+void StateGameObject::MoveLeft(float dt, Vector3 ownpos) {
 	//GetPhysicsObject()->AddForce({ -10,0,0 });
-	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x-(dt*10), ownpos.y, ownpos.z));
+	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x - (dt * 10), ownpos.y, ownpos.z));
 	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
 void StateGameObject::MoveRight(float dt, Vector3 ownpos) {
 	//GetPhysicsObject()->AddForce({ 10,0,0 });
-	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x + (dt*10) , ownpos.y, ownpos.z));
+	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x + (dt * 10), ownpos.y, ownpos.z));
 	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 0.0f));
 }
 
 void StateGameObject::MoveFront(float dt, Vector3 ownpos) {
 	//GetPhysicsObject()->AddForce({ 0,0,-10 });
-	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x, ownpos.y, ownpos.z - (dt*10)) );
+	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x, ownpos.y, ownpos.z - (dt * 10)));
 	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 0.0f, 1.0f, 0.0f));
 }
 
 void StateGameObject::MoveBack(float dt, Vector3 ownpos) {
 	//GetPhysicsObject()->AddForce({ 0,0,10 });
-	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x, ownpos.y, ownpos.z +(10* dt)) );
+	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x, ownpos.y, ownpos.z + (10 * dt)));
 	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 0.0f, -1.0f, 0.0f));
 }
 

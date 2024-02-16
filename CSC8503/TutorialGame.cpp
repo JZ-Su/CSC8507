@@ -168,10 +168,10 @@ void TutorialGame::UpdateGame(float dt) {
 			trueEndDet->isEnable = true;
 			falseEndDet->isEnable = true;
 			if (!hasRotation) {
-				gameLevel->RemoveLevel(world, gameLevel->GetLevel4(), true, false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4(), true, false);
 			}
 			else {
-				gameLevel->RemoveLevel(world, gameLevel->GetLevel4r(), true, false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r(), true, false);
 			}
 		}
 		if (!physics->GetCollisionDetectionList(trueEndDet).empty() && physics->GetCollisionDetectionList(trueEndDet)[0] == player && trueEndDet->isEnable == true) {
@@ -204,10 +204,9 @@ void TutorialGame::UpdateGame(float dt) {
 	physics->Update(dt);
 
 	gameLevel->GetAI()->Update(dt);
+	gameLevel->GetDoor()->Update(dt);
 
 	Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
-	//Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
-	//Debug::Print("Press P to Pause!", Vector2(70, 90));
 
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
@@ -342,23 +341,30 @@ void TutorialGame::LockedObjectMovement() {
 		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
 		//lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
 		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 1.0f));
+
+		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis );	
+		//player->GetTransform().SetOrientation(Quaternion(0, -fwdAxis.x, 0, 1.0f));
+
 	}
 
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(fwdAxis);
-		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 0.0f));
+		//player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 0.0f));
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(-rightAxis);
-		player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
+
+		//player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
+	//player->GetTransform().SetOrientation(Quaternion(0, -rightAxis.x, 0, 1.0f));
+
 	}
 
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(rightAxis);
-		player->GetTransform().SetOrientation(Quaternion(0, -rightAxis.x, 0, 1.0f));
+		//player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
@@ -366,7 +372,7 @@ void TutorialGame::LockedObjectMovement() {
 			Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
 			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 10, velocity.z));
 			//player->ResetJumpTimer(2.0f);
-			//player->SetCanJump(false);
+			player->SetCanJump(false);
 		}
 
 	}
@@ -375,10 +381,14 @@ void TutorialGame::LockedObjectMovement() {
 	}
 	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
 	Quaternion q(viewMat);
-	float pitch = q.ToEuler().x + 10.0f;
+	float pitch = q.ToEuler().x ;
 	float yaw = q.ToEuler().y;
 
-	world->GetMainCamera().SetPosition(campos);
+	Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
+
+	lockedObject->GetTransform().SetOrientation(lookat);
+
+	world->GetMainCamera().SetPosition(Vector3(campos.x, campos.y + 10.0f, campos.z ));
 	world->GetMainCamera().SetPitch(pitch);
 	world->GetMainCamera().SetYaw(yaw);
 }
@@ -512,11 +522,13 @@ void TutorialGame::InitWorld() {
 
 	gameLevel = new GameLevel(renderer);
 
-	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
+	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
 	player = gameLevel->GetPlayer();
-	boss = gameLevel->getBoss();
+
+	boss = gameLevel->GetBoss();
 	ghost = gameLevel->getGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
+
 	bossAnimation = gameLevel->getBossAnimation();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();

@@ -49,7 +49,7 @@ bool GameServer::SendGlobalPacket(int msgID) {
 	 return true;	
 }
 
- void GameServer::SendPacketToPeer(GamePacket& payload) {
+ void GameServer::SendPacketToPeer(int sendAdd, GamePacket& payload) {
 	 ENetPacket* dataPacket = enet_packet_create(&payload,
 		 payload.GetTotalSize(), 0);
 	 enet_peer_send(netPeer, 0, dataPacket);
@@ -65,10 +65,12 @@ void GameServer::UpdateServer() {
 		
 			if (type == ENetEventType::ENET_EVENT_TYPE_CONNECT) {
 			 std::cout << " Server : New client connected " << std::endl;
+			 std::cout << " client add : New client connected " <<peer << std::endl;
 			 clientAddList.emplace_back(peer);
 		}
 		 else if (type == ENetEventType::ENET_EVENT_TYPE_DISCONNECT) {
 			 std::cout << " Server : A client has disconnected " << std::endl;
+			 std::cout << " client removed : New client connected " << peer << std::endl;
 			 clientAddList.remove(peer);
 		}
 		 else if (type == ENetEventType::ENET_EVENT_TYPE_RECEIVE) {
