@@ -2,6 +2,11 @@
 #include "StateGameObject.h"
 #include "Window.h"
 #include "GameWorld.h"
+
+#include "BehaviourNode.h"
+#include "BehaviourSelector.h"
+#include "BehaviourSequence.h"
+#include "BehaviourAction.h"
 namespace NCL {
 	namespace CSC8503 {
 		class Boss :public StateGameObject
@@ -80,6 +85,7 @@ namespace NCL {
 			bool canJump = false;
 			bool isWalk = false;
 			//add timer
+			void BossBehaviourTree();
 		};
 	}
 }
