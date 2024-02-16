@@ -52,7 +52,12 @@ namespace NCL {
 				return frameMatrices;
 			}
 
-			std::vector<Texture*> matTextures;
+			std::vector<Texture*> matDiffuseTextures;
+			std::vector<Texture*> matNormalTextures;
+			std::vector<Texture*> matMetalTextures;
+			std::vector<Texture*> matRoughnessTextures;
+			std::vector<Texture*> matAoTextures;
+			std::vector<Texture*> matHeightTextures;
 			bool isAnimation = false;
 
 			int			currentFrame;

@@ -14,6 +14,7 @@
 #include "MeshMaterial.h"
 
 #include "MeshAnimation.h"
+#include "Boss.h"
 
 #include "Door.h"
 
@@ -31,20 +32,29 @@ namespace NCL {
 		GameObject* CreateChar(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateGoat(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
+		GameObject* CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		
 		GameObject* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		GameObject* CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		GameObject* boss;
+		Boss* CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		GameObject* ghost;
 
 		Door* CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		Door* GetDoor() const { return door; }
 
-		GameObject* getBoss() {
+		Boss* GetBoss() {
 			return boss;
 		}
 
 		MeshAnimation* getBossAnimation() {
 			return bossAnimation;
+		}
+
+		GameObject* getGhost() {
+			return ghost;
+		}
+
+		MeshAnimation* getGhostAnimation() {
+			return ghostAnimation;
 		}
 
 		MeshAnimation* getplayerIdleAnimation() {
@@ -86,7 +96,7 @@ namespace NCL {
 		Shader* playerShader = nullptr;
 
 		Player* player = nullptr;
-
+		Boss* boss = nullptr;
 		MeshMaterial* bossMat = nullptr;
 		MeshMaterial* playerMat = nullptr;
 		MeshMaterial* ghostMat = nullptr;

@@ -40,8 +40,8 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	//Set up the light properties
 	lightColour = Vector4(0.8f, 0.8f, 0.5f, 1.0f);
-	lightRadius = 100.0f;
-	lightPosition = Vector3(0.0f, 60.0f, 00.0f);
+	lightRadius = 200.0f;
+	lightPosition = Vector3(50.0f, 60.0f, 50.0f);
 
 	//Skybox!
 	skyboxShader = new OGLShader("skybox.vert", "skybox.frag");
@@ -161,7 +161,7 @@ void GameTechRenderer::RenderShadowMap() {
 	int mvpLocation = glGetUniformLocation(shadowShader->GetProgramID(), "mvpMatrix");
 
 	Matrix4 shadowViewMatrix = Matrix4::BuildViewMatrix(lightPosition, Vector3(0, 0, 0), Vector3(0,1,0));
-	Matrix4 shadowProjMatrix = Matrix4::Perspective(100.0f, 500.0f, 1, 45.0f);
+	Matrix4 shadowProjMatrix = Matrix4::Perspective(1.0f, 500.0f, 1, 45.0f);
 
 	Matrix4 mvMatrix = shadowProjMatrix * shadowViewMatrix;
 
@@ -332,9 +332,53 @@ void GameTechRenderer::RenderCamera() {
 		for (size_t x = 0; x < layerCount; ++x) {
 			if ((*i).isAnimation) {
 				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matTextures[x])->GetObjectID());
+				glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matDiffuseTextures[x])->GetObjectID());
 				glUniform1i(glGetUniformLocation(shader->GetProgramID(), "diffuseTex"), 0);
 
+				if (!i->matNormalTextures.empty() && x < i->matNormalTextures.size() && i->matNormalTextures[x] != nullptr) {
+					glActiveTexture(GL_TEXTURE2);
+					glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matNormalTextures[x])->GetObjectID()); 
+					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "normalTex"), 2);
+				}
+				else {
+					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "normalTex"), 7); // set defalut value
+				}
+
+				if (!i->matMetalTextures.empty() && x < i->matMetalTextures.size() && i->matMetalTextures[x] != nullptr) {
+					glActiveTexture(GL_TEXTURE3);
+					glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matMetalTextures[x])->GetObjectID());
+					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "metalTex"), 3);
+				}
+				else {
+					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "metalTex"), 7); // set defalut value
+				}
+
+				if (!i->matRoughnessTextures.empty() && x < i->matRoughnessTextures.size() && i->matRoughnessTextures[x] != nullptr) {
+					glActiveTexture(GL_TEXTURE4);
+					glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matRoughnessTextures[x])->GetObjectID());
+					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "roughTex"), 4);
+				}
+				else {
+					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "roughTex"), 7); // set defalut value
+				}
+
+				if (!i->matAoTextures.empty() && x < i->matAoTextures.size() && i->matAoTextures[x] != nullptr) {
+					glActiveTexture(GL_TEXTURE5);
+					glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matAoTextures[x])->GetObjectID());
+					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "aoTex"), 5);
+				}
+				else {
+					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "aoTex"), 7); // set defalut value
+				}
+
+				if (!i->matHeightTextures.empty() && x < i->matHeightTextures.size() && i->matHeightTextures[x] != nullptr) {
+					glActiveTexture(GL_TEXTURE6);
+					glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matHeightTextures[x])->GetObjectID());
+					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "heightTex"), 6);
+				}
+				else {
+					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "heightTex"), 7); // set defalut value
+				}
 			}
 			DrawBoundMesh((uint32_t)x);
 		}

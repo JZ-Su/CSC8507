@@ -1,4 +1,4 @@
-﻿#include "TutorialGame.h"
+#include "TutorialGame.h"
 #include "GameWorld.h"
 #include "PhysicsObject.h"
 #include "RenderObject.h"
@@ -148,6 +148,8 @@ void TutorialGame::UpdateGame(float dt) {
 	//}
 
 	UpdateBossAnim(boss, bossAnimation, dt);
+
+	UpdateGhostAnim(ghost, ghostAnimation, dt);
 
 	// update player animation
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
@@ -335,40 +337,58 @@ void TutorialGame::LockedObjectMovement() {
 
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
+		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
+		//lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
 		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 1.0f));
+
+		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis );	
+		//player->GetTransform().SetOrientation(Quaternion(0, -fwdAxis.x, 0, 1.0f));
+
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
+	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
+		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(fwdAxis);
-		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 0.0f));
+		//player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 0.0f));
 	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
+	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
+		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(-rightAxis);
-		player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
+
+		//player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
+	//player->GetTransform().SetOrientation(Quaternion(0, -rightAxis.x, 0, 1.0f));
+
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
+	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
+		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(rightAxis);
-		player->GetTransform().SetOrientation(Quaternion(0, -rightAxis.x, 0, 1.0f));
+		//player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
 	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
+	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
 		{
 			Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
 			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 10, velocity.z));
 			//player->ResetJumpTimer(2.0f);
-			//player->SetCanJump(false);
+			player->SetCanJump(false);
 		}
 
 	}
-
+	else {
+		player->SetIsWalk(false);
+	}
 	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
 	Quaternion q(viewMat);
-	float pitch = q.ToEuler().x + 10.0f;
+	float pitch = q.ToEuler().x ;
 	float yaw = q.ToEuler().y;
 
-	world->GetMainCamera().SetPosition(campos);
+	Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
+
+	lockedObject->GetTransform().SetOrientation(lookat);
+
+	world->GetMainCamera().SetPosition(Vector3(campos.x, campos.y + 10.0f, campos.z ));
 	world->GetMainCamera().SetPitch(pitch);
 	world->GetMainCamera().SetYaw(yaw);
 }
@@ -449,9 +469,6 @@ void TutorialGame::DebugObjectMovement() {
 			player->GetTransform().SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 1.0f));
 			player->SetIsWalk(true);
 		}
-		else {
-			player->SetIsWalk(false);
-		}
 	}
 }
 
@@ -507,7 +524,11 @@ void TutorialGame::InitWorld() {
 
 	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
 	player = gameLevel->GetPlayer();
-	boss = gameLevel->getBoss();
+
+	boss = gameLevel->GetBoss();
+	ghost = gameLevel->getGhost();
+	ghostAnimation = gameLevel->getGhostAnimation();
+
 	bossAnimation = gameLevel->getBossAnimation();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
@@ -935,5 +956,12 @@ void TutorialGame::UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAni
 			player->GetRenderObject()->frameTime -= dt;
 			UpdateAnim(player, playerIdleAnimation);
 		}
+	}
+}
+
+void TutorialGame::UpdateGhostAnim(GameObject* ghost, MeshAnimation* ghostAnimation, float dt) {
+	if (ghost != nullptr) {
+		ghost->GetRenderObject()->frameTime -= dt;
+		UpdateAnim(ghost, ghostAnimation);
 	}
 }

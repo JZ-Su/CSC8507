@@ -43,11 +43,11 @@ void main(void) {
 		shadow = textureProj ( shadowTex , IN . shadowProj ) * 0.5f;
 	}
 	vec2 flippedTexCoord = vec2(IN.texCoord.x, 1.0 - IN.texCoord.y);
-mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
-	vec3 normal = texture(normalTex, flippedTexCoord).rgb;
-	normal = normalize(normal * 2.0 - 1.0);
-	normal.xy = normal.xy * 1;
-	normal = normalize(TBN * normal);
+	//mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
+//	vec3 normal = texture(normalTex, flippedTexCoord).rgb;
+//	normal = normalize(normal * 2.0 - 1.0);
+//	normal.xy = normal.xy * 1;
+    vec3 normal = IN.normal;
 
 	vec3  incident = normalize ( lightPos - IN.worldPos );
 	float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
@@ -65,16 +65,16 @@ float halfLambert = (lambert + 1.0) * 0.5;
 	
 	vec4 texColor = texture(diffuseTex, flippedTexCoord);
 
-	texColor.rgb = pow(texColor.rgb, vec3(2.2));
+	//texColor.rgb = pow(texColor.rgb, vec3(2.2));
 	
-	fragColour.rgb = texColor.rgb * 0.4f * halfLambert; //ambient
-	
-	fragColour.rgb += texColor.rgb * lightColour.rgb * lambert * shadow * atten; //diffuse light
-	
-	fragColour.rgb +=  lightColour.rgb * sFactor * shadow * atten; //specular light
-	
-	fragColour.rgb = pow(fragColour.rgb, vec3(1.0 / 2.2f));
-fragColour.rgb = ACES_Tonemapping(fragColour.rgb);
-
+//	fragColour.rgb = texColor.rgb * 0.4f * halfLambert; //ambient
+//	
+//	fragColour.rgb += texColor.rgb * lightColour.rgb * lambert * shadow * atten; //diffuse light
+//	
+//	fragColour.rgb +=  lightColour.rgb * sFactor * shadow * atten; //specular light
+//	
+//	fragColour.rgb = pow(fragColour.rgb, vec3(1.0 / 2.2f));
+//fragColour.rgb = ACES_Tonemapping(fragColour.rgb);
+fragColour.rgb = texColor.rgb;
 	fragColour.a = 1.0;
 }

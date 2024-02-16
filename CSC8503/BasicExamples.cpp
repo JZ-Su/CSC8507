@@ -15,14 +15,14 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	charMesh    = render->LoadMesh("Keeper.msh");
 	bossMesh	= render->LoadMesh("Role_T.msh");
 	playerMesh = render->LoadMesh("Male_Guard.msh");
-	//ghostMesh = render->LoadMesh("Ghost_animation.msh");
+	ghostMesh = render->LoadMesh("Ghost.msh");
 	goatMesh    = render->LoadMesh("goat.msh");
 	capsuleMesh = render->LoadMesh("capsule.msh");
 
 	basicTexture = render->LoadTexture("checkerboard.png");
-	MetalTexture[0] = render->LoadTexture("white.jpg");
-	MetalTexture[1] = render->LoadTexture("grey.jpg");
-	MetalTexture[2] = render->LoadTexture("black.jpg");
+	MetalTexture[0] = render->LoadTexture("Color/white.jpg");
+	MetalTexture[1] = render->LoadTexture("Color/grey.jpg");
+	MetalTexture[2] = render->LoadTexture("Color/black.jpg");
 	floorTexture[0] = render->LoadTexture("Floor/floor_color.jpg");
 	floorTexture[1] = render->LoadTexture("Floor/floor_normal.png");
 	floorTexture[2] = MetalTexture[1];
@@ -32,18 +32,18 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	
 	bossMat = new MeshMaterial("Role_T.mat");
 	playerMat = new MeshMaterial("Male_Guard.mat");
-	//ghostMat = new MeshMaterial("Ghost_animation");
+	ghostMat = new MeshMaterial("Ghost.mat");
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
 	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	playerShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
-	//ghostShader = render->LoadShader("ghostVertex.vert", "TexturedFragment.frag");
+	ghostShader = render->LoadShader("SkinningVertex.vert", "ghost.frag");
 
 	bossAnimation = new MeshAnimation("Role_T.anm");
 	playerIdleAnimation = new MeshAnimation("idle1.anm");
 	playerWalkAnimation = new MeshAnimation("StepForwardTwoHand.anm");
-	//ghostAnimation = new MeshAnimation("ghost_ani.anm");
+	ghostAnimation = new MeshAnimation("Ghost.anm");
 }
 
 BasicExamples::~BasicExamples() {
@@ -167,9 +167,28 @@ GameObject* BasicExamples::CreateGoat(const Vector3& position, const Vector3& di
 	return goat;
 }
 
-GameObject* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-	GameObject* character = new GameObject("boss");
 
+
+
+GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* ghost = new GameObject("ghost");
+
+	AABBVolume* volume = new AABBVolume(dimensions);
+	ghost->SetBoundingVolume((CollisionVolume*)volume);
+
+	ghost->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	ghost->SetRenderObject(new RenderObject(&ghost->GetTransform(), ghostMesh, nullptr, ghostShader));
+	ghost->SetPhysicsObject(new PhysicsObject(&ghost->GetTransform(), ghost->GetBoundingVolume()));
+	ghost->GetRenderObject()->isAnimation = true;
+	LoadMaterialTextures(ghost, ghostMesh, ghostMat, render);
+	ghost->GetPhysicsObject()->SetInverseMass(inverseMass);
+	ghost->GetPhysicsObject()->InitCubeInertia();
+
+	return ghost;
+}
+
+Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	Boss* character = new Boss("boss");
 	AABBVolume* volume = new AABBVolume(dimensions);
 	character->SetBoundingVolume((CollisionVolume*)volume);
 
@@ -180,7 +199,6 @@ GameObject* BasicExamples::CreateBoss(const Vector3& position, const Vector3& di
 	LoadMaterialTextures(character, bossMesh, bossMat, render);
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
 	character->GetPhysicsObject()->InitCubeInertia();
-
 	return character;
 }
 
@@ -236,18 +254,67 @@ GameObject* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& 
 }
 
 void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, MeshMaterial* material, GameTechRenderer* renderer) {
-
 	for (int i = 0; i < mesh->GetSubMeshCount(); ++i) {
 		const MeshMaterialEntry* matEntry = material->GetMaterialForLayer(i);
+
+		// load diffuse
 		const std::string* filenameDiffuse = nullptr;
 		matEntry->GetEntry("Diffuse", &filenameDiffuse);
 		std::string pathDiffuse = *filenameDiffuse;
 		std::cout << "Diffuse Texture: " << pathDiffuse << std::endl;
-
 		if (!pathDiffuse.empty()) {
-			character->GetRenderObject()->matTextures.emplace_back(renderer->LoadTexture(pathDiffuse));
+			character->GetRenderObject()->matDiffuseTextures.emplace_back(renderer->LoadTexture(pathDiffuse));
 		}
 
+		// load normal
+		const std::string* filenameNormal = nullptr;
+		if (matEntry->GetEntry("Bump", &filenameNormal)) {
+			std::string pathNormal = *filenameNormal;
+			std::cout << "Normal Texture: " << pathNormal << std::endl;
+			if (!pathNormal.empty()) {
+				character->GetRenderObject()->matNormalTextures.emplace_back(renderer->LoadTexture(pathNormal));
+			}
+		}
+
+		// load metal
+		const std::string* filenameMetal = nullptr;
+		if (matEntry->GetEntry("Metal", &filenameMetal)) {
+			std::string pathMetal = *filenameMetal;
+			std::cout << "Metal Texture: " << pathMetal << std::endl;
+			if (!pathMetal.empty()) {
+				character->GetRenderObject()->matMetalTextures.emplace_back(renderer->LoadTexture(pathMetal));
+			}
+		}
+
+		// Load roughness
+		const std::string* filenameRoughness = nullptr;
+		if (matEntry->GetEntry("Roughness", &filenameRoughness)) {
+			std::string pathRoughness = *filenameRoughness;
+			std::cout << "Roughness Texture: " << pathRoughness << std::endl;
+			if (!pathRoughness.empty()) {
+				character->GetRenderObject()->matRoughnessTextures.emplace_back(renderer->LoadTexture(pathRoughness));
+			}
+		}
+
+		// Load ambient occlusion (Ao)
+		const std::string* filenameAo = nullptr;
+		if (matEntry->GetEntry("Ao", &filenameAo)) {
+			std::string pathAo = *filenameAo;
+			std::cout << "Ao Texture: " << pathAo << std::endl;
+			if (!pathAo.empty()) {
+				character->GetRenderObject()->matAoTextures.emplace_back(renderer->LoadTexture(pathAo));
+			}
+		}
+
+		// Load height
+		const std::string* filenameHeight = nullptr;
+		if (matEntry->GetEntry("Height", &filenameHeight)) {
+			std::string pathHeight = *filenameHeight;
+			std::cout << "Height Texture: " << pathHeight << std::endl;
+			if (!pathHeight.empty()) {
+				character->GetRenderObject()->matHeightTextures.emplace_back(renderer->LoadTexture(pathHeight));
+			}
+		}
 	}
 }
 
