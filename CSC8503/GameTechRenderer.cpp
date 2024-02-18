@@ -53,6 +53,35 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	LoadSkybox();
 
+	healthShader = new OGLShader("health.vert", "health.frag");
+	healthMesh = new OGLMesh();
+	healthMesh->SetVertexPositions({ Vector3(-10, 10,-1), Vector3(-10,-10,-1) , Vector3(10,-10,-1) , Vector3(10,10,-1) });
+	healthMesh->SetVertexIndices({ 0,1,2,2,3,0 });
+	healthMesh->UploadToGPU();
+
+	int width =  100 ;
+	int height = 100 ;
+	int channels= 0 ;
+	int flags = 0 ;
+
+	vector<char*> texData(1, nullptr);
+
+	TextureLoader::LoadTexture("checkerboard.png", texData[0], width, height, channels, flags);
+
+	glGenTextures(1, &healthTex);
+	glBindTexture(GL_TEXTURE_2D, healthTex);
+	
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 100, 100, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData[0]);
+
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
 	glGenVertexArrays(1, &lineVAO);
 	glGenVertexArrays(1, &textVAO);
 
@@ -117,21 +146,54 @@ void GameTechRenderer::LoadSkybox() {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
+void GameTechRenderer::Loadhealth() {
+
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+
+
+    Matrix4 proj = Matrix4::Orthographic(0.0, 100.0f, 100, 0, -1.0f, 1.0f);
+
+	BindShader(*healthShader);
+
+	int matSlot = glGetUniformLocation(healthShader->GetProgramID(), "viewProjMatrix");
+	glUniformMatrix4fv(matSlot, 1, false, (float*)proj.array);
+
+	GLuint texSlot = glGetUniformLocation(healthShader->GetProgramID(), "useTexture");
+	glUniform1i(texSlot, 1);
+
+	GLuint mainTexLocation = glGetUniformLocation(healthShader->GetProgramID(), "mainTex");
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, healthTex);
+	glUniform1i(mainTexLocation, 0);
+
+	BindMesh(*healthMesh);
+	DrawBoundMesh();
+
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+
+}
+
 void GameTechRenderer::RenderFrame() {
 	glEnable(GL_CULL_FACE);
 	glClearColor(1, 1, 1, 1);
 	BuildObjectList();
 	SortObjectList();
 	RenderShadowMap();
-	RenderSkybox();
+	RenderSkybox();	
 	RenderCamera();
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	NewRenderLines();
-	NewRenderText();
-	Newbloodline();
+
+	NewRenderText();	
+	Loadhealth();
+
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -450,7 +512,14 @@ void GameTechRenderer::NewRenderText() {
 }
  
 Texture* GameTechRenderer::LoadTexture(const std::string& name) {
+	try {
 	return OGLTexture::TextureFromFile(name).release();
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load texture: " << e.what() << std::endl;
+		return nullptr;
+	
+	}
 }
 
 Shader* GameTechRenderer::LoadShader(const std::string& vertex, const std::string& fragment) {

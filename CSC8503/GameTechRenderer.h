@@ -38,8 +38,10 @@ namespace NCL {
 			void RenderShadowMap();
 			void RenderCamera(); 
 			void RenderSkybox();
+	
 
 			void LoadSkybox();
+			void Loadhealth();
 
 			void SetDebugStringBufferSizes(size_t newVertCount);
 			void SetDebugLineBufferSizes(size_t newVertCount);
@@ -51,6 +53,10 @@ namespace NCL {
 			OGLShader*  skyboxShader;
 			OGLMesh*	skyboxMesh;
 			GLuint		skyboxTex;
+
+			OGLShader* healthShader;
+			OGLMesh*   healthMesh;
+			GLuint		healthTex;
 
 			//shadow mapping things
 			OGLShader*	shadowShader;
@@ -79,12 +85,10 @@ namespace NCL {
 			GLuint textTexVBO;
 			size_t textCount;
 
-			//UI
-			OGLShader* UIShader;
-			GLuint BlineVAO;
-			GLuint BlineVertVBO;
-			size_t BlineCount;
+			
+
 		};
 	}
 }
 
+ 
