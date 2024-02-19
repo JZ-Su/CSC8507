@@ -64,7 +64,7 @@ void main(void)
 	
 	vec4 albedo = IN.colour;
 
-	vec2 uv = IN.texCoord * 1;
+	vec2 uv = IN.texCoord * 4;
 	float height = 0.0;
 	height = texture(heightTex, uv).r;
     uv = uv - (0.5 - height) * viewTangent.xy * 0.01f;

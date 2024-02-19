@@ -21,6 +21,8 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	bookshelfMesh = render->LoadMesh("bookshelf.msh");
 	tableMesh = render->LoadMesh("table.msh");
 	columnMesh = render->LoadMesh("column.msh");
+	stairMesh = render->LoadMesh("Stair.msh");
+	handrailMesh = render->LoadMesh("handrail.msh");
 
 	basicTexture = render->LoadTexture("checkerboard.png");
 	DefualtTexture[0] = render->LoadTexture("Defualt/white.jpg");
@@ -35,7 +37,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	floorTexture[4] = render->LoadTexture("Floor/floor_ao.jpg");
 	floorTexture[5] = render->LoadTexture("Floor/floor_height.png");
 	ceilingTexture[0] = render->LoadTexture("Ceiling/ceiling_color.jpg");
-	ceilingTexture[1] = DefualtTexture[4];//render->LoadTexture("Ceiling/ceiling_normal.png");
+	ceilingTexture[1] = render->LoadTexture("Ceiling/ceiling_normal.png");
 	ceilingTexture[2] = DefualtTexture[2];
 	ceilingTexture[3] = render->LoadTexture("Ceiling/ceiling_roughness.jpg");
 	ceilingTexture[4] = render->LoadTexture("Ceiling/ceiling_ao.jpg");
@@ -47,6 +49,8 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	bookshelfMat = new MeshMaterial("bookshelf.mat");
 	tableMat = new MeshMaterial("table.mat");
 	columnMat = new MeshMaterial("Column.mat");
+	stairMat = new MeshMaterial("Stair.mat");
+	handrailMat = new MeshMaterial("handrail.mat");
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
@@ -72,6 +76,8 @@ BasicExamples::~BasicExamples() {
 	delete bookshelfMesh;
 	delete tableMesh;
 	delete columnMesh;
+	delete stairMesh;
+	delete handrailMesh;
 
 	delete playerMat;
 	delete bossMat;
@@ -79,6 +85,8 @@ BasicExamples::~BasicExamples() {
 	delete bookshelfMat;
 	delete tableMat;
 	delete columnMat;
+	delete stairMat;
+	delete handrailMat;
 
 	delete basicTexture;
 	for (int i = 0; i < 5; i++)
@@ -156,7 +164,6 @@ GameObject* BasicExamples::CreateCeiling(const Vector3& position, const Vector3&
 	AABBVolume* volume = new AABBVolume(dimensions);
 	cube->SetBoundingVolume((CollisionVolume*)volume);
 
-	//cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Matrix4::Rotation(45, Vector3(0,1,0)));
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, ceilingTexture[0], floorShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
@@ -185,7 +192,7 @@ GameObject* BasicExamples::CreateCubeOBB(const Vector3& position, const Vector3&
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
 
-	cube->GetRenderObject()->SetColour(Vector4(0, 1, 0.5, 1));
+	cube->GetRenderObject()->SetColour(Vector4(0, 1, 0.5, 0.4));
 
 	return cube;
 }
@@ -253,6 +260,20 @@ GameObject* BasicExamples::CreateColumn(const Vector3& position, const Vector3& 
 	column->GetPhysicsObject()->InitCubeInertia();
 
 	return column;
+}
+
+GameObject* BasicExamples::CreateStairs(const Vector3& position, const Vector3& dimensions, float inverseMass, const Vector3& tilt, int angle) {
+	GameObject* stair = new GameObject("stair");
+
+	stair->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Matrix4::Rotation(angle, tilt));
+	stair->SetRenderObject(new RenderObject(&stair->GetTransform(), stairMesh, nullptr, modelShader));
+	stair->SetPhysicsObject(new PhysicsObject(&stair->GetTransform(), stair->GetBoundingVolume()));
+	stair->GetRenderObject()->isAnimation = true;
+	LoadMaterialTextures(stair, stairMesh, stairMat, render);
+	stair->GetPhysicsObject()->SetInverseMass(inverseMass);
+	stair->GetPhysicsObject()->InitCubeInertia();
+
+	return stair;
 }
 
 GameObject* BasicExamples::CreateBookshelf(const Vector3& position, float inverseMass, const Vector3& tilt, int angle) {

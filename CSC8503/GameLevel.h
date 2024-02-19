@@ -64,6 +64,7 @@ namespace NCL {
 		void CreateLevel1_SmallShelfs();
 		void CreateLevel1_Tables();
 		void CreateLevel1_Columns();
+		void CreateLevel1_Stairs();
 
 	protected:
 		Level level1;

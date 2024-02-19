@@ -36,6 +36,7 @@ namespace NCL {
 		GameObject* CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
 		
 		GameObject* CreateBookshelf(const Vector3& position, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
+		GameObject* CreateStairs(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
 		GameObject* CreateTable(const Vector3& position, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
 		GameObject* CreateColumn(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		
@@ -93,6 +94,8 @@ namespace NCL {
 		Mesh* bookshelfMesh = nullptr;
 		Mesh* tableMesh = nullptr;
 		Mesh* columnMesh = nullptr;
+		Mesh* stairMesh = nullptr;
+		Mesh* handrailMesh = nullptr;
 	
 		Texture* basicTexture = nullptr;
 		Texture* DefualtTexture[5] = { nullptr,nullptr,nullptr,nullptr,nullptr };
@@ -113,6 +116,8 @@ namespace NCL {
 		MeshMaterial* bookshelfMat = nullptr;
 		MeshMaterial* tableMat = nullptr;
 		MeshMaterial* columnMat = nullptr;
+		MeshMaterial* stairMat = nullptr;
+		MeshMaterial* handrailMat = nullptr;
 
 		MeshAnimation* bossAnimation = nullptr;
 		MeshAnimation* playerIdleAnimation = nullptr;
