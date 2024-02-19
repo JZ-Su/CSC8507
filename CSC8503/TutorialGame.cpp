@@ -12,6 +12,8 @@
 #include <iostream>
 #include "Assets.h"
 #include "BasicExamples.h"
+#include "Boss.h"
+
 using namespace NCL;
 using namespace CSC8503;
 
@@ -197,8 +199,7 @@ void TutorialGame::UpdateGame(float dt) {
 			hasRotation = !hasRotation;
 		}
 	}
-
-
+	static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);

@@ -13,6 +13,10 @@ namespace NCL {
 		class Boss :public StateGameObject
 		{
 		public:
+			BehaviourSequence* rootSequence;
+			BehaviourState state;
+			void BossBehaviourTree( Player* player);
+			float calculateDistance(Vector3 pos1, Vector3 pos2);
 			Boss(const std::string& objectname = "");
 			~Boss();
 			void UpdateBoss(float dt);
@@ -86,7 +90,6 @@ namespace NCL {
 			bool canJump = false;
 			bool isWalk = false;
 			//add timer
-			/*void BossBehaviourTree(Boss* boss, Player* player);*/
 		};
 	}
 }
