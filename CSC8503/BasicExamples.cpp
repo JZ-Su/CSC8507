@@ -10,6 +10,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	charMesh    = render->LoadMesh("Keeper.msh");
 	goatMesh    = render->LoadMesh("goat.msh");
 	capsuleMesh = render->LoadMesh("capsule.msh");
+	QuadMesh = render->LoadMesh("Quad.msh");
 
 	basicTexture = render->LoadTexture("checkerboard.png");
 	floorTexture[0] = render->LoadTexture("Floor/floor_color.jpg");
@@ -17,6 +18,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	floorTexture[3] = render->LoadTexture("Floor/floor_roughness.jpg");
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	testShader = render->LoadShader("scene.vert", "scene_uv.frag");
+	Shader = new OGLShader("debug.vert", "debug.frag");
 }
 
 BasicExamples::~BasicExamples() {
@@ -180,4 +182,47 @@ StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vect
 	ghost->SetCollisionResponse(false);
 
 	return ghost;
+}
+
+
+GameObject* BasicExamples::CreateQuad(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+
+	GameObject* quad = new GameObject("quad");
+	AABBVolume* volume = new AABBVolume(dimensions);
+	
+	quad->SetBoundingVolume((CollisionVolume*)volume);
+	quad->GetTransform().SetPosition(position).SetScale(dimensions * 2);
+	quad->SetRenderObject(new RenderObject(&quad->GetTransform(), QuadMesh, basicTexture, basicShader));
+	quad->SetPhysicsObject(new PhysicsObject(&quad->GetTransform(), quad->GetBoundingVolume()));
+	quad->GetPhysicsObject()->SetInverseMass(inverseMass);
+	quad->GetPhysicsObject()->InitCubeInertia();
+	quad->SetCollisionResponse(false);
+	quad->GetRenderObject()->SetTag("UI");
+	//quad->SetTag("UI");
+
+	/*Matrix4 proj = Matrix4::Orthographic(0.0, 100.0f, 100, 0, -1.0f, 1.0f);
+	int matSlot = glGetUniformLocation(Shader->GetProgramID(), "viewProjMatrix");
+	glUniformMatrix4fv(matSlot, 1, false, (float*)proj.array);
+
+	vertices = quad->GetRenderObject()->GetMesh()->GetVertices();
+
+	for (Vector3& vertex : vertices) {
+		vertex = proj * vertex;
+	}
+	quad->GetRenderObject()->GetMesh()->SetVertexPositions(vertices);
+
+	glGenBuffers(1, &BlineVertVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, BlineVertVBO);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, 6 * sizeof(Vector3), vertices.data());
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+	glEnableVertexAttribArray(0);
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+	glBindVertexArray(0);*/
+	
+	/*Matrix4 viewMatrix = Matrix4::Orthographic(-1.0f,10000.0f,this->windowSize.x/2.0, -(this->windowSize.x) / 2.0, this->windowSize.y/2.0,-(this->windowSize.y)/2.0);
+	Matrix4 projMatrix = gameWorld.GetMainCamera().BuildProjectionMatrix(hostWindow.GetScreenAspect());
+	Matrix4 viewProj = projMatrix * viewMatrix;*/
+
+
+	return quad;
 }

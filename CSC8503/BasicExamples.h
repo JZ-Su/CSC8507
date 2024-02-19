@@ -12,6 +12,8 @@
 #include "Player.h"
 
 namespace NCL {
+	class Maths::Vector3;
+	class Maths::Vector4;
 	class BasicExamples
 	{
 	public:
@@ -30,6 +32,7 @@ namespace NCL {
 		Player* GetPlayer() { return player; }
 
 		StateGameObject* CreateAItest(const Vector3& position, const Vector3& dimensions,  GameObject* player,float inverseMass = 10.0f);
+		GameObject* CreateQuad(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 
 	protected:
 		Mesh* cubeMesh = nullptr;
@@ -37,11 +40,16 @@ namespace NCL {
 		Mesh* charMesh = nullptr;
 		Mesh* goatMesh = nullptr;
 		Mesh* capsuleMesh = nullptr;
-	
+		Mesh* QuadMesh = nullptr;
+
 		Texture* basicTexture = nullptr;
 		Texture* floorTexture[6] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
 		Shader* basicShader = nullptr;
 		Shader* testShader = nullptr;
 		Player* player;
+		OGLShader* Shader;
+		GLuint BlineVertVBO;
+
+		vector<Vector3>  vertices;
 	};
 }

@@ -44,12 +44,18 @@ namespace NCL {
 				return colour;
 			}
 
+			void SetTag(const std::string& str) { tag = str; }
+
+			std::string GetTag() const { return tag; }
+			std::string tag;
+
 		protected:
 			Mesh*		mesh;
 			Texture*	texture[6];
 			Shader*		shader;
 			Transform*	transform;
 			Vector4		colour;
+
 		};
 	}
 }

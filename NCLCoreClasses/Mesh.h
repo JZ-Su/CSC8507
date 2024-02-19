@@ -206,6 +206,10 @@ namespace NCL::Rendering {
 			assetID = newID;
 		}
 
+		const std::vector<Vector3>& GetVertices() const {
+			return positions;
+		}
+
 	protected:
 		Mesh();
 

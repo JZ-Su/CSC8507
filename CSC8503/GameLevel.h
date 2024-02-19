@@ -44,5 +44,6 @@ namespace NCL {
 		Level Generic;
 
 		StateGameObject* testAI;
+	    GameObject* UI;
 	};
 }
