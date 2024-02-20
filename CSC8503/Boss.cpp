@@ -87,41 +87,63 @@ void Boss::OnCollisionEnd(GameObject* otherObject) {
 
 }
 
-//float Boss::calculateDistance(const Position& pos1,const  Position& pos2) {
-//	float distance = std::sqrt(std::pow(pos2.x - pos1.x, 2) + std::pow(pos2.y - pos1.y, 2));
-//	return distance;
-//}
-//
-//void Boss::BossBehaviourTree(Boss* boss, Player* player) {
-//	float attackRange = 10.0f;
-//	float distanceTotarget=calculateDistance((boss->GetTransform().GetPosition().x,boss->GetTransform().GetPosition().y), player->GetTransform().GetPosition());
-//	BehaviourAction* patrol = new BehaviourAction("patrol", [&](float dt, BehaviourState state)->BehaviourState {
-//		if (state == Initialise) {
-//			Debug::Print("Patrolling", boss->GetTransform().GetPosition());
-//			state = Ongoing;
-//		}
-//		else if (state == Ongoing) {
-//			if (distanceToTarget <= attackRange) {
-//				std::cout << "Player detected close! Switching to attack mode.\n";
-//				return Success; 
-//			}
-//		}
-//		return state;//will be ongoing until success or condition to switch
-//		});
-//	BehaviourAction* attack = new BehaviourAction("attack", [&](float dt, BehaviourState state) -> BehaviourState {
-//		if (state == Initialise) {
-//			Debug::Print("Attacking", boss->GetTransform().GetPosition());
-//			state = Ongoing;
-//		}
-//		else if (state == Ongoing) {
-//			
-//		}
-//		return state;
-//		});
-//	if (distanceToTarget > attackRange) {
-//		patrol->execute(0.0f, Initialise); 
-//	}
-//	else {
-//		attack->execute(0.0f, Initialise); 
-//	}
-//}
+
+
+float Boss::calculateDistance(Vector3 pos1, Vector3 pos2) {
+	float distance = std::sqrt(std::pow(pos2.x - pos1.x, 2) + std::pow(pos2.y - pos1.y, 2) + std::pow(pos2.z - pos1.z, 2));
+	return distance;
+}
+
+
+void Boss::BossBehaviourTree(Player* player) {
+	float attackRange = 50.0f;
+	float distanceToTarget = calculateDistance(GetTransform().GetPosition(), player->GetTransform().GetPosition());
+	BehaviourAction* patrol = new BehaviourAction("patrol", [&](float dt, BehaviourState state)->BehaviourState {
+		if (state == Initialise) {
+			std::cout << "Patrolling\n";
+			//Debug::Print("Patrolling", GetTransform().GetPosition());
+			state = Ongoing;
+		}
+		else if (state == Ongoing) {
+			if (distanceToTarget <= attackRange) {
+				GetTransform().SetPosition(GetTransform().GetPosition() + Vector3(0, 1, 0));
+
+				std::cout << "Player detected close! Switching to attack mode.\n";
+				return Success; 
+			}
+			else {
+				std::cout << (GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length() << std::endl;
+			}
+		}
+		return state;//will be ongoing until success or condition to switch
+		});
+	BehaviourAction* attack = new BehaviourAction("attack", [&](float dt, BehaviourState state) -> BehaviourState {
+		if (state == Initialise) {
+			//Debug::Print("Attacking", GetTransform().GetPosition());
+			std::cout << "Attacking.\n";
+
+			state = Ongoing;
+		}
+		else if (state == Ongoing) {
+			std::cout << "Ongoing.\n";
+
+			GetTransform().SetPosition(player->GetTransform().GetPosition());
+		}
+		return state;
+		});
+	if (distanceToTarget > attackRange) {
+		patrol->Execute(0.0f); 
+	}
+	else {
+		attack->Execute(0.0f); 
+	}
+	BehaviourSequence* sequence = new BehaviourSequence("idle");
+	sequence->AddChild(patrol);
+	BehaviourSelector* selection = new BehaviourSelector("attack");
+	selection->AddChild(attack);
+	rootSequence = new BehaviourSequence("Root Sequence");
+	rootSequence->AddChild(sequence);
+	rootSequence->AddChild(selection);
+	rootSequence->Reset();
+	state = Ongoing;
+}
