@@ -16,12 +16,13 @@ namespace NCL {
 		public:
 			GameTechRenderer(GameWorld& world);
 			~GameTechRenderer();
-
 			Mesh*		LoadMesh(const std::string& name);
 			Texture*	LoadTexture(const std::string& name);
 			Shader*		LoadShader(const std::string& vertex, const std::string& fragment);
 
 		protected:
+			std::unordered_map<std::string, SharedOGLTexture> textureCache;
+
 			void NewRenderLines();
 			void NewRenderText();
 

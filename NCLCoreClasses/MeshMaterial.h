@@ -35,6 +35,11 @@ namespace NCL {
 			return i->second.second;
 		}
 		void LoadTextures();
+		
+		//MeshMaterialEntry* operator=(const MeshMaterialEntry* from) {
+		//	MeshMaterialEntry* newPtr = new MeshMaterialEntry(*from);
+		//	return newPtr;
+		//}
 
 	protected:
 		std::map<string, std::pair<string, Rendering::Texture*>> entries;

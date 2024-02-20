@@ -1,4 +1,4 @@
-#include "GameTechRenderer.h"
+﻿#include "GameTechRenderer.h"
 #include "GameObject.h"
 #include "RenderObject.h"
 #include "Camera.h"
@@ -69,6 +69,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 GameTechRenderer::~GameTechRenderer()	{
 	glDeleteTextures(1, &shadowTex);
 	glDeleteFramebuffers(1, &shadowFBO);
+	textureCache.clear();
 }
 
 void GameTechRenderer::LoadSkybox() {
@@ -480,7 +481,25 @@ void GameTechRenderer::NewRenderText() {
 }
  
 Texture* GameTechRenderer::LoadTexture(const std::string& name) {
-	return OGLTexture::TextureFromFile(name).release();
+	auto it = textureCache.find(name);
+	if (it != textureCache.end()) {
+		std::cout << "Texture '" << name << "' found in cache!" << std::endl;
+		return it->second.get(); // 返回已经存在于缓存中的纹理
+	}
+	else {
+		std::cout << "Loading texture '" << name << "'..." << std::endl;
+		// 如果缓存中不存在，加载纹理
+		UniqueOGLTexture texture = OGLTexture::TextureFromFile(name);
+		if (texture) {
+			SharedOGLTexture sharedTexture(std::move(texture));
+			textureCache[name] = sharedTexture; // 添加到缓存中
+			return sharedTexture.get();
+		}
+		else {
+			std::cerr << "Failed to load texture '" << name << "'!" << std::endl;
+			return nullptr;
+		}
+	}
 }
 
 Shader* GameTechRenderer::LoadShader(const std::string& vertex, const std::string& fragment) {

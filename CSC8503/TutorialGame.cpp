@@ -522,7 +522,7 @@ void TutorialGame::InitWorld() {
 
 	gameLevel = new GameLevel(renderer);
 
-	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
+	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
 	player = gameLevel->GetPlayer();
 
 	boss = gameLevel->GetBoss();

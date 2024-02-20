@@ -64,9 +64,11 @@ UniqueOGLTexture OGLTexture::TextureFromFile(const std::string&name) {
 
 	UniqueOGLTexture glTex = TextureFromData(texData, width, height, channels);
 
+	return glTex;
+
 	free(texData);
 
-	return glTex;
+
 }
 
 UniqueOGLTexture OGLTexture::LoadCubemap(

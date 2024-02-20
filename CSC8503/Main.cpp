@@ -311,7 +311,7 @@ int main() {
 	}
 	engine->play2D("../externals/media/getout.ogg", true);
 
-	TestNetworking();
+	//TestNetworking();
 	//TestBehaviourTree();
 	//TestPushdownAutomata(w); 
 
