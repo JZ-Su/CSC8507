@@ -343,7 +343,6 @@ void TutorialGame::LockedObjectMovement() {
 		{
 			Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
 			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 10, velocity.z));
-			//player->ResetJumpTimer(2.0f);
 			player->SetCanJump(false);
 		}
 

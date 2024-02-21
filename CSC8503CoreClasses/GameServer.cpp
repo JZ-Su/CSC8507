@@ -9,6 +9,8 @@ GameServer::GameServer(int onPort, int maxClients)	{
 	clientMax	= maxClients;
 	clientCount = 0;
 	netHandle	= nullptr;
+	netPeers = new int[maxClients];
+	clearPeerArray();
 	Initialise();
 }
 
@@ -49,10 +51,12 @@ bool GameServer::SendGlobalPacket(int msgID) {
 	 return true;	
 }
 
- void GameServer::SendPacketToPeer(int sendAdd, GamePacket& payload) {
+ bool GameServer::SendPacketToPeer(int sendAdd, GamePacket& payload) {
 	 ENetPacket* dataPacket = enet_packet_create(&payload,
 		 payload.GetTotalSize(), 0);
-	 enet_peer_send(netPeer, 0, dataPacket);
+
+	 return true;
+	// enet_peer_send(netPeer, 0, dataPacket);
  }
 
 void GameServer::UpdateServer() {
@@ -66,12 +70,12 @@ void GameServer::UpdateServer() {
 			if (type == ENetEventType::ENET_EVENT_TYPE_CONNECT) {
 			 std::cout << " Server : New client connected " << std::endl;
 			 std::cout << " client add : New client connected " <<peer << std::endl;
-			 clientAddList.emplace_back(peer);
+			AddPeer(peer);
 		}
 		 else if (type == ENetEventType::ENET_EVENT_TYPE_DISCONNECT) {
 			 std::cout << " Server : A client has disconnected " << std::endl;
 			 std::cout << " client removed : New client connected " << peer << std::endl;
-			 clientAddList.remove(peer);
+			 RemovePeer(peer);
 		}
 		 else if (type == ENetEventType::ENET_EVENT_TYPE_RECEIVE) {
 			 GamePacket * packet = (GamePacket*)event.packet -> data;
@@ -82,7 +86,62 @@ void GameServer::UpdateServer() {
 		
 	}
 }
+void GameServer::clearPeerArray()
+{
+	for (int i = 0; i < clientMax; ++i)
+	{
+		netPeers[i] = -1;
+	}
+}
 
+void GameServer::RemovePeer(int Peer)
+{
+	for (int i = 0; i < clientMax; ++i)
+	{
+		if (netPeers[i] == Peer)
+		{
+			netPeers[i] = -1;
+			--clientCount;
+			return;
+		}
+	}
+}
+
+void GameServer::DebugNetPeer()
+{
+	for (int i = 0; i < clientMax; ++i)
+	{
+		std::cout << i << " : PeerID: " << netPeers[i] << std::endl;;
+	}
+}
+
+bool GameServer::GetMultiNetPeer(int peerNum, int& peerID)
+{
+	if (peerNum >= clientMax) { return false; }
+	if (netPeers[peerNum] == -1) { return false; }
+	peerID = netPeers[peerNum];
+	return true;
+}
+
+void GameServer::AddPeer(int Peer)
+{
+	int minVacantPos = clientMax;
+	for (int i = 0; i < clientMax; ++i)
+	{
+		if (netPeers[i] == Peer)
+		{
+			return;
+		}
+		if (netPeers[i] == -1)
+		{
+			minVacantPos = std::min(minVacantPos, i);
+		}
+	}
+	if (minVacantPos < clientMax)
+	{
+		netPeers[minVacantPos] = Peer;
+	}
+}
 void GameServer::SetGameWorld(GameWorld &g) {
 	gameWorld = &g;
 }
