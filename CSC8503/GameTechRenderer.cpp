@@ -54,26 +54,29 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	LoadSkybox();
 
+    ui.creatGameUI({ Vector3(-15, 15,-1), Vector3(-15,-15,-1) , Vector3(15,-15,-1) , Vector3(15,15,-1) },
+		 { Vector2(-1,1), Vector2(-1,-1), Vector2(1,-1), Vector2(1,1) },512,512,3,0, "Default.png");
 
-	healthShader = new OGLShader("health.vert", "health.frag");
+	/*healthShader = new OGLShader("health.vert", "health.frag");
 	healthMesh = new OGLMesh();
-	healthMesh->SetVertexPositions({ Vector3(-10, 10,-1), Vector3(-10,-10,-1) , Vector3(10,-10,-1) , Vector3(10,10,-1) });
+	healthMesh->SetVertexPositions({ Vector3(-15, 15,-1), Vector3(-15,-15,-1) , Vector3(15,-15,-1) , Vector3(15,15,-1) });
+	healthMesh->SetVertexTextureCoords({Vector2(-1,1), Vector2(-1,-1), Vector2(1,-1), Vector2(1,1)});
 	healthMesh->SetVertexIndices({ 0,1,2,2,3,0 });
 	healthMesh->UploadToGPU();
 
-	int width =  100 ;
-	int height = 100 ;
-	int channels= 0 ;
+	int width =  512 ;
+	int height = 512 ;
+	int channels= 3 ;
 	int flags = 0 ;
 
 	vector<char*> texData(1, nullptr);
 
-	TextureLoader::LoadTexture("checkerboard.png", texData[0], width, height, channels, flags);
+	TextureLoader::LoadTexture("Default.png", texData[0], width, height, channels, flags);
 
 	glGenTextures(1, &healthTex);
 	glBindTexture(GL_TEXTURE_2D, healthTex);
 	
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 100, 100, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData[0]);
 
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -81,14 +84,13 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);*/
 
 
 	//   HealthMesh = new OGLMesh();
 	   //HealthMesh->SetVertexPositions({Vector2(-0.5,-0.5),Vector2(-0.5,0.5),Vector2(0.5,-0.5),Vector2(0.5,0.5) });
 	   //HealthMesh->SetVertexIndices({ 0,1,2,2,3,0 });
 	   //HealthMesh->UploadToGPU();
->>>>>>> Stashed changes
 
 	glGenVertexArrays(1, &lineVAO);
 	glGenVertexArrays(1, &textVAO);
@@ -155,43 +157,38 @@ void GameTechRenderer::LoadSkybox() {
 }
 
 
-void GameTechRenderer::Loadhealth() {
-
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
+void GameTechRenderer::Loadhealth(GameUI ui) {
+	//Matrix4 viewMatrix = gameWorld.GetMainCamera().BuildViewMatrix();
 
 
     Matrix4 proj = Matrix4::Orthographic(0.0, 100.0f, 100, 0, -1.0f, 1.0f);
 
-	BindShader(*healthShader);
+	BindShader(*(ui.getshader()));
 
-	int matSlot = glGetUniformLocation(healthShader->GetProgramID(), "viewProjMatrix");
+	int matSlot = glGetUniformLocation(ui.getshader()->GetProgramID(), "viewProjMatrix");
 	glUniformMatrix4fv(matSlot, 1, false, (float*)proj.array);
 
-	GLuint texSlot = glGetUniformLocation(healthShader->GetProgramID(), "useTexture");
+	GLuint texSlot = glGetUniformLocation(ui.getshader()->GetProgramID(), "useTexture");
 	glUniform1i(texSlot, 1);
 
-	GLuint mainTexLocation = glGetUniformLocation(healthShader->GetProgramID(), "mainTex");
+	
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, healthTex);
+	glBindTexture(GL_TEXTURE_2D, ui.gettex());
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+    GLuint mainTexLocation = glGetUniformLocation(ui.getshader()->GetProgramID(), "mainTex");
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, ui.gettex());
 	glUniform1i(mainTexLocation, 0);
 
-	BindMesh(*healthMesh);
+
+	BindMesh(*(ui.getMesh()));
 	DrawBoundMesh();
 
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
-
 }
-
-//void GameTechRenderer::LoadHealth(){
-//	
-//	//Texture = SOIL_load_OGL_texture("skyrender0001.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
-//
-//	
-//}
 
 
 void GameTechRenderer::RenderFrame() {
@@ -207,9 +204,8 @@ void GameTechRenderer::RenderFrame() {
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	NewRenderLines();
-	NewRenderText();	
-	Loadhealth();
-
+	NewRenderText();
+	Loadhealth(ui);
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -222,6 +218,7 @@ void GameTechRenderer::BuildObjectList() {
 		[&](GameObject* o) {
 			if (o->IsActive()) {
 				const RenderObject* g = o->GetRenderObject();
+			
 				if (g) {
 					activeObjects.emplace_back(g);
 				}
@@ -394,15 +391,6 @@ void GameTechRenderer::RenderCamera() {
 		}
 
 
-		if ((i->GetTag()) == "UI") {
-			Matrix4 vm = Matrix4::Orthographic(0.0, 100.0f, 100, 0, -1.0f, 1.0f);
-			glUniformMatrix4fv(viewLocation, 1, false, (float*)&vm);
-		}
-		else {
-			glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);
-		}
-
-
 		Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
 		glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
 
@@ -418,10 +406,14 @@ void GameTechRenderer::RenderCamera() {
 
 		BindMesh((OGLMesh&)*(*i).GetMesh());
 		size_t layerCount = (*i).GetMesh()->GetSubMeshCount();
+
+
 		for (size_t i = 0; i < layerCount; ++i) {
 			DrawBoundMesh((uint32_t)i);
 		}
+
 	}
+
 }
 
 Mesh* GameTechRenderer::LoadMesh(const std::string& name) {
@@ -536,6 +528,7 @@ void GameTechRenderer::NewRenderText() {
 	for (const auto& s : strings) {
 		frameVertCount += Debug::GetDebugFont()->GetVertexCountForString(s.data);
 	}
+
 	SetDebugStringBufferSizes(frameVertCount);
 
 	for (const auto& s : strings) {

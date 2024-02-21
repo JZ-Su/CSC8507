@@ -3,7 +3,7 @@
 #include "OGLShader.h"
 #include "OGLTexture.h"
 #include "OGLMesh.h"
-
+#include "GameUI.h"
 #include "GameWorld.h"
 
 namespace NCL {
@@ -41,7 +41,7 @@ namespace NCL {
 	
 
 			void LoadSkybox();
-			void Loadhealth();
+			void Loadhealth(GameUI ui);
 
 			void SetDebugStringBufferSizes(size_t newVertCount);
 			void SetDebugLineBufferSizes(size_t newVertCount);
@@ -54,9 +54,9 @@ namespace NCL {
 			OGLMesh*	skyboxMesh;
 			GLuint		skyboxTex;
 
-			OGLShader* healthShader;
-			OGLMesh*   healthMesh;
-			GLuint		healthTex;
+			//OGLShader* healthShader;
+			//OGLMesh*   healthMesh;
+			//GLuint		healthTex;
 
 			//shadow mapping things
 			OGLShader*	shadowShader;
@@ -78,15 +78,19 @@ namespace NCL {
 			GLuint lineVAO;
 			GLuint lineVertVBO;
 			size_t lineCount;
-
+			 
 			GLuint textVAO;
 			GLuint textVertVBO;
 			GLuint textColourVBO;
 			GLuint textTexVBO;
 			size_t textCount;
 
-			
+			GLuint BlineVAO;
+			GLuint BlineVertVBO;	
+			OGLShader* UIShader;
+			size_t BlineCount;
 
+			GameUI ui;
 		};
 	}
 }

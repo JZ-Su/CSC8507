@@ -14,7 +14,7 @@ out Vertex
 
 void main(void)
 {
-	gl_Position		= viewProjMatrix * vec4(position, 1.0);;
-	OUT.texCoord	= texCoord;
+	gl_Position		= viewProjMatrix * vec4(position, 1.0);
+	OUT.texCoord		= texCoord;
 	OUT.colour		= colour;
 }

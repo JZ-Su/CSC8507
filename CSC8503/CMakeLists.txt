@@ -12,6 +12,7 @@ set(Header_Files
     "BasicExamples.h"
     "GameLevel.h"
     "Player.h"
+    "GameUI.h"
 )
 source_group("Header Files" FILES ${Header_Files})
 
@@ -25,6 +26,7 @@ set(Source_Files
     "BasicExamples.cpp"
     "GameLevel.cpp"
     "Player.cpp"
+    "GameUI.cpp"
 )
 
 if(USE_VULKAN)
@@ -136,6 +138,7 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE
     <iostream>
 	<chrono>
 	<sstream>
+    <algorithm>
 	
 	"../NCLCoreClasses/Vector2i.h"
     "../NCLCoreClasses/Vector3i.h"

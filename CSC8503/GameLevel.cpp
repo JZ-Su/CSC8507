@@ -238,12 +238,12 @@ void GameLevel::CreateLevel3() {
 
 
 	UI=CreateQuad(Vector3(10,10,10), Vector3(20,20,20), 0.0f);
-	UI->GetRenderObject()->SetColour(Debug::RED);
+//	UI->GetRenderObject()->SetColour(Debug::RED);
 	level3.objectList.push_back(UI);
 	level3.listSize = level3.objectList.size();
 
 	level3.objectList.push_back(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
-	level3.objectList.push_back(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
+	//level3.objectList.push_back(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
 	//BossBehaviourTree(boss,player);
 
 
