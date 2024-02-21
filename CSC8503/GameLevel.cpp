@@ -103,16 +103,16 @@ void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateCube(Vector3(20, 5, -20), Vector3(1, 5, 10), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(20, 5, -50), Vector3(1, 5, 10), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(0, 5, -59), Vector3(19, 5, 1), 0.0f));
-	//columns
-	CreateLevel1_Columns();
-	//stairs
-	CreateLevel1_Stairs();
-	//book shelfs
-	CreateLevel1_BookShelfs();
-	//small shelfs
-	CreateLevel1_SmallShelfs();
-	//tables
-	CreateLevel1_Tables();
+	////columns
+	//CreateLevel1_Columns();
+	////stairs
+	//CreateLevel1_Stairs();
+	////book shelfs
+	//CreateLevel1_BookShelfs();
+	////small shelfs
+	//CreateLevel1_SmallShelfs();
+	////tables
+	//CreateLevel1_Tables();
 
 	level1.objectList.push_back(ghost=CreateGhost(Vector3(10, 10, 0), Vector3(5, 5, 5), 0.0f));
 
@@ -165,7 +165,7 @@ void GameLevel::CreateLevel2() {
 }
 
 void GameLevel::CreateLevel3() {	
-	boss = CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f);
+	boss = CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), player,0.0f);
 	// level3.objectList.push_back(CreateCube(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
 	//level3.objectList.push_back(CreateCube(Vector3(70, 0, 77), Vector3(10, 10,5 ), 0.0f));
 	level3.objectList.push_back(CreateCube(Vector3(100, 30, 0), Vector3(2, 30, 100), 0.0f));
@@ -179,9 +179,14 @@ void GameLevel::CreateLevel3() {
 	//testAI = CreateAItest(Vector3(0, 0, 0), Vector3(5, 5, 5), player, 0.0f);
 	//level3.objectList.push_back(testAI);
 	level3.objectList.push_back(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
-	level3.objectList.push_back(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
-	//BossBehaviourTree(boss,player);
-
+//<<<<<<< Updated upstream
+//	level3.objectList.push_back(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
+//	//BossBehaviourTree(boss,player);
+//
+//=======
+	level3.objectList.push_back(boss);
+	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/
+//>>>>>>> Stashed changes
 }
 
 void GameLevel::CreateLevel4() {

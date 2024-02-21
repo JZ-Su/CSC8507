@@ -69,6 +69,7 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
+	gameLevel->boss->Update(dt, player);
 	player->UpdatePlayer(dt);
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
@@ -149,7 +150,7 @@ void TutorialGame::UpdateGame(float dt) {
 	//	}
 	//}
 
-	UpdateBossAnim(boss, bossAnimation, dt);
+	UpdateBossAnim(gameLevel->boss, bossAnimation, dt);
 
 	UpdateGhostAnim(ghost, ghostAnimation, dt);
 
@@ -158,6 +159,12 @@ void TutorialGame::UpdateGame(float dt) {
 
 	SelectObject();
 	MoveSelectedObject();
+	
+	
+	//Level 3 stuff
+	/*if (currentLevel == 3) {
+		static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);
+	}*/
 
 	// Level 4 stuff
 	if (currentLevel == 4) {
@@ -199,7 +206,6 @@ void TutorialGame::UpdateGame(float dt) {
 			hasRotation = !hasRotation;
 		}
 	}
-	static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);
@@ -496,7 +502,7 @@ void TutorialGame::InitWorld() {
 	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
 	player = gameLevel->GetPlayer();
 
-	boss = gameLevel->GetBoss();
+	/*boss = gameLevel->GetBoss();*/
 	ghost = gameLevel->getGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
 

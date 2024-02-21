@@ -66,6 +66,7 @@ namespace NCL {
 		void CreateLevel1_Columns();
 		void CreateLevel1_Stairs();
 
+		GameObjectWithBehavior* boss = nullptr;
 	protected:
 		Level level1;
 		Level level2;
