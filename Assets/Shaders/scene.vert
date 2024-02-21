@@ -3,7 +3,7 @@
 uniform mat4 modelMatrix 	= mat4(1.0f);
 uniform mat4 viewMatrix 	= mat4(1.0f);
 uniform mat4 projMatrix 	= mat4(1.0f);
-uniform mat4 shadowMatrix 	= mat4(1.0f);
+uniform mat4 shadowMatrix[6];
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec4 colour;
@@ -31,7 +31,10 @@ void main(void)
 	mat4 mvp 		  = (projMatrix * viewMatrix * modelMatrix);
 	mat3 normalMatrix = transpose ( inverse ( mat3 ( modelMatrix )));
 
-	OUT.shadowProj 	=  shadowMatrix * vec4 ( position,1);
+	for(int face = 0; face < 6; ++face)
+    {
+		OUT.shadowProj 	=  shadowMatrix[face] * vec4 ( position,1);
+    }
 	OUT.worldPos 	= ( modelMatrix * vec4 ( position ,1)). xyz ;
 	OUT.normal 		= normalize ( normalMatrix * normalize ( normal ));
 	OUT.tangent = normalize(normalMatrix * normalize(tangent.xyz));

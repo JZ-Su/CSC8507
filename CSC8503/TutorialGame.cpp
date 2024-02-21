@@ -140,7 +140,7 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	}
 
-	if (lockedObject != nullptr) {
+	/*if (lockedObject != nullptr) {
 		Ray ray = CollisionDetection::BuildRayFromScreenCenter(world->GetMainCamera());
 		RayCollision blockCollision;
 		if (world->Raycast(ray, blockCollision, true)) {
@@ -157,7 +157,7 @@ void TutorialGame::UpdateGame(float dt) {
 				}
 			}
 		}
-	}
+	}*/
 
 	SelectObject();
 	MoveSelectedObject();
@@ -371,38 +371,38 @@ void TutorialGame::DebugObjectMovement() {
 	}
 	else {
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::NUMPAD4)) {
-			player->GetPhysicsObject()->AddTorque(Vector3(-10, 0, 0));
+			player->GetPhysicsObject()->AddTorque(Vector3(-1, 0, 0));
 		}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::NUMPAD6)) {
-			player->GetPhysicsObject()->AddTorque(Vector3(10, 0, 0));
+			player->GetPhysicsObject()->AddTorque(Vector3(1, 0, 0));
 		}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::NUMPAD8)) {
-			player->GetPhysicsObject()->AddTorque(Vector3(0, 0, 10));
+			player->GetPhysicsObject()->AddTorque(Vector3(0, 0, 1));
 		}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::NUMPAD2)) {
-			player->GetPhysicsObject()->AddTorque(Vector3(0, 0, -10));
+			player->GetPhysicsObject()->AddTorque(Vector3(0, 0, -1));
 		}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
-			player->GetPhysicsObject()->AddForce(Vector3(0, 0, -10));
+			player->GetPhysicsObject()->AddForce(Vector3(0, 0, -1));
 			player->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
 		}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
-			player->GetPhysicsObject()->AddForce(Vector3(0, 0, 10));
+			player->GetPhysicsObject()->AddForce(Vector3(0, 0, 1));
 			player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 		}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
-			player->GetPhysicsObject()->AddForce(Vector3(-10, 0, 0));
+			player->GetPhysicsObject()->AddForce(Vector3(-1, 0, 0));
 			player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 1.0f));
 		}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
-			player->GetPhysicsObject()->AddForce(Vector3(10, 0, 0));
+			player->GetPhysicsObject()->AddForce(Vector3(1, 0, 0));
 			player->GetTransform().SetOrientation(Quaternion(0.0f, -1.0f, 0.0f, 1.0f));
 		}
 	}

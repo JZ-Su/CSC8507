@@ -239,6 +239,15 @@ bool CollisionDetection::ObjectIntersection(GameObject* a, GameObject* b, Collis
 		return AABBCapsuleIntersection((CapsuleVolume&)*volB, transformB, (AABBVolume&)*volA, transformA, collisionInfo);
 	}
 
+	if (volA->type == VolumeType::OBB && volB->type == VolumeType::AABB) {
+		return AABBCapsuleIntersection((CapsuleVolume&)*volA, transformA, (AABBVolume&)*volB, transformB, collisionInfo);
+	}
+	if (volB->type == VolumeType::AABB && volA->type == VolumeType::OBB) {
+		collisionInfo.a = b;
+		collisionInfo.b = a;
+		return AABBCapsuleIntersection((CapsuleVolume&)*volB, transformB, (AABBVolume&)*volA, transformA, collisionInfo);
+	}
+
 	return false;
 }
 
@@ -524,6 +533,63 @@ bool CollisionDetection::OBBIntersection(const OBBVolume& volumeA, const Transfo
 	return true;
 
 }
+
+bool CollisionDetection::OBBAABB(const OBBVolume& volumeA, const Transform& worldTransformA,
+	const AABBVolume& volumeB, const Transform& worldTransformB, NCL::CollisionDetection::CollisionInfo& collisionInfo) {
+
+	Vector3 relativePosition = worldTransformB.GetPosition() - worldTransformA.GetPosition();
+	Vector3 AFor = worldTransformA.GetOrientation() * Vector3(0, 0, 1);
+	Vector3 ARight = worldTransformA.GetOrientation() * Vector3(1, 0, 0);
+	Vector3 AUp = worldTransformA.GetOrientation() * Vector3(0, 1, 0);
+
+	Vector3 BFor = worldTransformB.GetOrientation() * Vector3(0, 0, 1);
+	Vector3 BRight = worldTransformB.GetOrientation() * Vector3(1, 0, 0);
+	Vector3 BUp = worldTransformB.GetOrientation() * Vector3(0, 1, 0);
+
+	Vector3 boxASize = volumeA.GetHalfDimensions();
+	Vector3 boxBSize = volumeB.GetHalfDimensions();
+
+	vector<float> deltas;
+
+	bool seperationPlane[15] = { false };
+
+	float penDistance = FLT_MAX;
+	Vector3 normal;
+	Vector3 pointA;
+	Vector3 pointB;
+	Vector3 planes[15] = {
+		// 6 faces
+		ARight.Normalised(),
+		AUp.Normalised(),
+		AFor.Normalised(),
+		BRight.Normalised(),
+		BUp.Normalised(),
+		BFor.Normalised(),
+
+		//9 possuble edges
+		Vector3::Cross(ARight, BRight).Normalised(),
+		Vector3::Cross(ARight, BUp).Normalised(),
+		Vector3::Cross(ARight, BFor).Normalised(),
+		Vector3::Cross(AUp, BRight).Normalised(),
+		Vector3::Cross(AUp, BUp).Normalised(),
+		Vector3::Cross(AUp, BFor).Normalised(),
+		Vector3::Cross(AFor, BRight).Normalised(),
+		Vector3::Cross(AFor, BUp).Normalised(),
+		Vector3::Cross(AFor, BFor).Normalised()
+	};
+	for (int i = 0; i < 15; i++)
+	{
+		if (!useSAT(relativePosition, planes[i], worldTransformA, worldTransformB, volumeA.GetHalfDimensions(), volumeB.GetHalfDimensions(), penDistance, normal, pointA, pointB))
+		{
+			return false;
+		}
+	}
+	collisionInfo.AddContactPoint(pointA, pointB, normal, penDistance);
+	return true;
+
+}
+
+
 bool CollisionDetection::useSAT(const Vector3 delta, Vector3 plane, const Transform& worldTransformA, const Transform& worldTransformB,
 	const Vector3 halfSizeA, const Vector3 halfSizeB, float& penetrationDistance, Vector3& normal, Vector3& pointA, Vector3& pointB) {
 	Vector3 AFor = worldTransformA.GetOrientation() * Vector3(0, 0, 1);

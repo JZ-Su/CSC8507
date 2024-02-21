@@ -40,12 +40,12 @@ void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateCube(Vector3(0, 15, 90), Vector3(40, 5, 10), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(0, 25, 95), Vector3(20, 5, 5.1), 0.0f));
 	//wall
-	/*level1.objectList.push_back(CreateCube(Vector3(0, 30, 101), Vector3(100, 30, 1), 0.0f));
+	level1.objectList.push_back(CreateCube(Vector3(0, 30, 101), Vector3(100, 30, 1), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(0, 30, -101), Vector3(100, 30, 1), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(101, 30, 0), Vector3(1, 30, 100), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(-101, 30, 0), Vector3(1, 30, 100), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(70, 30, 77), Vector3(30, 30, 23), 0.0f));
-	level1.objectList.push_back(CreateCube(Vector3(-70, 30, 77), Vector3(30, 30, 23), 0.0f));*/
+	level1.objectList.push_back(CreateCube(Vector3(-70, 30, 77), Vector3(30, 30, 23), 0.0f));
 	//room
 	level1.objectList.push_back(CreateCube(Vector3(-20, 5, -20), Vector3(1, 5, 10), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(-20, 5, -50), Vector3(1, 5, 10), 0.0f));

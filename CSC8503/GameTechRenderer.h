@@ -53,6 +53,7 @@ namespace NCL {
 			OGLShader*	shadowShader;
 			GLuint		shadowTex;
 			GLuint		shadowFBO;
+			//Matrix4     shadowMatrix[6]; 
 			Matrix4     shadowMatrix;
 
 			Vector4		lightColour;
