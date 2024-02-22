@@ -14,8 +14,11 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	sphereMesh  = render->LoadMesh("sphere.msh");
 	capsuleMesh = render->LoadMesh("capsule.msh");
 	charMesh    = render->LoadMesh("Keeper.msh");
-	bossMesh	= render->LoadMesh("Role_T.msh");
-	playerMesh = render->LoadMesh("Male_Guard.msh");
+	//bossMesh	= render->LoadMesh("Role_T.msh");
+	//playerMesh = render->LoadMesh("Male_Guard.msh");
+	//bossMesh = render->LoadMesh("MaleA.msh");
+	bossMesh = render->LoadMesh("Male_Guard.msh");
+	playerMesh = render->LoadMesh("FemaleA.msh");
 	ghostMesh = render->LoadMesh("Ghost.msh");
 	goatMesh    = render->LoadMesh("goat.msh");
 	bookshelfMesh = render->LoadMesh("bookshelf.msh");
@@ -43,8 +46,11 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	ceilingTexture[4] = render->LoadTexture("Ceiling/ceiling_ao.jpg");
 	ceilingTexture[5] = render->LoadTexture("Ceiling/ceiling_height.png");
 	
-	bossMat = new MeshMaterial("Role_T.mat");
-	playerMat = new MeshMaterial("Male_Guard.mat");
+	//bossMat = new MeshMaterial("Role_T.mat");
+	//playerMat = new MeshMaterial("Male_Guard.mat");
+	//bossMat = new MeshMaterial("MaleA.mat");
+	bossMat = new MeshMaterial("Male_Guard.mat");
+	playerMat = new MeshMaterial("FemaleA.mat");
 	ghostMat = new MeshMaterial("Ghost.mat");
 	bookshelfMat = new MeshMaterial("bookshelf.mat");
 	tableMat = new MeshMaterial("table.mat");
@@ -55,13 +61,17 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
 	modelShader = render->LoadShader("model.vert", "model.frag");
-	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
+	//bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
+	bossShader = render->LoadShader("SkinningVertex.vert", "player.frag");
 	playerShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	ghostShader = render->LoadShader("SkinningVertex.vert", "ghost.frag");
 
-	bossAnimation = new MeshAnimation("Role_T.anm");
-	playerIdleAnimation = new MeshAnimation("idle1.anm");
-	playerWalkAnimation = new MeshAnimation("StepForwardTwoHand.anm");
+	//bossAnimation = new MeshAnimation("Role_T.anm");
+	bossAnimation = new MeshAnimation("idle1.anm");
+	//bossAnimation = new MeshAnimation("Male_Jump.anm");
+	playerIdleAnimation = new MeshAnimation("Female_Stand.anm");
+	//playerWalkAnimation = new MeshAnimation("StepForwardTwoHand.anm");
+	playerWalkAnimation = new MeshAnimation("Female_Run.anm");
 	ghostAnimation = new MeshAnimation("Ghost.anm");
 }
 
