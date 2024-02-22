@@ -25,6 +25,8 @@ Boss::Boss(Player* player) {
 				return Success;
 			}
 			else {
+				Debug::DrawLine(GetTransform().GetPosition(), this->player->GetTransform().GetPosition(), Debug::RED);
+				Debug::DrawCollisionBox(this);
 				std::cout << (GetTransform().GetPosition() - this->player->GetTransform().GetPosition()).Length() << std::endl;
 			}
 		}

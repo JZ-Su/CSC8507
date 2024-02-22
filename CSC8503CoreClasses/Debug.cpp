@@ -102,7 +102,7 @@ const void Debug::DrawCollisionBox(const NCL::CSC8503::GameObject* obj) {
 			scale = obj->GetVolumeSize();
 		}
 		else {
-			Vector3 scale = obj->GetRenderObject()->GetTransform()->GetScale() / 2;
+			scale = obj->GetRenderObject()->GetTransform()->GetScale() / 2;
 		}
 
 		Vector3 a = Vector3(position.x + scale.x, position.y + scale.y, position.z + scale.z);

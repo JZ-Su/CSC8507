@@ -191,7 +191,6 @@ void GameLevel::CreateLevel2() {
 }
 
 void GameLevel::CreateLevel3() {	
-	boss = CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), player,0.0f);
 	// level3.objectList.push_back(CreateCube(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
 	//level3.objectList.push_back(CreateCube(Vector3(70, 0, 77), Vector3(10, 10,5 ), 0.0f));
 	level3.objectList.push_back(CreateCube(Vector3(100, 30, 0), Vector3(2, 30, 100), 0.0f));
@@ -208,6 +207,7 @@ void GameLevel::CreateLevel3() {
 	//level3.objectList.push_back(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
 	//BossBehaviourTree(boss,player);
 	//
+	boss = CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), player,0.0f);
 	level3.objectList.push_back(boss);
 	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/
 }

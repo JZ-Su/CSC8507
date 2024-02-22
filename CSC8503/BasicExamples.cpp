@@ -361,7 +361,7 @@ GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& d
 	return ghost;
 }
 
-Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player,float inverseMass) {
+Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player, float inverseMass) {
 	Boss* character = new Boss(player);
 	//character->BossBehaviourTree(player);
 	AABBVolume* volume = new AABBVolume(dimensions);

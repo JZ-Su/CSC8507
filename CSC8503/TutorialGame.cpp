@@ -485,8 +485,8 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	//isDebug = true;
-	isDebug = false;
+	isDebug = true;
+	//isDebug = false;
 	if (isDebug) {
 		//Level 1
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
