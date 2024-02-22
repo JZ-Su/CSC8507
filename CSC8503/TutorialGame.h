@@ -63,6 +63,8 @@ namespace NCL {
 			
 
 		protected:
+			bool isDebug;
+
 			void InitialiseAssets();
 
 			void InitCamera();
@@ -126,6 +128,7 @@ namespace NCL {
 			int score;
 			Player* player;
 
+			Boss* boss;
 			GameObject* ghost;
 			MeshAnimation* bossAnimation;
 			MeshAnimation* ghostAnimation;

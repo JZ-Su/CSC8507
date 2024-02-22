@@ -75,7 +75,7 @@ void TutorialGame::UpdateGame(float dt) {
 	//	Debug::DrawCollisionBox(element);
 	//}
 	//Debug::DrawCollisionBox(player);
-	gameLevel->boss->Update(dt, player);
+	gameLevel->GetBoss()->Update(dt, player);
 	player->UpdatePlayer(dt);
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
@@ -151,7 +151,7 @@ void TutorialGame::UpdateGame(float dt) {
 	//	}
 	//}
 
-	UpdateBossAnim(gameLevel->boss, bossAnimation, dt);
+	UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
 
 	UpdateGhostAnim(ghost, ghostAnimation, dt);
 
@@ -220,7 +220,9 @@ void TutorialGame::UpdateGame(float dt) {
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
 
-	SwitchLevel();
+	if (!isDebug) {
+		SwitchLevel();
+	}
 }
 
 void TutorialGame::UpdateKeys(float dt) {
@@ -259,9 +261,9 @@ void TutorialGame::UpdateKeys(float dt) {
 		if (lockedObject == nullptr) {
 			LockCameraToObject(player);
 		}
-		/*else {
+		else {
 			LockCameraToObject(nullptr);
-		}*/
+		}
 	}
 
 	if (lockedObject) {
@@ -273,8 +275,6 @@ void TutorialGame::UpdateKeys(float dt) {
 }
 
 void TutorialGame::LockedObjectMovement(float dt) {
-	
-
 	Matrix4 view = world->GetMainCamera().BuildViewMatrix();
 	Matrix4 camWorld = view.Inverse();
 
@@ -311,7 +311,6 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	Vector3 campos = targetpos - camdir * 20.0f;
 
-
 	/*Ray collisionRay = Ray(targetpos, -camdir);
 	RayCollision collisionRayData;
 	if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
@@ -320,34 +319,23 @@ void TutorialGame::LockedObjectMovement(float dt) {
 			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
 	}*/
 
-
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
-	
 		player->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
-		//std::cout << "orientation:" << player->GetTransform().GetOrientation() << std::endl;
-		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis );	
-		
-
 	}
-
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(fwdAxis);
 		player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
-		
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(-rightAxis);
-
 	}
-
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(rightAxis);
-		
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
@@ -358,16 +346,8 @@ void TutorialGame::LockedObjectMovement(float dt) {
 			player->setJumpTimer(1.1f);
 			player->SetIsJumping(true);
 		}
-
-
 	}
 	else {
-	/*	if (player->IsJumping()) {
-			Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
-			if (velocity.y <= 0.0f) { 
-				player->SetIsJumping(false); 
-			}
-		}*/
 		if (player->IsJumping()) {
 			if (player->updateJumpTimer(dt)) { 
 				player->SetIsJumping(false); 
@@ -473,33 +453,12 @@ void TutorialGame::DebugObjectMovement() {
 A single function to add a large immoveable cube to the bottom of our world
 
 */
-//GameObject* TutorialGame::AddFloorToWorld(const Vector3& position) {
-//	GameObject* floor = new GameObject("Floor");
-//
-//	Vector3 floorSize = Vector3(100, 2, 100);
-//	AABBVolume* volume = new AABBVolume(floorSize);
-//	floor->SetBoundingVolume((CollisionVolume*)volume);
-//	floor->GetTransform()
-//		.SetScale(floorSize * 2)
-//		.SetPosition(position);
-//
-//	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, basicTex, basicShader));
-//	floor->SetPhysicsObject(new PhysicsObject(&floor->GetTransform(), floor->GetBoundingVolume()));
-//
-//	floor->GetPhysicsObject()->SetInverseMass(0);
-//	floor->GetPhysicsObject()->InitCubeInertia();
-//
-//	world->AddGameObject(floor);
-//
-//	return floor;
-//}
 
 /*
 Builds a game object that uses a sphere mesh for its graphics, and a bounding sphere for its
 rigid body representation. This and the cube function will let you build a lot of 'simple'
 physics worlds. You'll probably need another function for the creation of OBB cubes too.
 */
-
 
 void TutorialGame::InitCamera() {
 	world->GetMainCamera().SetNearPlane(0.1f);
@@ -517,25 +476,30 @@ void TutorialGame::InitWorld() {
 
 	gameLevel = new GameLevel(renderer);
 
-	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
+	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 	player = gameLevel->GetPlayer();
 
-	/*boss = gameLevel->GetBoss();*/
 	ghost = gameLevel->getGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
 
-	bossAnimation = gameLevel->getBossAnimation();
-	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
-	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
-	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
-	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
-
-	bool isDebug = false;
-
+	/*
+		Please switch the debug mode here
+	*/
+	//isDebug = true;
+	isDebug = false;
 	if (isDebug) {
+		//Level 1
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+
+		//Level 2
 		//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
-		//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
+
+		//Level 3
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		bossAnimation = gameLevel->getBossAnimation();
+		playerWalkAnimation = gameLevel->getplayerWalkAnimation();
+		playerIdleAnimation = gameLevel->getplayerIdleAnimation();
+		playerJumpAnimation = gameLevel->getplayerJumpAnimation();
 
 		//Level 4 initalize function
 		//gameLevel->AddLevelToWorld(world, 0, true, false);

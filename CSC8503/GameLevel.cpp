@@ -144,11 +144,8 @@ void GameLevel::CreateLevel1() {
 
 	level1.objectList.push_back(CreateCube(Vector3(-5, 6, -50), Vector3(5, 5, 5), 0.0f));
 
-	//door = CreateDoor(Vector3(0, 10, -20), Vector3(5, 5, 1), 0.0f);
-	//door->GetRenderObject()->SetColour(Debug::RED);
-	//level1.objectList.push_back(door);
-	vector<GameObject*> por = CreatePortal(Vector3(0, 35, 100));
-	for (const auto& ele : por) {
+	vector<GameObject*> port = CreatePortal(Vector3(0, 35, 100));
+	for (const auto& ele : port) {
 		level1.objectList.push_back(ele);
 	}
 	level1.portal = level1.objectList.back();
@@ -208,14 +205,11 @@ void GameLevel::CreateLevel3() {
 	//testAI = CreateAItest(Vector3(0, 0, 0), Vector3(5, 5, 5), player, 0.0f);
 	//level3.objectList.push_back(testAI);
 	level3.objectList.push_back(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
-//<<<<<<< Updated upstream
-//	level3.objectList.push_back(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
-//	//BossBehaviourTree(boss,player);
-//
-//=======
+	//level3.objectList.push_back(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
+	//BossBehaviourTree(boss,player);
+	//
 	level3.objectList.push_back(boss);
 	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/
-//>>>>>>> Stashed changes
 }
 
 void GameLevel::CreateLevel4() {
@@ -367,7 +361,6 @@ void GameLevel::CreateLevel4_Normal() {
 	//other objects
 	l5.objectList.push_back(CreateCube(Vector3(-50, 5, -50), Vector3(5, 5, 5), 0.0f));
 	level4_normal.emplace_back(l5);
-	
 }
 
 void GameLevel::CreateLevel4_Rotate() {
@@ -965,7 +958,6 @@ void GameLevel::CreateLevel1_Columns() {
 }
 
 void GameLevel::CreateLevel1_Stairs() {
-	
 	level1.objectList.push_back(CreateStairs(Vector3(30, 20, 95), Vector3(1.25, 2, 1.25), 0.0f, Vector3(0, 1, 0), 90));
 	level1.objectList.push_back(CreateCubeOBB(Vector3(20, 15.9, 95), Vector3(10, 10, 5), 0.0f, Vector3(0, 0, 1), -45));
 	level1.objectList.push_back(CreateStairs(Vector3(-30, 20, 95), Vector3(1.25, 2, 1.25), 0.0f, Vector3(0, 1, 0), -90));

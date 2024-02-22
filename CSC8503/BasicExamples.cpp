@@ -125,15 +125,12 @@ void BasicExamples::ExportToObj(const Mesh& mesh, const std::string& filename) {
 		std::cerr << "Error opening file: " << filename << std::endl;
 		return;
 	}
-
 	for (const auto& vertex : mesh.GetPositionData()) {
 		file << "v " << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
 	}
-
 	for (const auto& normal : mesh.GetNormalData()) {
 		file << "vn " << normal.x << " " << normal.y << " " << normal.z << std::endl;
 	}
-
 	Vector3 nor;
 	for (int i = 0; mesh.GetNormalForTri(i, nor); i++) {
 		int j = i;
@@ -141,7 +138,6 @@ void BasicExamples::ExportToObj(const Mesh& mesh, const std::string& filename) {
 			<< mesh.GetIndexData()[j++] << "//" << nor.y << " "
 			<< mesh.GetIndexData()[j] << "//" << nor.z << std::endl;
 	}
-
 	file.close();
 }
 
@@ -348,8 +344,6 @@ GameObject* BasicExamples::CreateTable(const Vector3& position, float inverseMas
 	return table;
 }
 
-
-
 GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	GameObject* ghost = new GameObject("ghost");
 
@@ -367,22 +361,8 @@ GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& d
 	return ghost;
 }
 
-//Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-//	Boss* character = new Boss("boss");
-//	AABBVolume* volume = new AABBVolume(dimensions);
-//	character->SetBoundingVolume((CollisionVolume*)volume);
-//
-//	character->GetTransform().SetScale(dimensions * 2).SetPosition(position);
-//	character->SetRenderObject(new RenderObject(&character->GetTransform(), bossMesh, nullptr, bossShader));
-//	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
-//	character->GetRenderObject()->isAnimation = true;
-//	LoadMaterialTextures(character, bossMesh, bossMat, render);
-//	character->GetPhysicsObject()->SetInverseMass(inverseMass);
-//	character->GetPhysicsObject()->InitCubeInertia();
-//	return character;
-//}
-GameObjectWithBehavior* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player,float inverseMass) {
-	GameObjectWithBehavior* character = new GameObjectWithBehavior(player);
+Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player,float inverseMass) {
+	Boss* character = new Boss(player);
 	//character->BossBehaviourTree(player);
 	AABBVolume* volume = new AABBVolume(dimensions);
 	character->SetBoundingVolume((CollisionVolume*)volume);

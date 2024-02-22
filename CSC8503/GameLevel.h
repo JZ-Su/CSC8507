@@ -62,7 +62,6 @@ namespace NCL {
 		GameObject* GetBeginArea() const { return beginArea; }
 		GameObject* GetTrueEndArea() const { return trueEndArea; }
 		GameObject* GetFalseEndArea() const { return falseEndArea; }
-		StateGameObject* GetAI() { return testAI; }
 
 		void CreateLevel1_BookShelfs();
 		void CreateLevel1_SmallShelfs();
@@ -70,7 +69,6 @@ namespace NCL {
 		void CreateLevel1_Columns();
 		void CreateLevel1_Stairs();
 
-		GameObjectWithBehavior* boss = nullptr;
 	protected:
 		Level level1;
 		Level level2;
@@ -88,6 +86,5 @@ namespace NCL {
 		vector<Level> level4_reverse;
 		vector<Level> level4_rotate;
 		vector<Level> level4_reverse_rotate;
-		StateGameObject* testAI;
 	};
 }
