@@ -73,6 +73,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	playerIdleAnimation = new MeshAnimation("Female_Stand.anm");
 	//playerWalkAnimation = new MeshAnimation("StepForwardTwoHand.anm");
 	playerWalkAnimation = new MeshAnimation("Female_Run.anm");
+	playerJumpAnimation = new MeshAnimation("Female_Jump.anm");
 	ghostAnimation = new MeshAnimation("Ghost.anm");
 }
 
@@ -357,7 +358,7 @@ GameObjectWithBehavior* BasicExamples::CreateBoss(const Vector3& position, const
 	AABBVolume* volume = new AABBVolume(dimensions);
 	character->SetBoundingVolume((CollisionVolume*)volume);
 
-	character->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	character->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOrientation(Matrix4::Rotation(180, Vector3(0,1,0)));
 	character->SetRenderObject(new RenderObject(&character->GetTransform(), bossMesh, nullptr, bossShader));
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
 	character->GetRenderObject()->isAnimation = true;

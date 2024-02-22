@@ -76,6 +76,10 @@ namespace NCL {
 			return playerWalkAnimation;
 		}
 
+		MeshAnimation* getplayerJumpAnimation() {
+			return playerJumpAnimation;
+		}
+
 		Player* GetPlayer()
 		{
 			return player;
@@ -128,6 +132,7 @@ namespace NCL {
 		MeshAnimation* playerIdleAnimation = nullptr;
 		MeshAnimation* ghostAnimation = nullptr;
 		MeshAnimation* playerWalkAnimation = nullptr;
+		MeshAnimation* playerJumpAnimation = nullptr;
 		
 		GameTechRenderer* render;  // new render variable
 

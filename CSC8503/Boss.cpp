@@ -119,7 +119,7 @@ GameObjectWithBehavior::GameObjectWithBehavior(Player* player) {
 		}
 		else if (state == Ongoing) {
 			std::cout << "Ongoing.\n";
-			GetTransform().SetPosition(this->player->GetTransform().GetPosition());
+			//GetTransform().SetPosition(this->player->GetTransform().GetPosition());
 		}
 		return state;
 		}
@@ -131,7 +131,7 @@ GameObjectWithBehavior::GameObjectWithBehavior(Player* player) {
 		}
 		else if (state == Ongoing) {
 			std::cout << "Ongoing.\n";
-			GetTransform().SetPosition(this->player->GetTransform().GetPosition());
+			//GetTransform().SetPosition(this->player->GetTransform().GetPosition());
 		}
 		return state;
 		}
@@ -143,7 +143,7 @@ GameObjectWithBehavior::GameObjectWithBehavior(Player* player) {
 		}
 		else if (state == Ongoing) {
 			std::cout << "Ongoing.\n";
-			GetTransform().SetPosition(player->GetTransform().GetPosition());
+			//GetTransform().SetPosition(player->GetTransform().GetPosition());
 		}
 		return state;
 		}
