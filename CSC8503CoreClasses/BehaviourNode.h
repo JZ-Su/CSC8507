@@ -1,5 +1,5 @@
 #pragma once
-
+#include "../CSC8503/Player.h"
 enum BehaviourState {
 	Initialise,
 	Failure,

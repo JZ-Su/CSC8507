@@ -5,6 +5,7 @@ using namespace CSC8503;
 
 GameClient::GameClient()	{
 	netHandle = enet_host_create(nullptr, 1, 1, 0, 0);
+	peerID = -1;
 }
 
 GameClient::~GameClient()	{
@@ -28,6 +29,8 @@ void GameClient::UpdateClient() {
 		 ENetEvent event;
 	 while (enet_host_service(netHandle, &event, 0) > 0) {
 		 if (event.type == ENET_EVENT_TYPE_CONNECT) {
+
+			 peerID = netPeer->outgoingPeerID;
 		 std::cout << " Connected to server ! " << std::endl;
 			
 		}

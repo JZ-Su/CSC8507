@@ -34,7 +34,9 @@ namespace NCL::Rendering {
 		GLuint GetObjectID() const	{
 			return texID;
 		}
+
 	protected:						
 		GLuint texID;
+
 	};
 }

@@ -59,11 +59,25 @@ namespace NCL {
 			{
 				isWalk = inIsWalk;
 			}
-			bool updateJumpTimer(float dt);
-			/*void  ResetJumpTimer(float intimer)
-			{
-				jumpTimer = intimer;
-			}*/
+			bool IsJumping() const {
+				return isJumping;
+			}
+
+			void SetIsJumping(bool jumping) {
+				isJumping = jumping;
+			}
+			void setJumpTimer(float timer) {
+				jumpTimer = timer;
+			}
+			bool updateJumpTimer(float dt) {
+				if (IsJumping()) {
+					jumpTimer -= dt;
+					if (jumpTimer <= 0.0f) {
+						return true;
+					}
+				}
+				return false;
+			}
 			//bool updateJumpTimer(float dt);
 			float updateTimer(float dt);
 			float updateHealth(float inhealth);
@@ -75,10 +89,11 @@ namespace NCL {
 			int health;
 			int collectibles;
 			float timer;
-			//float jumpTimer = 0.0f;
+			float jumpTimer;
 			bool isDead = false;
 			bool canJump = false;
 			bool isWalk = false;
+			bool isJumping = false;
 			//add timer
 		};
 	}

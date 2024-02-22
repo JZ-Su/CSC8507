@@ -80,13 +80,13 @@ void TestNetworking() {
 	 bool canConnectB = clientB -> Connect(127, 0, 0, 1, port);
 	
 		 for (int i = 0; i < 100; ++i) {
-			 StringPacket* a = new StringPacket(" Server says hello ! " + std::to_string(i));
+			 /*StringPacket* a = new StringPacket(" Server says hello ! " + std::to_string(i));
 			 server->SendGlobalPacket(*a);
 		
 			 StringPacket*b = new StringPacket(" Client A says hello ! " + std::to_string(i));
 			 StringPacket*c = new StringPacket(" Client B says hello ! " + std::to_string(i));
 			 clientA->SendPacket(*b);
-			 clientB->SendPacket(*c);
+			 clientB->SendPacket(*c);*/
 		
 		 server -> UpdateServer();
 		 clientA -> UpdateClient();
@@ -130,6 +130,8 @@ int main() {
 	engine->play2D("../externals/media/getout.ogg", true);
 
 	//TestNetworking();
+	//TestBehaviourTree();
+	//TestPushdownAutomata(w); 
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
 		float dt = w->GetTimer().GetTimeDeltaSeconds();

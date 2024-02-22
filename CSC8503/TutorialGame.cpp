@@ -1,4 +1,4 @@
-#include "TutorialGame.h"
+﻿#include "TutorialGame.h"
 #include "GameWorld.h"
 #include "PhysicsObject.h"
 #include "RenderObject.h"
@@ -12,6 +12,8 @@
 #include <iostream>
 #include "Assets.h"
 #include "BasicExamples.h"
+#include "Boss.h"
+
 using namespace NCL;
 using namespace CSC8503;
 
@@ -73,6 +75,7 @@ void TutorialGame::UpdateGame(float dt) {
 	//	Debug::DrawCollisionBox(element);
 	//}
 	//Debug::DrawCollisionBox(player);
+	gameLevel->boss->Update(dt, player);
 	player->UpdatePlayer(dt);
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
@@ -90,10 +93,10 @@ void TutorialGame::UpdateGame(float dt) {
 		world->GetMainCamera().UpdateCamera(dt);
 	}
 	if (lockedObject != nullptr) {
-		LockedObjectMovement();
+		LockedObjectMovement(dt);
 	}
 
-	UpdateKeys();
+	UpdateKeys(dt);
 
 	if (useGravity) {
 		Debug::Print("(G)ravity on", Vector2(5, 95), Debug::RED);
@@ -129,7 +132,26 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	}
 
-	UpdateBossAnim(boss, bossAnimation, dt);
+	//if (lockedObject != nullptr) {
+	//	Ray ray = CollisionDetection::BuildRayFromScreenCenter(world->GetMainCamera());
+	//	RayCollision blockCollision;
+	//	if (world->Raycast(ray, blockCollision, true)) {
+	//		if ((GameObject*)blockCollision.node != player) {
+	//			blocker = (GameObject*)blockCollision.node;
+	//			Vector4 color = blocker->GetRenderObject()->GetColour();
+	//			blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 0.5));
+	//		}
+	//		else {
+	//			if (blocker != nullptr) {
+	//				Vector4 color = blocker->GetRenderObject()->GetColour();
+	//				blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 1));
+	//				blocker = nullptr;
+	//			}
+	//		}
+	//	}
+	//}
+
+	UpdateBossAnim(gameLevel->boss, bossAnimation, dt);
 
 	UpdateGhostAnim(ghost, ghostAnimation, dt);
 
@@ -138,6 +160,12 @@ void TutorialGame::UpdateGame(float dt) {
 
 	SelectObject();
 	MoveSelectedObject();
+	
+	
+	//Level 3 stuff
+	/*if (currentLevel == 3) {
+		static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);
+	}*/
 
 	// Level 4 stuff
 	if (currentLevel == 8) {
@@ -179,8 +207,6 @@ void TutorialGame::UpdateGame(float dt) {
 			hasRotation = !hasRotation;
 		}
 	}
-
-
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);
@@ -197,7 +223,7 @@ void TutorialGame::UpdateGame(float dt) {
 	SwitchLevel();
 }
 
-void TutorialGame::UpdateKeys() {
+void TutorialGame::UpdateKeys(float dt) {
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::F1)) {
 		InitWorld(); //We can reset the simulation at any time with F1
 		selectionObject = nullptr;
@@ -233,45 +259,21 @@ void TutorialGame::UpdateKeys() {
 		if (lockedObject == nullptr) {
 			LockCameraToObject(player);
 		}
-		else {
+		/*else {
 			LockCameraToObject(nullptr);
-		}
+		}*/
 	}
 
 	if (lockedObject) {
-		LockedObjectMovement();
+		LockedObjectMovement(dt);
 	}
 	else {
 		DebugObjectMovement();
 	}
 }
 
-void TutorialGame::LockedObjectMovement() {
-	//Matrix4 view = world->GetMainCamera().BuildViewMatrix();
-	//Matrix4 camWorld = view.Inverse();
-
-	//Vector3 rightAxis = Vector3(camWorld.GetColumn(0)); //view is inverse of model!
-
-	////forward is more tricky -  camera forward is 'into' the screen...
-	////so we can take a guess, and use the cross of straight up, and
-	////the right axis, to hopefully get a vector that's good enough!
-
-	//Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
-	//fwdAxis.y = 0.0f;
-	//fwdAxis.Normalise();
-
-
-	//if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
-	//	selectionObject->GetPhysicsObject()->AddForce(fwdAxis);
-	//}
-
-	//if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
-	//	selectionObject->GetPhysicsObject()->AddForce(-fwdAxis);
-	//}
-
-	//if (Window::GetKeyboard()->KeyDown(KeyCodes::NEXT)) {
-	//	selectionObject->GetPhysicsObject()->AddForce(Vector3(0, -10, 0));
-	//}
+void TutorialGame::LockedObjectMovement(float dt) {
+	
 
 	Matrix4 view = world->GetMainCamera().BuildViewMatrix();
 	Matrix4 camWorld = view.Inverse();
@@ -290,12 +292,10 @@ void TutorialGame::LockedObjectMovement() {
 	fwdAxis.y = 0.0f;
 	fwdAxis.Normalise();
 
-	//fwd axis of player
-	//Vector3 fwdAxis = ObjOrientation * Vector3(0, 0, 1)  ;
+	
 	Vector3 rightAxis = Vector3::Cross(UpAxis, fwdAxis);
-	//Vector3 rightAxis = ObjOrientation * Vector3(1, 0, 0)  ;
 
-	v -= (Window::GetMouse()->GetRelativePosition().y);
+	v += (Window::GetMouse()->GetRelativePosition().y);
 	v = std::clamp(v, -45.0f, 45.0f);
 
 	h -= (Window::GetMouse()->GetRelativePosition().x);
@@ -312,56 +312,67 @@ void TutorialGame::LockedObjectMovement() {
 	Vector3 campos = targetpos - camdir * 20.0f;
 
 
-	Ray collisionRay = Ray(targetpos, -camdir);
+	/*Ray collisionRay = Ray(targetpos, -camdir);
 	RayCollision collisionRayData;
 	if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
 	{
 		if (collisionRayData.rayDistance < 6)
 			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
-	}
+	}*/
 
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
-		//lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
-		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 1.0f));
-
-		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
-		//player->GetTransform().SetOrientation(Quaternion(0, -fwdAxis.x, 0, 1.0f));
+	
+		player->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
+		//std::cout << "orientation:" << player->GetTransform().GetOrientation() << std::endl;
+		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis );	
+		
 
 	}
 
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(fwdAxis);
-		//player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 0.0f));
+		player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+		
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(-rightAxis);
-
-		//player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
-	//player->GetTransform().SetOrientation(Quaternion(0, -rightAxis.x, 0, 1.0f));
 
 	}
 
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(rightAxis);
-		//player->GetTransform().SetOrientation(Quaternion(0, rightAxis.x, 0, 1.0f));
+		
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
 		{
 			Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
-			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 10, velocity.z));
-			//player->ResetJumpTimer(2.0f);
+			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 4, velocity.z));
 			player->SetCanJump(false);
+			player->setJumpTimer(1.1f);
+			player->SetIsJumping(true);
 		}
+
 
 	}
 	else {
+	/*	if (player->IsJumping()) {
+			Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
+			if (velocity.y <= 0.0f) { 
+				player->SetIsJumping(false); 
+			}
+		}*/
+		if (player->IsJumping()) {
+			if (player->updateJumpTimer(dt)) { 
+				player->SetIsJumping(false); 
+			}
+		}
 		player->SetIsWalk(false);
 	}
 	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
@@ -505,6 +516,18 @@ void TutorialGame::InitWorld() {
 	blocker = nullptr;
 
 	gameLevel = new GameLevel(renderer);
+
+	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
+	player = gameLevel->GetPlayer();
+
+	/*boss = gameLevel->GetBoss();*/
+	ghost = gameLevel->getGhost();
+	ghostAnimation = gameLevel->getGhostAnimation();
+
+	bossAnimation = gameLevel->getBossAnimation();
+	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
+	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
+	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 
 	bool isDebug = false;
@@ -939,6 +962,10 @@ void TutorialGame::UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAni
 		if (player->GetIsWalk()) {
 			player->GetRenderObject()->frameTime -= dt;
 			UpdateAnim(player, playerWalkAnimation);
+		}
+		else if (player->IsJumping()) {
+			player->GetRenderObject()->frameTime -= dt;
+			UpdateAnim(player, playerJumpAnimation);
 		}
 		else {
 			player->GetRenderObject()->frameTime -= dt;

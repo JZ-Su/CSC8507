@@ -65,12 +65,13 @@ void main(void)
 	vec4 albedo = IN.colour;
 
 	vec2 uv = IN.texCoord * 4;
-	float height = texture(heightTex, uv).r;
+	float height = 0.0;
+	height = texture(heightTex, uv).r;
     uv = uv - (0.5 - height) * viewTangent.xy * 0.01f;
 	
 	vec3 normal = texture(normalTex, uv).rgb;
 	normal = normalize(normal * 2.0 - 1.0);
-	normal.xy = normal.xy * 1;
+	normal.xy = normal.xy * 0.5;
 	normal = normalize(TBN * normal);
 	//vec3 normal = IN.normal;
 
@@ -91,12 +92,11 @@ void main(void)
 	if(hasTexture) {
 	 albedo *= texture(mainTex, uv);
 	}
+	albedo.rgb = pow(albedo.rgb, vec3(2.2));
+
 	vec3 baseCol = albedo.rgb * (1.0 -metal);
 	vec3 specCol = vec3(0.04,0.04,0.04) * (1.0 - metal) + albedo.rgb * metal; 
-	
-	albedo.rgb = pow(albedo.rgb, vec3(2.2));
-	
-	//fragColor.rgb = vec3(0.0, 0.0, 0.0);
+
 	fragColor.rgb = albedo.rgb * 0.08f * halfLambert; //ambient
 	
 	fragColor.rgb += baseCol * lightColour.rgb * lambert * shadow * atten; //diffuse light

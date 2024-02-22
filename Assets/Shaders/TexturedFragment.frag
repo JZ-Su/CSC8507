@@ -1,5 +1,5 @@
 #version 330 core
-uniform sampler2D diffuseTex;
+uniform sampler2D mainTex;
 uniform sampler2D normalTex;
 uniform sampler2DShadow shadowTex;
 uniform vec3	lightPos;
@@ -63,7 +63,7 @@ float halfLambert = (lambert + 1.0) * 0.5;
 	float atten = 1.0 - clamp(dist / lightRadius, 0.0, 1.0);
 
 	
-	vec4 texColor = texture(diffuseTex, flippedTexCoord);
+	vec4 texColor = texture(mainTex, flippedTexCoord);
 
 	texColor.rgb = pow(texColor.rgb, vec3(2.2));
 	

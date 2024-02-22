@@ -36,20 +36,24 @@ struct GamePacket {
 };
 
 struct StringPacket : public GamePacket {
-		char stringData[256];
+	int playerID;
+	char stringData[256];
 
-		 StringPacket(const std::string & message) {
-		 type = BasicNetworkMessages::String_Message;
-		 size = (short)message.length();
-		
-		 memcpy(stringData, message.data(), size);
+	StringPacket(int playerID, const std::string& message)
+	{
+		type = BasicNetworkMessages::String_Message;
+		size = (short)(message.length() + sizeof(int));
+
+		this->playerID = playerID;
+		memcpy(stringData, message.data(), size);
 	};
-		 std::string GetStringFromData() {
-		 std::string realString(stringData);
-		 realString.resize(size);
-		 return realString;
-	}
 
+	std::string GetStringFromData()
+	{
+		std::string realString(stringData);
+		realString.resize(size);
+		return realString;
+	}
 };
 
 class PacketReceiver {

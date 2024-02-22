@@ -39,33 +39,59 @@ void main(void)
 	}
 
 	vec3  incident = normalize ( lightPos - IN.worldPos );
-	float lambert  = max (0.0 , dot ( incident , IN.normal )) * 0.9; 
-	
+	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
+
 	vec3 viewDir = normalize ( cameraPos - IN . worldPos );
 	vec3 halfDir = normalize ( incident + viewDir );
+	vec3 viewTangent = normalize(TBN * viewDir);
+	
+	vec4 albedo = IN.colour;
 
-	float rFactor = max (0.0 , dot ( halfDir , IN.normal ));
-	float sFactor = pow ( rFactor , 80.0 );
+	vec2 uv = IN.texCoord;
+	float height = 0.0;
+	height = texture(heightTex, uv).r;
+    uv = uv - (0.5 - height) * viewTangent.xy * 0.01f;
+	
+//	vec3 normal = texture(normalTex, uv).rgb;
+//	normal = normalize(normal * 2.0 - 1.0);
+//	normal.xy = normal.xy * 1;
+//	normal = normalize(TBN * normal);
+	vec3 normal = IN.normal;
+
+	float metal = 0;
+	metal = texture(metalTex, uv).r;
+	float roughness = 1;
+	roughness = texture(roughTex, uv).r;
+	vec4 aoCol = texture(aoTex,uv);
+	float smoothness = 1.0 - roughness;
+	float shininess = (1.0 * (1.0 - smoothness) + 80 * smoothness) * smoothness;
+
+	float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
+	float halfLambert = (lambert + 1.0) * 0.5;
+	float rFactor = max (0.0 , dot ( halfDir , normal ));
+	float sFactor = pow ( rFactor , shininess);
 
 	float dist = length(lightPos - IN.worldPos);
 	float atten = 1.0 - clamp(dist / lightRadius, 0.0, 1.0);
-	
-	vec4 albedo = IN.colour;
-	
+
 	if(hasTexture) {
-	 albedo *= texture(mainTex, IN.texCoord);
+	 albedo *= texture(mainTex, uv);
 	}
-	
 	albedo.rgb = pow(albedo.rgb, vec3(2.2));
+
+	vec3 baseCol = albedo.rgb * (1.0 -metal);
+	vec3 specCol = vec3(0.04,0.04,0.04) * (1.0 - metal) + albedo.rgb * metal;
 	
-	fragColor.rgb = albedo.rgb * 0.05f; //ambient
+	fragColor.rgb = albedo.rgb * 0.08f * halfLambert; //ambient
 	
-	fragColor.rgb += albedo.rgb * lightColour.rgb * lambert * shadow* atten; //diffuse light
+	fragColor.rgb += baseCol * lightColour.rgb * lambert * shadow * atten; //diffuse light
 	
-	fragColor.rgb += lightColour.rgb * sFactor * shadow* atten; //specular light
+	fragColor.rgb += lightColour.rgb * sFactor * shadow * atten; //specular light
 	
+	//fragColor.rgb *= aoCol.rgb;
+
 	fragColor.rgb = pow(fragColor.rgb, vec3(1.0 / 2.2f));
-	
+
 	fragColor.a = albedo.a;
 
 //fragColor.rgb = IN.normal;

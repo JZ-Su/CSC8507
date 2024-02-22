@@ -36,6 +36,7 @@ void main (void) {
 	gl_Position = mvp * vec4 (skelPos.xyz,1.0f);
 	//gl_Position = mvp * vec4 (position,1.0f);
 
+	OUT.shadowProj 	=  shadowMatrix * vec4 ( position,1);
 	OUT.texCoord = texCoord;
 	mat3 normalMatrix = transpose ( inverse ( mat3 ( modelMatrix )));
 	OUT.normal 		= normalize ( normalMatrix * normalize ( normal ));

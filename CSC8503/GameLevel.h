@@ -64,6 +64,13 @@ namespace NCL {
 		GameObject* GetFalseEndArea() const { return falseEndArea; }
 		StateGameObject* GetAI() { return testAI; }
 
+		void CreateLevel1_BookShelfs();
+		void CreateLevel1_SmallShelfs();
+		void CreateLevel1_Tables();
+		void CreateLevel1_Columns();
+		void CreateLevel1_Stairs();
+
+		GameObjectWithBehavior* boss = nullptr;
 	protected:
 		Level level1;
 		Level level2;

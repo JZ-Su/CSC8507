@@ -66,7 +66,7 @@ namespace NCL {
 			void InitialiseAssets();
 
 			void InitCamera();
-			void UpdateKeys();
+			void UpdateKeys(float dt);
 
 			void InitWorld();
 
@@ -79,7 +79,7 @@ namespace NCL {
 			bool SelectObject();
 			void MoveSelectedObject();
 			void DebugObjectMovement();
-			void LockedObjectMovement();
+			void LockedObjectMovement(float dt);
 
 			//void BridgeConstraintTest();
 
@@ -126,12 +126,12 @@ namespace NCL {
 			int score;
 			Player* player;
 
-			GameObject* boss;
 			GameObject* ghost;
 			MeshAnimation* bossAnimation;
 			MeshAnimation* ghostAnimation;
 			MeshAnimation* playerIdleAnimation;
 			MeshAnimation* playerWalkAnimation;
+			MeshAnimation* playerJumpAnimation;
 
 			float totalTime;
 

@@ -1,4 +1,4 @@
-#include "GameTechRenderer.h"
+﻿#include "GameTechRenderer.h"
 #include "GameObject.h"
 #include "RenderObject.h"
 #include "Camera.h"
@@ -40,8 +40,8 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	//Set up the light properties
 	lightColour = Vector4(0.8f, 0.8f, 0.5f, 1.0f);
-	lightRadius = 200.0f;
-	lightPosition = Vector3(50.0f, 60.0f, 50.0f);
+	lightRadius = 100.0f;
+	lightPosition = Vector3(50.0f, 40.0f, 0.0f);
 
 	//Skybox!
 	skyboxShader = new OGLShader("skybox.vert", "skybox.frag");
@@ -69,6 +69,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 GameTechRenderer::~GameTechRenderer()	{
 	glDeleteTextures(1, &shadowTex);
 	glDeleteFramebuffers(1, &shadowFBO);
+	textureCache.clear();
 }
 
 void GameTechRenderer::LoadSkybox() {
@@ -333,7 +334,7 @@ void GameTechRenderer::RenderCamera() {
 			if ((*i).isAnimation) {
 				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matDiffuseTextures[x])->GetObjectID());
-				glUniform1i(glGetUniformLocation(shader->GetProgramID(), "diffuseTex"), 0);
+				glUniform1i(glGetUniformLocation(shader->GetProgramID(), "mainTex"), 0);
 
 				if (!i->matNormalTextures.empty() && x < i->matNormalTextures.size() && i->matNormalTextures[x] != nullptr) {
 					glActiveTexture(GL_TEXTURE2);
@@ -480,7 +481,25 @@ void GameTechRenderer::NewRenderText() {
 }
  
 Texture* GameTechRenderer::LoadTexture(const std::string& name) {
-	return OGLTexture::TextureFromFile(name).release();
+	auto it = textureCache.find(name);
+	if (it != textureCache.end()) {
+		std::cout << "Texture '" << name << "' found in cache!" << std::endl;
+		return it->second.get(); // 返回已经存在于缓存中的纹理
+	}
+	else {
+		std::cout << "Loading texture '" << name << "'..." << std::endl;
+		// 如果缓存中不存在，加载纹理
+		UniqueOGLTexture texture = OGLTexture::TextureFromFile(name);
+		if (texture) {
+			SharedOGLTexture sharedTexture(std::move(texture));
+			textureCache[name] = sharedTexture; // 添加到缓存中
+			return sharedTexture.get();
+		}
+		else {
+			std::cerr << "Failed to load texture '" << name << "'!" << std::endl;
+			return nullptr;
+		}
+	}
 }
 
 Shader* GameTechRenderer::LoadShader(const std::string& vertex, const std::string& fragment) {

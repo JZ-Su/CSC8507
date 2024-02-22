@@ -16,9 +16,13 @@ namespace NCL {
 
 			void SendPacket(GamePacket&  payload);
 
+			int GetPeerID() { return peerID; }
+
 			void UpdateClient();
 		protected:	
 			_ENetPeer*	netPeer;
+
+			int peerID;
 		};
 	}
 }

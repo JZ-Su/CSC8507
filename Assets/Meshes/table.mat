@@ -1,0 +1,13 @@
+MeshMat
+1
+1
+1
+table
+6
+Diffuse:/table_BaseColor.png
+Bump:/Defualt/defualt_normal.png
+Metallic:/Defualt/black.jpg
+Roughness:/Defualt/halfgrey.jpg
+AO:/Defualt/white.jpg
+Height:/Defualt/halfgrey.jpg
+0
