@@ -38,7 +38,7 @@ namespace NCL {
 		Boss* CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* ghost;
 
-		Door* CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		Door* CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float rotation = 0.0f);
 		Door* GetDoor() const { return door; }
 
 		Boss* GetBoss() {
@@ -74,6 +74,8 @@ namespace NCL {
 
 		GameObject* CreateTestMesh(const Vector3& position, const Vector3& dimensions, float inverseMass);
 		void LoadMaterialTextures(GameObject* character, Mesh* mesh,MeshMaterial* material, GameTechRenderer* renderer);
+
+		void ExportToObj(const Mesh& mesh, const std::string& filename);
 
 	protected:
 		Mesh* cubeMesh = nullptr;

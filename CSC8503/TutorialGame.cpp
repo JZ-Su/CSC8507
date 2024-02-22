@@ -42,7 +42,8 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	controller.MapAxis(4, "YLook");
 
 	LoadRankingFile();
-	gameState = MainMenu;
+	//gameState = MainMenu;
+	gameState = Start;
 	mainMenuState = MainMenu_Start;
 	gameMode = TimeLimited;
 }
@@ -67,10 +68,12 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
+	//Debug::DrawCollisionBox(gameLevel->GetLevel1()->objectList[40]);
+	//for (auto element : gameLevel->GetLevel1()->objectList) {
+	//	Debug::DrawCollisionBox(element);
+	//}
+	//Debug::DrawCollisionBox(player);
 	player->UpdatePlayer(dt);
-	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
-	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
-	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
@@ -87,8 +90,6 @@ void TutorialGame::UpdateGame(float dt) {
 		world->GetMainCamera().UpdateCamera(dt);
 	}
 	if (lockedObject != nullptr) {
-
-
 		LockedObjectMovement();
 	}
 
@@ -128,25 +129,6 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	}
 
-	//if (lockedObject != nullptr) {
-	//	Ray ray = CollisionDetection::BuildRayFromScreenCenter(world->GetMainCamera());
-	//	RayCollision blockCollision;
-	//	if (world->Raycast(ray, blockCollision, true)) {
-	//		if ((GameObject*)blockCollision.node != player) {
-	//			blocker = (GameObject*)blockCollision.node;
-	//			Vector4 color = blocker->GetRenderObject()->GetColour();
-	//			blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 0.5));
-	//		}
-	//		else {
-	//			if (blocker != nullptr) {
-	//				Vector4 color = blocker->GetRenderObject()->GetColour();
-	//				blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 1));
-	//				blocker = nullptr;
-	//			}
-	//		}
-	//	}
-	//}
-
 	UpdateBossAnim(boss, bossAnimation, dt);
 
 	UpdateGhostAnim(ghost, ghostAnimation, dt);
@@ -158,7 +140,7 @@ void TutorialGame::UpdateGame(float dt) {
 	MoveSelectedObject();
 
 	// Level 4 stuff
-	if (currentLevel == 4) {
+	if (currentLevel == 8) {
 		GameObject* beginDet = gameLevel->GetBeginArea();
 		GameObject* trueEndDet = gameLevel->GetTrueEndArea();
 		GameObject* falseEndDet = gameLevel->GetFalseEndArea();
@@ -203,13 +185,16 @@ void TutorialGame::UpdateGame(float dt) {
 	renderer->Update(dt);
 	physics->Update(dt);
 
-	gameLevel->GetAI()->Update(dt);
-	gameLevel->GetDoor()->Update(dt);
+	//gameLevel->GetAI()->Update(dt);
+	//gameLevel->GetDoor()->Update(dt);
 
 	Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
+	Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 90));
 
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
+
+	SwitchLevel();
 }
 
 void TutorialGame::UpdateKeys() {
@@ -342,7 +327,7 @@ void TutorialGame::LockedObjectMovement() {
 		//lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
 		player->GetTransform().SetOrientation(Quaternion(0, fwdAxis.x, 0, 1.0f));
 
-		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis );	
+		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
 		//player->GetTransform().SetOrientation(Quaternion(0, -fwdAxis.x, 0, 1.0f));
 
 	}
@@ -381,14 +366,14 @@ void TutorialGame::LockedObjectMovement() {
 	}
 	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
 	Quaternion q(viewMat);
-	float pitch = q.ToEuler().x ;
+	float pitch = q.ToEuler().x;
 	float yaw = q.ToEuler().y;
 
 	Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
 
 	lockedObject->GetTransform().SetOrientation(lookat);
 
-	world->GetMainCamera().SetPosition(Vector3(campos.x, campos.y + 10.0f, campos.z ));
+	world->GetMainCamera().SetPosition(Vector3(campos.x, campos.y + 10.0f, campos.z));
 	world->GetMainCamera().SetPitch(pitch);
 	world->GetMainCamera().SetYaw(yaw);
 }
@@ -517,36 +502,41 @@ void TutorialGame::InitCamera() {
 void TutorialGame::InitWorld() {
 	world->ClearAndErase();
 	physics->Clear();
-	keeperList.clear();
 	blocker = nullptr;
 
 	gameLevel = new GameLevel(renderer);
-
-	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel1());
-	player = gameLevel->GetPlayer();
-
-	boss = gameLevel->GetBoss();
-	ghost = gameLevel->getGhost();
-	ghostAnimation = gameLevel->getGhostAnimation();
-
-	bossAnimation = gameLevel->getBossAnimation();
-	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
-	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
-	player = gameLevel->GetPlayer();
-	lockedObject = player;
-	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
-	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
 
-	//Level 4 initalize function
-	//gameLevel->AddLevelToWorld(world, 0, true, false);
-	//gameLevel->AddLevelToWorld(world, 0, false, false);
+	bool isDebug = false;
+
+	if (isDebug) {
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
+		//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
+
+		//Level 4 initalize function
+		//gameLevel->AddLevelToWorld(world, 0, true, false);
+		//gameLevel->AddLevelToWorld(world, 0, false, false);
+	}
+	else {
+		currentLevel = 1;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
+		portal = gameLevel->GetConnection()->portal;
+
+		player = gameLevel->GetPlayer();
+		boss = gameLevel->GetBoss();
+		ghost = gameLevel->getGhost();
+		ghostAnimation = gameLevel->getGhostAnimation();
+		bossAnimation = gameLevel->getBossAnimation();
+		playerWalkAnimation = gameLevel->getplayerWalkAnimation();
+		playerIdleAnimation = gameLevel->getplayerIdleAnimation();
+
+		lockedObject = player;
+	}
 
 	score = 0;
 	totalTime = 0.0f;
-	timeInterval = 5.0f;
-	GRID = new NavigationGrid("TestGrid3.txt", Vector3(-95, 2, -95));
-
 }
 
 //void TutorialGame::BridgeConstraintTest() {
@@ -668,8 +658,6 @@ void TutorialGame::ShowMainMenu(float dt) {
 	world->GetMainCamera().SetPitch(0.0f);
 	world->GetMainCamera().SetYaw(0.0f);
 	world->GetMainCamera().SetPosition(Vector3(0, 0, 0));
-	keeperList.clear();
-	linkObjects.clear();
 
 	Debug::Print("Main Menu", Vector2(30, 30), Debug::BLUE);
 	Debug::Print("Start Game", Vector2(30, 40), Debug::BLACK);
@@ -963,5 +951,67 @@ void TutorialGame::UpdateGhostAnim(GameObject* ghost, MeshAnimation* ghostAnimat
 	if (ghost != nullptr) {
 		ghost->GetRenderObject()->frameTime -= dt;
 		UpdateAnim(ghost, ghostAnimation);
+	}
+}
+
+
+
+void TutorialGame::SwitchLevel() {
+	if (!physics->GetCollisionDetectionList(portal).empty() && physics->GetCollisionDetectionList(portal)[0] == player) {
+		switch (currentLevel)
+		{
+		case 1:
+			GameLevel::RemoveLevel(world, gameLevel->GetConnection(), false, false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			portal = gameLevel->GetLevel1()->portal;
+			break;
+		case 2:
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel1(), true, false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
+			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			portal = gameLevel->GetConnection()->portal;
+			break;
+		case 3:
+			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false, false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
+			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			//portal = gameLevel->GetLevel2()->portal;
+			break;
+		case 4:
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), true, false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
+			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			portal = gameLevel->GetConnection()->portal;
+			break;
+		case 5:
+			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false, false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			//portal = gameLevel->GetLevel3()->portal;
+			break;
+		case 6:
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true, false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
+			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			portal = gameLevel->GetConnection()->portal;
+			break;
+		case 7:
+			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), true, false);
+			gameLevel->AddLevelToWorld(world, 0, true, false);
+			gameLevel->AddLevelToWorld(world, 0, false, false);
+			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			break;
+		default:
+			break;
+		}
+		currentLevel++;
 	}
 }

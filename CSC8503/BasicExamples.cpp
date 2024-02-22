@@ -3,6 +3,8 @@
 #include "PhysicsObject.h"
 #include "MeshMaterial.h"
 
+#include <fstream>
+
 using namespace NCL;
 using namespace CSC8503;
 
@@ -14,8 +16,8 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	sphereMesh  = render->LoadMesh("sphere.msh");
 	charMesh    = render->LoadMesh("Keeper.msh");
 	bossMesh	= render->LoadMesh("Role_T.msh");
-	playerMesh = render->LoadMesh("Male_Guard.msh");
-	ghostMesh = render->LoadMesh("Ghost.msh");
+	playerMesh  = render->LoadMesh("Male_Guard.msh");
+	ghostMesh   = render->LoadMesh("Ghost.msh");
 	goatMesh    = render->LoadMesh("goat.msh");
 	capsuleMesh = render->LoadMesh("capsule.msh");
 
@@ -60,6 +62,33 @@ BasicExamples::~BasicExamples() {
 	delete basicShader;
 	delete floorShader;
 	delete ghostShader;
+}
+
+// Todo: the indices is in wrong order
+void BasicExamples::ExportToObj(const Mesh& mesh, const std::string& filename) {
+	std::ofstream file(filename);
+	if (!file.is_open()) {
+		std::cerr << "Error opening file: " << filename << std::endl;
+		return;
+	}
+
+	for (const auto& vertex : mesh.GetPositionData()) {
+		file << "v " << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
+	}
+
+	for (const auto& normal : mesh.GetNormalData()) {
+		file << "vn " << normal.x << " " << normal.y << " " << normal.z << std::endl;
+	}
+
+	Vector3 nor;
+	for (int i = 0; mesh.GetNormalForTri(i, nor); i++) {
+		int j = i;
+		file << "f " << mesh.GetIndexData()[j++] << "//" << nor.x << " "
+			<< mesh.GetIndexData()[j++] << "//" << nor.y << " "
+			<< mesh.GetIndexData()[j] << "//" << nor.z << std::endl;
+	}
+
+	file.close();
 }
 
 GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& dimensions, float inverseMass) {
@@ -167,9 +196,6 @@ GameObject* BasicExamples::CreateGoat(const Vector3& position, const Vector3& di
 	return goat;
 }
 
-
-
-
 GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	GameObject* ghost = new GameObject("ghost");
 
@@ -237,7 +263,8 @@ GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeig
 GameObject* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	player = new Player("player");
 
-	AABBVolume* volume = new AABBVolume(Vector3(0.6, 0.1, 0.6) * dimensions);
+	AABBVolume* volume = new AABBVolume(Vector3(0.6, 1, 0.6) * dimensions);
+	player->SetVolumeSize(Vector3(0.6, 1, 0.6) * dimensions);
 	player->SetBoundingVolume((CollisionVolume*)volume);
 
 	player->GetTransform().SetScale(dimensions * 2).SetPosition(position);
@@ -336,12 +363,12 @@ StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vect
 	return ghost;
 }
 
-Door* BasicExamples::CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+Door* BasicExamples::CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass, float rotation) {
 	Door* d = new Door(player);
 	OBBVolume* volume = new OBBVolume(dimensions);
 
 	d->SetBoundingVolume((CollisionVolume*)volume);
-	d->GetTransform().SetPosition(position).SetScale(dimensions * 2);
+	d->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Quaternion(Matrix4::Rotation(rotation, Vector3(0, 1, 0))));
 	d->SetRenderObject(new RenderObject(&d->GetTransform(), cubeMesh, nullptr, basicShader));
 	d->SetPhysicsObject(new PhysicsObject(&d->GetTransform(), d->GetBoundingVolume()));
 

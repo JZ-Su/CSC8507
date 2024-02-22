@@ -3,6 +3,7 @@
 #include "Vector4.h"
 #include "Matrix4.h"
 #include "SimpleFont.h"
+#include "GameObject.h"
 
 namespace NCL {
 	using namespace NCL::Maths;
@@ -39,6 +40,7 @@ namespace NCL {
 		static const std::vector<DebugStringEntry>& GetDebugStrings();
 		static const std::vector<DebugLineEntry>& GetDebugLines();
 
+		static const void DrawCollisionBox(const NCL::CSC8503::GameObject* obj);
 
 		static const Vector4 RED;
 		static const Vector4 GREEN;

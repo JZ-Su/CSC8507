@@ -6,6 +6,7 @@ namespace NCL {
 	struct Level
 	{
 		vector<GameObject*> objectList;
+		GameObject* portal;
 
 		// deep copy
 		Level& operator=(const Level& from) {
@@ -35,14 +36,17 @@ namespace NCL {
 		void CreateLevel3();
 		void CreateLevel4();
 		void CreateGeneric();
+		void CreateConnectionLevel();
 
-		Level GetLevel1() { return level1; }
-		Level GetLevel2() { return level2; }
-		Level GetLevel3() { return level3; }
+		vector<GameObject*> CreatePortal(const Vector3& position);
+
+		Level* GetLevel1() { return &level1; }
+		Level* GetLevel2() { return &level2; }
+		Level* GetLevel3() { return &level3; }
 		Level* GetLevel4() { return &level4; }
 		Level* GetLevel4r() { return &level4r; }
 		Level GetGeneric() { return Generic; }
-
+		Level* GetConnection() { return &connection; }
 
 		void AddLevelToWorld(GameWorld* world, int i, bool isRotate, bool isReverse);
 		void CreateLevel4_Normal();
@@ -67,6 +71,7 @@ namespace NCL {
 		Level level4;
 		Level level4r;
 		Level Generic;
+		Level connection;
 
 		GameObject* beginArea;
 		GameObject* trueEndArea;

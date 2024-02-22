@@ -123,7 +123,6 @@ namespace NCL {
 
 			GameLevel* gameLevel = nullptr;
 
-
 			int score;
 			Player* player;
 
@@ -134,20 +133,9 @@ namespace NCL {
 			MeshAnimation* playerIdleAnimation;
 			MeshAnimation* playerWalkAnimation;
 
-			GameObject* floor;
-			GameObject* goalArea;
-
-			std::vector<GameObject*> linkObjects;
-
-			NavigationGrid* GRID;
-
 			float totalTime;
-			float timeInterval;
-
-			std::vector<std::vector<GameObject*>> keeperList;
 
 			GameState gameState;
-
 			MainMenuState mainMenuState;
 			GameMode gameMode;
 
@@ -169,7 +157,9 @@ namespace NCL {
 			bool hasReverse = false;
 			int mapIndex = 0;
 
-			int currentLevel = 1;
+			int currentLevel;
+			GameObject* portal;
+			void SwitchLevel();
 		};
 	}
 }

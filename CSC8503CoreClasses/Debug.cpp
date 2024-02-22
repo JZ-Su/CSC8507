@@ -1,4 +1,5 @@
 #include "Debug.h"
+#include "RenderObject.h"
 using namespace NCL;
 
 std::vector<Debug::DebugStringEntry>	Debug::stringEntries;
@@ -88,4 +89,55 @@ const std::vector<Debug::DebugStringEntry>& Debug::GetDebugStrings() {
 
 const std::vector<Debug::DebugLineEntry>& Debug::GetDebugLines() {
 	return lineEntries;
+}
+
+const void Debug::DrawCollisionBox(const NCL::CSC8503::GameObject* obj) {
+	switch (obj->GetBoundingVolume()->type)
+	{
+	case VolumeType::AABB:
+	{
+		Vector3 position = obj->GetRenderObject()->GetTransform()->GetPosition();
+		Vector3 scale = Vector3();
+		if (obj->GetVolumeSize() != Vector3()) {
+			scale = obj->GetVolumeSize();
+		}
+		else {
+			Vector3 scale = obj->GetRenderObject()->GetTransform()->GetScale() / 2;
+		}
+
+		Vector3 a = Vector3(position.x + scale.x, position.y + scale.y, position.z + scale.z);
+		Vector3 b = Vector3(position.x + scale.x, position.y + scale.y, position.z - scale.z);
+		Vector3 c = Vector3(position.x + scale.x, position.y - scale.y, position.z + scale.z);
+		Vector3 d = Vector3(position.x + scale.x, position.y - scale.y, position.z - scale.z);
+		Vector3 e = Vector3(position.x - scale.x, position.y + scale.y, position.z + scale.z);
+		Vector3 f = Vector3(position.x - scale.x, position.y + scale.y, position.z - scale.z);
+		Vector3 g = Vector3(position.x - scale.x, position.y - scale.y, position.z + scale.z);
+		Vector3 h = Vector3(position.x - scale.x, position.y - scale.y, position.z - scale.z);
+
+		DrawLine(a, b, Debug::GREEN);
+		DrawLine(a, c, Debug::GREEN);
+		DrawLine(d, c, Debug::GREEN);
+		DrawLine(d, b, Debug::GREEN);
+		DrawLine(a, e, Debug::GREEN);
+		DrawLine(b, f, Debug::GREEN);
+		DrawLine(d, h, Debug::GREEN);
+		DrawLine(c, g, Debug::GREEN);
+		DrawLine(e, f, Debug::GREEN);
+		DrawLine(e, g, Debug::GREEN);
+		DrawLine(g, h, Debug::GREEN);
+		DrawLine(f, h, Debug::GREEN);
+		break;
+	}
+
+	case VolumeType::OBB:
+		break;
+	case VolumeType::Sphere:
+		break;
+	case VolumeType::Capsule:
+		break;
+	default:
+		break;
+	}
+
+
 }
