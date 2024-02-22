@@ -17,7 +17,8 @@ namespace NCL {
 
 			bool SendGlobalPacket(int msgID);
 			bool SendGlobalPacket(GamePacket& packet);
-			void SendPacketToPeer(int sendAdd, GamePacket& packet);
+			bool SendPacketToPeer(int playerNum, GamePacket& packet);
+			bool GetMultiNetPeer(int peerNum, int& peerID);
 
 			virtual void UpdateServer();
 
@@ -30,8 +31,15 @@ namespace NCL {
 			int incomingDataRate;
 			int outgoingDataRate;
 
-			_ENetPeer* netPeer;
-			std::list<int> clientAddList;
+			//_ENetPeer* netPeer;
+			//std::list<int> clientAddList;
+			void clearPeerArray();
+			void AddPeer(int val);
+			void RemovePeer(int val);
+
+			void DebugNetPeer();
+
+			int* netPeers;
 		};
 	}
 }

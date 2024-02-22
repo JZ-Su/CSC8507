@@ -42,15 +42,19 @@ namespace NCL {
 		
 		GameObject* CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		Boss* CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		/*Boss* CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);*/
+		GameObjectWithBehavior* CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player,float inverseMass = 10.0f);
+
 		GameObject* ghost;
 
 		Door* CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		Door* GetDoor() const { return door; }
-
-		Boss* GetBoss() {
+	/*	GameObjectWithBehavior* GetBoss() {
 			return boss;
-		}
+		}*/
+		/*Boss* GetBoss() {
+			return boss;
+		}*/
 
 		MeshAnimation* getBossAnimation() {
 			return bossAnimation;
@@ -109,7 +113,8 @@ namespace NCL {
 		Shader* playerShader = nullptr;
 
 		Player* player = nullptr;
-		Boss* boss = nullptr;
+		/*Boss* boss = nullptr;*/
+		
 		MeshMaterial* bossMat = nullptr;
 		MeshMaterial* playerMat = nullptr;
 		MeshMaterial* ghostMat = nullptr;

@@ -127,7 +127,6 @@ namespace NCL {
 			int score;
 			Player* player;
 
-			GameObject* boss;
 			GameObject* ghost;
 			MeshAnimation* bossAnimation;
 			MeshAnimation* ghostAnimation;

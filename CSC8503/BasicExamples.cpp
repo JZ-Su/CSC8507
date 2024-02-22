@@ -2,6 +2,7 @@
 #include "RenderObject.h"
 #include "PhysicsObject.h"
 #include "MeshMaterial.h"
+#include"Boss.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -336,8 +337,23 @@ GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& d
 	return ghost;
 }
 
-Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-	Boss* character = new Boss("boss");
+//Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+//	Boss* character = new Boss("boss");
+//	AABBVolume* volume = new AABBVolume(dimensions);
+//	character->SetBoundingVolume((CollisionVolume*)volume);
+//
+//	character->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+//	character->SetRenderObject(new RenderObject(&character->GetTransform(), bossMesh, nullptr, bossShader));
+//	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
+//	character->GetRenderObject()->isAnimation = true;
+//	LoadMaterialTextures(character, bossMesh, bossMat, render);
+//	character->GetPhysicsObject()->SetInverseMass(inverseMass);
+//	character->GetPhysicsObject()->InitCubeInertia();
+//	return character;
+//}
+GameObjectWithBehavior* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player,float inverseMass) {
+	GameObjectWithBehavior* character = new GameObjectWithBehavior(player);
+	//character->BossBehaviourTree(player);
 	AABBVolume* volume = new AABBVolume(dimensions);
 	character->SetBoundingVolume((CollisionVolume*)volume);
 
