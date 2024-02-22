@@ -100,13 +100,17 @@ namespace NCL {
 			BehaviourSequence* rootSequence;
 			BehaviourState state;
 			float calculateDistance(Vector3 pos1, Vector3 pos2);
-			void BossBehaviourTree(Player* player);
+			/*void BossBehaviourTree(Player* player);*/
 		private:
 			BehaviourNode* behaviorTree;
 			float distanceToTarget;
 			float attackRange;
+			float bossHealth;
 			BehaviourAction* patrol;
+			BehaviourAction* Dash;
 			BehaviourAction* MeleeAttack;
+			BehaviourAction* RemoteAttack;
+			BehaviourAction* Summon;
 			Player* player;
 		};
 	}

@@ -92,6 +92,7 @@ using namespace CSC8503;
 GameObjectWithBehavior::GameObjectWithBehavior(Player* player) {
 	this->player = player;
 	attackRange = 50.0f;
+	bossHealth = 100.0f;
 	distanceToTarget = calculateDistance(GetTransform().GetPosition(), player->GetTransform().GetPosition());
 	patrol = new BehaviourAction("patrol", [&](float dt, BehaviourState state)->BehaviourState {
 		if (state == Initialise) {
@@ -112,6 +113,18 @@ GameObjectWithBehavior::GameObjectWithBehavior(Player* player) {
 		return state;//will be ongoing until success or condition to switch
 		}
 	);
+	Dash= new BehaviourAction("Dash", [&](float dt, BehaviourState state) -> BehaviourState {
+		if (state == Initialise) {
+			std::cout << "Attacking.\n";
+			state = Ongoing;
+		}
+		else if (state == Ongoing) {
+			std::cout << "Ongoing.\n";
+			GetTransform().SetPosition(this->player->GetTransform().GetPosition());
+		}
+		return state;
+		}
+	);
 	MeleeAttack = new BehaviourAction("MeleeAttack", [&](float dt, BehaviourState state) -> BehaviourState {
 		if (state == Initialise) {
 			std::cout << "Attacking.\n";
@@ -124,7 +137,7 @@ GameObjectWithBehavior::GameObjectWithBehavior(Player* player) {
 		return state;
 		}
 	);
-	BehaviourAction* RemoteAttack = new BehaviourAction("RemoteAttack", [&](float dt, BehaviourState state) -> BehaviourState {
+	RemoteAttack = new BehaviourAction("RemoteAttack", [&](float dt, BehaviourState state) -> BehaviourState {
 		if (state == Initialise) {
 			std::cout << "Attacking.\n";
 			state = Ongoing;
@@ -136,7 +149,7 @@ GameObjectWithBehavior::GameObjectWithBehavior(Player* player) {
 		return state;
 		}
 	);
-	BehaviourAction* Summon = new BehaviourAction("Summon", [&](float dt, BehaviourState state) -> BehaviourState {
+	Summon = new BehaviourAction("Summon", [&](float dt, BehaviourState state) -> BehaviourState {
 		if (state == Initialise) {
 			std::cout << "Attacking.\n";
 			state = Ongoing;
@@ -168,9 +181,9 @@ float GameObjectWithBehavior::calculateDistance(Vector3 pos1, Vector3 pos2) {
 }
 
 
-void GameObjectWithBehavior::BossBehaviourTree(Player* player) {
-	 
-}
+//void GameObjectWithBehavior::BossBehaviourTree(Player* player) {
+//	 
+//}
 
 void GameObjectWithBehavior::Update(float dt, Player* player) {
 	if (behaviorTree != nullptr) {
