@@ -48,6 +48,8 @@ namespace NCL::CSC8503 {
 		virtual bool WritePacket(GamePacket** p, bool deltaFrame, int stateID);
 
 		void UpdateStateHistory(int minID);
+		int getNetWorkID()const { return networkID; }
+		GameObject* getGameObjectPtr() const { return &object; }
 
 	protected:
 
