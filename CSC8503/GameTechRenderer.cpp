@@ -54,9 +54,10 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	LoadSkybox();
 
-    ui.creatGameUI({ Vector3(-15, 15,-1), Vector3(-15,-15,-1) , Vector3(15,-15,-1) , Vector3(15,15,-1) },
+    /*ui.creatGameUI({Vector3(-15, 15,-1), Vector3(-15,-15,-1) , Vector3(15,-15,-1) , Vector3(15,15,-1)},
 		 { Vector2(-1,1), Vector2(-1,-1), Vector2(1,-1), Vector2(1,1) },512,512,3,0, "Default.png");
-
+		 Vector2(1.0f,1.0f), Vector2(1.0f,0.0f), Vector2(0.0f,0.0f), Vector2(0.0f,1.0f)*
+	
 	/*healthShader = new OGLShader("health.vert", "health.frag");
 	healthMesh = new OGLMesh();
 	healthMesh->SetVertexPositions({ Vector3(-15, 15,-1), Vector3(-15,-15,-1) , Vector3(15,-15,-1) , Vector3(15,15,-1) });
@@ -159,7 +160,7 @@ void GameTechRenderer::LoadSkybox() {
 
 void GameTechRenderer::Loadhealth(GameUI ui) {
 	//Matrix4 viewMatrix = gameWorld.GetMainCamera().BuildViewMatrix();
-
+	ui.healthline();
 
     Matrix4 proj = Matrix4::Orthographic(0.0, 100.0f, 100, 0, -1.0f, 1.0f);
 
@@ -198,14 +199,14 @@ void GameTechRenderer::RenderFrame() {
 	SortObjectList();
 	RenderShadowMap();
 	RenderSkybox();	
-	RenderCamera();
+	RenderCamera();	
+	Loadhealth(ui);
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	NewRenderLines();
 	NewRenderText();
-	Loadhealth(ui);
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

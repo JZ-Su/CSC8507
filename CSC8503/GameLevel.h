@@ -2,6 +2,7 @@
 #include "BasicExamples.h"
 #include "RenderObject.h"
 #include "GameTechRenderer.h"
+#include "Player.h"
 
 namespace NCL {
 	struct Level
@@ -42,7 +43,7 @@ namespace NCL {
 		Level level3;
 		Level level4;
 		Level Generic;
-
+		Player* player;
 		StateGameObject* testAI;
 	    GameObject* UI;
 	};

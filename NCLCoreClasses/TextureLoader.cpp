@@ -38,6 +38,7 @@ bool TextureLoader::LoadTexture(const std::string& filename, char*& outData, int
 		return it->second(realPath, outData, width, height, channels, flags);
 	}
 	//By default, attempt to use stb image to get this texture
+	//stbi_set_flip_vertically_on_load(true);
 	stbi_uc *texData = stbi_load(realPath.c_str(), &width, &height, &channels, 4); //4 forces this to always be rgba!
 
 	channels = 4; //it gets forced, we don't care about the 'real' channel size
@@ -46,7 +47,6 @@ bool TextureLoader::LoadTexture(const std::string& filename, char*& outData, int
 		outData = (char*)texData;
 		return true;
 	}
-
 	return false;
 }
 

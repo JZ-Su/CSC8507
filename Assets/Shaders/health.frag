@@ -9,6 +9,8 @@ in Vertex
 	vec2 texCoord;
 } IN;
 
+//in vec2 TexCoord;
+
 out vec4 fragColor;
 
 void main(void)
@@ -18,11 +20,7 @@ void main(void)
 	}
 	else {
 		fragColor = texture(mainTex, IN.texCoord);
-		
-		//if(alpha < 0.00001f) {
-		//	discard;
-		//}
-		
+                fragColor.a=0.00001;
 		//fragColor = IN.colour * vec4(1,1,1,alpha);
 	}
 }
