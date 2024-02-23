@@ -12,20 +12,28 @@ namespace NCL {
 		{
 
 		public:
-			struct UI {
-
+			struct UIen {
+				std::vector<NCL::Maths::Vector3> UIpox;
+				std::vector<NCL::Maths::Vector2> uitex;
+				int width;
+				int haight;
+				int channels;
+				int flags;
+				std::string name;
 			};
-			GameUI();
-			~GameUI();
+
+			
             NCL::Rendering::OGLShader* getshader() { return healthShader; };
 			NCL::Rendering::OGLMesh* getMesh() { return healthMesh; };
 			GLuint   gettex() { return healthTex; };
             void creatGameUI(std::vector<NCL::Maths::Vector3> UIpox, std::vector<NCL::Maths::Vector2> uitex,int width,int haight,int channels,int flags, const std::string& name);
-			void healthline();
-			void setUIpos(NCL::Rendering::OGLMesh* Mesh);
+			void Drawhealthline();
+
+			void setUI(std::vector<Vector3> UIpos, std::vector<Vector2> UItex, int width, int height, int channels, int flags, const std::string& name);
 
 		protected:
-			
+			GameUI();
+			~GameUI();
 			
 			NCL::Rendering::OGLShader* healthShader;
 			NCL::Rendering::OGLMesh* healthMesh;
@@ -33,11 +41,7 @@ namespace NCL {
 			
 			std::vector<NCL::Maths::Vector3> UIpositions;
 			std::vector<NCL::Maths::Vector2> UItexCoords;
-			//static
-			//OGLShader* healthShader;
-			//OGLMesh* healthMesh;
-			//GLuint	healthTex;
-
+			static std::vector<UIen>	UIEntries;
 		};
 
 

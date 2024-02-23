@@ -1,7 +1,7 @@
 #include "Debug.h"
 using namespace NCL;
 
-std::vector<Debug::DebugStringEntry>	Debug::stringEntries;
+std::vector<Debug:: >	Debug::stringEntries;
 std::vector<Debug::DebugLineEntry>		Debug::lineEntries;
 std::vector<Debug::DebugBLineEntry>		Debug::BlineEntries;
 
@@ -89,25 +89,6 @@ void Debug::UpdateRenderables(float dt) {
 	stringEntries.clear();
 }
 
-void Debug::UpdateRenderablesBB(float dt) {
-	int trim = 0;
-	for (int S = 0; S < BlineEntries.size(); ) {
-		DebugBLineEntry* e = &BlineEntries[S];
-		e->time -= dt;
-		if (e->time < 0) {
-			trim++;
-			BlineEntries[S] = BlineEntries[BlineEntries.size() - trim];
-		}
-		else {
-			++S;
-		}
-		if (S + trim >= BlineEntries.size()) {
-			break;
-		}
-	}
-	BlineEntries.resize(BlineEntries.size() - trim);
-	stringEntries.clear();
-}
 
 SimpleFont* Debug::GetDebugFont() {
 	return debugFont;
@@ -115,7 +96,7 @@ SimpleFont* Debug::GetDebugFont() {
 
 void Debug::CreateDebugFont(const std::string& dataFile, Texture& tex) {
 	debugFont = new SimpleFont(dataFile, tex);
-}
+} 
 
 const std::vector<Debug::DebugStringEntry>& Debug::GetDebugStrings() {
 	return stringEntries;

@@ -19,7 +19,7 @@ namespace NCL {
 		struct DebugLineEntry {
 			Vector3 start;
 			float	padding;
-			Vector4 colourA;
+			Vector4 colourA; 
 			Vector3 end;
 			float	time;
 			Vector4 colourB;
@@ -44,7 +44,7 @@ namespace NCL {
 		static void DrawAxisLines(const Matrix4& modelMatrix, float scaleBoost = 1.0f, float time = 0.0f);
 
 		static void UpdateRenderables(float dt);
-		static void UpdateRenderablesBB(float dt);
+
 
 		static SimpleFont* GetDebugFont();
 
