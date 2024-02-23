@@ -157,7 +157,12 @@ void TutorialGame::UpdateGame(float dt) {
 
 	// update player animation
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
-
+	if(fireBallBullet&&player) {
+		Vector3 fireBallPosition = fireBallBullet->GetTransform().GetPosition();
+		Vector3 playerPosition = player->GetTransform().GetPosition();
+		UpdateTrackingBall(fireBallPosition, playerPosition, 4, dt);
+		fireBallBullet->GetTransform().SetPosition(fireBallPosition);
+	}
 	SelectObject();
 	MoveSelectedObject();
 	
@@ -486,7 +491,7 @@ void TutorialGame::InitWorld() {
 		Please switch the debug mode here
 	*/
 	isDebug = true;
-	//isDebug = false;
+	/*isDebug = false;*/
 	if (isDebug) {
 		//Level 1
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
@@ -500,6 +505,7 @@ void TutorialGame::InitWorld() {
 		playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 		playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 		playerJumpAnimation = gameLevel->getplayerJumpAnimation();
+		fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initalize function
 		//gameLevel->AddLevelToWorld(world, 0, true, false);
@@ -1005,4 +1011,14 @@ void TutorialGame::SwitchLevel() {
 		}
 		currentLevel++;
 	}
+}
+
+void TutorialGame::UpdateTrackingBall(Vector3 & ballPosition, const Vector3 & playerPosition, float speed, float dt) {
+
+	Debug::DrawLine(ballPosition, playerPosition, Debug::BLACK);
+	Vector3 direction = (playerPosition - ballPosition).Normalised();
+
+	float distance = speed * dt;
+
+	ballPosition += direction * distance;
 }

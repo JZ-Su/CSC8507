@@ -130,6 +130,7 @@ namespace NCL {
 
 			Boss* boss;
 			GameObject* ghost;
+			GameObject* fireBallBullet;
 			MeshAnimation* bossAnimation;
 			MeshAnimation* ghostAnimation;
 			MeshAnimation* playerIdleAnimation;
@@ -154,6 +155,7 @@ namespace NCL {
 			void UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation, float dt);
 			void UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAnimation, MeshAnimation* playerWalkAnimation, float dt);
 			void UpdateGhostAnim(GameObject* ghost, MeshAnimation* ghostAnimation, float dt);
+			void UpdateTrackingBall(Vector3& ballPosition, const Vector3& playerPosition, float speed, float dt);
 			float h = 0, v = 0;
 
 			bool hasRotation = true;
