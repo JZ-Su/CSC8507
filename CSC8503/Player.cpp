@@ -30,19 +30,7 @@ float Player::updateTimer(float dt)
 
 	return timer;
 }
-//bool Player::updateJumpTimer(float dt)
-//{
-//	if (jumpTimer <= 0)
-//	{
-//		canJump = true;
-//		
-//	}
-//	else
-//	{
-//		jumpTimer -= dt;
-//	}
-//	return canJump;
-//}
+
 float Player::updateHealth(float inhealth)
 {
 	health += inhealth;

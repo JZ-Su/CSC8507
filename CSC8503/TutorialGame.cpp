@@ -365,7 +365,7 @@ void TutorialGame::LockedObjectMovement() {
 
 	lockedObject->GetTransform().SetOrientation(lookat);
 
-	world->GetMainCamera().SetPosition(Vector3(campos.x, campos.y + 15.0f, campos.z ));
+	world->GetMainCamera().SetPosition(Vector3(campos.x, campos.y+3.0f, campos.z+3.0f ));
 	world->GetMainCamera().SetPitch(pitch);
 	world->GetMainCamera().SetYaw(yaw);
 }
