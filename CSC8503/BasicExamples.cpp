@@ -1,4 +1,4 @@
-#include "BasicExamples.h"
+﻿#include "BasicExamples.h"
 #include "RenderObject.h"
 #include "PhysicsObject.h"
 #include "MeshMaterial.h"
@@ -349,7 +349,7 @@ GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& d
 
 	AABBVolume* volume = new AABBVolume(dimensions);
 	ghost->SetBoundingVolume((CollisionVolume*)volume);
-
+	
 	ghost->GetTransform().SetScale(dimensions * 2).SetPosition(position);
 	ghost->SetRenderObject(new RenderObject(&ghost->GetTransform(), ghostMesh, nullptr, ghostShader));
 	ghost->SetPhysicsObject(new PhysicsObject(&ghost->GetTransform(), ghost->GetBoundingVolume()));
@@ -364,12 +364,14 @@ GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& d
 Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player, float inverseMass) {
 	Boss* character = new Boss(player);
 	//character->BossBehaviourTree(player);
-	AABBVolume* volume = new AABBVolume(dimensions);
+	AABBVolume* volume = new AABBVolume(dimensions,60);
 	character->SetBoundingVolume((CollisionVolume*)volume);
 
 	character->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOrientation(Matrix4::Rotation(180, Vector3(0,1,0)));
 	character->SetRenderObject(new RenderObject(&character->GetTransform(), bossMesh, nullptr, bossShader));
+
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
+
 	character->GetRenderObject()->isAnimation = true;
 	LoadMaterialTextures(character, bossMesh, bossMat, render);
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -526,4 +528,23 @@ Door* BasicExamples::CreateDoor(const Vector3& position, const Vector3& dimensio
 	d->SetDefaultPos(position);
 	
 	return d;
+}
+
+GameObject* BasicExamples::CreateFireBallBullet(const Vector3& position, float radius, float inverseMass) {
+	GameObject* sphere = new GameObject("fireballbullet");
+
+	Vector3 sphereSize = Vector3(radius, radius, radius);
+	SphereVolume* volume = new SphereVolume(radius);
+	sphere->SetBoundingVolume((CollisionVolume*)volume);
+
+	sphere->GetTransform().SetScale(sphereSize).SetPosition(position);
+
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, nullptr, basicShader));
+	sphere->GetRenderObject()->SetColour(Vector4(1.0, 0.25, 0.0, 1.0));
+	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
+
+	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
+	sphere->GetPhysicsObject()->InitSphereInertia();
+
+	return sphere;
 }

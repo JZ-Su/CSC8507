@@ -14,7 +14,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {	
-	Generic.objectList.push_back(CreatePlayer(Vector3(0, 10, 60), Vector3(2, 2, 2), 5.0f));
+	Generic.objectList.push_back(CreatePlayer(Vector3(0, 10, 60), Vector3(2, 2, 2), 15.0f));
 	//Level 4 player: 
 	//Generic.objectList.push_back(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
 }
@@ -132,7 +132,7 @@ void GameLevel::CreateLevel1() {
 	////columns
 	//CreateLevel1_Columns();
 	////stairs
-	//CreateLevel1_Stairs();
+	CreateLevel1_Stairs();
 	////book shelfs
 	//CreateLevel1_BookShelfs();
 	////small shelfs
@@ -207,8 +207,9 @@ void GameLevel::CreateLevel3() {
 	//level3.objectList.push_back(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
 	//BossBehaviourTree(boss,player);
 	//
-	boss = CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), player,0.0f);
+	boss = CreateBoss(Vector3(0, 1, -60), Vector3(10, 10, 10), player,0.0f);
 	level3.objectList.push_back(boss);
+	level3.objectList.push_back(fireBallBullet=CreateFireBallBullet(Vector3(0, 30, 20), 2, 0.0f));
 	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/
 }
 

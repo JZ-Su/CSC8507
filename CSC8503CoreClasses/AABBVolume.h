@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CollisionVolume.h"
 #include "Vector3.h"
 
@@ -10,6 +10,11 @@ namespace NCL {
 		AABBVolume(const Vector3& halfDims) {
 			type		= VolumeType::AABB;
 			halfSizes	= halfDims;
+		}
+		AABBVolume(const Vector3& halfDims, float yOffset) {
+			type = VolumeType::AABB;
+			halfSizes = halfDims;
+			halfSizes.y += yOffset; // 修改 Y 坐标
 		}
 		~AABBVolume() {
 
