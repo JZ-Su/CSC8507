@@ -75,7 +75,8 @@ void TutorialGame::UpdateGame(float dt) {
 	//	Debug::DrawCollisionBox(element);
 	//}
 	//Debug::DrawCollisionBox(player);
-	gameLevel->GetBoss()->Update(dt, player);
+	/*gameLevel->GetBoss()->Update(dt, player);*/
+	/*gameLevel->GetBoss()->Update(dt);*/
 	player->UpdatePlayer(dt);
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
