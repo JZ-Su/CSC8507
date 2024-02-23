@@ -19,6 +19,7 @@ namespace NCL {
 			BehaviourSequence* rootSequence;
 			BehaviourState state;
 			float calculateDistance(Vector3 pos1, Vector3 pos2);
+			void Update(float dt);
 		private:
 			float distanceToTarget;
 			float remoteAttackRange;
