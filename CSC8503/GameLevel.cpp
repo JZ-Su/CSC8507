@@ -6,6 +6,7 @@ using namespace NCL;
 
 GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 	CreateGeneric();
+	CreateConnectionLevel();
 	CreateLevel1();
 	CreateLevel2();
 	CreateLevel3();
@@ -13,7 +14,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {	
-	Generic.objectList.push_back(CreatePlayer(Vector3(0, 10, 0), Vector3(2, 2, 2)));
+	Generic.objectList.push_back(CreatePlayer(Vector3(0, 10, 60), Vector3(2, 2, 2), 5.0f));
 	//Level 4 player: 
 	//Generic.objectList.push_back(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
 }
@@ -81,6 +82,31 @@ void GameLevel::RemoveLevel(GameWorld* world, Level* l, bool andClear, bool andD
 	}
 }
 
+vector<GameObject*> GameLevel::CreatePortal(const Vector3& position) {
+	vector<GameObject*> vec;
+	vec.push_back(CreateCube(position + Vector3(-4, -0.5, 0), Vector3(1, 6.5, 1), 0.0f));
+	vec.push_back(CreateCube(position + Vector3(4, -0.5, 0),  Vector3(1, 6.5, 1), 0.0f));
+	vec.push_back(CreateCube(position + Vector3(0, 7, 0),     Vector3(5, 1, 1),   0.0f));
+	vec.push_back(CreateCube(position, Vector3(4, 7, 0.1), 0.0f));
+	vec.back()->SetCollisionResponse(false);
+	vec.back()->GetRenderObject()->SetColour(Debug::GREEN);
+	return vec;
+}
+
+void GameLevel::CreateConnectionLevel() {
+	connection.objectList.push_back(CreateCube(Vector3(0, 0, 0),    Vector3(20, 1, 75),  0.0f));
+	connection.objectList.push_back(CreateCube(Vector3(-20, 10, 0), Vector3(10, 10, 75), 0.0f));
+	connection.objectList.push_back(CreateCube(Vector3(20, 10, 0),  Vector3(10, 10, 75), 0.0f));
+	connection.objectList.push_back(CreateCube(Vector3(0, 10, -75), Vector3(10, 10, 10), 0.0f));
+	connection.objectList.push_back(CreateCube(Vector3(0, 10, 75),  Vector3(10, 10, 10), 0.0f));
+
+	vector<GameObject*> vec = CreatePortal(Vector3(0, 7, -65));
+	for (const auto& ele : vec) {
+		connection.objectList.push_back(ele);
+	}
+	connection.portal = connection.objectList.back();
+}
+
 void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
 	level1.objectList.push_back(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
@@ -116,13 +142,13 @@ void GameLevel::CreateLevel1() {
 
 	level1.objectList.push_back(ghost=CreateGhost(Vector3(10, 10, 0), Vector3(5, 5, 5), 0.0f));
 
-	//level1.objectList.push_back(player);
-	testAI = CreateAItest(Vector3(10, 50, 10), Vector3(5, 5, 5), player, 0.0f);
-	testAI->GetRenderObject()->SetColour(Debug::BLUE);
-	level1.objectList.push_back(testAI);
+	level1.objectList.push_back(CreateCube(Vector3(-5, 6, -50), Vector3(5, 5, 5), 0.0f));
 
-	door = CreateDoor(Vector3(0, 10, -10), Vector3(5, 5, 1), 0.0f);
-	level1.objectList.push_back(door);
+	vector<GameObject*> port = CreatePortal(Vector3(0, 35, 100));
+	for (const auto& ele : port) {
+		level1.objectList.push_back(ele);
+	}
+	level1.portal = level1.objectList.back();
 }
 
 void GameLevel::CreateLevel2() {
@@ -165,7 +191,6 @@ void GameLevel::CreateLevel2() {
 }
 
 void GameLevel::CreateLevel3() {	
-	boss = CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), player,0.0f);
 	// level3.objectList.push_back(CreateCube(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
 	//level3.objectList.push_back(CreateCube(Vector3(70, 0, 77), Vector3(10, 10,5 ), 0.0f));
 	level3.objectList.push_back(CreateCube(Vector3(100, 30, 0), Vector3(2, 30, 100), 0.0f));
@@ -179,14 +204,12 @@ void GameLevel::CreateLevel3() {
 	//testAI = CreateAItest(Vector3(0, 0, 0), Vector3(5, 5, 5), player, 0.0f);
 	//level3.objectList.push_back(testAI);
 	level3.objectList.push_back(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
-//<<<<<<< Updated upstream
-//	level3.objectList.push_back(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
-//	//BossBehaviourTree(boss,player);
-//
-//=======
+	//level3.objectList.push_back(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
+	//BossBehaviourTree(boss,player);
+	//
+	boss = CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), player,0.0f);
 	level3.objectList.push_back(boss);
 	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/
-//>>>>>>> Stashed changes
 }
 
 void GameLevel::CreateLevel4() {
@@ -338,7 +361,6 @@ void GameLevel::CreateLevel4_Normal() {
 	//other objects
 	l5.objectList.push_back(CreateCube(Vector3(-50, 5, -50), Vector3(5, 5, 5), 0.0f));
 	level4_normal.emplace_back(l5);
-	
 }
 
 void GameLevel::CreateLevel4_Rotate() {
@@ -936,7 +958,6 @@ void GameLevel::CreateLevel1_Columns() {
 }
 
 void GameLevel::CreateLevel1_Stairs() {
-	
 	level1.objectList.push_back(CreateStairs(Vector3(30, 20, 95), Vector3(1.25, 2, 1.25), 0.0f, Vector3(0, 1, 0), 90));
 	level1.objectList.push_back(CreateCubeOBB(Vector3(20, 15.9, 95), Vector3(10, 10, 5), 0.0f, Vector3(0, 0, 1), -45));
 	level1.objectList.push_back(CreateStairs(Vector3(-30, 20, 95), Vector3(1.25, 2, 1.25), 0.0f, Vector3(0, 1, 0), -90));

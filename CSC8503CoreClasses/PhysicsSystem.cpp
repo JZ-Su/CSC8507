@@ -278,6 +278,7 @@ void PhysicsSystem::ImpulseResolveCollision(GameObject& a, GameObject& b, Collis
 
 	physA->ApplyLinearImpulse(-fullImpulse);
 	physB->ApplyLinearImpulse(fullImpulse);
+	
 	if (physA->GetApplyAngImp()) {
 		physA->ApplyAngularImpulse(Vector3::Cross(relativeA, -fullImpulse));
 	}

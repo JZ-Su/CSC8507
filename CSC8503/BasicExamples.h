@@ -42,49 +42,25 @@ namespace NCL {
 		
 		GameObject* CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		/*Boss* CreateBoss(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);*/
-		GameObjectWithBehavior* CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player,float inverseMass = 10.0f);
+		Boss* CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player,float inverseMass = 10.0f);
 
-		GameObject* ghost;
-
-		Door* CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		Door* CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float rotation = 0.0f);
 		Door* GetDoor() const { return door; }
-	/*	GameObjectWithBehavior* GetBoss() {
-			return boss;
-		}*/
-		/*Boss* GetBoss() {
-			return boss;
-		}*/
-
-		MeshAnimation* getBossAnimation() {
-			return bossAnimation;
-		}
-
-		GameObject* getGhost() {
-			return ghost;
-		}
-
-		MeshAnimation* getGhostAnimation() {
-			return ghostAnimation;
-		}
-
-		MeshAnimation* getplayerIdleAnimation() {
-			return playerIdleAnimation;
-		}
-
-		MeshAnimation* getplayerWalkAnimation() {
-			return playerWalkAnimation;
-		}
-
-		Player* GetPlayer()
-		{
-			return player;
-		}
+		Boss* GetBoss() const { return boss; }
+		Player* GetPlayer() const { return player; }
+		GameObject* getGhost() const { return ghost; }
+		MeshAnimation* getBossAnimation() const { return bossAnimation; }
+		MeshAnimation* getGhostAnimation() const { return ghostAnimation; }
+		MeshAnimation* getplayerIdleAnimation() const { return playerIdleAnimation; }
+		MeshAnimation* getplayerWalkAnimation() const { return playerWalkAnimation; }
+		MeshAnimation* getplayerJumpAnimation() const { return playerJumpAnimation; }
 
 		StateGameObject* CreateAItest(const Vector3& position, const Vector3& dimensions,  GameObject* player,float inverseMass = 10.0f);
 
 		GameObject* CreateTestMesh(const Vector3& position, const Vector3& dimensions, float inverseMass);
 		void LoadMaterialTextures(GameObject* character, Mesh* mesh,MeshMaterial* material, GameTechRenderer* renderer);
+
+		void ExportToObj(const Mesh& mesh, const std::string& filename);
 
 	protected:
 		Mesh* cubeMesh = nullptr;
@@ -113,7 +89,7 @@ namespace NCL {
 		Shader* playerShader = nullptr;
 
 		Player* player = nullptr;
-		/*Boss* boss = nullptr;*/
+		Boss* boss = nullptr;
 		
 		MeshMaterial* bossMat = nullptr;
 		MeshMaterial* playerMat = nullptr;
@@ -128,10 +104,12 @@ namespace NCL {
 		MeshAnimation* playerIdleAnimation = nullptr;
 		MeshAnimation* ghostAnimation = nullptr;
 		MeshAnimation* playerWalkAnimation = nullptr;
+		MeshAnimation* playerJumpAnimation = nullptr;
 		
 		GameTechRenderer* render;  // new render variable
 
 		Door* door;
 		
+		GameObject* ghost;
 	};
 }

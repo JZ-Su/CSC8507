@@ -63,10 +63,12 @@ namespace NCL {
 			
 
 		protected:
+			bool isDebug;
+
 			void InitialiseAssets();
 
 			void InitCamera();
-			void UpdateKeys();
+			void UpdateKeys(float dt);
 
 			void InitWorld();
 
@@ -79,7 +81,7 @@ namespace NCL {
 			bool SelectObject();
 			void MoveSelectedObject();
 			void DebugObjectMovement();
-			void LockedObjectMovement();
+			void LockedObjectMovement(float dt);
 
 			//void BridgeConstraintTest();
 
@@ -123,30 +125,20 @@ namespace NCL {
 
 			GameLevel* gameLevel = nullptr;
 
-
 			int score;
 			Player* player;
 
+			Boss* boss;
 			GameObject* ghost;
 			MeshAnimation* bossAnimation;
 			MeshAnimation* ghostAnimation;
 			MeshAnimation* playerIdleAnimation;
 			MeshAnimation* playerWalkAnimation;
-
-			GameObject* floor;
-			GameObject* goalArea;
-
-			std::vector<GameObject*> linkObjects;
-
-			NavigationGrid* GRID;
+			MeshAnimation* playerJumpAnimation;
 
 			float totalTime;
-			float timeInterval;
-
-			std::vector<std::vector<GameObject*>> keeperList;
 
 			GameState gameState;
-
 			MainMenuState mainMenuState;
 			GameMode gameMode;
 
@@ -168,7 +160,9 @@ namespace NCL {
 			bool hasReverse = false;
 			int mapIndex = 0;
 
-			int currentLevel = 1;
+			int currentLevel;
+			GameObject* portal;
+			void SwitchLevel();
 		};
 	}
 }
