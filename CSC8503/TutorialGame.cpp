@@ -75,7 +75,8 @@ void TutorialGame::UpdateGame(float dt) {
 	//	Debug::DrawCollisionBox(element);
 	//}
 	//Debug::DrawCollisionBox(player);
-	gameLevel->GetBoss()->Update(dt, player);
+	/*gameLevel->GetBoss()->Update(dt, player);*/
+	/*gameLevel->GetBoss()->Update(dt);*/
 	player->UpdatePlayer(dt);
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
@@ -369,7 +370,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	lockedObject->GetTransform().SetOrientation(lookat);
 
-	world->GetMainCamera().SetPosition(Vector3(campos.x, campos.y + 10.0f, campos.z));
+	world->GetMainCamera().SetPosition(Vector3(campos.x, campos.y+3.0f, campos.z+3.0f ));
 	world->GetMainCamera().SetPitch(pitch);
 	world->GetMainCamera().SetYaw(yaw);
 }

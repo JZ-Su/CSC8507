@@ -9,7 +9,7 @@ public:
 		function = f;
 	}
 	BehaviourState Execute(float dt) override {
-		currentState = function(dt, currentState);
+		currentState = function(dt,currentState);
 		return currentState;
 	}
 protected:
