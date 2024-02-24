@@ -20,6 +20,8 @@ namespace NCL {
 			Texture*	LoadTexture(const std::string& name);
 			Shader*		LoadShader(const std::string& vertex, const std::string& fragment);
 
+			void LoadMap(vector<Vector3>* pixelData, int width, int height);
+
 		protected:
 			std::unordered_map<std::string, SharedOGLTexture> textureCache;
 

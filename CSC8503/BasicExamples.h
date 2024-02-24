@@ -45,7 +45,6 @@ namespace NCL {
 		Boss* CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player,float inverseMass = 10.0f);
 
 		Door* CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float rotation = 0.0f);
-		Door* GetDoor() const { return door; }
 		Boss* GetBoss() const { return boss; }
 		Player* GetPlayer() const { return player; }
 		GameObject* getGhost() const { return ghost; }
@@ -107,8 +106,6 @@ namespace NCL {
 		MeshAnimation* playerJumpAnimation = nullptr;
 		
 		GameTechRenderer* render;  // new render variable
-
-		Door* door;
 		
 		GameObject* ghost;
 	};

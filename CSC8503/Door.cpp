@@ -11,6 +11,7 @@ Door::Door(Player* player) {
 	stateMachine = new StateMachine();
 	timer = 0.0f;
 	isOpening = false;
+	activation = true;
 
 	State* keepState = new State([&](float dt)->void {
 		this->timer = 0.0f;

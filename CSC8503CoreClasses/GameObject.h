@@ -26,7 +26,7 @@ namespace NCL::CSC8503 {
 			return isActive;
 		}
 		void Deactivate()  {
-		 isActive = false;
+			isActive = false;
 		}
 
 		Transform& GetTransform() {
@@ -87,7 +87,7 @@ namespace NCL::CSC8503 {
 			worldID = newID;
 		}
 
-		int		GetWorldID() const {
+		int	GetWorldID() const {
 			return worldID;
 		}
 

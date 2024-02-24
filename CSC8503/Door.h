@@ -9,9 +9,13 @@ namespace NCL {
 			Door(Player* player);
 			~Door();
 
+			bool GetActivation() const { return activation; }
+			void Deactivation() { activation = false; }
+
 		protected:
 			float timer;
 			bool isOpening;
+			bool activation;
 		};
 	}
 }

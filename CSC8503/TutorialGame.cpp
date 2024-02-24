@@ -75,6 +75,9 @@ void TutorialGame::UpdateGame(float dt) {
 	//	Debug::DrawCollisionBox(element);
 	//}
 	//Debug::DrawCollisionBox(player);
+	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
+	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
+	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
 	gameLevel->GetBoss()->Update(dt, player);
 	player->UpdatePlayer(dt);
 
@@ -481,25 +484,30 @@ void TutorialGame::InitWorld() {
 
 	ghost = gameLevel->getGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
+	boss = gameLevel->GetBoss();
+	bossAnimation = gameLevel->getBossAnimation();
+	player = gameLevel->GetPlayer();
+	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
+	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 
 	/*
 		Please switch the debug mode here
 	*/
-	//isDebug = true;
-	isDebug = false;
+	isDebug = true;
+	//isDebug = false;
 	if (isDebug) {
 		//Level 1
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 
 		//Level 2
-		//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-		bossAnimation = gameLevel->getBossAnimation();
-		playerWalkAnimation = gameLevel->getplayerWalkAnimation();
-		playerIdleAnimation = gameLevel->getplayerIdleAnimation();
-		playerJumpAnimation = gameLevel->getplayerJumpAnimation();
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		//bossAnimation = gameLevel->getBossAnimation();
+		//playerWalkAnimation = gameLevel->getplayerWalkAnimation();
+		//playerIdleAnimation = gameLevel->getplayerIdleAnimation();
+		//playerJumpAnimation = gameLevel->getplayerJumpAnimation();
 
 		//Level 4 initalize function
 		//gameLevel->AddLevelToWorld(world, 0, true, false);
@@ -510,15 +518,6 @@ void TutorialGame::InitWorld() {
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 		portal = gameLevel->GetConnection()->portal;
-
-		player = gameLevel->GetPlayer();
-		boss = gameLevel->GetBoss();
-		ghost = gameLevel->getGhost();
-		ghostAnimation = gameLevel->getGhostAnimation();
-		bossAnimation = gameLevel->getBossAnimation();
-		playerWalkAnimation = gameLevel->getplayerWalkAnimation();
-		playerIdleAnimation = gameLevel->getplayerIdleAnimation();
-
 		lockedObject = player;
 	}
 

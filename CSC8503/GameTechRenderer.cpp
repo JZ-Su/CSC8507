@@ -484,15 +484,15 @@ Texture* GameTechRenderer::LoadTexture(const std::string& name) {
 	auto it = textureCache.find(name);
 	if (it != textureCache.end()) {
 		std::cout << "Texture '" << name << "' found in cache!" << std::endl;
-		return it->second.get(); // 返回已经存在于缓存中的纹理
+		return it->second.get(); // Return the texture in cache
 	}
 	else {
 		std::cout << "Loading texture '" << name << "'..." << std::endl;
-		// 如果缓存中不存在，加载纹理
+		// If the texture can't be found in cache, load it
 		UniqueOGLTexture texture = OGLTexture::TextureFromFile(name);
 		if (texture) {
 			SharedOGLTexture sharedTexture(std::move(texture));
-			textureCache[name] = sharedTexture; // 添加到缓存中
+			textureCache[name] = sharedTexture; // Add the texture to cache
 			return sharedTexture.get();
 		}
 		else {
@@ -571,4 +571,70 @@ void GameTechRenderer::SetDebugLineBufferSizes(size_t newVertCount) {
 
 		glBindVertexArray(0);
 	}
+}
+
+void GameTechRenderer::LoadMap(vector<Vector3>* pixelData, int width, int height) {
+	//char* texData;
+	//int channels, flags;
+	//TextureLoader::LoadTexture("map-pdf.png", texData, width, height, channels, flags);
+	Texture* mapTexture = LoadTexture("map-pdf.png");
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, mapTexture);
+
+
+
+	glClear(GL_COLOR_BUFFER_BIT);
+	GLfloat vertices[] = { -0.5f,0.5f,0.5f,0.5f,0.5f,-0.5f,-0.5f,-0.5f };
+	GLuint indices[] = { 0,1,2,2,3,0 };
+	GLuint vao;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	GLuint vbo;
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
+	glEnableVertexAttribArray(0);
+	GLuint ebo;
+	glGenBuffers(1, &ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE0, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, mapTexture);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	//SwapBuffers();
+
+	GLuint fbo;
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+
+	GLuint pbo;;
+	glGenBuffers(1, &pbo);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo);
+	glBufferData(GL_PIXEL_PACK_BUFFER, width * height * 3, nullptr, GL_DYNAMIC_READ);
+
+	//glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo);
+	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	GLubyte* textureData = (GLubyte*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+
+	if (textureData) {
+		for (int i = 0; i < width * height; i++) {
+			//pixelData[i] = Vector3(textureData[3 * i], textureData[3 * i + 1], textureData[3 * i + 2]);
+			pixelData->push_back(Vector3(textureData[3 * i], textureData[3 * i + 1], textureData[3 * i + 2]));
+		}
+		std::cout << "Load map successfully!" << std::endl;
+	}
+	else {
+		std::cout << "Error: Error: Error: Error: Map loading fail!" << std::endl;
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glDisableVertexAttribArray(0);
 }
