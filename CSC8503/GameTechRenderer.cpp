@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "TextureLoader.h"
 #include "MshLoader.h"
+
 using namespace NCL;
 using namespace Rendering;
 using namespace CSC8503;
@@ -112,6 +113,49 @@ void GameTechRenderer::LoadSkybox() {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
+
+void GameTechRenderer::Loadhealth(GameUI ui) {
+	//Matrix4 viewMatrix = gameWorld.GetMainCamera().BuildViewMatrix();
+
+	Matrix4 proj = Matrix4::Orthographic(0.0, 100.0f, 100, 0, -1.0f, 1.0f);
+
+	BindShader(*(ui.getshader()));
+
+	for (const auto& element : ui.GetUIEntries()) {
+		GLuint texture;
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, element.width, element.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, element.texture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		int matSlot = glGetUniformLocation(ui.getshader()->GetProgramID(), "viewProjMatrix");
+		glUniformMatrix4fv(matSlot, 1, false, (float*)proj.array);
+
+		GLuint texSlot = glGetUniformLocation(ui.getshader()->GetProgramID(), "useTexture");
+		glUniform1i(texSlot, 1);
+
+	/*	glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glBindTexture(GL_TEXTURE_2D, 0);*/
+
+		GLuint mainTexLocation = glGetUniformLocation(ui.getshader()->GetProgramID(), "mainTex");
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glUniform1i(mainTexLocation, 0);
+
+		BindMesh(*element.mesh);
+		DrawBoundMesh();
+	}
+}
+
+
 void GameTechRenderer::RenderFrame() {
 	glEnable(GL_CULL_FACE);
 	glClearColor(1, 1, 1, 1);
@@ -121,11 +165,12 @@ void GameTechRenderer::RenderFrame() {
 	RenderSkybox();
 	RenderCamera();
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
-	glDisable(GL_BLEND);
-	//glDisable(GL_DEPTH_TEST);
+	//glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	NewRenderLines();
 	NewRenderText();
+	Loadhealth(ui);
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

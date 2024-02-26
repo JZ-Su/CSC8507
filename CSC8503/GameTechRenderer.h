@@ -3,7 +3,7 @@
 #include "OGLShader.h"
 #include "OGLTexture.h"
 #include "OGLMesh.h"
-
+#include "GameUI.h"
 #include "GameWorld.h"
 
 namespace NCL {
@@ -19,7 +19,7 @@ namespace NCL {
 			Mesh*		LoadMesh(const std::string& name);
 			Texture*	LoadTexture(const std::string& name);
 			Shader*		LoadShader(const std::string& vertex, const std::string& fragment);
-
+			void        Loadhealth(GameUI ui);
 		protected:
 			std::unordered_map<std::string, SharedOGLTexture> textureCache;
 
@@ -76,6 +76,8 @@ namespace NCL {
 			GLuint textColourVBO;
 			GLuint textTexVBO;
 			size_t textCount;
+
+			GameUI ui;
 		};
 	}
 }

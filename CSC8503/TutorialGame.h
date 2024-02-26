@@ -6,16 +6,12 @@
 #include "GameTechVulkanRenderer.h"
 #endif
 #include "PhysicsSystem.h"
-
 #include "StateGameObject.h"
-
 #include "NavigationGrid.h"
-
 #include "GameLevel.h"
-
 #include "BasicExamples.h"
-
 #include "MeshAnimation.h"
+#include "GameUI.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -61,7 +57,6 @@ namespace NCL {
 			void ShowWin(float dt);
 			void ShowLose(float dt);
 			
-
 		protected:
 			bool isDebug;
 
@@ -137,6 +132,7 @@ namespace NCL {
 			MeshAnimation* playerWalkAnimation;
 			MeshAnimation* playerJumpAnimation;
 
+			float health;
 			float totalTime;
 
 			GameState gameState;
@@ -165,6 +161,7 @@ namespace NCL {
 			int currentLevel;
 			GameObject* portal;
 			void SwitchLevel();
+			GameUI* ui;
 		};
 	}
 }
