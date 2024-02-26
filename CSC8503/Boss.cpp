@@ -9,8 +9,8 @@ using namespace NCL;
 using namespace CSC8503;
 Boss::Boss(Player* player) {
 	this->player = player;
-	remoteAttackRange = 30.0f;
-	meleeAttackRange = 10.0f;
+	remoteAttackRange = 80.0f;
+	meleeAttackRange = 40.0f;
 	bossHealth = 100.0f;
 	Idle = new BehaviourAction("Idle", [&](float dt, BehaviourState state)->BehaviourState {
 		if (state == Initialise) {
@@ -54,7 +54,7 @@ Boss::Boss(Player* player) {
 		}
 		else if (state == Ongoing) {
 			this->distanceToTarget = calculateDistance(GetTransform().GetPosition(), this->player->GetTransform().GetPosition());
-			if (this->distanceToTarget > this->remoteAttackRange) {
+			if (this->distanceToTarget > this->remoteAttackRange|| this->distanceToTarget<=meleeAttackRange) {
 				return Failure;
 			}
 			else {
@@ -142,8 +142,9 @@ Boss::Boss(Player* player) {
 
 
 void Boss::Update(float dt) {
-	distanceToTarget = calculateDistance(GetTransform().GetPosition(), player->GetTransform().GetPosition());
-	bossSelection->Execute(dt);
+	if (bossSelection != nullptr) {
+		bossSelection->Execute(dt);
+	}
 }
 
 float Boss::calculateDistance(Vector3 pos1, Vector3 pos2) {
