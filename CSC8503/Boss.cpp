@@ -24,7 +24,7 @@ Boss::Boss(Player* player) {
 				Debug::DrawCollisionBox(this);
 				Debug::DrawCollisionBox(this->player);
 				std::cout << this->distanceToTarget << std::endl;
-				return Success;
+				return Failure;
 			}
 			else {
 				std::cout << "idle.\n";
@@ -72,43 +72,66 @@ Boss::Boss(Player* player) {
 		}
 	);
 	Flinches = new BehaviourAction("Flinches", [&](float dt, BehaviourState state) -> BehaviourState {
-		if (state == Initialise) {
-			std::cout << "Flinches init.\n";
-			state = Ongoing;
+		static float stunTimer = 0.0f; 
+		const float stunDuration = 4.0f; 
+		const float healthThreshold = 50.0f;
+		if (bossHealth <= healthThreshold) {
+			if (state == Initialise) {
+				std::cout << "Flinches init.\n";
+				stunTimer = 0.0f;
+				return Ongoing;
+			}
+			else if (state == Ongoing) {
+				std::cout << "Flinches.\n";
+				stunTimer += dt;
+
+				if (stunTimer >= stunDuration) {
+					std::cout << "End of flinches.\n";
+					stunTimer = 0.0f;
+					return Success;
+				}
+				return Ongoing;
+			}
 		}
-		else if (state == Ongoing) {
-			std::cout << "Flinches.\n";
-			/*return Ongoing;*/
-			return Failure;
-		}
-		return state;
+		return Success;
 		}
 	);
+	Inverter* antiFlinches = new Inverter("antiFlinches", Flinches);
 	Death = new BehaviourAction("Death", [&](float dt, BehaviourState state) -> BehaviourState {
 		if (state == Initialise) {
 			std::cout << "Death init\n";
 			state = Ongoing;
 		}
 		else if (state == Ongoing) {
-			std::cout << "Death.\n";
-			/*PlayDeathAnimation();*/
-			//RemoveBossObject();
-			return Ongoing;
+			if (bossHealth <= 0) {
+				std::cout << "Death.\n";
+				// handleDeath();
+				/*PlayDeathAnimation();*/
+				//RemoveBossObject();
+				return Success;
+			}
+			else if (bossHealth > 0) {
+				std::cout << "boss live.\n";
+				return Failure;
+			}
 		}
 		return state;
 		}
 	);
-	Selector = new BehaviourSelector("FirstLevel");
-	Selector->AddChild(Idle);
-	Selector->AddChild(MeleeAttack);
-	Selector->AddChild(RemoteAttack);
-	Selector->AddChild(Flinches);
-	Selector->AddChild(Death);
+
+	bossSelection->AddChild(Death);
+	bossSelection->AddChild(Idle);
+	bossSelection->AddChild(antiFlinches);
+	bossSelection->AddChild(MeleeAttack);
+	bossSelection->AddChild(RemoteAttack);
+	
+
+
 }
 
 void Boss::Update(float dt) {
 	distanceToTarget = calculateDistance(GetTransform().GetPosition(), player->GetTransform().GetPosition());
-	Selector->Execute(dt);
+	bossSelection->Execute(dt);
 }
 
 float Boss::calculateDistance(Vector3 pos1, Vector3 pos2) {
@@ -122,5 +145,4 @@ Boss::~Boss() {
 	delete RemoteAttack;
 	delete Flinches;
 	delete Death;
-	delete Parallel;
 }

@@ -11,13 +11,13 @@
 #include "BehaviourAction.h"
 #include "BehaviourNodeWithChildren.h"
 #include"BehaviourParallel.h"
+#include"Inverter.h"
 namespace NCL {
 	namespace CSC8503 {
 		class Boss : public GameObject {
 		public:
 			Boss(Player* player);
 			~Boss();
-			BehaviourSequence* rootSequence;
 			BehaviourState state;
 			void Update(float dt);
 		private:
@@ -33,9 +33,10 @@ namespace NCL {
 			BehaviourAction* Flinches;
 			BehaviourAction* Death;
 			Player* player;
-			BehaviourParallel* Parallel;
-			BehaviourSelector* Selector;
-			BehaviourSequence* Sequence;
+
+			BehaviourSelector* bossSelection = new BehaviourSelector("Boss Selection");
+			BehaviourParallel* bossAttackParallel = new BehaviourParallel("Boss Attack Parallel");
+
 		};
 	}
 }

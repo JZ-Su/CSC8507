@@ -6,7 +6,7 @@ public:
     BehaviourParallel(const std::string& nodeName) : BehaviourNodeWithChildren(nodeName) {}
     ~BehaviourParallel() {}
     BehaviourState Execute(float dt) override {
-        std::cout << "Executing parallel behaviour " << name << "\n";
+        /*std::cout << "Executing parallel behaviour " << name << "\n";*/
         bool anyNodeOngoing = false;
         bool anyNodeFailed = false;
 
