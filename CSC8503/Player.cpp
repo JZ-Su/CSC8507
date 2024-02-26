@@ -11,7 +11,7 @@ Player::Player( const std::string& objectname)
 	tag = objectname;
 	if (name == tag)
 	{
-		health = 60;
+		health = 100;
 		collectibles = 0;
 		timer = 300;
 	}

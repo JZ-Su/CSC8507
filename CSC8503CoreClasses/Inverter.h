@@ -16,7 +16,7 @@ public:
         else if (childState == Failure)
             return Success;
         else
-            return childState; 
+            return childState;
     }
 
     void Reset() override {

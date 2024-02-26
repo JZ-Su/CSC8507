@@ -48,8 +48,13 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	gameState = Start;
 	mainMenuState = MainMenu_Start;
 	gameMode = TimeLimited;
-}
 
+	ui = new GameUI(); 
+	//player->GetHealth();
+	ui->CreateGameUI({ Vector3(-0.9f, 0.9f, -1.0f), Vector3(-0.9f, 0.8f, -1.0f), Vector3(-0.4f, 0.8f, -1.0f), Vector3(-0.4f, 0.9f, -1.0f) },
+		{ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) }, 512, 512, 4, 0, "Default.png", "health");
+
+}	
 /*
 
 Each of the little demo scenarios used in the game uses the same 2 meshes,
@@ -89,7 +94,7 @@ void TutorialGame::UpdateGame(float dt) {
 	}
 
 	totalTime += dt;
-
+	health=player->GetHealth();
 	if (!inSelectionMode) {
 		world->GetMainCamera().UpdateCamera(dt);
 	}
@@ -162,7 +167,6 @@ void TutorialGame::UpdateGame(float dt) {
 		Vector3 fireBallPosition = fireBallBullet->GetTransform().GetPosition();
 		Vector3 playerPosition = player->GetTransform().GetPosition();
 		UpdateTrackingBall(fireBallPosition, playerPosition, 4, dt);
-		fireBallBullet->GetTransform().SetPosition(fireBallPosition);
 	}
 	SelectObject();
 	MoveSelectedObject();
@@ -218,10 +222,10 @@ void TutorialGame::UpdateGame(float dt) {
 	physics->Update(dt);
 
 	//gameLevel->GetAI()->Update(dt);
-	//gameLevel->GetDoor()->Update(dt);
 
 	Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
-	Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 90));
+	Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
+	Debug::Print("Press P to Pause!", Vector2(70, 90));
 
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
@@ -1022,4 +1026,5 @@ void TutorialGame::UpdateTrackingBall(Vector3 & ballPosition, const Vector3 & pl
 	float distance = speed * dt;
 
 	ballPosition += direction * distance;
+	fireBallBullet->GetTransform().SetPosition(ballPosition);
 }
