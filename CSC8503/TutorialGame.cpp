@@ -167,7 +167,6 @@ void TutorialGame::UpdateGame(float dt) {
 		Vector3 fireBallPosition = fireBallBullet->GetTransform().GetPosition();
 		Vector3 playerPosition = player->GetTransform().GetPosition();
 		UpdateTrackingBall(fireBallPosition, playerPosition, 4, dt);
-		fireBallBullet->GetTransform().SetPosition(fireBallPosition);
 	}
 	SelectObject();
 	MoveSelectedObject();
@@ -1027,4 +1026,5 @@ void TutorialGame::UpdateTrackingBall(Vector3 & ballPosition, const Vector3 & pl
 	float distance = speed * dt;
 
 	ballPosition += direction * distance;
+	fireBallBullet->GetTransform().SetPosition(ballPosition);
 }
