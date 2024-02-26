@@ -9,9 +9,7 @@ using namespace NCL;
 using namespace CSC8503;
 Boss::Boss(Player* player) {
 	this->player = player;
-	// 更新目标位置
-	Vector3 targetPosition = GetTransform().GetPosition() + Vector3(0, 0, 8);
-	remoteAttackRange = 40.0f;
+	remoteAttackRange = 100.0f;
 	meleeAttackRange = 60.0f;
 	bossHealth = 100.0f;
 	Idle = new BehaviourAction("Idle", [&](float dt, BehaviourState state)->BehaviourState {
@@ -26,36 +24,10 @@ Boss::Boss(Player* player) {
 				Debug::DrawCollisionBox(this);
 				Debug::DrawCollisionBox(this->player);
 				std::cout << this->distanceToTarget << std::endl;
-				return Failure;
+				return Success;
 			}
 			else {
-
-				// 检查当前位置是否已经接近目标位置
-				float distanceToTarget = calculateDistance(GetTransform().GetPosition(), targetPosition);
-				if (distanceToTarget <= 1.0f) { // 如果已经接近目标位置，则生成新的目标位置
-					std::random_device rd;
-					std::mt19937 gen(rd());
-					std::uniform_real_distribution<float> dis(-20.0f, 20.0f); // offset
-
-					float offsetX = dis(gen);
-					float offsetZ = dis(gen);
-
-					// 更新目标位置
-					targetPosition = GetTransform().GetPosition() + Vector3(offsetX, 0, offsetZ);
-				}
-
-				// 计算移向目标位置的方向
-				Vector3 direction = targetPosition - GetTransform().GetPosition();
-				direction.Normalise();
-
-				// 计算移动的距离（速度 * 时间）
-				float moveDistance = 10.0f * dt;
-
-				// 根据移动距离更新物体位置
-				Vector3 newPosition = GetTransform().GetPosition() + direction * moveDistance;
-				GetTransform().SetPosition(newPosition);
-
-				std::cout << targetPosition <<"idle.\n";
+				std::cout << "idle.\n";
 				return Ongoing;
 			}
 		}
@@ -71,8 +43,7 @@ Boss::Boss(Player* player) {
 		else if (state == Ongoing) {
 			if (distanceToTarget <= meleeAttackRange) {
 				std::cout << "MeleeAttack.\n";
-				/*return Success;*/
-				return Failure;
+				return Success;
 			}
 			else {
 				std::cout << "Player out of range for melee attack.\n";
@@ -90,8 +61,7 @@ Boss::Boss(Player* player) {
 		else if (state == Ongoing) {
 			if (distanceToTarget <= remoteAttackRange) {
 				std::cout << "RemoteAttack.\n";
-				/*return Success;*/
-				return Failure;
+				return Success;
 			}
 			else {
 				std::cout << "Player out of range for remote attack.\n";
@@ -133,7 +103,7 @@ Boss::Boss(Player* player) {
 	Selector->AddChild(MeleeAttack);
 	Selector->AddChild(RemoteAttack);
 	Selector->AddChild(Flinches);
-	//Selector->AddChild(Death);
+	Selector->AddChild(Death);
 }
 
 void Boss::Update(float dt) {
