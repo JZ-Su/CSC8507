@@ -10,6 +10,7 @@
 #include "BehaviourSequence.h"
 #include "BehaviourAction.h"
 #include "BehaviourNodeWithChildren.h"
+#include"BehaviourParallel.h"
 namespace NCL {
 	namespace CSC8503 {
 		class Boss : public GameObject {
@@ -18,9 +19,9 @@ namespace NCL {
 			~Boss();
 			BehaviourSequence* rootSequence;
 			BehaviourState state;
-			float calculateDistance(Vector3 pos1, Vector3 pos2);
 			void Update(float dt);
 		private:
+			float calculateDistance(Vector3 pos1, Vector3 pos2);
 			float distanceToTarget;
 			float remoteAttackRange;
 			float meleeAttackRange;
@@ -32,6 +33,9 @@ namespace NCL {
 			BehaviourAction* Flinches;
 			BehaviourAction* Death;
 			Player* player;
+			BehaviourParallel* Parallel;
+			BehaviourSelector* Selector;
+			BehaviourSequence* Sequence;
 		};
 	}
 }
