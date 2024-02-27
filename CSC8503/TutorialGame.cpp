@@ -332,12 +332,12 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
-		player->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
+		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
 		lockedObject->GetPhysicsObject()->AddForce(fwdAxis);
-		player->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
@@ -488,7 +488,7 @@ void TutorialGame::InitWorld() {
 
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 	player = gameLevel->GetPlayer();
-
+	
 	ghost = gameLevel->getGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
 
