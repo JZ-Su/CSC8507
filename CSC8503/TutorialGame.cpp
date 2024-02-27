@@ -158,11 +158,24 @@ void TutorialGame::UpdateGame(float dt) {
 
 	// update player animation
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
-	if(fireBallBullet&&player) {
-		Vector3 fireBallPosition = fireBallBullet->GetTransform().GetPosition();
-		Vector3 playerPosition = player->GetTransform().GetPosition();
-		UpdateTrackingBall(fireBallPosition, playerPosition, 4, dt);
-	}
+		if (fireBallBullet->GetIsHiding()&&gameLevel->GetBoss()->getShooting()&& gameLevel->GetBoss()->getHasFireBallBullet()) {
+			fireBallBullet->GetTransform().SetPosition(gameLevel->GetBoss()->GetTransform().GetPosition() + Vector3(0, 20, 30));
+			std::cout << fireBallBullet->GetTransform().GetPosition() << std::endl;
+			fireBallBullet->SetIsHiding(false);
+			gameLevel->GetBoss()->setHasFireBallBullet(false);
+			fireBallBullet->SetExistenceTime(0.0f);
+		}
+		if (!fireBallBullet->GetIsHiding()) {
+			fireBallBullet->UpdateExistenceTime(dt);
+			Vector3 playerPosition = player->GetTransform().GetPosition();
+			Vector3 ballPosition = fireBallBullet->GetTransform().GetPosition();
+			UpdateTrackingBall(ballPosition, playerPosition, 10, dt);
+			if (fireBallBullet->GetExistenceTime() >= 12.0f) {
+				fireBallBullet->GetTransform().SetPosition(Vector3(0, -20, 0));
+				gameLevel->GetBoss()->setHasFireBallBullet(true);
+				fireBallBullet->SetIsHiding(true);
+			}
+		}
 	SelectObject();
 	MoveSelectedObject();
 	
@@ -486,6 +499,7 @@ void TutorialGame::InitWorld() {
 
 	ghost = gameLevel->getGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
+	fireBallBullet = gameLevel->getFireBallBullet();
 
 	/*
 		Please switch the debug mode here
@@ -505,7 +519,7 @@ void TutorialGame::InitWorld() {
 		playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 		playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 		playerJumpAnimation = gameLevel->getplayerJumpAnimation();
-		fireBallBullet = gameLevel->getFireBallBullet();
+		//fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initalize function
 		//gameLevel->AddLevelToWorld(world, 0, true, false);
@@ -1013,13 +1027,13 @@ void TutorialGame::SwitchLevel() {
 	}
 }
 
-void TutorialGame::UpdateTrackingBall(Vector3 & ballPosition, const Vector3 & playerPosition, float speed, float dt) {
+void TutorialGame::UpdateTrackingBall(Vector3 ballPosition,const Vector3 & playerPosition, float speed, float dt) {
 
 	Debug::DrawLine(ballPosition, playerPosition, Debug::BLACK);
 	Vector3 direction = (playerPosition - ballPosition).Normalised();
 
 	float distance = speed * dt;
-
 	ballPosition += direction * distance;
+
 	fireBallBullet->GetTransform().SetPosition(ballPosition);
 }

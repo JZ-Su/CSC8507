@@ -117,5 +117,6 @@ namespace NCL {
 		GameObject* ghost;
 		GameObject* fireBallBullet;
 
+
 	};
 }

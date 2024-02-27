@@ -545,6 +545,7 @@ GameObject* BasicExamples::CreateFireBallBullet(const Vector3& position, float r
 
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
 	sphere->GetPhysicsObject()->InitSphereInertia();
-
+	sphere->SetIsHiding(true);
+	sphere->SetExistenceTime(0.0f);
 	return sphere;
 }

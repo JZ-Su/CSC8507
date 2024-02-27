@@ -91,6 +91,25 @@ namespace NCL::CSC8503 {
 			return worldID;
 		}
 
+		void SetIsHiding(bool IsHiding) {
+			isHiding = IsHiding;
+		}
+
+		bool GetIsHiding() const {
+			return isHiding;
+		}
+
+		void SetExistenceTime(float ExistenceTime) {
+			existenceTime = ExistenceTime;
+		}
+
+		float GetExistenceTime() const {
+			return existenceTime;
+		}
+		void UpdateExistenceTime(float dt) {
+			existenceTime += dt;
+		}
+
 		bool isEnable = true;
 
 		void SetCollisionResponse(bool b) { hasCollision = b; }
@@ -113,6 +132,7 @@ namespace NCL::CSC8503 {
 
 		bool		isActive;
 		int			worldID;
+		float		existenceTime;
 		std::string	name;
 		std::string	tag;
 		std::string	layer;
@@ -120,6 +140,7 @@ namespace NCL::CSC8503 {
 		Vector3 broadphaseAABB;
 
 		bool hasCollision;
+		bool isHiding;
 
 		Vector3 center;
 		Vector3 volumeSize;

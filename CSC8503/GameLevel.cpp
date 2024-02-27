@@ -208,8 +208,9 @@ void GameLevel::CreateLevel3() {
 	//BossBehaviourTree(boss,player);
 	//
 	boss = CreateBoss(Vector3(0, 1, -60), Vector3(10, 10, 10), player,0.0f);
+	fireBallBullet=CreateFireBallBullet(Vector3(0,-50,0), 3, 0.0f);
 	level3.objectList.push_back(boss);
-	level3.objectList.push_back(fireBallBullet=CreateFireBallBullet(Vector3(0, 30, 20), 2, 0.0f));
+	level3.objectList.push_back(fireBallBullet);
 	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/
 }
 

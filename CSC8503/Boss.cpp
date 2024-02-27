@@ -9,12 +9,14 @@ using namespace NCL;
 using namespace CSC8503;
 Boss::Boss(Player* player) {
 	this->player = player;
-	remoteAttackRange = 30.0f;
+	remoteAttackRange = 90.0f;
 	meleeAttackRange = 10.0f;
 	bossHealth = 100.0f;
+	isShooting = false;
+	hasFireBallBullet = true;
 	Idle = new BehaviourAction("Idle", [&](float dt, BehaviourState state)->BehaviourState {
 		if (state == Initialise) {
-			std::cout << "Idle init\n";
+			//std::cout << "Idle init\n";
 			state = Ongoing;
 		}
 		else if (state == Ongoing) {
@@ -40,12 +42,14 @@ Boss::Boss(Player* player) {
 	);
 	RemoteAttack = new BehaviourAction("RemoteAttack", [&](float dt, BehaviourState state) -> BehaviourState {
 		if (state == Initialise) {
-			std::cout << "RAttacking init.\n";
+			//std::cout << "RAttacking init.\n";
+
 			state = Ongoing;
 		}
 		else if (state == Ongoing) {
 			this->distanceToTarget = calculateDistance(GetTransform().GetPosition(), this->player->GetTransform().GetPosition());
 			if (this->distanceToTarget > this->remoteAttackRange) {
+				isShooting = false;
 				return Failure;
 			}
 			else {
@@ -53,6 +57,7 @@ Boss::Boss(Player* player) {
 				Debug::DrawCollisionBox(this);
 				Debug::DrawCollisionBox(this->player);
 				std::cout << "attacking----" << this->distanceToTarget << std::endl;
+				isShooting = true;
 				return Ongoing;
 			}
 		}

@@ -10,7 +10,7 @@
 #include "BehaviourSequence.h"
 #include "BehaviourAction.h"
 #include "BehaviourNodeWithChildren.h"
-#include"BehaviourParallel.h"
+//#include"BehaviourParallel.h"
 namespace NCL {
 	namespace CSC8503 {
 		class Boss : public GameObject {
@@ -20,7 +20,21 @@ namespace NCL {
 			BehaviourSequence* rootSequence;
 			BehaviourState state;
 			void Update(float dt);
+			bool getShooting() {
+				return isShooting;
+			}
+			void SetShooting(bool IsShooting) {
+				isShooting = IsShooting;
+			}
+			bool getHasFireBallBullet() {
+				return hasFireBallBullet;
+			}
+			void setHasFireBallBullet(bool HasFireBallBullet) {
+				hasFireBallBullet = HasFireBallBullet;
+			}
 		private:
+			bool isShooting;
+			bool hasFireBallBullet;
 			float calculateDistance(Vector3 pos1, Vector3 pos2);
 			float distanceToTarget;
 			float remoteAttackRange;
@@ -33,7 +47,6 @@ namespace NCL {
 			BehaviourAction* Flinches;
 			BehaviourAction* Death;
 			Player* player;
-			BehaviourParallel* Parallel;
 			BehaviourSelector* Selector;
 			BehaviourSequence* Sequence;
 		};
