@@ -48,6 +48,7 @@ namespace NCL {
 			BehaviourAction* Death;
 			Player* player;
 
+			BehaviourSequence* rootSequence;
 			BehaviourSelector* bossSelection = new BehaviourSelector("Boss Selection");
 			BehaviourParallel* bossAttackParallel = new BehaviourParallel("Boss Attack Parallel");
 

@@ -49,12 +49,12 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	mainMenuState = MainMenu_Start;
 	gameMode = TimeLimited;
 
-	ui = new GameUI(); 
-	//player->GetHealth();
-	ui->CreateGameUI({ Vector3(-0.9f, 0.9f, -1.0f), Vector3(-0.9f, 0.8f, -1.0f), Vector3(-0.4f, 0.8f, -1.0f), Vector3(-0.4f, 0.9f, -1.0f) },
-		{ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) }, 512, 512, 4, 0, "Default.png", "health");
+	//ui = new GameUI();
+	////player->GetHealth();
+	//ui->CreateGameUI({ Vector3(-0.9f, 0.9f, -1.0f), Vector3(-0.9f, 0.8f, -1.0f), Vector3(-0.4f, 0.8f, -1.0f), Vector3(-0.4f, 0.9f, -1.0f) },
+	//	{ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) }, 512, 512, 4, 0, "Default.png", "health");
 
-}	
+}
 /*
 
 Each of the little demo scenarios used in the game uses the same 2 meshes,
@@ -75,12 +75,7 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-	//Debug::DrawCollisionBox(gameLevel->GetLevel1()->objectList[40]);
-	//for (auto element : gameLevel->GetLevel1()->objectList) {
-	//	Debug::DrawCollisionBox(element);
-	//}
-	//Debug::DrawCollisionBox(player);
-	/*gameLevel->GetBoss()->Update(dt, player);*/
+
 	gameLevel->GetBoss()->Update(dt);
 	player->UpdatePlayer(dt);
 
@@ -94,7 +89,7 @@ void TutorialGame::UpdateGame(float dt) {
 	}
 
 	totalTime += dt;
-	health=player->GetHealth();
+	health = player->GetHealth();
 	if (!inSelectionMode) {
 		world->GetMainCamera().UpdateCamera(dt);
 	}
@@ -163,28 +158,29 @@ void TutorialGame::UpdateGame(float dt) {
 
 	// update player animation
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
-		if (fireBallBullet->GetIsHiding()&&gameLevel->GetBoss()->getShooting()&& gameLevel->GetBoss()->getHasFireBallBullet()) {
-			fireBallBullet->GetTransform().SetPosition(gameLevel->GetBoss()->GetTransform().GetPosition() + Vector3(0, 20, 30));
-			std::cout << fireBallBullet->GetTransform().GetPosition() << std::endl;
-			fireBallBullet->SetIsHiding(false);
-			gameLevel->GetBoss()->setHasFireBallBullet(false);
-			fireBallBullet->SetExistenceTime(0.0f);
+
+	if (fireBallBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasFireBallBullet()) {
+		fireBallBullet->GetTransform().SetPosition(gameLevel->GetBoss()->GetTransform().GetPosition() + Vector3(0, 20, 30));
+		std::cout << fireBallBullet->GetTransform().GetPosition() << std::endl;
+		fireBallBullet->SetIsHiding(false);
+		gameLevel->GetBoss()->setHasFireBallBullet(false);
+		fireBallBullet->SetExistenceTime(0.0f);
+	}
+	if (!fireBallBullet->GetIsHiding()) {
+		fireBallBullet->UpdateExistenceTime(dt);
+		Vector3 playerPosition = player->GetTransform().GetPosition();
+		Vector3 ballPosition = fireBallBullet->GetTransform().GetPosition();
+		UpdateTrackingBall(ballPosition, playerPosition, 10, dt);
+		if (fireBallBullet->GetExistenceTime() >= 12.0f) {
+			fireBallBullet->GetTransform().SetPosition(Vector3(0, -20, 0));
+			gameLevel->GetBoss()->setHasFireBallBullet(true);
+			fireBallBullet->SetIsHiding(true);
 		}
-		if (!fireBallBullet->GetIsHiding()) {
-			fireBallBullet->UpdateExistenceTime(dt);
-			Vector3 playerPosition = player->GetTransform().GetPosition();
-			Vector3 ballPosition = fireBallBullet->GetTransform().GetPosition();
-			UpdateTrackingBall(ballPosition, playerPosition, 10, dt);
-			if (fireBallBullet->GetExistenceTime() >= 12.0f) {
-				fireBallBullet->GetTransform().SetPosition(Vector3(0, -20, 0));
-				gameLevel->GetBoss()->setHasFireBallBullet(true);
-				fireBallBullet->SetIsHiding(true);
-			}
-		}
+	}
 	SelectObject();
 	MoveSelectedObject();
-	
-	
+
+
 	//Level 3 stuff
 	/*if (currentLevel == 3) {
 		static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);
@@ -315,7 +311,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	fwdAxis.y = 0.0f;
 	fwdAxis.Normalise();
 
-	
+
 	Vector3 rightAxis = Vector3::Cross(UpAxis, fwdAxis);
 
 	v += (Window::GetMouse()->GetRelativePosition().y);
@@ -372,8 +368,8 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	}
 	else {
 		if (player->IsJumping()) {
-			if (player->updateJumpTimer(dt)) { 
-				player->SetIsJumping(false); 
+			if (player->updateJumpTimer(dt)) {
+				player->SetIsJumping(false);
 			}
 		}
 		player->SetIsWalk(false);
@@ -387,7 +383,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	lockedObject->GetTransform().SetOrientation(lookat);
 
-	world->GetMainCamera().SetPosition(Vector3(campos.x, campos.y+3.0f, campos.z+3.0f ));
+	world->GetMainCamera().SetPosition(Vector3(campos.x, campos.y + 3.0f, campos.z + 3.0f));
 	world->GetMainCamera().SetPitch(pitch);
 	world->GetMainCamera().SetYaw(yaw);
 }
@@ -501,7 +497,7 @@ void TutorialGame::InitWorld() {
 
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 	player = gameLevel->GetPlayer();
-	
+
 	ghost = gameLevel->getGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
 	fireBallBullet = gameLevel->getFireBallBullet();
@@ -1032,7 +1028,7 @@ void TutorialGame::SwitchLevel() {
 	}
 }
 
-void TutorialGame::UpdateTrackingBall(Vector3 ballPosition,const Vector3 & playerPosition, float speed, float dt) {
+void TutorialGame::UpdateTrackingBall(Vector3 ballPosition, const Vector3& playerPosition, float speed, float dt) {
 
 	Debug::DrawLine(ballPosition, playerPosition, Debug::BLACK);
 	Vector3 direction = (playerPosition - ballPosition).Normalised();

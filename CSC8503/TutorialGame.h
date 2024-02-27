@@ -140,7 +140,6 @@ namespace NCL {
 			GameMode gameMode;
 
 			GameObject* blocker;
-			BasicExamples* basicExamples;
 
 			RankingPage rankingPage;
 			std::string nameString;

@@ -19,6 +19,7 @@ public:
 				}
 			}
 		}
+		Reset();
 		return Failure;
 	}
 };
