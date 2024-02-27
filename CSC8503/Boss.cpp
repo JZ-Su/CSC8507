@@ -100,15 +100,41 @@ Boss::Boss(Player* player) {
 	rootSequence->AddChild(selection);
 }
 
+
+//BehaviourSelector * selection = new BehaviourSelector("FirstLevel");
+//selection->AddChild(RemoteAttack);
+//selection->AddChild(Idle);
+////	selection->AddChild(MeleeAttack);
+////	selection->AddChild(Flinches);
+////	selection->AddChild(Death);
+//rootSequence = new BehaviourSequence("Root Sequence");
+//rootSequence->AddChild(selection);
+
+
+//void Boss::Update(float dt) {
+//
+//	if (rootSequence != nullptr) {
+//		rootSequence->Execute(dt);
+//	}
+//}
+
+
 void Boss::Update(float dt) {
 
 	if (rootSequence != nullptr) {
 		rootSequence->Execute(dt);
 	}
-
 }
 
 float Boss::calculateDistance(Vector3 pos1, Vector3 pos2) {
 	float distance = std::sqrt(std::pow(pos2.x - pos1.x, 2) + std::pow(pos2.y - pos1.y, 2) + std::pow(pos2.z - pos1.z, 2));
 	return distance;
+}
+
+Boss::~Boss() {
+	delete Idle;
+	delete MeleeAttack;
+	delete RemoteAttack;
+	delete Flinches;
+	delete Death;
 }

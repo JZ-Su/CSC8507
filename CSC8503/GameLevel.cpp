@@ -153,7 +153,7 @@ void GameLevel::CreateLevel1() {
 
 void GameLevel::CreateLevel2() {
 	level2.objectList.push_back(CreateCube(Vector3(0, -2, 20), Vector3(60, 2, 80), 0.0f));
-	for (int i = 0; i < 7; ++i) {
+	/*for (int i = 0; i < 7; ++i) {
 		Vector3 position = Vector3(-60 + i * 20, 15, 40);
 		level2.objectList.push_back(CreateCube(position, Vector3(1, 15, 60), 0.0f));
 	}
@@ -163,7 +163,7 @@ void GameLevel::CreateLevel2() {
 		level2.objectList.push_back(CreateCube(Vector3(-50, 12.5, position.z), Vector3(9, 12.5, 1), 0.0f));
 		level2.objectList.push_back(CreateCube(Vector3(-10, 12.5, position.z), Vector3(9, 12.5, 1), 0.0f));
 		level2.objectList.push_back(CreateCube(Vector3(10, 12.5, position.z), Vector3(9, 12.5, 1), 0.0f));
-	}
+	}*/
 	level2.objectList.push_back(CreateCube(Vector3(-50, 12.5, -20), Vector3(9, 12.5, 1), 0.0f));
 	level2.objectList.push_back(CreateCube(Vector3(50, 12.5, -20), Vector3(9, 12.5, 1), 0.0f));
 	level2.objectList.push_back(CreateCube(Vector3(0, 15, -21), Vector3(21, 15, 1), 0.0f));

@@ -11,6 +11,8 @@ set(AI_Behaviour_Tree
     "BehaviourSelector.cpp"
     "BehaviourSequence.h"
     "BehaviourSequence.cpp"
+    "BehaviourParallel.h"
+    "Inverter.h"
 )
 source_group("AI\\Behaviour Trees" FILES ${AI_Behaviour_Tree})
 
