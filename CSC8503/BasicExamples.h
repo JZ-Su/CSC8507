@@ -41,13 +41,9 @@ namespace NCL {
 		GameObject* CreateColumn(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		
 		GameObject* CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		GameObject* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		Boss* CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player,float inverseMass = 10.0f);
-
+		Player* CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		Boss* CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player, float inverseMass = 10.0f);
 		Door* CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float rotation = 0.0f);
-		Boss* GetBoss() const { return boss; }
-		Player* GetPlayer() const { return player; }
-		GameObject* getGhost() const { return ghost; }
 		MeshAnimation* getBossAnimation() const { return bossAnimation; }
 		MeshAnimation* getGhostAnimation() const { return ghostAnimation; }
 		MeshAnimation* getplayerIdleAnimation() const { return playerIdleAnimation; }
@@ -58,6 +54,10 @@ namespace NCL {
 
 		GameObject* CreateTestMesh(const Vector3& position, const Vector3& dimensions, float inverseMass);
 		void LoadMaterialTextures(GameObject* character, Mesh* mesh,MeshMaterial* material, GameTechRenderer* renderer);
+
+		Boss* GetBoss() const { return boss; }
+		Player* GetPlayer() const { return player; }
+		GameObject* getGhost() const { return ghost; }
 
 		void ExportToObj(const Mesh& mesh, const std::string& filename);
 
@@ -87,9 +87,6 @@ namespace NCL {
 		Shader* bossShader = nullptr;
 		Shader* playerShader = nullptr;
 
-		Player* player = nullptr;
-		Boss* boss = nullptr;
-		
 		MeshMaterial* bossMat = nullptr;
 		MeshMaterial* playerMat = nullptr;
 		MeshMaterial* ghostMat = nullptr;
@@ -107,6 +104,8 @@ namespace NCL {
 		
 		GameTechRenderer* render;  // new render variable
 		
+		Player* player = nullptr;
+		Boss* boss = nullptr;
 		GameObject* ghost;
 	};
 }

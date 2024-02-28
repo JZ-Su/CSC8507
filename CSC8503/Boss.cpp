@@ -14,18 +14,18 @@ Boss::Boss(Player* player) {
 	distanceToTarget = calculateDistance(GetTransform().GetPosition(), player->GetTransform().GetPosition());
 	patrol = new BehaviourAction("patrol", [&](float dt, BehaviourState state)->BehaviourState {
 		if (state == Initialise) {
-			std::cout << "Patrolling\n";
+			//std::cout << "Patrolling\n";
 			state = Ongoing;
 		}
 		else if (state == Ongoing) {
 			if (distanceToTarget <= attackRange) {
 				GetTransform().SetPosition(GetTransform().GetPosition() + Vector3(0, 1, 0));
 
-				std::cout << "Player detected close! Switching to attack mode.\n";
+				//std::cout << "Player detected close! Switching to attack mode.\n";
 				return Success;
 			}
 			else {
-				std::cout << (GetTransform().GetPosition() - this->player->GetTransform().GetPosition()).Length() << std::endl;
+				//std::cout << (GetTransform().GetPosition() - this->player->GetTransform().GetPosition()).Length() << std::endl;
 			}
 		}
 		return state;//will be ongoing until success or condition to switch
@@ -33,11 +33,11 @@ Boss::Boss(Player* player) {
 	);
 	Dash = new BehaviourAction("Dash", [&](float dt, BehaviourState state) -> BehaviourState {
 		if (state == Initialise) {
-			std::cout << "Attacking.\n";
+			//std::cout << "Attacking.\n";
 			state = Ongoing;
 		}
 		else if (state == Ongoing) {
-			std::cout << "Ongoing.\n";
+			//std::cout << "Ongoing.\n";
 			GetTransform().SetPosition(this->player->GetTransform().GetPosition());
 		}
 		return state;
@@ -45,11 +45,11 @@ Boss::Boss(Player* player) {
 	);
 	MeleeAttack = new BehaviourAction("MeleeAttack", [&](float dt, BehaviourState state) -> BehaviourState {
 		if (state == Initialise) {
-			std::cout << "Attacking.\n";
+			//std::cout << "Attacking.\n";
 			state = Ongoing;
 		}
 		else if (state == Ongoing) {
-			std::cout << "Ongoing.\n";
+			//std::cout << "Ongoing.\n";
 			//GetTransform().SetPosition(this->player->GetTransform().GetPosition());
 		}
 		return state;
@@ -57,11 +57,11 @@ Boss::Boss(Player* player) {
 	);
 	RemoteAttack = new BehaviourAction("RemoteAttack", [&](float dt, BehaviourState state) -> BehaviourState {
 		if (state == Initialise) {
-			std::cout << "Attacking.\n";
+			//std::cout << "Attacking.\n";
 			state = Ongoing;
 		}
 		else if (state == Ongoing) {
-			std::cout << "Ongoing.\n";
+			//std::cout << "Ongoing.\n";
 			//GetTransform().SetPosition(this->player->GetTransform().GetPosition());
 		}
 		return state;
@@ -69,11 +69,11 @@ Boss::Boss(Player* player) {
 	);
 	Summon = new BehaviourAction("Summon", [&](float dt, BehaviourState state) -> BehaviourState {
 		if (state == Initialise) {
-			std::cout << "Attacking.\n";
+			//std::cout << "Attacking.\n";
 			state = Ongoing;
 		}
 		else if (state == Ongoing) {
-			std::cout << "Ongoing.\n";
+			//std::cout << "Ongoing.\n";
 			//GetTransform().SetPosition(player->GetTransform().GetPosition());
 		}
 		return state;

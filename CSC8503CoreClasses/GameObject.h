@@ -96,10 +96,6 @@ namespace NCL::CSC8503 {
 		void SetCollisionResponse(bool b) { hasCollision = b; }
 		bool GetCollisionResponse() const { return hasCollision; }
 
-		void SetDefaultPos(Vector3 pos) { defaultPosition = pos; }
-		Vector3 GetDefaultPos() const { return defaultPosition; }
-
-
 		void SetVolumeSize(const Vector3& size) { volumeSize = size; }
 		Vector3 GetVolumeSize() const { return volumeSize; }
 
@@ -123,7 +119,6 @@ namespace NCL::CSC8503 {
 
 		Vector3 center;
 		Vector3 volumeSize;
-		Vector3 defaultPosition;
 	};
 }
 
