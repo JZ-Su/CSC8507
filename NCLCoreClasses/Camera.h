@@ -39,6 +39,7 @@ namespace NCL {
 		float GetNearPlane() const {
 			return nearPlane;
 		}
+		
 
 		float GetFarPlane() const {
 			return farPlane;
@@ -125,7 +126,11 @@ namespace NCL {
 			fov = val;
 			return *this;
 		}
-
+		float GetFov() const { return fov;}
+		Camera& SetFov(float val) {
+			fov = val;
+			return *this;
+		}
 		Matrix4 BuildProjectionMatrix(float aspectRatio = 1.0f) const override;
 
 	protected:

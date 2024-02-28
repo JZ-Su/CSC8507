@@ -20,6 +20,7 @@ namespace NCL {
 			Texture*	LoadTexture(const std::string& name);
 			Shader*		LoadShader(const std::string& vertex, const std::string& fragment);
 			void        Loadhealth(GameUI ui);
+			//void UpdateProjMatrixFov(float df);
 		protected:
 			std::unordered_map<std::string, SharedOGLTexture> textureCache;
 
@@ -61,6 +62,7 @@ namespace NCL {
 
 			Vector4		lightColour;
 			float		lightRadius;
+			//float		fov;
 			Vector3		lightPosition;
 
 			//Debug data storage things
