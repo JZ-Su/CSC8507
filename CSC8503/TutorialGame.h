@@ -127,6 +127,8 @@ namespace NCL {
 			GameObject* ghost;
 			GameObject* fireBallBullet;
 			MeshAnimation* bossAnimation;
+			MeshAnimation* bossCheersAnimation;
+			MeshAnimation* bossShootingAnimation;
 			MeshAnimation* ghostAnimation;
 			MeshAnimation* playerIdleAnimation;
 			MeshAnimation* playerWalkAnimation;
@@ -152,6 +154,7 @@ namespace NCL {
 			void UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAnimation, MeshAnimation* playerWalkAnimation, float dt);
 			void UpdateGhostAnim(GameObject* ghost, MeshAnimation* ghostAnimation, float dt);
 			void UpdateTrackingBall(Vector3 ballPosition,const Vector3& playerPosition, float speed, float dt);
+			void FireBallBulletLogic(float dt);
 			float h = 0, v = 0;
 
 			bool hasRotation = true;
@@ -162,6 +165,9 @@ namespace NCL {
 			GameObject* portal;
 			void SwitchLevel();
 			GameUI* ui;
+			float shootingTimer = 0.0f;
+			const float shootingDuration = 1.4f;
+			bool playShootingAnimation=false;
 		};
 	}
 }

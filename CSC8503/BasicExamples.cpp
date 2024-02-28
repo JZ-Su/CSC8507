@@ -70,7 +70,9 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	ghostShader = render->LoadShader("SkinningVertex.vert", "ghost.frag");
 
 	//bossAnimation = new MeshAnimation("Role_T.anm");
-	bossAnimation = new MeshAnimation("idle1.anm");
+	bossAnimation = new MeshAnimation("Taunt.anm");
+	bossCheersAnimation = new MeshAnimation("Happy.anm");
+	bossShootingAnimation = new MeshAnimation("Gunfire1.anm");
 	//bossAnimation = new MeshAnimation("Male_Jump.anm");
 	playerIdleAnimation = new MeshAnimation("Female_Stand.anm");
 	//playerWalkAnimation = new MeshAnimation("StepForwardTwoHand.anm");
@@ -540,7 +542,7 @@ GameObject* BasicExamples::CreateFireBallBullet(const Vector3& position, float r
 	sphere->GetTransform().SetScale(sphereSize).SetPosition(position);
 
 	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, nullptr, basicShader));
-	sphere->GetRenderObject()->SetColour(Vector4(1.0, 0.25, 0.0, 1.0));
+	sphere->GetRenderObject()->SetColour(Vector4(1.0, 0.4, 0.0, 1.0));
 	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
 
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);

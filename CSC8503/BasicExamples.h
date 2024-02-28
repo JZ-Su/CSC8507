@@ -52,6 +52,8 @@ namespace NCL {
 		Player* GetPlayer() const { return player; }
 		GameObject* getGhost() const { return ghost; }
 		MeshAnimation* getBossAnimation() const { return bossAnimation; }
+		MeshAnimation* getBossCheersAnimation() const { return bossCheersAnimation; }
+		MeshAnimation* getBossShootingAnimation() const { return bossShootingAnimation; }
 		MeshAnimation* getGhostAnimation() const { return ghostAnimation; }
 		MeshAnimation* getplayerIdleAnimation() const { return playerIdleAnimation; }
 		MeshAnimation* getplayerWalkAnimation() const { return playerWalkAnimation; }
@@ -105,6 +107,8 @@ namespace NCL {
 		MeshMaterial* handrailMat = nullptr;
 
 		MeshAnimation* bossAnimation = nullptr;
+		MeshAnimation* bossCheersAnimation = nullptr;
+		MeshAnimation* bossShootingAnimation = nullptr;
 		MeshAnimation* playerIdleAnimation = nullptr;
 		MeshAnimation* ghostAnimation = nullptr;
 		MeshAnimation* playerWalkAnimation = nullptr;
