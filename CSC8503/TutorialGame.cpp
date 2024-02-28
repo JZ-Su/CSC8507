@@ -75,7 +75,7 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-
+	Debug::DrawCollisionBox(player);
 	gameLevel->GetBoss()->Update(dt);
 	player->UpdatePlayer(dt);
 
@@ -330,13 +330,13 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	Vector3 campos = targetpos - camdir * 20.0f;
 
-	/*Ray collisionRay = Ray(targetpos, -camdir);
+	Ray collisionRay = Ray(targetpos, -camdir);
 	RayCollision collisionRayData;
 	if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
 	{
 		if (collisionRayData.rayDistance < 6)
 			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
-	}*/
+	}
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
@@ -508,7 +508,7 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	isDebug = false;
+	isDebug = true;
 	/*isDebug = false;*/
 	if (isDebug) {
 		//Level 1
