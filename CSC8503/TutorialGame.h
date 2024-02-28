@@ -77,7 +77,7 @@ namespace NCL {
 			void MoveSelectedObject();
 			void DebugObjectMovement();
 			void LockedObjectMovement(float dt);
-
+			void UpdateProjMatrixFov(float df);
 			//void BridgeConstraintTest();
 
 #ifdef USEVULKAN

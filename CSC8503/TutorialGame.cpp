@@ -75,7 +75,7 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-
+	Debug::DrawCollisionBox(player);
 	gameLevel->GetBoss()->Update(dt);
 	player->UpdatePlayer(dt);
 
@@ -313,13 +313,13 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	Vector3 campos = targetpos - camdir * 20.0f;
 
-	/*Ray collisionRay = Ray(targetpos, -camdir);
+	Ray collisionRay = Ray(targetpos, -camdir);
 	RayCollision collisionRayData;
 	if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
 	{
 		if (collisionRayData.rayDistance < 6)
 			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
-	}*/
+	}
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
@@ -369,6 +369,9 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	world->GetMainCamera().SetPosition(Vector3(campos.x, campos.y + 3.0f, campos.z + 3.0f));
 	world->GetMainCamera().SetPitch(pitch);
 	world->GetMainCamera().SetYaw(yaw);
+	//renderer.UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
+	UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
+	
 }
 
 void TutorialGame::DebugObjectMovement() {
@@ -495,7 +498,7 @@ void TutorialGame::InitWorld() {
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 
 		//Level 2
-		//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
@@ -1050,6 +1053,14 @@ void TutorialGame::UpdateTrackingBall(Vector3 ballPosition, const Vector3& playe
 	ballPosition += direction * distance;
 
 	fireBallBullet->GetTransform().SetPosition(ballPosition);
+}
+void TutorialGame::UpdateProjMatrixFov(float df) {
+	float fov = world->GetMainCamera().GetFov();
+	fov -= df;
+	fov = std::max(10.0f, fov);
+	fov = std::min(90.0f, fov);
+	world->GetMainCamera().SetFov(fov);
+}
 }
 
 void TutorialGame::FireBallBulletLogic(float dt) {

@@ -617,3 +617,4 @@ void GameTechRenderer::SetDebugLineBufferSizes(size_t newVertCount) {
 		glBindVertexArray(0);
 	}
 }
+
