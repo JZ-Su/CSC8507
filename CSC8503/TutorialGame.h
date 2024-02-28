@@ -166,7 +166,7 @@ namespace NCL {
 			void SwitchLevel();
 			GameUI* ui;
 			float shootingTimer = 0.0f;
-			const float shootingDuration = 1.4f;
+			const float shootingDuration = 1.3f;
 			bool playShootingAnimation=false;
 		};
 	}

@@ -1061,7 +1061,6 @@ void TutorialGame::UpdateProjMatrixFov(float df) {
 	fov = std::min(90.0f, fov);
 	world->GetMainCamera().SetFov(fov);
 }
-}
 
 void TutorialGame::FireBallBulletLogic(float dt) {
 	if (fireBallBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasFireBallBullet() && !playShootingAnimation) {
@@ -1075,8 +1074,8 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 		fireBallBullet->UpdateExistenceTime(dt);
 		Vector3 playerPosition = player->GetTransform().GetPosition();
 		Vector3 ballPosition = fireBallBullet->GetTransform().GetPosition();
-		UpdateTrackingBall(ballPosition, playerPosition, 14, dt);
-		if (fireBallBullet->GetExistenceTime() >= 12.0f) {
+		UpdateTrackingBall(ballPosition, playerPosition, 20, dt);
+		if (fireBallBullet->GetExistenceTime() >= 6.0f) {
 			fireBallBullet->GetTransform().SetPosition(Vector3(0, -20, 0));
 			gameLevel->GetBoss()->setHasFireBallBullet(true);
 			fireBallBullet->SetIsHiding(true);
