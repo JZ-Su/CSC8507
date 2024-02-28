@@ -156,7 +156,15 @@ void GameTechRenderer::BuildObjectList() {
 }
 
 void GameTechRenderer::SortObjectList() {
-
+	vector<const RenderObject*> transparentObject;
+	for (int i = 0; i < activeObjects.size(); i++) {
+		if (activeObjects[i]->GetColour().w != 1) {
+			const RenderObject* g = activeObjects[i];
+			activeObjects.erase(activeObjects.begin() + i);
+			transparentObject.push_back(g);
+		}
+	}
+	activeObjects.insert(activeObjects.end(), transparentObject.begin(), transparentObject.end());
 }
 
 void GameTechRenderer::RenderShadowMap() {
@@ -512,15 +520,15 @@ Texture* GameTechRenderer::LoadTexture(const std::string& name) {
 	auto it = textureCache.find(name);
 	if (it != textureCache.end()) {
 		std::cout << "Texture '" << name << "' found in cache!" << std::endl;
-		return it->second.get(); // 返回已经存在于缓存中的纹理
+		return it->second.get(); // Return the texture in cache
 	}
 	else {
 		std::cout << "Loading texture '" << name << "'..." << std::endl;
-		// 如果缓存中不存在，加载纹理
+		// If the texture can't be found in cache, load it
 		UniqueOGLTexture texture = OGLTexture::TextureFromFile(name);
 		if (texture) {
 			SharedOGLTexture sharedTexture(std::move(texture));
-			textureCache[name] = sharedTexture; // 添加到缓存中
+			textureCache[name] = sharedTexture; // Add the texture to cache
 			return sharedTexture.get();
 		}
 		else {
@@ -601,3 +609,15 @@ void GameTechRenderer::SetDebugLineBufferSizes(size_t newVertCount) {
 	}
 }
 
+vector<Vector4> GameTechRenderer::LoadMap() {
+	char* texture;
+	int width, height, flag, channel;
+	TextureLoader::LoadTexture("map.png", texture, width, height, channel, flag);
+
+	vector<Vector4> pixelData;
+	for (int i = 0; i < width * height; i++) {
+		Vector4 vec = Vector4(-(int)*(texture + 4 * i), -(int)*(texture + 4 * i + 1), -(int)*(texture + 4 * i + 2), -(int)*(texture + 4 * i + 3));
+		pixelData.push_back(vec);
+	}
+	return pixelData;
+}

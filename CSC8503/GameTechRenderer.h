@@ -19,8 +19,9 @@ namespace NCL {
 			Mesh*		LoadMesh(const std::string& name);
 			Texture*	LoadTexture(const std::string& name);
 			Shader*		LoadShader(const std::string& vertex, const std::string& fragment);
-			void        Loadhealth(GameUI ui);
-			//void UpdateProjMatrixFov(float df);
+
+			vector<Vector4> LoadMap();
+
 		protected:
 			std::unordered_map<std::string, SharedOGLTexture> textureCache;
 

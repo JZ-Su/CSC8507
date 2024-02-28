@@ -8,6 +8,8 @@ namespace NCL {
 		vector<GameObject*> objectList;
 		GameObject* portal;
 
+		void AddObject(GameObject* o) { this->objectList.push_back(o); }
+
 		// deep copy
 		Level& operator=(const Level& from) {
 			if (this != &from) {
@@ -69,6 +71,9 @@ namespace NCL {
 		void CreateLevel1_Columns();
 		void CreateLevel1_Stairs();
 
+		//void CreateLevel2_Doors();
+		vector<Door*> GetL2Doors() const { return l2_Doors; }
+
 	protected:
 		Level level1;
 		Level level2;
@@ -86,5 +91,7 @@ namespace NCL {
 		vector<Level> level4_reverse;
 		vector<Level> level4_rotate;
 		vector<Level> level4_reverse_rotate;
+
+		vector<Door*> l2_Doors;
 	};
 }

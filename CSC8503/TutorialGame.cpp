@@ -43,7 +43,7 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	controller.MapAxis(3, "XLook");
 	controller.MapAxis(4, "YLook");
 
-	LoadRankingFile();
+	//LoadRankingFile();
 	//gameState = MainMenu;
 	gameState = Start;
 	mainMenuState = MainMenu_Start;
@@ -77,6 +77,17 @@ TutorialGame::~TutorialGame() {
 void TutorialGame::UpdateGame(float dt) {
 	Debug::DrawCollisionBox(player);
 	gameLevel->GetBoss()->Update(dt);
+	// gameLevel->GetBoss()->Update(dt, player);
+	//Debug::DrawCollisionBox(gameLevel->GetLevel1()->objectList[40]);
+	//for (auto element : gameLevel->GetLevel1()->objectList) {
+	//	Debug::DrawCollisionBox(element);
+	//}
+	Debug::DrawCollisionBox(player);
+	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
+	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
+	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
+
+	//gameLevel->GetPlayerCollisionBox()->Update();
 	player->UpdatePlayer(dt);
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
@@ -225,6 +236,11 @@ void TutorialGame::UpdateGame(float dt) {
 	if (!isDebug) {
 		SwitchLevel();
 	}
+
+	for (const auto& element : gameLevel->GetL2Doors()) {
+		element->Update(dt);
+	}
+	if (totalTime > 100) totalTime = 0;
 }
 
 void TutorialGame::UpdateKeys(float dt) {
@@ -488,13 +504,16 @@ void TutorialGame::InitWorld() {
 
 	ghost = gameLevel->getGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
+
+	boss = gameLevel->GetBoss();
+	bossAnimation = gameLevel->getBossAnimation();
 	fireBallBullet = gameLevel->getFireBallBullet();
 
 	/*
 		Please switch the debug mode here
 	*/
 	isDebug = true;
-	/*isDebug = false;*/
+	//isDebug = false;
 	if (isDebug) {
 		//Level 1
 		currentLevel = 2;
@@ -512,6 +531,7 @@ void TutorialGame::InitWorld() {
 		//fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initalize function
+		//currentLevel = 8;
 		//gameLevel->AddLevelToWorld(world, 0, true, false);
 		//gameLevel->AddLevelToWorld(world, 0, false, false);
 	}
@@ -520,15 +540,6 @@ void TutorialGame::InitWorld() {
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 		portal = gameLevel->GetConnection()->portal;
-
-		player = gameLevel->GetPlayer();
-		boss = gameLevel->GetBoss();
-		ghost = gameLevel->getGhost();
-		ghostAnimation = gameLevel->getGhostAnimation();
-		bossAnimation = gameLevel->getBossAnimation();
-		playerWalkAnimation = gameLevel->getplayerWalkAnimation();
-		playerIdleAnimation = gameLevel->getplayerIdleAnimation();
-
 		lockedObject = player;
 	}
 
@@ -904,7 +915,6 @@ void TutorialGame::LoadRankingFile() {
 	timeFile.close();
 }
 
-
 void TutorialGame::DrawAnim(GameObject* g, MeshAnimation* anim) {
 	//const vector <Matrix4 > invBindPose = playerMesh->GetInverseBindPose();
 	const Matrix4* invBindPose = g->GetRenderObject()->GetMesh()->GetInverseBindPose().data();
@@ -982,8 +992,6 @@ void TutorialGame::UpdateGhostAnim(GameObject* ghost, MeshAnimation* ghostAnimat
 		UpdateAnim(ghost, ghostAnimation);
 	}
 }
-
-
 
 void TutorialGame::SwitchLevel() {
 	if (!physics->GetCollisionDetectionList(portal).empty() && physics->GetCollisionDetectionList(portal)[0] == player) {

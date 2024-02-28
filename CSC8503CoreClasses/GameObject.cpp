@@ -17,7 +17,6 @@ GameObject::GameObject(const std::string& objectName)	{
 	hasCollision    = true;
 
 	center          = Vector3();
-	defaultPosition = Vector3();
 	volumeSize      = Vector3();
 }
 

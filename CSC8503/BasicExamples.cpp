@@ -2,7 +2,7 @@
 #include "RenderObject.h"
 #include "PhysicsObject.h"
 #include "MeshMaterial.h"
-#include"Boss.h"
+#include "Boss.h"
 
 #include <fstream>
 
@@ -396,7 +396,6 @@ GameObject* BasicExamples::CreateTestMesh(const Vector3& position, const Vector3
 	return character;
 }
 
-
 GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass) {
 	GameObject* capsule = new GameObject("capsule");
 
@@ -413,8 +412,8 @@ GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeig
 	return capsule;
 }
 
-GameObject* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-	player = new Player("player");
+Player* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	Player* player = new Player("player");
 
 	AABBVolume* volume = new AABBVolume(Vector3(0.6, 1, 0.6) * dimensions);
 	player->SetVolumeSize(Vector3(0.6, 1, 0.6) * dimensions);
@@ -517,7 +516,7 @@ StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vect
 }
 
 Door* BasicExamples::CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass, float rotation) {
-	Door* d = new Door(player);
+	Door* d = new Door(player, position, rotation);
 	OBBVolume* volume = new OBBVolume(dimensions);
 
 	d->SetBoundingVolume((CollisionVolume*)volume);
@@ -527,7 +526,6 @@ Door* BasicExamples::CreateDoor(const Vector3& position, const Vector3& dimensio
 
 	d->GetPhysicsObject()->SetInverseMass(inverseMass);
 	d->GetPhysicsObject()->InitCubeInertia();
-	d->SetDefaultPos(position);
 	
 	return d;
 }
