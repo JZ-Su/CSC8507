@@ -386,6 +386,9 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	world->GetMainCamera().SetPosition(Vector3(campos.x, campos.y + 3.0f, campos.z + 3.0f));
 	world->GetMainCamera().SetPitch(pitch);
 	world->GetMainCamera().SetYaw(yaw);
+	//renderer.UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
+	UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
+	
 }
 
 void TutorialGame::DebugObjectMovement() {
@@ -505,14 +508,14 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	isDebug = true;
+	isDebug = false;
 	/*isDebug = false;*/
 	if (isDebug) {
 		//Level 1
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 
 		//Level 2
-		//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
@@ -1037,4 +1040,11 @@ void TutorialGame::UpdateTrackingBall(Vector3 ballPosition, const Vector3& playe
 	ballPosition += direction * distance;
 
 	fireBallBullet->GetTransform().SetPosition(ballPosition);
+}
+void TutorialGame::UpdateProjMatrixFov(float df) {
+	float fov = world->GetMainCamera().GetFov();
+	fov -= df;
+	fov = std::max(10.0f, fov);
+	fov = std::min(90.0f, fov);
+	world->GetMainCamera().SetFov(fov);
 }

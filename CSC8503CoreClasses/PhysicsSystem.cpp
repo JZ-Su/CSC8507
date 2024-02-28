@@ -17,6 +17,7 @@ PhysicsSystem::PhysicsSystem(GameWorld& g) : gameWorld(g)	{
 	useBroadPhase	= false;	
 	dTOffset		= 0.0f;
 	globalDamping	= 0.995f;
+	lineardamping = 2.5f;
 	SetGravity(Vector3(0.0f, -9.8f, 0.0f));
 }
 
@@ -394,7 +395,7 @@ void PhysicsSystem::IntegrateVelocity(float dt) {
 	std::vector<GameObject*>::const_iterator first;
 	std::vector<GameObject*>::const_iterator last;
 	gameWorld.GetObjectIterators(first, last);
-	float frameLinearDamping = 1.0f - (0.85f * dt);
+	float frameLinearDamping = 1.0f - (lineardamping * dt);
 
 	for (auto i = first; i != last; i++) {
 		PhysicsObject* object = (*i)->GetPhysicsObject();
@@ -419,7 +420,7 @@ void PhysicsSystem::IntegrateVelocity(float dt) {
 
 		transform.SetOrientation(orientation);
 
-		float frameAngularDamping = 1.0f - (0.4f * dt);
+		float frameAngularDamping = 1.0f - (lineardamping * dt);
 		angVel = angVel * frameAngularDamping;
 		object->SetAngularVelocity(angVel);
 	}
