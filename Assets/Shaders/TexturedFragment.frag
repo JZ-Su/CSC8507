@@ -1,7 +1,8 @@
 #version 330 core
 uniform sampler2D mainTex;
 uniform sampler2D normalTex;
-uniform sampler2DShadow shadowTex;
+//uniform sampler2DShadow shadowTex;
+uniform samplerCube shadowTex;
 uniform vec3	lightPos;
 uniform float	lightRadius;
 uniform vec4	lightColour;
@@ -36,12 +37,23 @@ out vec4 fragColour;
 	return encode_color;
  }
 
-void main(void) {
- float shadow = 1.0; // New !
-	
-	if( IN . shadowProj . w > 0.0) { // New !
-		shadow = textureProj ( shadowTex , IN . shadowProj ) * 0.5f;
-	}
+float ShadowCalculation(vec3 wrldPos)
+{
+	float far_plane = 200;
+    vec3 fragToLight = wrldPos - lightPos; 
+	float closestDepth = texture(shadowTex, normalize(fragToLight)).r;
+	closestDepth*=far_plane;
+	float currentDepth=length(fragToLight);
+	float bias=0.1;
+	float shadow = currentDepth-bias > closestDepth? 0.0 : 1.0;
+
+	return shadow;
+}
+
+void main(void)
+{
+	float shadow = ShadowCalculation(IN.worldPos);
+
 	vec2 flippedTexCoord = vec2(IN.texCoord.x, 1.0 - IN.texCoord.y);
 mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
 	vec3 normal = texture(normalTex, flippedTexCoord).rgb;

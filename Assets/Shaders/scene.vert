@@ -33,7 +33,7 @@ void main(void)
 
 	OUT.shadowProj 	=  shadowMatrix * vec4 ( position,1);
 	OUT.worldPos 	= ( modelMatrix * vec4 ( position ,1)). xyz ;
-	OUT.normal 		= normalize ( normalMatrix * normalize ( normal ));
+	OUT.normal 		= transpose(inverse(mat3(modelMatrix)))*normal;//normalize ( normalMatrix * normalize ( normal ));
 	OUT.tangent = normalize(normalMatrix * normalize(tangent.xyz));
 	OUT.binormal = cross(OUT.tangent, OUT.normal) * tangent.w;
 	

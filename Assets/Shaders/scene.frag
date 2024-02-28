@@ -7,7 +7,9 @@ uniform sampler2D 	metalTex;
 uniform sampler2D 	roughTex;
 uniform sampler2D 	aoTex;
 uniform sampler2D 	heightTex;
-uniform sampler2DShadow shadowTex;
+
+//uniform samplerCubeShadow shadowTex;
+uniform samplerCube shadowTex;
 
 uniform vec3	lightPos;
 uniform float	lightRadius;
@@ -28,21 +30,32 @@ in Vertex
 	vec3 worldPos;
 } IN;
 
-out vec4 fragColor;
+out vec4 fragColor ;
+
+float ShadowCalculation(vec3 wrldPos)
+{
+	float far_plane = 200;
+    vec3 fragToLight = wrldPos - lightPos; 
+	float closestDepth = texture(shadowTex, normalize(fragToLight)).r;
+	closestDepth*=far_plane;
+	float currentDepth=length(fragToLight);
+	float bias=0.1;
+	float shadow = currentDepth-bias > closestDepth? 0.0 : 1.0;
+
+	return shadow;
+}
 
 void main(void)
 {
-	float shadow = 1.0; // New !
-	
-	if( IN . shadowProj . w > 0.0) { // New !
-		shadow = textureProj ( shadowTex , IN . shadowProj ) * 0.5f;
-	}
+	float shadow = ShadowCalculation(IN.worldPos);//= texture(shadowTex, IN.shadowProj)*0.5f;
 
 	vec3  incident = normalize ( lightPos - IN.worldPos );
-	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
-
-	vec3 viewDir = normalize ( cameraPos - IN . worldPos );
+	float distance = length(lightPos - IN.worldPos);
+	float attenuation = 1.0 - clamp(distance / lightRadius, 0.0, 1.0);
+	
+	vec3 viewDir = normalize ( cameraPos - IN.worldPos );
 	vec3 halfDir = normalize ( incident + viewDir );
+	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
 	vec3 viewTangent = normalize(TBN * viewDir);
 	
 	vec4 albedo = IN.colour;
@@ -66,7 +79,7 @@ void main(void)
 	float smoothness = 1.0 - roughness;
 	float shininess = (1.0 * (1.0 - smoothness) + 80 * smoothness) * smoothness;
 
-	float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
+	float lambert  = max (0.0 , dot ( incident , normal )) * attenuation;// * 0.9; 
 	float halfLambert = (lambert + 1.0) * 0.5;
 	float rFactor = max (0.0 , dot ( halfDir , normal ));
 	float sFactor = pow ( rFactor , shininess);
@@ -79,10 +92,10 @@ void main(void)
 	}
 	albedo.rgb = pow(albedo.rgb, vec3(2.2));
 
-	vec3 baseCol = albedo.rgb * (1.0 -metal);
-	vec3 specCol = vec3(0.04,0.04,0.04) * (1.0 - metal) + albedo.rgb * metal;
+	vec3 shadcolor = vec3(0,0.3,1);
 	
-	fragColor.rgb = albedo.rgb * 0.08f * halfLambert; //ambient
+	fragColor.rgb = albedo.rgb * shadcolor* 0.05f; //ambient
+	vec3 baseCol = albedo.rgb * (1.0 -metal);
 	
 	fragColor.rgb += baseCol * lightColour.rgb * lambert * shadow * atten; //diffuse light
 	

@@ -65,8 +65,8 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
 	modelShader = render->LoadShader("model.vert", "model.frag");
 	//bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
-	bossShader = render->LoadShader("SkinningVertex.vert", "player.frag");
-	playerShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
+	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
+	playerShader = render->LoadShader("SkinningVertex.vert", "player.frag");
 	ghostShader = render->LoadShader("SkinningVertex.vert", "ghost.frag");
 
 	//bossAnimation = new MeshAnimation("Role_T.anm");

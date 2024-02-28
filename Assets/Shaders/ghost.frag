@@ -1,6 +1,7 @@
 #version 330 core
 uniform sampler2D mainTex;
-uniform sampler2DShadow shadowTex;
+//uniform sampler2DShadow shadowTex;
+uniform samplerCube shadowTex;
 uniform vec3	lightPos;
 uniform float	lightRadius;
 uniform vec4	lightColour;

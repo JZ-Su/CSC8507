@@ -152,33 +152,33 @@ void TutorialGame::UpdateGame(float dt) {
 	//	}
 	//}
 
-	UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
+	//UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
 
 	UpdateGhostAnim(ghost, ghostAnimation, dt);
 
-	// update player animation
+	//// update player animation
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
-	if (fireBallBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasFireBallBullet()) {
-		fireBallBullet->GetTransform().SetPosition(gameLevel->GetBoss()->GetTransform().GetPosition() + Vector3(0, 20, 30));
-		std::cout << fireBallBullet->GetTransform().GetPosition() << std::endl;
-		fireBallBullet->SetIsHiding(false);
-		gameLevel->GetBoss()->setHasFireBallBullet(false);
-		fireBallBullet->SetExistenceTime(0.0f);
-	}
-	if (!fireBallBullet->GetIsHiding()) {
-		fireBallBullet->UpdateExistenceTime(dt);
-		Vector3 playerPosition = player->GetTransform().GetPosition();
-		Vector3 ballPosition = fireBallBullet->GetTransform().GetPosition();
-		UpdateTrackingBall(ballPosition, playerPosition, 10, dt);
-		if (fireBallBullet->GetExistenceTime() >= 12.0f) {
-			fireBallBullet->GetTransform().SetPosition(Vector3(0, -20, 0));
-			gameLevel->GetBoss()->setHasFireBallBullet(true);
-			fireBallBullet->SetIsHiding(true);
-		}
-	}
-	SelectObject();
-	MoveSelectedObject();
+	//if (fireBallBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasFireBallBullet()) {
+	//	fireBallBullet->GetTransform().SetPosition(gameLevel->GetBoss()->GetTransform().GetPosition() + Vector3(0, 20, 30));
+	//	std::cout << fireBallBullet->GetTransform().GetPosition() << std::endl;
+	//	fireBallBullet->SetIsHiding(false);
+	//	gameLevel->GetBoss()->setHasFireBallBullet(false);
+	//	fireBallBullet->SetExistenceTime(0.0f);
+	//}
+	//if (!fireBallBullet->GetIsHiding()) {
+	//	fireBallBullet->UpdateExistenceTime(dt);
+	//	Vector3 playerPosition = player->GetTransform().GetPosition();
+	//	Vector3 ballPosition = fireBallBullet->GetTransform().GetPosition();
+	//	UpdateTrackingBall(ballPosition, playerPosition, 10, dt);
+	//	if (fireBallBullet->GetExistenceTime() >= 12.0f) {
+	//		fireBallBullet->GetTransform().SetPosition(Vector3(0, -20, 0));
+	//		gameLevel->GetBoss()->setHasFireBallBullet(true);
+	//		fireBallBullet->SetIsHiding(true);
+	//	}
+	//}
+	//SelectObject();
+	//MoveSelectedObject();
 
 
 	//Level 3 stuff
@@ -497,6 +497,8 @@ void TutorialGame::InitWorld() {
 
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 	player = gameLevel->GetPlayer();
+	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
+	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 
 	ghost = gameLevel->getGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
@@ -509,17 +511,18 @@ void TutorialGame::InitWorld() {
 	/*isDebug = false;*/
 	if (isDebug) {
 		//Level 1
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		currentLevel = 2;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 
 		//Level 2
 		//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
 
 		//Level 3
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-		bossAnimation = gameLevel->getBossAnimation();
-		playerWalkAnimation = gameLevel->getplayerWalkAnimation();
-		playerIdleAnimation = gameLevel->getplayerIdleAnimation();
-		playerJumpAnimation = gameLevel->getplayerJumpAnimation();
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		//bossAnimation = gameLevel->getBossAnimation();
+		//playerWalkAnimation = gameLevel->getplayerWalkAnimation();
+		//playerIdleAnimation = gameLevel->getplayerIdleAnimation();
+		//playerJumpAnimation = gameLevel->getplayerJumpAnimation();
 		//fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initalize function

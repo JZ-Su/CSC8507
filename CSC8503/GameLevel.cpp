@@ -109,7 +109,7 @@ void GameLevel::CreateConnectionLevel() {
 
 void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
-	level1.objectList.push_back(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
+	//level1.objectList.push_back(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
 	//layers
 	level1.objectList.push_back(CreateCube(Vector3(-80, 5, -56), Vector3(20, 5, 44), 0.0f)); 
 	level1.objectList.push_back(CreateCube(Vector3(80, 5, -56), Vector3(20, 5, 44), 0));

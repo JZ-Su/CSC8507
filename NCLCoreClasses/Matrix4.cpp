@@ -341,3 +341,9 @@ Vector4 Matrix4::operator*(const Vector4 &v) const {
 		v.x*array[0][3] + v.y*array[1][3] + v.z*array[2][3]  + v.w * array[3][3] 
 	);
 }
+
+Matrix4 Matrix4::lookAt(float pitch, float yaw, Vector3 position) {
+	return	Matrix4::Rotation(-pitch, Vector3(1, 0, 0)) *
+		Matrix4::Rotation(-yaw, Vector3(0, 1, 0)) *
+		Matrix4::Translation(-position);
+};

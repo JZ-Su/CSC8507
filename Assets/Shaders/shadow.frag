@@ -1,8 +1,17 @@
-#version 400 core
+#version 330 core
 
-out vec4 fragColor;
+in  vec4 FragPos;
 
-void main(void)
+uniform vec3 lightPos;
+//uniform float far_plane;
+
+void main()
 {
-	fragColor = vec4(1,1,1,1);
+    float lightDistance = length(FragPos.xyz - lightPos);
+    
+    float far_plane = 200;
+
+    lightDistance = lightDistance / far_plane;
+    
+    gl_FragDepth = lightDistance;
 }

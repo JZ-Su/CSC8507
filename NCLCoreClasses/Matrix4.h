@@ -31,7 +31,7 @@ namespace NCL::Maths {
 		//Gets the OpenGL position vector (floats 12,13, and 14)
 		Vector3 GetPositionVector() const;
 		//Sets the OpenGL position vector (floats 12,13, and 14)
-		void	SetPositionVector(const Vector3 &in);
+		void	SetPositionVector(const Vector3& in);
 
 		//Gets the scale vector (floats 1,5, and 10)
 		Vector3 GetDiagonal() const;
@@ -57,7 +57,7 @@ namespace NCL::Maths {
 
 		//Creates an orthographic matrix with 'znear' and 'zfar' as the near and 
 		//far planes, and so on. Descriptive variable names are a good thing!
-		static Matrix4 Orthographic(float left, float right, float bottom, float top, float near, float far); 
+		static Matrix4 Orthographic(float left, float right, float bottom, float top, float near, float far);
 
 		//Builds a view matrix suitable for sending straight to the vertex shader.
 		//Puts the camera at 'from', with 'lookingAt' centered on the screen, with
@@ -94,11 +94,13 @@ namespace NCL::Maths {
 		//Handy string output for the matrix. Can get a bit messy, but better than nothing!
 		inline friend std::ostream& operator<<(std::ostream& o, const Matrix4& m) {
 			o << "Mat4(";
-			//o << "\t"   << m.array[0][0] << "," << m.array[0][1] << "," << m.array[0][2] << "," << m.array[0][3] << "\n";
-			//o << "\t\t" << m.array[1][0] << "," << m.array[1][1] << "," << m.array[1][2] << "," << m.array[1][3] << "\n";
-			//o << "\t\t" << m.array[2][0] << "," << m.array[2][1] << "," << m.array[2][2] << "," << m.array[2][3] << "\n";
-			//o << "\t\t" << m.array[3][0] << "," << m.array[3][1] << "," << m.array[3][2] << "," << m.array[3][3] << " )\n";
+			o << "\t"   << m.array[0][0] << "," << m.array[0][1] << "," << m.array[0][2] << "," << m.array[0][3] << "\n";
+			o << "\t\t" << m.array[1][0] << "," << m.array[1][1] << "," << m.array[1][2] << "," << m.array[1][3] << "\n";
+			o << "\t\t" << m.array[2][0] << "," << m.array[2][1] << "," << m.array[2][2] << "," << m.array[2][3] << "\n";
+			o << "\t\t" << m.array[3][0] << "," << m.array[3][1] << "," << m.array[3][2] << "," << m.array[3][3] << " )\n";
 			return o;
 		}
+
+		static Matrix4 lookAt(float pitch, float yaw, Vector3 position);
 	};
 }

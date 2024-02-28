@@ -43,10 +43,13 @@ namespace NCL {
 			void SetDebugStringBufferSizes(size_t newVertCount);
 			void SetDebugLineBufferSizes(size_t newVertCount);
 
+			float bias;
+			float far_plane;
+
 			vector<const RenderObject*> activeObjects;
 
 			OGLShader*  debugShader;
-			OGLShader*  skyboxShader;
+			OGLShader* skyboxShader;
 			OGLMesh*	skyboxMesh;
 			GLuint		skyboxTex;
 
