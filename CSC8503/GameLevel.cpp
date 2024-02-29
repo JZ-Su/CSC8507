@@ -16,8 +16,12 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {
+<<<<<<< Updated upstream
 	player = CreatePlayer(Vector3(0, 10, 60), Vector3(2, 2, 2), 10.0f);
 	// player = CreatePlayer(Vector3(-60, 10, -60), Vector3(2, 2, 2), 10.0f);
+=======
+	player = CreatePlayer(Vector3(60, 10, 60), Vector3(2, 2, 2), 15.0f);
+>>>>>>> Stashed changes
 	Generic.AddObject(player);
 	//Level 4 player: 
 	//Generic.AddObject(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
@@ -278,9 +282,9 @@ void GameLevel::CreateLevel3() {
 	//BossBehaviourTree(boss,player);
 	//
 	boss = CreateBoss(Vector3(0, 1, -60), Vector3(10, 10, 10), player,0.0f);
-	fireBallBullet=CreateFireBallBullet(Vector3(0,-50,0), 4, 0.0f);
+	iceCubeBullet=CreateIceCubeBullet(Vector3(0,-50,0), Vector3(4, 4, 4), 0.0f);
 	level3.AddObject(boss);
-	level3.AddObject(fireBallBullet);
+	level3.AddObject(iceCubeBullet);
 	// level3.AddObject(boss);
 	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/
 }

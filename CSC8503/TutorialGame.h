@@ -125,10 +125,11 @@ namespace NCL {
 
 			Boss* boss;
 			GameObject* ghost;
-			GameObject* fireBallBullet;
+			GameObject* iceCubeBullet;
 			MeshAnimation* bossAnimation;
 			MeshAnimation* bossCheersAnimation;
 			MeshAnimation* bossShootingAnimation;
+			MeshAnimation* bossFlinchAnimation;
 			MeshAnimation* ghostAnimation;
 			MeshAnimation* playerIdleAnimation;
 			MeshAnimation* playerWalkAnimation;
@@ -154,19 +155,20 @@ namespace NCL {
 			void UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAnimation, MeshAnimation* playerWalkAnimation, float dt);
 			void UpdateGhostAnim(GameObject* ghost, MeshAnimation* ghostAnimation, float dt);
 			void UpdateTrackingBall(Vector3 ballPosition,const Vector3& playerPosition, float speed, float dt);
-			void FireBallBulletLogic(float dt);
+			void IceCubeBulletLogic(float dt);
 			float h = 0, v = 0;
 
 			bool hasRotation = true;
 			bool hasReverse = false;
 			int mapIndex = 0;
 
+			int iceCubeBulletFrames = 0;
 			int currentLevel;
 			GameObject* portal;
 			void SwitchLevel();
 			GameUI* ui;
 			float shootingTimer = 0.0f;
-			const float shootingDuration = 1.0f;
+			const float shootingDuration = 0.4f;
 			bool playShootingAnimation=false;
 		};
 	}

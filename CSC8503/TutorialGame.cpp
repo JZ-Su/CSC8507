@@ -69,9 +69,15 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
+<<<<<<< Updated upstream
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
+=======
+	Debug::DrawCollisionBox(player);
+	//gameLevel->GetBoss()->Update(dt);
+	player->UpdatePlayer(dt);
+>>>>>>> Stashed changes
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
@@ -127,6 +133,36 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	}
 
+<<<<<<< Updated upstream
+=======
+	//if (lockedObject != nullptr) {
+	//	Ray ray = CollisionDetection::BuildRayFromScreenCenter(world->GetMainCamera());
+	//	RayCollision blockCollision;
+	//	if (world->Raycast(ray, blockCollision, true)) {
+	//		if ((GameObject*)blockCollision.node != player) {
+	//			blocker = (GameObject*)blockCollision.node;
+	//			Vector4 color = blocker->GetRenderObject()->GetColour();
+	//			blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 0.5));
+	//		}
+	//		else {
+	//			if (blocker != nullptr) {
+	//				Vector4 color = blocker->GetRenderObject()->GetColour();
+	//				blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 1));
+	//				blocker = nullptr;
+	//			}
+	//		}
+	//	}
+	//}
+
+	//UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
+
+	UpdateGhostAnim(ghost, ghostAnimation, dt);
+
+	//// update player animation
+	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
+
+	IceCubeBulletLogic(dt);
+>>>>>>> Stashed changes
 	SelectObject();
 	MoveSelectedObject();
 
@@ -249,6 +285,11 @@ void TutorialGame::UpdateKeys(float dt) {
 		else {
 			LockCameraToObject(nullptr);
 		}
+	}
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::H)) {
+		gameLevel->GetBoss()->decreaseBossHealth(20.0f);
+		std::cout <<"Boss's Health:" << gameLevel->GetBoss()->getBossHealth() << std::endl;
+		gameLevel->GetBoss()->SetIsRencentlyHurt(true);
 	}
 
 	if (lockedObject) {
@@ -467,7 +508,17 @@ void TutorialGame::InitWorld() {
 	player = gameLevel->GetPlayer();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
+<<<<<<< Updated upstream
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
+=======
+
+	ghost = gameLevel->getGhost();
+	ghostAnimation = gameLevel->getGhostAnimation();
+
+	boss = gameLevel->GetBoss();
+	bossAnimation = gameLevel->getBossAnimation();
+	iceCubeBullet = gameLevel->getIceCubeBullet();
+>>>>>>> Stashed changes
 
 	/*
 		Please switch the debug mode here
@@ -492,7 +543,15 @@ void TutorialGame::InitWorld() {
 		//bossAnimation = gameLevel->getBossAnimation();
 		//bossCheersAnimation = gameLevel->getBossCheersAnimation();
 		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
+<<<<<<< Updated upstream
 		//fireBallBullet = gameLevel->getFireBallBullet();
+=======
+		//bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
+		//playerWalkAnimation = gameLevel->getplayerWalkAnimation();
+		//playerIdleAnimation = gameLevel->getplayerIdleAnimation();
+		//playerJumpAnimation = gameLevel->getplayerJumpAnimation();
+		//iceCubeBullet = gameLevel->getIceCubeBullet();
+>>>>>>> Stashed changes
 
 		//Level 4 initalize function
 		//currentLevel = 8;
@@ -900,30 +959,45 @@ void TutorialGame::UpdateAnim(GameObject* g, MeshAnimation* anim) {
 
 void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation, float dt) {
 	if (boss != nullptr) {
-		if (fireBallBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasFireBallBullet()) {
-			/*boss->GetRenderObject()->frameTime -= dt;
-			UpdateAnim(boss, bossShootingAnimation);*/
-			playShootingAnimation = true;
-		}
-		if (playShootingAnimation) {
-			boss->GetRenderObject()->frameTime -= dt;
-			UpdateAnim(boss, bossShootingAnimation);
-			shootingTimer += dt;
-			if (shootingTimer >= shootingDuration) {
-				playShootingAnimation = false;
-				shootingTimer = 0.0f; // reset
-				boss->GetRenderObject()->frameTime = 0.0f;
-			}
+		if (gameLevel->GetBoss()->getIsRencentlyHurt()) {
+			boss->GetRenderObject()->frameTime -= dt/1.25;
+			UpdateAnim(boss, bossFlinchAnimation);
 		}
 		else {
-			if (!fireBallBullet->GetIsHiding()) {
+			if (iceCubeBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasIceCubeBullet()) {
+				/*boss->GetRenderObject()->frameTime -= dt;
+				UpdateAnim(boss, bossShootingAnimation);*/
+				playShootingAnimation = true;
+			}
+			if (playShootingAnimation) {
 				boss->GetRenderObject()->frameTime -= dt;
-				UpdateAnim(boss, bossCheersAnimation);
+				UpdateAnim(boss, bossShootingAnimation);
+				shootingTimer += dt;
+				if (shootingTimer >= shootingDuration) {
+					playShootingAnimation = false;
+					shootingTimer = 0.0f; // reset
+					iceCubeBulletFrames = 0.0f;
+
+				}
 			}
 			else {
-				boss->GetRenderObject()->frameTime -= dt;
-				UpdateAnim(boss, bossAnimation);
+				if (!iceCubeBullet->GetIsHiding()) {
+					if (iceCubeBulletFrames < 30) {
+						boss->GetRenderObject()->frameTime -= dt;
+						UpdateAnim(boss, bossShootingAnimation);
+						iceCubeBulletFrames++;
+					}
+					else {
+						boss->GetRenderObject()->frameTime -= dt / 1.4;
+						UpdateAnim(boss, bossCheersAnimation);
+					}
+				}
+				else {
+					boss->GetRenderObject()->frameTime -= dt;
+					UpdateAnim(boss, bossAnimation);
+					iceCubeBulletFrames = 0.0f;
 
+				}
 			}
 		}
 	}
@@ -946,6 +1020,7 @@ void TutorialGame::UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAni
 		else {
 			player->GetRenderObject()->frameTime -= dt;
 			UpdateAnim(player, playerIdleAnimation);
+
 		}
 	}
 }
@@ -1032,7 +1107,7 @@ void TutorialGame::UpdateTrackingBall(Vector3 ballPosition, const Vector3& playe
 	float distance = speed * dt;
 	ballPosition += direction * distance;
 
-	fireBallBullet->GetTransform().SetPosition(ballPosition);
+	iceCubeBullet->GetTransform().SetPosition(ballPosition);
 }
 void TutorialGame::UpdateProjMatrixFov(float df) {
 	float fov = world->GetMainCamera().GetFov();
@@ -1042,23 +1117,23 @@ void TutorialGame::UpdateProjMatrixFov(float df) {
 	world->GetMainCamera().SetFov(fov);
 }
 
-void TutorialGame::FireBallBulletLogic(float dt) {
-	if (fireBallBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasFireBallBullet() && !playShootingAnimation) {
-		fireBallBullet->GetTransform().SetPosition(gameLevel->GetBoss()->GetTransform().GetPosition() + Vector3(0, 20, 30));
-		std::cout << fireBallBullet->GetTransform().GetPosition() << std::endl;
-		fireBallBullet->SetIsHiding(false);
-		gameLevel->GetBoss()->setHasFireBallBullet(false);
-		fireBallBullet->SetExistenceTime(0.0f);
+void TutorialGame::IceCubeBulletLogic(float dt) {
+	if (iceCubeBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasIceCubeBullet() && !playShootingAnimation) {
+		iceCubeBullet->GetTransform().SetPosition(gameLevel->GetBoss()->GetTransform().GetPosition() + Vector3(0, 20, 30));
+		std::cout << iceCubeBullet->GetTransform().GetPosition() << std::endl;
+		iceCubeBullet->SetIsHiding(false);
+		gameLevel->GetBoss()->setHasIceCubeBullet(false);
+		iceCubeBullet->SetExistenceTime(0.0f);
 	}
-	if (!fireBallBullet->GetIsHiding()) {
-		fireBallBullet->UpdateExistenceTime(dt);
+	if (!iceCubeBullet->GetIsHiding()) {
+		iceCubeBullet->UpdateExistenceTime(dt);
 		Vector3 playerPosition = player->GetTransform().GetPosition();
-		Vector3 ballPosition = fireBallBullet->GetTransform().GetPosition();
+		Vector3 ballPosition = iceCubeBullet->GetTransform().GetPosition();
 		UpdateTrackingBall(ballPosition, playerPosition, 20, dt);
-		if (fireBallBullet->GetExistenceTime() >= 6.0f) {
-			fireBallBullet->GetTransform().SetPosition(Vector3(0, -20, 0));
-			gameLevel->GetBoss()->setHasFireBallBullet(true);
-			fireBallBullet->SetIsHiding(true);
+		if (iceCubeBullet->GetExistenceTime() >= 6.0f) {
+			iceCubeBullet->GetTransform().SetPosition(Vector3(0, -20, 0));
+			gameLevel->GetBoss()->setHasIceCubeBullet(true);
+			iceCubeBullet->SetIsHiding(true);
 		}
 	}
 }

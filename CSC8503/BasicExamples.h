@@ -34,8 +34,9 @@ namespace NCL {
 		GameObject* CreateChar(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateGoat(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
-		GameObject* CreateFireBallBullet(const Vector3& position, float radius, float inverseMass);
-		
+		//GameObject* CreateIceCubeBullet(const Vector3& position, float radius, float inverseMass);
+		GameObject* CreateIceCubeBullet(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+
 		GameObject* CreateBookshelf(const Vector3& position, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
 		GameObject* CreateStairs(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
 		GameObject* CreateTable(const Vector3& position, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
@@ -49,12 +50,13 @@ namespace NCL {
 		MeshAnimation* getBossAnimation() const { return bossAnimation; }
 		MeshAnimation* getBossCheersAnimation() const { return bossCheersAnimation; }
 		MeshAnimation* getBossShootingAnimation() const { return bossShootingAnimation; }
+		MeshAnimation* getBossFlinchAnimation() const { return bossFlinchAnimation; }
 		MeshAnimation* getGhostAnimation() const { return ghostAnimation; }
 		MeshAnimation* getplayerIdleAnimation() const { return playerIdleAnimation; }
 		MeshAnimation* getplayerWalkAnimation() const { return playerWalkAnimation; }
 		MeshAnimation* getplayerJumpAnimation() const { return playerJumpAnimation; }
 
-		GameObject* getFireBallBullet() const { return fireBallBullet; }
+		GameObject* getIceCubeBullet() const { return iceCubeBullet; }
 
 		StateGameObject* CreateAItest(const Vector3& position, const Vector3& dimensions,  GameObject* player,float inverseMass = 10.0f);
 
@@ -83,6 +85,7 @@ namespace NCL {
 		Mesh* handrailMesh = nullptr;
 	
 		Texture* basicTexture = nullptr;
+		Texture* IceCubeTexture = nullptr;
 		Texture* DefualtTexture[5] = { nullptr,nullptr,nullptr,nullptr,nullptr };
 		Texture* floorTexture[6] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
 		Texture* ceilingTexture[6] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
@@ -105,6 +108,7 @@ namespace NCL {
 		MeshAnimation* bossAnimation = nullptr;
 		MeshAnimation* bossCheersAnimation = nullptr;
 		MeshAnimation* bossShootingAnimation = nullptr;
+		MeshAnimation* bossFlinchAnimation = nullptr;
 		MeshAnimation* playerIdleAnimation = nullptr;
 		MeshAnimation* ghostAnimation = nullptr;
 		MeshAnimation* playerWalkAnimation = nullptr;
@@ -115,7 +119,7 @@ namespace NCL {
 		Player* player = nullptr;
 		Boss* boss = nullptr;
 		GameObject* ghost;
-		GameObject* fireBallBullet;
+		GameObject* iceCubeBullet;
 
 
 	};

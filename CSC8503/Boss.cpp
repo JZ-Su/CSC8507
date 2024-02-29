@@ -4,6 +4,7 @@
 #include "BasicExamples.h"
 #include "RenderObject.h"
 #include "GameWorld.h"
+#include "TutorialGame.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -13,7 +14,7 @@ Boss::Boss(Player* player) {
 	meleeAttackRange = 40.0f;
 	bossHealth = 100.0f;
 	isShooting = false;
-	hasFireBallBullet = true;
+	hasIceCubeBullet = true;
 	Idle = new BehaviourAction("Idle", [&](float dt, BehaviourState state)->BehaviourState {
 		if (state == Initialise) {
 			//std::cout << "Idle init\n";
@@ -30,12 +31,12 @@ Boss::Boss(Player* player) {
 
 	MeleeAttack = new BehaviourAction("MeleeAttack", [&](float dt, BehaviourState state) -> BehaviourState {
 		if (state == Initialise) {
-			std::cout << "MAttacking init.\n";
+			//std::cout << "MAttacking init.\n";
 			state = Ongoing;
 		}
 		else if (state == Ongoing) {
 			this->distanceToTarget = calculateDistance(GetTransform().GetPosition(), this->player->GetTransform().GetPosition());
-			if (this->distanceToTarget > this->meleeAttackRange) {
+			if (this->distanceToTarget > this->meleeAttackRange|| this->getIsRencentlyHurt()) {
 				return Failure;
 			}
 			else {
@@ -57,7 +58,7 @@ Boss::Boss(Player* player) {
 		}
 		else if (state == Ongoing) {
 			this->distanceToTarget = calculateDistance(GetTransform().GetPosition(), this->player->GetTransform().GetPosition());
-			if (this->distanceToTarget > this->remoteAttackRange || this->distanceToTarget<this->meleeAttackRange) {
+			if (this->distanceToTarget > this->remoteAttackRange || this->distanceToTarget<this->meleeAttackRange||this->getIsRencentlyHurt()) {
 				isShooting = false;
 				return Failure;
 			}
@@ -77,11 +78,23 @@ Boss::Boss(Player* player) {
 		if (state == Initialise) {
 			std::cout << "Flinches init.\n";
 			state = Ongoing;
+			flinchAnimationTimer = 0.0f;
 		}
 		else if (state == Ongoing) {
-			std::cout << "Flinches.\n";
-			GetTransform().SetPosition(this->player->GetTransform().GetPosition());
-			return Failure;
+			if (this->getIsRencentlyHurt()) {
+				std::cout << "Flinches.\n";
+				flinchAnimationTimer += dt;
+				if (flinchAnimationTimer >= 0.28f) {
+					this->SetIsRencentlyHurt(false);
+					return Failure;
+				}
+				return Ongoing;
+			}
+			else {
+				return Failure;
+			}
+			//GetTransform().SetPosition(this->player->GetTransform().GetPosition());
+
 		}
 		return state;
 		}
@@ -100,10 +113,10 @@ Boss::Boss(Player* player) {
 		}
 	);
 	BehaviourSelector* selection = new BehaviourSelector("FirstLevel");
+	selection->AddChild(Flinches);
 	selection->AddChild(RemoteAttack);
 	selection->AddChild(MeleeAttack);
 	selection->AddChild(Idle);
-	//	selection->AddChild(Flinches);
 	//	selection->AddChild(Death);
 	rootSequence = new BehaviourSequence("Root Sequence");
 	rootSequence->AddChild(selection);

@@ -26,20 +26,37 @@ namespace NCL {
 			void SetShooting(bool IsShooting) {
 				isShooting = IsShooting;
 			}
-			bool getHasFireBallBullet() {
-				return hasFireBallBullet;
+			void SetIsRencentlyHurt(bool IsRencentlyHurt) {
+				isRencentlyHurt = IsRencentlyHurt;
 			}
-			void setHasFireBallBullet(bool HasFireBallBullet) {
-				hasFireBallBullet = HasFireBallBullet;
+			bool getIsRencentlyHurt() {
+				return isRencentlyHurt;
+			}
+			bool getHasIceCubeBullet() {
+				return hasIceCubeBullet;
+			}
+			void setHasIceCubeBullet(bool HasIceCubeBullet) {
+				hasIceCubeBullet = HasIceCubeBullet;
+			}
+			float getBossHealth() {
+				return bossHealth;
+			}
+			void decreaseBossHealth(float Health) {
+				bossHealth -= Health;
+			}
+			void increaseBossHealth(float Health) {
+				bossHealth += Health;
 			}
 		private:
 			bool isShooting;
-			bool hasFireBallBullet;
+			bool isRencentlyHurt;
+			bool hasIceCubeBullet;
 			float calculateDistance(Vector3 pos1, Vector3 pos2);
 			float distanceToTarget;
 			float remoteAttackRange;
 			float meleeAttackRange;
 			float bossHealth;
+			float flinchAnimationTimer;
 			BehaviourAction* Idle;
 			BehaviourAction* MeleeAttack;
 			BehaviourAction* RemoteAttack;
@@ -47,7 +64,6 @@ namespace NCL {
 			BehaviourAction* Flinches;
 			BehaviourAction* Death;
 			Player* player;
-
 			BehaviourSequence* rootSequence;
 			BehaviourSelector* bossSelection = new BehaviourSelector("Boss Selection");
 			BehaviourParallel* bossAttackParallel = new BehaviourParallel("Boss Attack Parallel");
