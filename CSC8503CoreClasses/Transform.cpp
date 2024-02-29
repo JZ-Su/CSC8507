@@ -40,3 +40,12 @@ Transform& Transform::SetOffset(const Vector3& newOff) {
 	offset = newOff;
 	return *this;
 }
+
+Matrix4 Transform::GetOffsetMatrix() const {
+	Matrix4 mat =
+		Matrix4::Translation(position + offset) *
+		Matrix4(orientation) *
+		Matrix4::Scale(scale);
+
+	return mat;
+}

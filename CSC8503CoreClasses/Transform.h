@@ -37,6 +37,8 @@ namespace NCL {
 				return offset;
 			}
 
+			Matrix4 GetOffsetMatrix() const;
+
 			void UpdateMatrix();
 		protected:
 			Matrix4		matrix;

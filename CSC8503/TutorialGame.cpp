@@ -48,12 +48,6 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	gameState = Start;
 	mainMenuState = MainMenu_Start;
 	gameMode = TimeLimited;
-
-	//ui = new GameUI();
-	////player->GetHealth();
-	//ui->CreateGameUI({ Vector3(-0.9f, 0.9f, -1.0f), Vector3(-0.9f, 0.8f, -1.0f), Vector3(-0.4f, 0.8f, -1.0f), Vector3(-0.4f, 0.9f, -1.0f) },
-	//	{ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) }, 512, 512, 4, 0, "Default.png", "health");
-
 }
 /*
 
@@ -145,24 +139,25 @@ void TutorialGame::UpdateGame(float dt) {
 	if (currentLevel == 2) {
 		UpdateGhostAnim(ghost, ghostAnimation, dt);
 	}
-	// Level 2 stuff
+	// Level 2
 	else if (currentLevel == 4) {
 		for (const auto& element : gameLevel->GetL2Doors()) {
 			element->Update(dt);
 		}
 	}
-	// Level 3 stuff
+	// Level 3
 	else if (currentLevel == 6) {
 		gameLevel->GetBoss()->Update(dt);
 		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
 		FireBallBulletLogic(dt);
 	}
-	// Level 4 stuff
+	// Level 4
 	else if (currentLevel == 8) {
 		GameObject* beginDet = gameLevel->GetBeginArea();
 		GameObject* trueEndDet = gameLevel->GetTrueEndArea();
 		GameObject* falseEndDet = gameLevel->GetFalseEndArea();
 		trueEndDet->GetRenderObject()->SetColour(Debug::RED);
+		falseEndDet->GetRenderObject()->SetColour(Debug::GREEN);
 		if (!physics->GetCollisionDetectionList(beginDet).empty() && physics->GetCollisionDetectionList(beginDet)[0] == player && beginDet->isEnable == true) {
 			beginDet->isEnable = false;
 			trueEndDet->isEnable = true;
@@ -200,8 +195,6 @@ void TutorialGame::UpdateGame(float dt) {
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);
-
-	//gameLevel->GetAI()->Update(dt);
 
 	Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
 	Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
@@ -305,11 +298,11 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	Ray collisionRay = Ray(targetpos, -camdir);
 	RayCollision collisionRayData;
-	/*if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
-	{
-		if (collisionRayData.rayDistance < 6)
-			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
-	}*/
+	//if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
+	//{
+	//	if (collisionRayData.rayDistance < 6)
+	//		campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
+	//}
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
@@ -479,27 +472,27 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	isDebug = false;
+	isDebug = true;
 	//isDebug = false;
 	if (isDebug) {
 		//Level 1
-		//currentLevel = 2;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		//ghost = gameLevel->getGhost();
-		//ghostAnimation = gameLevel->getGhostAnimation();
+		currentLevel = 2;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		ghost = gameLevel->getGhost();
+		ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
 		//currentLevel = 4;
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
-		currentLevel = 6;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-		boss = gameLevel->GetBoss();
-		bossAnimation = gameLevel->getBossAnimation();
-		bossCheersAnimation = gameLevel->getBossCheersAnimation();
-		bossShootingAnimation = gameLevel->getBossShootingAnimation();
-		fireBallBullet = gameLevel->getFireBallBullet();
+		//currentLevel = 6;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		//boss = gameLevel->GetBoss();
+		//bossAnimation = gameLevel->getBossAnimation();
+		//bossCheersAnimation = gameLevel->getBossCheersAnimation();
+		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
+		//fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initalize function
 		//currentLevel = 8;

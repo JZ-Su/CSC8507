@@ -17,6 +17,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 
 void GameLevel::CreateGeneric() {
 	player = CreatePlayer(Vector3(0, 10, 60), Vector3(2, 2, 2), 10.0f);
+	// player = CreatePlayer(Vector3(-60, 10, -60), Vector3(2, 2, 2), 10.0f);
 	Generic.AddObject(player);
 	//Level 4 player: 
 	//Generic.AddObject(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
@@ -317,6 +318,10 @@ void GameLevel::CreateLevel4_Normal() {
 	l1.AddObject(CreateCube(Vector3(10, 0, 70), floorDimensions, 0.0f));
 	l1.AddObject(CreateCube(Vector3(30, 0, 70), floorDimensions, 0.0f));
 	l1.AddObject(CreateCube(Vector3(50, 0, 70), floorDimensions, 0.0f));
+
+	l1.AddObject(CreateCube(Vector3(50, 0, 50), floorDimensions, 0.0f));
+	l1.AddObject(CreateCube(Vector3(70, 0, 50), floorDimensions, 0.0f));
+	l1.AddObject(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
 	//wall
 	l1.AddObject(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
 	l1.AddObject(CreateCube(Vector3(-90, 10, 0), Vector3(10, 10, 60), 0.0f));
@@ -324,6 +329,10 @@ void GameLevel::CreateLevel4_Normal() {
 	l1.AddObject(CreateCube(Vector3(-70, 10, 70), Vector3(10, 10, 10), 0.0f));
 	l1.AddObject(CreateCube(Vector3(0, 10, 50), Vector3(40, 10, 10), 0.0f));
 	l1.AddObject(CreateCube(Vector3(0, 10, 90), Vector3(60, 10, 10), 0.0f));
+
+	l1.AddObject(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
+	l1.AddObject(CreateCube(Vector3(90, 10, 50), Vector3(10, 10, 10), 0.0f));
+	l1.AddObject(CreateCube(Vector3(-50, 10, -90), Vector3(10, 10, 10), 0.0f));
 	level4_normal.emplace_back(l1);
 
 	Level l2;
@@ -460,6 +469,9 @@ void GameLevel::CreateLevel4_Rotate() {
 	l1.AddObject(CreateCube(Vector3(-10, 0, -70), floorDimensions, 0.0f));
 	l1.AddObject(CreateCube(Vector3(-30, 0, -70), floorDimensions, 0.0f));
 	l1.AddObject(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
+
+	l1.AddObject(CreateCube(Vector3(-50, 0, -50), floorDimensions, 0.0f));
+	l1.AddObject(CreateCube(Vector3(-70, 0, -50), floorDimensions, 0.0f));
 	//wall
 	l1.AddObject(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
 	l1.AddObject(CreateCube(Vector3(90, 10, 0), Vector3(10, 10, 60), 0.0f));
@@ -467,6 +479,9 @@ void GameLevel::CreateLevel4_Rotate() {
 	l1.AddObject(CreateCube(Vector3(70, 10, -70), Vector3(10, 10, 10), 0.0f));
 	l1.AddObject(CreateCube(Vector3(0, 10, -50), Vector3(40, 10, 10), 0.0f));
 	l1.AddObject(CreateCube(Vector3(0, 10, -90), Vector3(60, 10, 10), 0.0f));
+
+	l1.AddObject(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
+	l1.AddObject(CreateCube(Vector3(-90, 10, -50), Vector3(10, 10, 10), 0.0f));
 	level4_rotate.emplace_back(l1);
 
 	Level l2;
