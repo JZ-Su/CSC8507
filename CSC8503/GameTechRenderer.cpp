@@ -46,8 +46,8 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	//Set up the light properties
 	lightColour = Vector4(1.0f, 0.8f, 0.3f, 1.0f);
-	lightRadius = 200.0f;
-	lightPosition = Vector3(0.0f, 100.0f, -50.0f);
+	lightRadius = 130.0f;
+	lightPosition = Vector3(0.0f, 58.0f, -0.0f);
 
 	//Skybox!
 	skyboxShader = new OGLShader("skybox.vert", "skybox.frag");
@@ -175,14 +175,14 @@ void GameTechRenderer::RenderShadowMap() {
 
 	Matrix4 shadowProjMatrix = Matrix4::Perspective(1.0f, far_plane, 1, 90.0f);
 	vector<Matrix4> shadowViewMatrix;
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(0, 90, lightPosition));
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(0, -90, lightPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 90, lightPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, -90, lightPosition));
 
 	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(90, 0, lightPosition));
 	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(-90, 0, lightPosition));
 
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(0, 180, lightPosition));
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(0, 0, lightPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 0, lightPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 180, lightPosition));
 
 
 

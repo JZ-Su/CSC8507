@@ -78,7 +78,7 @@ void main(void)
 	//return;
 
 
-	vec3 shadcolor = vec3(0,0.3,1);
+	vec3 shadcolor = vec3(0.1,0.3,1);
 
 	vec3  incident = normalize ( lightPos - IN.worldPos );
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
@@ -131,7 +131,7 @@ void main(void)
 	//fragColor.rgb = vec3(0.0, 0.0, 0.0);
 	fragColor.rgb = albedo.rgb *shadcolor* 0.08f * halfLambert; //ambient
 	
-	fragColor.rgb += baseCol * lightColour.rgb * lambert * shadow * atten; //diffuse light
+	fragColor.rgb += baseCol * lightColour.rgb * lambert * shadow;// * atten; //diffuse light
 	
 	fragColor.rgb += specCol * lightColour.rgb * sFactor * shadow * atten; //specular light
 	

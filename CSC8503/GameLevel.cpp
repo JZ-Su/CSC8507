@@ -109,7 +109,7 @@ void GameLevel::CreateConnectionLevel() {
 
 void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
-	//level1.objectList.push_back(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
+	level1.objectList.push_back(CreateCeiling(Vector3(0, 60, 0), Vector3(150, 2, 150), 0.0f));
 	//layers
 	level1.objectList.push_back(CreateCube(Vector3(-80, 5, -56), Vector3(20, 5, 44), 0.0f)); 
 	level1.objectList.push_back(CreateCube(Vector3(80, 5, -56), Vector3(20, 5, 44), 0));
@@ -130,7 +130,7 @@ void GameLevel::CreateLevel1() {
 	level1.objectList.push_back(CreateCube(Vector3(20, 5, -50), Vector3(1, 5, 10), 0.0f));
 	level1.objectList.push_back(CreateCube(Vector3(0, 5, -59), Vector3(19, 5, 1), 0.0f));
 	////columns
-	//CreateLevel1_Columns();
+	CreateLevel1_Columns();
 	////stairs
 	CreateLevel1_Stairs();
 	////book shelfs
@@ -138,7 +138,7 @@ void GameLevel::CreateLevel1() {
 	////small shelfs
 	//CreateLevel1_SmallShelfs();
 	////tables
-	//CreateLevel1_Tables();
+	CreateLevel1_Tables();
 
 	level1.objectList.push_back(ghost=CreateGhost(Vector3(10, 10, 0), Vector3(5, 5, 5), 0.0f));
 
