@@ -61,7 +61,7 @@ void main(void)
 	//return;
 
 
-	vec3 shadcolor = vec3(0,0.3,1);
+	vec3 shadcolor = vec3(0.1,0.3,1);
 
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
 

@@ -40,7 +40,7 @@ namespace NCL {
 		static const std::vector<DebugStringEntry>& GetDebugStrings();
 		static const std::vector<DebugLineEntry>& GetDebugLines();
 
-		static const void DrawCollisionBox(const NCL::CSC8503::GameObject* obj);
+		static const void DrawCollisionBox(NCL::CSC8503::GameObject* obj);
 
 		static const Vector4 RED;
 		static const Vector4 GREEN;

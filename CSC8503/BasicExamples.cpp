@@ -2,7 +2,6 @@
 #include "RenderObject.h"
 #include "PhysicsObject.h"
 #include "MeshMaterial.h"
-#include "Boss.h"
 
 #include <fstream>
 
@@ -365,10 +364,10 @@ GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& d
 Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player, float inverseMass) {
 	Boss* character = new Boss(player);
 	//character->BossBehaviourTree(player);
-	AABBVolume* volume = new AABBVolume(dimensions,60);
+	AABBVolume* volume = new AABBVolume(dimensions, 60);
 	character->SetBoundingVolume((CollisionVolume*)volume);
 
-	character->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOrientation(Matrix4::Rotation(180, Vector3(0,1,0)));
+	character->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOrientation(Matrix4::Rotation(180, Vector3(0, 1, 0))).SetOffset(Vector3(0, dimensions.y, 0));
 	character->SetRenderObject(new RenderObject(&character->GetTransform(), bossMesh, nullptr, bossShader));
 
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
@@ -418,7 +417,7 @@ Player* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dime
 	player->SetVolumeSize(Vector3(0.6, 1, 0.6) * dimensions);
 	player->SetBoundingVolume((CollisionVolume*)volume);
 
-	player->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	player->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOffset(Vector3(0, dimensions.y, 0));
 	player->SetRenderObject(new RenderObject(&player->GetTransform(), playerMesh, nullptr, playerShader));
 	player->SetPhysicsObject(new PhysicsObject(&player->GetTransform(), player->GetBoundingVolume()));
 	player->GetRenderObject()->isAnimation = true;

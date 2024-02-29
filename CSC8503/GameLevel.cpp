@@ -16,7 +16,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {
-	player = CreatePlayer(Vector3(60, 10, 60), Vector3(2, 2, 2), 10.0f);
+	player = CreatePlayer(Vector3(0, 10, 60), Vector3(2, 2, 2), 10.0f);
 	Generic.AddObject(player);
 	//Level 4 player: 
 	//Generic.AddObject(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
@@ -138,9 +138,9 @@ void GameLevel::CreateLevel1() {
 	CreateLevel1_Stairs();
 	////book shelfs
 	//CreateLevel1_BookShelfs();
-	//small shelfs
-	CreateLevel1_SmallShelfs();
-	//tables
+	////small shelfs
+	//CreateLevel1_SmallShelfs();
+	////tables
 	CreateLevel1_Tables();
 
 	level1.AddObject(ghost = CreateGhost(Vector3(10, 10, 0), Vector3(5, 5, 5), 0.0f));

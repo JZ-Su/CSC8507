@@ -1,5 +1,5 @@
 #include "Debug.h"
-#include "RenderObject.h"
+#include "Transform.h"
 using namespace NCL;
 
 std::vector<Debug::DebugStringEntry>	Debug::stringEntries;
@@ -91,28 +91,29 @@ const std::vector<Debug::DebugLineEntry>& Debug::GetDebugLines() {
 	return lineEntries;
 }
 
-const void Debug::DrawCollisionBox(const NCL::CSC8503::GameObject* obj) {
+const void Debug::DrawCollisionBox(NCL::CSC8503::GameObject* obj) {
 	switch (obj->GetBoundingVolume()->type)
 	{
 	case VolumeType::AABB:
 	{
-		Vector3 position = obj->GetRenderObject()->GetTransform()->GetPosition();
+		Vector3 position = obj->GetTransform().GetPosition();
+		Vector3 offset = obj->GetTransform().GetOffset();
 		Vector3 scale = Vector3();
 		if (obj->GetVolumeSize() != Vector3()) {
 			scale = obj->GetVolumeSize();
 		}
 		else {
-			scale = obj->GetRenderObject()->GetTransform()->GetScale() / 2;
+			scale = obj->GetTransform().GetScale() / 2;
 		}
 
-		Vector3 a = Vector3(position.x + scale.x, position.y + scale.y, position.z + scale.z);
-		Vector3 b = Vector3(position.x + scale.x, position.y + scale.y, position.z - scale.z);
-		Vector3 c = Vector3(position.x + scale.x, position.y - scale.y, position.z + scale.z);
-		Vector3 d = Vector3(position.x + scale.x, position.y - scale.y, position.z - scale.z);
-		Vector3 e = Vector3(position.x - scale.x, position.y + scale.y, position.z + scale.z);
-		Vector3 f = Vector3(position.x - scale.x, position.y + scale.y, position.z - scale.z);
-		Vector3 g = Vector3(position.x - scale.x, position.y - scale.y, position.z + scale.z);
-		Vector3 h = Vector3(position.x - scale.x, position.y - scale.y, position.z - scale.z);
+		Vector3 a = Vector3(position.x + scale.x, position.y + scale.y, position.z + scale.z) + offset;
+		Vector3 b = Vector3(position.x + scale.x, position.y + scale.y, position.z - scale.z) + offset;
+		Vector3 c = Vector3(position.x + scale.x, position.y - scale.y, position.z + scale.z) + offset;
+		Vector3 d = Vector3(position.x + scale.x, position.y - scale.y, position.z - scale.z) + offset;
+		Vector3 e = Vector3(position.x - scale.x, position.y + scale.y, position.z + scale.z) + offset;
+		Vector3 f = Vector3(position.x - scale.x, position.y + scale.y, position.z - scale.z) + offset;
+		Vector3 g = Vector3(position.x - scale.x, position.y - scale.y, position.z + scale.z) + offset;
+		Vector3 h = Vector3(position.x - scale.x, position.y - scale.y, position.z - scale.z) + offset;
 
 		DrawLine(a, b, Debug::GREEN);
 		DrawLine(a, c, Debug::GREEN);

@@ -113,8 +113,10 @@ int main() {
 	}
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
-
+	
 	TutorialGame* g = new TutorialGame();
+
+	//NetworkedGame* h = new NetworkedGame();
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 
 	//sound
@@ -178,7 +180,7 @@ int main() {
 		}
 
 		if (g->GetState() == Exit) break;
-
+		//h->UpdateGame(dt);
 	}
 	Window::DestroyGameWindow();
 }

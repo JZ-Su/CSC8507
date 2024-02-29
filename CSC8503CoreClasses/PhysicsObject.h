@@ -87,7 +87,6 @@ namespace NCL {
 			Matrix3 inverseInteriaTensor;
 
 			bool applyAngImp;
-			Vector3 offset;
 		};
 	}
 }

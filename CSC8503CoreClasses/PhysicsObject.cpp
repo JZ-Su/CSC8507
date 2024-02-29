@@ -13,7 +13,6 @@ PhysicsObject::PhysicsObject(Transform* parentTransform, const CollisionVolume* 
 	friction	= 0.8f;
 
 	applyAngImp = true;
-	this->offset = offset;
 }
 
 PhysicsObject::~PhysicsObject()	{
