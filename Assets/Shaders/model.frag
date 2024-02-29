@@ -5,11 +5,7 @@ uniform sampler2D 	metalTex;
 uniform sampler2D 	roughTex;
 uniform sampler2D 	aoTex;
 uniform sampler2D 	heightTex;
-//uniform sampler2DShadow shadowTex;
-uniform samplerCube shadowTex;
-uniform vec3	lightPos;
-uniform float	lightRadius;
-uniform vec4	lightColour;
+//uniform samplerCube shadowTex;
 
 uniform vec3	cameraPos;
 
@@ -22,47 +18,28 @@ in Vertex {
 	vec3 worldPos;
 } IN;
 
-out vec4 fragColour;
+out vec4 fragColor[5];
 
- vec3 ACES_Tonemapping(vec3 x)
- {
-	float a = 2.51f;
-	float b = 0.03f;
-	float c = 2.43f;
-	float d = 0.59f;
-	float e = 0.14f;
-	vec3 encode_color = (x * (a * x + b)) / (x * (c * x + d) + e);
-	encode_color.x = max (0.0, encode_color.x);
-	encode_color.x = min (1.0, encode_color.x);
-	encode_color.y = max (0.0, encode_color.y);
-	encode_color.y = min (1.0, encode_color.y);
-	encode_color.z = max (0.0, encode_color.z);
-	encode_color.z = min (1.0, encode_color.z);
-	return encode_color;
- }
-
-float ShadowCalculation(vec3 wrldPos)
-{
-	float far_plane = 200;
-    vec3 fragToLight = wrldPos - lightPos; 
-	float closestDepth = texture(shadowTex, normalize(fragToLight)).r;
-	closestDepth*=far_plane;
-	float currentDepth=length(fragToLight);
-	float bias=0.1;
-	float shadow = currentDepth-bias > closestDepth? 0.0 : 1.0;
-
-	return shadow;
-}
+//float ShadowCalculation(vec3 wrldPos)
+//{
+//	float far_plane = 200;
+//    vec3 fragToLight = wrldPos - lightPos; 
+//	float closestDepth = texture(shadowTex, normalize(fragToLight)).r;
+//	closestDepth*=far_plane;
+//	float currentDepth=length(fragToLight);
+//	float bias=0.1;
+//	float shadow = currentDepth-bias > closestDepth? 0.0 : 1.0;
+//
+//	return shadow;
+//}
 
 void main(void)
 {
-	float shadow = ShadowCalculation(IN.worldPos);
+	//float shadow = ShadowCalculation(IN.worldPos);
 
-	vec3  incident = normalize ( lightPos - IN.worldPos );
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
 
 	vec3 viewDir = normalize ( cameraPos - IN . worldPos );
-	vec3 halfDir = normalize ( incident + viewDir );
 	vec3 viewTangent = normalize(TBN * viewDir);
 
 	vec2 uv = vec2(IN.texCoord.x, 1.0 - IN.texCoord.y);
@@ -75,38 +52,17 @@ void main(void)
 	normal.xy = normal.xy * 1;
 	normal = normalize(TBN * normal);
 
-	float lambert  = max (0.0 , dot ( incident , normal ));
-	float halfLambert = (lambert + 1.0) * 0.5;
-
 	float metal = 0;
 	metal = texture(metalTex, uv).r;
 	float roughness = 1;
 	roughness = texture(roughTex, uv).r;
 	vec4 aoCol = texture(aoTex,uv);
-	float smoothness = 1.0 - roughness;
-	float shininess = (1.0 * (1.0 - smoothness) + 80 * smoothness) * smoothness;
 
-	float rFactor = max (0.0 , dot ( halfDir , normal ));
-	float sFactor = pow ( rFactor , shininess);
-
-	float dist = length(lightPos - IN.worldPos);
-	float atten = 1.0 - clamp(dist / lightRadius, 0.0, 1.0);
-
-	
 	vec4 albedo = texture(mainTex, uv);
-	albedo.rgb = pow(albedo.rgb, vec3(2.2));
 
-	vec3 baseCol = albedo.rgb * (1.0 -metal);
-	vec3 specCol = vec3(0.04,0.04,0.04) * (1.0 - metal) + albedo.rgb * metal; 
-
-	fragColour.rgb = albedo.rgb * 0.08f * halfLambert; //ambient
-	
-	fragColour.rgb += baseCol.rgb * lightColour.rgb * lambert * shadow * atten; //diffuse light
-	
-	fragColour.rgb +=  specCol.rgb * sFactor * shadow * atten; //specular light
-	
-	fragColour.rgb = pow(fragColour.rgb, vec3(1.0 / 2.2f));
-	fragColour.rgb = ACES_Tonemapping(fragColour.rgb);
-
-	fragColour.a = 1.0;
+	fragColor[0] = vec4(albedo.rgb, 1.0);
+	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);
+	fragColor[2] = vec4(metal, roughness, 0.0, 1.0);
+	fragColor[3] = aoCol;
+	fragColor[4] = vec4(0.1, 0.0, 0.0, 1.0);
 }

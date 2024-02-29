@@ -133,15 +133,15 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateCube(Vector3(20, 5, -50), Vector3(1, 5, 10), 0.0f));
 	level1.AddObject(CreateCube(Vector3(0, 5, -59), Vector3(19, 5, 1), 0.0f));
 	////columns
-	//CreateLevel1_Columns();
+	CreateLevel1_Columns();
 	////stairs
 	CreateLevel1_Stairs();
 	////book shelfs
 	//CreateLevel1_BookShelfs();
-	////small shelfs
-	//CreateLevel1_SmallShelfs();
-	////tables
-	//CreateLevel1_Tables();
+	//small shelfs
+	CreateLevel1_SmallShelfs();
+	//tables
+	CreateLevel1_Tables();
 
 	level1.AddObject(ghost = CreateGhost(Vector3(10, 10, 0), Vector3(5, 5, 5), 0.0f));
 

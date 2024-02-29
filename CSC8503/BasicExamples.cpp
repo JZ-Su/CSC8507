@@ -64,7 +64,6 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
 	modelShader = render->LoadShader("model.vert", "model.frag");
-	//bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	playerShader = render->LoadShader("SkinningVertex.vert", "player.frag");
 	ghostShader = render->LoadShader("SkinningVertex.vert", "ghost.frag");
@@ -171,7 +170,7 @@ GameObject* BasicExamples::CreateAABB(const Vector3& position, const Vector3& di
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
-	cube->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 0.4));
+	cube->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 0.0));
 
 	return cube;
 }
@@ -231,7 +230,7 @@ GameObject* BasicExamples::CreateCubeOBB(const Vector3& position, const Vector3&
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
 
-	cube->GetRenderObject()->SetColour(Vector4(0, 1, 0.5, 0.4));
+	cube->GetRenderObject()->SetColour(Vector4(0, 1, 0.5, 0.0));
 
 	return cube;
 }
@@ -408,7 +407,7 @@ GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeig
 
 	capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
 	capsule->GetPhysicsObject()->InitSphereInertia();
-	capsule->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 0.4));
+	capsule->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 0.0));
 	return capsule;
 }
 
