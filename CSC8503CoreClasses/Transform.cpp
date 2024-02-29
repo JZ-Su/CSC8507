@@ -4,6 +4,7 @@ using namespace NCL::CSC8503;
 
 Transform::Transform()	{
 	scale = Vector3(1, 1, 1);
+	offset = Vector3();
 }
 
 Transform::~Transform()	{
@@ -32,5 +33,10 @@ Transform& Transform::SetScale(const Vector3& worldScale) {
 Transform& Transform::SetOrientation(const Quaternion& worldOrientation) {
 	orientation = worldOrientation;
 	UpdateMatrix();
+	return *this;
+}
+
+Transform& Transform::SetOffset(const Vector3& newOff) {
+	offset = newOff;
 	return *this;
 }

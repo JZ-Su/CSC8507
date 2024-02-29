@@ -75,9 +75,9 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-	Debug::DrawCollisionBox(player);
-	gameLevel->GetBoss()->Update(dt);
-	player->UpdatePlayer(dt);
+	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
+	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
+	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
@@ -133,44 +133,32 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	}
 
-	//if (lockedObject != nullptr) {
-	//	Ray ray = CollisionDetection::BuildRayFromScreenCenter(world->GetMainCamera());
-	//	RayCollision blockCollision;
-	//	if (world->Raycast(ray, blockCollision, true)) {
-	//		if ((GameObject*)blockCollision.node != player) {
-	//			blocker = (GameObject*)blockCollision.node;
-	//			Vector4 color = blocker->GetRenderObject()->GetColour();
-	//			blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 0.5));
-	//		}
-	//		else {
-	//			if (blocker != nullptr) {
-	//				Vector4 color = blocker->GetRenderObject()->GetColour();
-	//				blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 1));
-	//				blocker = nullptr;
-	//			}
-	//		}
-	//	}
-	//}
-
-	//UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
-
-	UpdateGhostAnim(ghost, ghostAnimation, dt);
-
-	//// update player animation
-	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
-
-	FireBallBulletLogic(dt);
 	SelectObject();
 	MoveSelectedObject();
 
 
-	//Level 3 stuff
-	/*if (currentLevel == 3) {
-		static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);
-	}*/
+	player->UpdatePlayer(dt);
+	// update player animation
+	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
+	// Level 1 stuff
+	if (currentLevel == 2) {
+		UpdateGhostAnim(ghost, ghostAnimation, dt);
+	}
+	// Level 2 stuff
+	else if (currentLevel == 4) {
+		for (const auto& element : gameLevel->GetL2Doors()) {
+			element->Update(dt);
+		}
+	}
+	// Level 3 stuff
+	else if (currentLevel == 6) {
+		gameLevel->GetBoss()->Update(dt);
+		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
+		FireBallBulletLogic(dt);
+	}
 	// Level 4 stuff
-	if (currentLevel == 8) {
+	else if (currentLevel == 8) {
 		GameObject* beginDet = gameLevel->GetBeginArea();
 		GameObject* trueEndDet = gameLevel->GetTrueEndArea();
 		GameObject* falseEndDet = gameLevel->GetFalseEndArea();
@@ -225,6 +213,8 @@ void TutorialGame::UpdateGame(float dt) {
 	if (!isDebug) {
 		SwitchLevel();
 	}
+
+	if (totalTime > 100) totalTime = 0;
 }
 
 void TutorialGame::UpdateKeys(float dt) {
@@ -480,18 +470,11 @@ void TutorialGame::InitWorld() {
 	blocker = nullptr;
 
 	gameLevel = new GameLevel(renderer);
-
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 	player = gameLevel->GetPlayer();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
-
-	ghost = gameLevel->getGhost();
-	ghostAnimation = gameLevel->getGhostAnimation();
-
-	boss = gameLevel->GetBoss();
-	bossAnimation = gameLevel->getBossAnimation();
-	fireBallBullet = gameLevel->getFireBallBullet();
+	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
 
 	/*
 		Please switch the debug mode here
@@ -500,22 +483,23 @@ void TutorialGame::InitWorld() {
 	//isDebug = false;
 	if (isDebug) {
 		//Level 1
-		currentLevel = 2;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		//currentLevel = 2;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		//ghost = gameLevel->getGhost();
+		//ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
+		//currentLevel = 4;
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-		//boss = gameLevel->GetBoss();
-		//bossAnimation = gameLevel->getBossAnimation();
-		//bossCheersAnimation = gameLevel->getBossCheersAnimation();
-		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
-		//playerWalkAnimation = gameLevel->getplayerWalkAnimation();
-		//playerIdleAnimation = gameLevel->getplayerIdleAnimation();
-		//playerJumpAnimation = gameLevel->getplayerJumpAnimation();
-		//fireBallBullet = gameLevel->getFireBallBullet();
+		currentLevel = 6;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		boss = gameLevel->GetBoss();
+		bossAnimation = gameLevel->getBossAnimation();
+		bossCheersAnimation = gameLevel->getBossCheersAnimation();
+		bossShootingAnimation = gameLevel->getBossShootingAnimation();
+		fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initalize function
 		//currentLevel = 8;
@@ -527,15 +511,6 @@ void TutorialGame::InitWorld() {
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 		portal = gameLevel->GetConnection()->portal;
-
-		player = gameLevel->GetPlayer();
-		boss = gameLevel->GetBoss();
-		ghost = gameLevel->getGhost();
-		ghostAnimation = gameLevel->getGhostAnimation();
-		bossAnimation = gameLevel->getBossAnimation();
-		playerWalkAnimation = gameLevel->getplayerWalkAnimation();
-		playerIdleAnimation = gameLevel->getplayerIdleAnimation();
-
 		lockedObject = player;
 	}
 
@@ -999,6 +974,9 @@ void TutorialGame::SwitchLevel() {
 			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel1()->portal;
+
+			ghost = gameLevel->getGhost();
+			ghostAnimation = gameLevel->getGhostAnimation();
 			break;
 		case 2:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel1(), true, false);
@@ -1027,6 +1005,10 @@ void TutorialGame::SwitchLevel() {
 			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			//portal = gameLevel->GetLevel3()->portal;
+
+			boss = gameLevel->GetBoss();
+			bossAnimation = gameLevel->getBossAnimation();
+			fireBallBullet = gameLevel->getFireBallBullet();
 			break;
 		case 6:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true, false);
