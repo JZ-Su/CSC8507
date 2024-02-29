@@ -77,17 +77,6 @@ TutorialGame::~TutorialGame() {
 void TutorialGame::UpdateGame(float dt) {
 	Debug::DrawCollisionBox(player);
 	gameLevel->GetBoss()->Update(dt);
-	// gameLevel->GetBoss()->Update(dt, player);
-	//Debug::DrawCollisionBox(gameLevel->GetLevel1()->objectList[40]);
-	//for (auto element : gameLevel->GetLevel1()->objectList) {
-	//	Debug::DrawCollisionBox(element);
-	//}
-	Debug::DrawCollisionBox(player);
-	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
-	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
-	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
-
-	//gameLevel->GetPlayerCollisionBox()->Update();
 	player->UpdatePlayer(dt);
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
@@ -236,11 +225,6 @@ void TutorialGame::UpdateGame(float dt) {
 	if (!isDebug) {
 		SwitchLevel();
 	}
-
-	for (const auto& element : gameLevel->GetL2Doors()) {
-		element->Update(dt);
-	}
-	if (totalTime > 100) totalTime = 0;
 }
 
 void TutorialGame::UpdateKeys(float dt) {
@@ -524,7 +508,10 @@ void TutorialGame::InitWorld() {
 
 		//Level 3
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		//boss = gameLevel->GetBoss();
 		//bossAnimation = gameLevel->getBossAnimation();
+		//bossCheersAnimation = gameLevel->getBossCheersAnimation();
+		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
 		//playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 		//playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 		//playerJumpAnimation = gameLevel->getplayerJumpAnimation();
@@ -540,6 +527,15 @@ void TutorialGame::InitWorld() {
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 		portal = gameLevel->GetConnection()->portal;
+
+		player = gameLevel->GetPlayer();
+		boss = gameLevel->GetBoss();
+		ghost = gameLevel->getGhost();
+		ghostAnimation = gameLevel->getGhostAnimation();
+		bossAnimation = gameLevel->getBossAnimation();
+		playerWalkAnimation = gameLevel->getplayerWalkAnimation();
+		playerIdleAnimation = gameLevel->getplayerIdleAnimation();
+
 		lockedObject = player;
 	}
 
