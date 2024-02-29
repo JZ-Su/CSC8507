@@ -506,12 +506,14 @@ void TutorialGame::InitWorld() {
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
-		//currentLevel = 6;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-		//boss = gameLevel->GetBoss();
-		//bossAnimation = gameLevel->getBossAnimation();
-		//bossCheersAnimation = gameLevel->getBossCheersAnimation();
-		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
+		/*currentLevel = 6;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		boss = gameLevel->GetBoss();
+		bossAnimation = gameLevel->getBossAnimation();
+		bossCheersAnimation = gameLevel->getBossCheersAnimation();
+		bossShootingAnimation = gameLevel->getBossShootingAnimation();
+		fireBallBullet = gameLevel->getFireBallBullet();*/
+
 		//Level 4 initalize function
 		//currentLevel = 8;
 		//gameLevel->AddLevelToWorld(world, 0, true, false);

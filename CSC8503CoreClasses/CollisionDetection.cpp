@@ -417,38 +417,22 @@ bool  CollisionDetection::OBBSphereIntersection(const OBBVolume& volumeA, const 
 bool CollisionDetection::AABBCapsuleIntersection(
 	const CapsuleVolume& volumeA, const Transform& worldTransformA,
 	const AABBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
+	Vector3 capsulePos = worldTransformA.GetPosition();
+	Vector3 objectDir = worldTransformA.GetOrientation() * Vector3(0, 1, 0);
+	Vector3 vectorToEnd = objectDir * (volumeA.GetHalfHeight() - volumeA.GetRadius());
+	Vector3 bottomPoint = capsulePos - vectorToEnd;
+	Vector3 topPoint = capsulePos + vectorToEnd;
 
-	Vector3 boxSize = volumeB.GetHalfDimensions();
+	Vector3 AB = bottomPoint - topPoint;
+	float t = Vector3::Dot(worldTransformB.GetPosition() - topPoint, AB) / Vector3::Dot(AB, AB);
+	t = (t < 0.0f) ? 0.0f : (t > 1.0f) ? 1.0f : t;
+	Vector3 clampedPos = topPoint + AB * t;
 
-	Vector3 capsuleTop = worldTransformA.GetPosition() + worldTransformA.GetOffset() + Vector3(0, volumeA.GetHalfHeight() - volumeA.GetRadius() / 2, 0);
-	Vector3 deltaTop = capsuleTop - (worldTransformB.GetPosition() + worldTransformB.GetOffset());
-	Vector3 closestPointOnBoxByTop = Vector3::Clamp(deltaTop, -boxSize, boxSize);
-	Vector3 localPointByTop = deltaTop - closestPointOnBoxByTop;
-	float distanceByTop = localPointByTop.Length();
-	if (distanceByTop < volumeA.GetRadius() / 2) {
-		Vector3 collisionNormal = localPointByTop.Normalised();
-		float penetration = volumeA.GetRadius() / 2 - distanceByTop;
-		Vector3 localA = Vector3();
-		Vector3 localB = -collisionNormal * volumeA.GetRadius() / 2;
-		collisionInfo.AddContactPoint(localA, localB, collisionNormal, penetration);
-		return true;
-	}
-
-	Vector3 capsuleBot = worldTransformA.GetPosition() + worldTransformA.GetOffset() + Vector3(0, -volumeA.GetHalfHeight() + volumeA.GetRadius() / 2, 0);
-	Vector3 deltaBot = capsuleBot - (worldTransformB.GetPosition() + worldTransformB.GetOffset());
-	Vector3 closestPointOnBoxByBot = Vector3::Clamp(deltaBot, -boxSize, boxSize);
-	Vector3 localPointByBot = deltaBot - closestPointOnBoxByBot;
-	float distanceByBot = localPointByBot.Length();
-	if (distanceByBot < volumeA.GetRadius() / 2) { 
-		Vector3 collisionNormal = localPointByBot.Normalised(); 
-		float penetration = -(volumeA.GetRadius() / 2 - distanceByBot);
-		Vector3 localA = Vector3();
-		Vector3 localB = collisionNormal * volumeA.GetRadius() / 2;
-		collisionInfo.AddContactPoint(localA, localB, collisionNormal, penetration);
-		return true;
-	}
-
-	return false;
+	Transform sphereTransform = worldTransformA;
+	sphereTransform.SetPosition(clampedPos);
+	bool collision = AABBSphereIntersection(volumeB, worldTransformB, SphereVolume(volumeA.GetRadius()), sphereTransform, collisionInfo);
+	collisionInfo.point.normal = -collisionInfo.point.normal;
+	return collision;
 }
 
 bool CollisionDetection::SphereCapsuleIntersection(

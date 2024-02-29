@@ -42,6 +42,12 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	floorTexture[3] = render->LoadTexture("Floor/floor_roughness.jpg");
 	floorTexture[4] = render->LoadTexture("Floor/floor_ao.jpg");
 	floorTexture[5] = render->LoadTexture("Floor/floor_height.png");
+	layerTexture[0] = render->LoadTexture("Floor/floor1_color.jpg");
+	layerTexture[1] = render->LoadTexture("Floor/floor1_normal.png");
+	layerTexture[2] = DefualtTexture[2];
+	layerTexture[3] = render->LoadTexture("Floor/floor1_roughness.jpg");
+	layerTexture[4] = render->LoadTexture("Floor/floor1_ao.jpg");
+	layerTexture[5] = render->LoadTexture("Floor/floor1_height.png");
 	ceilingTexture[0] = render->LoadTexture("Ceiling/ceiling_color.jpg");
 	ceilingTexture[1] = render->LoadTexture("Ceiling/ceiling_normal.png");
 	ceilingTexture[2] = DefualtTexture[2];
@@ -194,6 +200,27 @@ GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& d
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
 	cube->SetTag("Ground");
+	return cube;
+}
+
+GameObject* BasicExamples::CreateLayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* cube = new GameObject("layer");
+
+	AABBVolume* volume = new AABBVolume(dimensions);
+	cube->SetBoundingVolume((CollisionVolume*)volume);
+
+	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, layerTexture[0], basicShader));
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+	cube->GetRenderObject()->SetDefaultTexture(layerTexture[1], 1);
+	cube->GetRenderObject()->SetDefaultTexture(layerTexture[2], 2);
+	cube->GetRenderObject()->SetDefaultTexture(layerTexture[3], 3);
+	cube->GetRenderObject()->SetDefaultTexture(layerTexture[4], 4);
+	cube->GetRenderObject()->SetDefaultTexture(layerTexture[5], 5);
+
+	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
+	cube->GetPhysicsObject()->InitCubeInertia();
+	//cube->SetTag("Ground");
 	return cube;
 }
 
@@ -408,7 +435,8 @@ GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeig
 
 	capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
 	capsule->GetPhysicsObject()->InitSphereInertia();
-	capsule->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 0.0));
+	capsule->GetRenderObject()->SetColour(Vector4(1, 1, 1, 0.0));
+	capsule->Deactivate();
 	return capsule;
 }
 
