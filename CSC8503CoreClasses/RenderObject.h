@@ -70,6 +70,8 @@ namespace NCL {
 			Transform*	transform;
 			Vector4		colour;
 
+
+
 			std::vector <Matrix4 > frameMatrices;
 
 		};

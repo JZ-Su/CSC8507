@@ -15,6 +15,7 @@ namespace NCL {
 			Transform& SetPosition(const Vector3& worldPos);
 			Transform& SetScale(const Vector3& worldScale);
 			Transform& SetOrientation(const Quaternion& newOr);
+			Transform& SetOffset(const Vector3& newOff);
 
 			Vector3 GetPosition() const {
 				return position;
@@ -31,6 +32,11 @@ namespace NCL {
 			Matrix4 GetMatrix() const {
 				return matrix;
 			}
+
+			Vector3 GetOffset() const {
+				return offset;
+			}
+
 			void UpdateMatrix();
 		protected:
 			Matrix4		matrix;
@@ -38,6 +44,8 @@ namespace NCL {
 			Vector3		position;
 
 			Vector3		scale;
+
+			Vector3		offset;
 		};
 	}
 }

@@ -19,8 +19,9 @@ namespace NCL {
 			Mesh*		LoadMesh(const std::string& name);
 			Texture*	LoadTexture(const std::string& name);
 			Shader*		LoadShader(const std::string& vertex, const std::string& fragment);
-			void        Loadhealth(GameUI ui);
-			//void UpdateProjMatrixFov(float df);
+
+			vector<Vector4> LoadMap();
+
 		protected:
 			std::unordered_map<std::string, SharedOGLTexture> textureCache;
 
@@ -38,6 +39,8 @@ namespace NCL {
 			void RenderShadowMap();
 			void RenderCamera(); 
 			void RenderSkybox();
+			void RenderLight();
+			void RenderCombine();
 
 			void LoadSkybox();
 
@@ -52,6 +55,8 @@ namespace NCL {
 			OGLShader*  debugShader;
 			OGLShader* skyboxShader;
 			OGLMesh*	skyboxMesh;
+			Mesh* lightMesh;
+			OGLMesh* quadMesh;
 			GLuint		skyboxTex;
 
 			//shadow mapping things
@@ -59,6 +64,21 @@ namespace NCL {
 			GLuint		shadowTex;
 			GLuint		shadowFBO;
 			Matrix4     shadowMatrix;
+
+			//deferred render
+			OGLShader* lightShader;
+			OGLShader* combineShader;
+			GLuint		bufferFBO;
+			GLuint		lightFBO;
+			GLuint		depthTex;
+			GLuint		colorTex;
+			GLuint		addTex;
+			GLuint		indexTex;
+			GLuint		normalTex;
+			GLuint		dataTex;
+			GLuint		lightDiffTex;
+			GLuint		lightSpecTex;
+			Texture* skinTex;
 
 			Vector4		lightColour;
 			float		lightRadius;

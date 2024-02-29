@@ -4,7 +4,7 @@
 using namespace NCL;
 using namespace CSC8503;
 
-PhysicsObject::PhysicsObject(Transform* parentTransform, const CollisionVolume* parentVolume)	{
+PhysicsObject::PhysicsObject(Transform* parentTransform, const CollisionVolume* parentVolume, Vector3 offset)	{
 	transform	= parentTransform;
 	volume		= parentVolume;
 

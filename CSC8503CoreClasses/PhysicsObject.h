@@ -9,7 +9,7 @@ namespace NCL {
 
 		class PhysicsObject	{
 		public:
-			PhysicsObject(Transform* parentTransform, const CollisionVolume* parentVolume);
+			PhysicsObject(Transform* parentTransform, const CollisionVolume* parentVolume, Vector3 offset = Vector3());
 			~PhysicsObject();
 
 			Vector3 GetLinearVelocity() const {

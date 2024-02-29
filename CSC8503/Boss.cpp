@@ -9,8 +9,8 @@ using namespace NCL;
 using namespace CSC8503;
 Boss::Boss(Player* player) {
 	this->player = player;
-	remoteAttackRange = 90.0f;
-	meleeAttackRange = 10.0f;
+	remoteAttackRange = 110.0f;
+	meleeAttackRange = 40.0f;
 	bossHealth = 100.0f;
 	isShooting = false;
 	hasFireBallBullet = true;
@@ -34,8 +34,17 @@ Boss::Boss(Player* player) {
 			state = Ongoing;
 		}
 		else if (state == Ongoing) {
-			std::cout << "MeleeAttack.\n";
-			return Failure;
+			this->distanceToTarget = calculateDistance(GetTransform().GetPosition(), this->player->GetTransform().GetPosition());
+			if (this->distanceToTarget > this->meleeAttackRange) {
+				return Failure;
+			}
+			else {
+				Debug::DrawLine(GetTransform().GetPosition(), this->player->GetTransform().GetPosition(), Debug::GREEN);
+				Debug::DrawCollisionBox(this);
+				Debug::DrawCollisionBox(this->player);
+				std::cout << "MeleeAttack.\n";
+				return Ongoing;
+			}
 		}
 		return state;
 		}
@@ -48,7 +57,7 @@ Boss::Boss(Player* player) {
 		}
 		else if (state == Ongoing) {
 			this->distanceToTarget = calculateDistance(GetTransform().GetPosition(), this->player->GetTransform().GetPosition());
-			if (this->distanceToTarget > this->remoteAttackRange) {
+			if (this->distanceToTarget > this->remoteAttackRange || this->distanceToTarget<this->meleeAttackRange) {
 				isShooting = false;
 				return Failure;
 			}
@@ -92,8 +101,8 @@ Boss::Boss(Player* player) {
 	);
 	BehaviourSelector* selection = new BehaviourSelector("FirstLevel");
 	selection->AddChild(RemoteAttack);
+	selection->AddChild(MeleeAttack);
 	selection->AddChild(Idle);
-	//	selection->AddChild(MeleeAttack);
 	//	selection->AddChild(Flinches);
 	//	selection->AddChild(Death);
 	rootSequence = new BehaviourSequence("Root Sequence");

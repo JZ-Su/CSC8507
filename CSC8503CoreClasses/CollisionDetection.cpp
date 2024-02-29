@@ -3,6 +3,7 @@
 #include "AABBVolume.h"
 #include "OBBVolume.h"
 #include "SphereVolume.h"
+#include "PhysicsObject.h"
 #include "Window.h"
 #include "Maths.h"
 #include "Debug.h"
@@ -270,8 +271,8 @@ bool CollisionDetection::AABBTest(const Vector3& posA, const Vector3& posB, cons
 bool CollisionDetection::AABBIntersection(const AABBVolume& volumeA, const Transform& worldTransformA,
 	const AABBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
 
-	Vector3 boxAPos = worldTransformA.GetPosition();
-	Vector3 boxBPos = worldTransformB.GetPosition();
+	Vector3 boxAPos = worldTransformA.GetPosition() + worldTransformA.GetOffset();
+	Vector3 boxBPos = worldTransformB.GetPosition() + worldTransformB.GetOffset();
 	Vector3 boxASize = volumeA.GetHalfDimensions();
 	Vector3 boxBSize = volumeB.GetHalfDimensions();
 

@@ -1,10 +1,6 @@
 #version 330 core
 uniform sampler2D mainTex;
-//uniform sampler2DShadow shadowTex;
-uniform samplerCube shadowTex;
-uniform vec3	lightPos;
-uniform float	lightRadius;
-uniform vec4	lightColour;
+//uniform samplerCube shadowTex;
 
 uniform vec3	cameraPos;
 
@@ -17,13 +13,12 @@ in Vertex {
 	vec3 worldPos;
 } IN;
 
-out vec4 fragColour;
+out vec4 fragColor[5];
 
 void main(void) {
 
 	vec2 flippedTexCoord = vec2(IN.texCoord.x, 1.0 - IN.texCoord.y);
-    vec3 normal = IN.normal;
-	vec3  incident = normalize ( lightPos - IN.worldPos );	
+    vec3 normal = IN.normal;	
 	vec3 viewDir = normalize ( cameraPos - IN . worldPos );
 
 	float fresnel = max(0.0, dot(normal, viewDir));
@@ -39,6 +34,9 @@ void main(void) {
 	color = insideColor * (1.0 - fresnel) + mainColor * fresnel;
 	fresnel = clamp(fresnel, 0.3, 1.0);
 
-	fragColour.rgb = color;
-	fragColour.a = fresnel;
+	fragColor[0] = vec4(color, fresnel);
+	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);
+	fragColor[2] = vec4(fresnel, 0.0, 0.0, 1.0);
+	fragColor[3] = vec4(0.0, 0.0, 0.0, 1.0);
+	fragColor[4] = vec4(0.5, 0.0, 1.0, 1.0);
 }
