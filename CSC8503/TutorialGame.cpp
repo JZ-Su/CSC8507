@@ -69,16 +69,12 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-<<<<<<< Updated upstream
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
-=======
 	Debug::DrawCollisionBox(player);
 	//gameLevel->GetBoss()->Update(dt);
 	player->UpdatePlayer(dt);
->>>>>>> Stashed changes
-
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
 		return;
@@ -133,27 +129,6 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	}
 
-<<<<<<< Updated upstream
-=======
-	//if (lockedObject != nullptr) {
-	//	Ray ray = CollisionDetection::BuildRayFromScreenCenter(world->GetMainCamera());
-	//	RayCollision blockCollision;
-	//	if (world->Raycast(ray, blockCollision, true)) {
-	//		if ((GameObject*)blockCollision.node != player) {
-	//			blocker = (GameObject*)blockCollision.node;
-	//			Vector4 color = blocker->GetRenderObject()->GetColour();
-	//			blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 0.5));
-	//		}
-	//		else {
-	//			if (blocker != nullptr) {
-	//				Vector4 color = blocker->GetRenderObject()->GetColour();
-	//				blocker->GetRenderObject()->SetColour(Vector4(color.x, color.y, color.z, 1));
-	//				blocker = nullptr;
-	//			}
-	//		}
-	//	}
-	//}
-
 	//UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
 
 	UpdateGhostAnim(ghost, ghostAnimation, dt);
@@ -162,7 +137,6 @@ void TutorialGame::UpdateGame(float dt) {
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
 	IceCubeBulletLogic(dt);
->>>>>>> Stashed changes
 	SelectObject();
 	MoveSelectedObject();
 
@@ -185,7 +159,7 @@ void TutorialGame::UpdateGame(float dt) {
 	else if (currentLevel == 6) {
 		gameLevel->GetBoss()->Update(dt);
 		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
-		FireBallBulletLogic(dt);
+		IceCubeBulletLogic(dt);
 	}
 	// Level 4
 	else if (currentLevel == 8) {
@@ -508,18 +482,13 @@ void TutorialGame::InitWorld() {
 	player = gameLevel->GetPlayer();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
-<<<<<<< Updated upstream
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
-=======
-
 	ghost = gameLevel->getGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
 
 	boss = gameLevel->GetBoss();
 	bossAnimation = gameLevel->getBossAnimation();
 	iceCubeBullet = gameLevel->getIceCubeBullet();
->>>>>>> Stashed changes
-
 	/*
 		Please switch the debug mode here
 	*/
@@ -543,16 +512,6 @@ void TutorialGame::InitWorld() {
 		//bossAnimation = gameLevel->getBossAnimation();
 		//bossCheersAnimation = gameLevel->getBossCheersAnimation();
 		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
-<<<<<<< Updated upstream
-		//fireBallBullet = gameLevel->getFireBallBullet();
-=======
-		//bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
-		//playerWalkAnimation = gameLevel->getplayerWalkAnimation();
-		//playerIdleAnimation = gameLevel->getplayerIdleAnimation();
-		//playerJumpAnimation = gameLevel->getplayerJumpAnimation();
-		//iceCubeBullet = gameLevel->getIceCubeBullet();
->>>>>>> Stashed changes
-
 		//Level 4 initalize function
 		//currentLevel = 8;
 		//gameLevel->AddLevelToWorld(world, 0, true, false);
@@ -1076,7 +1035,7 @@ void TutorialGame::SwitchLevel() {
 
 			boss = gameLevel->GetBoss();
 			bossAnimation = gameLevel->getBossAnimation();
-			fireBallBullet = gameLevel->getFireBallBullet();
+			iceCubeBullet = gameLevel->getIceCubeBullet();
 			break;
 		case 6:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true, false);
