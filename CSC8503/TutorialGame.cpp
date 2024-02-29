@@ -305,11 +305,11 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	Ray collisionRay = Ray(targetpos, -camdir);
 	RayCollision collisionRayData;
-	if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
+	/*if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
 	{
 		if (collisionRayData.rayDistance < 6)
 			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
-	}
+	}*/
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
@@ -479,7 +479,7 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	isDebug = true;
+	isDebug = false;
 	//isDebug = false;
 	if (isDebug) {
 		//Level 1
@@ -1044,8 +1044,8 @@ void TutorialGame::UpdateTrackingBall(Vector3 ballPosition, const Vector3& playe
 void TutorialGame::UpdateProjMatrixFov(float df) {
 	float fov = world->GetMainCamera().GetFov();
 	fov -= df;
-	fov = std::max(10.0f, fov);
-	fov = std::min(90.0f, fov);
+	fov = std::max(15.0f, fov);
+	fov = std::min(120.0f, fov);
 	world->GetMainCamera().SetFov(fov);
 }
 

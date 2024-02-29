@@ -16,7 +16,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {
-	player = CreatePlayer(Vector3(60, 10, 60), Vector3(2, 2, 2), 10.0f);
+	player = CreatePlayer(Vector3(0, 10, 60), Vector3(2, 2, 2), 10.0f);
 	Generic.AddObject(player);
 	//Level 4 player: 
 	//Generic.AddObject(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
