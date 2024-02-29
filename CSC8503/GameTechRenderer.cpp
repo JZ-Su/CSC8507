@@ -245,6 +245,7 @@ void GameTechRenderer::RenderFrame() {
 	RenderCamera();
 	RenderLight();
 	RenderCombine();
+	//RenderSkybox();
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
@@ -299,14 +300,14 @@ void GameTechRenderer::RenderShadowMap() {
 
 	Matrix4 shadowProjMatrix = Matrix4::Perspective(1.0f, far_plane, 1, 90.0f);
 	vector<Matrix4> shadowViewMatrix;
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(0, 90, lightPosition));
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(0, -90, lightPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 90, lightPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, -90, lightPosition));
 
 	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(90, 0, lightPosition));
 	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(-90, 0, lightPosition));
 
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(0, 180, lightPosition));
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(0, 0, lightPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 0, lightPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 180, lightPosition));
 
 
 
@@ -642,11 +643,15 @@ void GameTechRenderer::RenderLight() {
 
 void GameTechRenderer::RenderCombine() {
 	BindShader(*combineShader);
-
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, lightDiffTex);
 	int lightDiffTexLocation = glGetUniformLocation(combineShader->GetProgramID(), "lightDiffTex");
 	glUniform1i(lightDiffTexLocation, 0);
+
+	glActiveTexture(GL_TEXTURE0 + 1);
+	glBindTexture(GL_TEXTURE_2D, depthTex);
+	int depthTexLocation = glGetUniformLocation(combineShader->GetProgramID(), "depthTex");
+	glUniform1i(depthTexLocation, 1);
 
 	glActiveTexture(GL_TEXTURE0 + 2);
 	glBindTexture(GL_TEXTURE_2D, lightSpecTex);
@@ -660,6 +665,7 @@ void GameTechRenderer::RenderCombine() {
 
 	BindMesh(*quadMesh);
 	DrawBoundMesh();
+	glDepthFunc(GL_LEQUAL);
 }
 
 Mesh* GameTechRenderer::LoadMesh(const std::string& name) {

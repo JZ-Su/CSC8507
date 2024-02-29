@@ -4,6 +4,7 @@
 uniform sampler2D 	colorTex;
 uniform sampler2D 	lightDiffTex;
 uniform sampler2D 	lightSpecTex;
+uniform sampler2D 	depthTex;
 //uniform sampler2D 	metalTex;
 //uniform sampler2D 	roughTex;
 //uniform sampler2D 	aoTex;
@@ -49,6 +50,10 @@ out vec4 fragColor;
 
 void main(void)
 {
+	float depth = texture(depthTex, IN.texCoord).r;
+	if(depth == 1.0){
+		discard;
+	}
 
 	vec4 albedo = texture(colorTex, IN.texCoord);
 	albedo.rgb = pow(albedo.rgb, vec3(2.2));
@@ -65,6 +70,6 @@ void main(void)
 	fragColor.rgb = ACES_Tonemapping(fragColor.rgb);
 	fragColor.a = lightDiff.a;
 	if(fragColor.a == 0){
-		fragColor.a = 1 - albedo.a;
+		fragColor.a =  albedo.a;
 	}
 }

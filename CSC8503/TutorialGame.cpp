@@ -485,6 +485,7 @@ void TutorialGame::InitWorld() {
 	player = gameLevel->GetPlayer();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
+	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
 
 	ghost = gameLevel->getGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
@@ -514,7 +515,7 @@ void TutorialGame::InitWorld() {
 		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
 		//playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 		//playerIdleAnimation = gameLevel->getplayerIdleAnimation();
-		//playerJumpAnimation = gameLevel->getplayerJumpAnimation();
+
 		//fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initalize function
