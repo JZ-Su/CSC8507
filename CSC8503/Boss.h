@@ -78,6 +78,7 @@ namespace NCL {
 			BehaviourAction* RemoteAttack;
 			BehaviourAction* Summon;
 			BehaviourAction* Flinches;
+			BehaviourAction* dizziness;
 			BehaviourAction* Death;
 			Player* player;
 			BehaviourParallel* Combat;

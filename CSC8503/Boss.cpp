@@ -107,44 +107,44 @@ Boss::Boss(Player* player) {
 		}
 	);
 	Inverter* antiRemoteAttack = new Inverter("antiRemoteAttack", RemoteAttack);
-	//Flinches = new BehaviourAction("Flinches", [&](float dt, BehaviourState state) -> BehaviourState {
-	//	if (state == Initialise) {
-	//		std::cout << "Flinches init.\n";
-	//		state = Ongoing;
-	//		flinchAnimationTimer = 0.0f;
-	//	}
-	//	else if (state == Ongoing) {
-	//		if (this->getIsRencentlyHurt()) {
-	//			std::cout << "Flinches.\n";
-	//			flinchAnimationTimer += dt;
-	//			if (flinchAnimationTimer >= 0.28f) {
-	//				this->SetIsRencentlyHurt(false);
-	//				return Failure;
-	//			}
-	//			return Ongoing;
-	//		}
-	//		else {
-	//			return Failure;
-	//		}
-	//	}
-	//	return state;
-	//	}
-	//);
 	Flinches = new BehaviourAction("Flinches", [&](float dt, BehaviourState state) -> BehaviourState {
+		if (state == Initialise) {
+			std::cout << "Flinches init.\n";
+			state = Ongoing;
+			flinchAnimationTimer = 0.0f;
+		}
+		else if (state == Ongoing) {
+			if (this->getIsRencentlyHurt()) {
+				std::cout << "Flinches.\n";
+				flinchAnimationTimer += dt;
+				if (flinchAnimationTimer >= 0.28f) {
+					this->SetIsRencentlyHurt(false);
+					return Failure;
+				}
+				return Ongoing;
+			}
+			else {
+				return Failure;
+			}
+		}
+		return state;
+		}
+	);
+	dizziness = new BehaviourAction("dizziness", [&](float dt, BehaviourState state) -> BehaviourState {
 		static float stunTimer = 0.0f;
 		const float stunDuration = 4.0f;
 		const float healthThreshold = 50.0f;
 		if (bossHealth <= healthThreshold) {
 			if (state == Initialise) {
-				std::cout << "Flinches init.\n";
+				std::cout << "dizziness init.\n";
 				stunTimer = 0.0f;
 				return Ongoing;
 			}
 			else if (state == Ongoing) {
-				std::cout << "Flinches.\n";
+				std::cout << "dizziness.\n";
 				stunTimer += dt;
 				if (stunTimer >= stunDuration) {
-					std::cout << "End of flinches.\n";
+					std::cout << "End of dizziness.\n";
 					stunTimer = 0.0f;
 					return Success;
 				}
@@ -154,7 +154,7 @@ Boss::Boss(Player* player) {
 		return Success;
 		}
 	);
-	Inverter* antiFlinches = new Inverter("antiFlinches", Flinches);
+	Inverter* antidizziness = new Inverter("antidizziness", dizziness);
 	Death = new BehaviourAction("Death", [&](float dt, BehaviourState state) -> BehaviourState {
 		if (state == Initialise) {
 			std::cout << "Death init\n";
@@ -186,7 +186,7 @@ Boss::Boss(Player* player) {
 	//rootSequence->AddChild(selection);
 	Root = new BehaviourSelector("Root");
 	Combat = new BehaviourParallel("Combat");
-	Combat->AddChild(Flinches);
+	Combat->AddChild(dizziness);
 	Combat->AddChild(antiRemoteAttack);
 	Combat->AddChild(ChaseAndAttack);
 	Root->AddChild(Death);
