@@ -501,7 +501,7 @@ void TutorialGame::InitWorld() {
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
-	ghost = gameLevel->getGhost();
+	ghost = gameLevel->GetGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
 
 	boss = gameLevel->GetBoss();

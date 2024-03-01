@@ -49,11 +49,11 @@ void main(void)
 
 	float dist = length(lightPos - worldPos);
 	float atten = 1.0 - clamp(dist / lightRadius, 0.0, 1.0);
-//
-//	if ( atten == 0.0) {
-//		discard;
-//	}
-//
+
+	if ( atten == 0.0) {
+		discard;
+	}
+
 	vec3 normal = normalize(texture(normalTex, texCoord.xy).xyz * 2.0 - 1.0);
 
 	vec4 albedo = texture(colorTex, texCoord.xy);
