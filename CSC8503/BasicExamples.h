@@ -34,9 +34,13 @@ namespace NCL {
 		GameObject* CreateChar(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateGoat(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
+		GameObject* CreateCoin(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float rotation = 0.0f);
+		
 		//GameObject* CreateIceCubeBullet(const Vector3& position, float radius, float inverseMass);
 		GameObject* CreateIceCubeBullet(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		GameObject* CreateFireBallBullet(const Vector3& position, float radius, float inverseMass);
 
+		
 		GameObject* CreateBookshelf(const Vector3& position, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
 		GameObject* CreateStairs(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
 		GameObject* CreateTable(const Vector3& position, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
@@ -64,33 +68,34 @@ namespace NCL {
 		GameObject* CreateTestMesh(const Vector3& position, const Vector3& dimensions, float inverseMass);
 		void LoadMaterialTextures(GameObject* character, Mesh* mesh,MeshMaterial* material, GameTechRenderer* renderer);
 
-		Boss* GetBoss() const { return boss; }
-		Player* GetPlayer() const { return player; }
-		GameObject* getGhost() const { return ghost; }
+		Boss*		GetBoss() const { return boss; }
+		Player*		GetPlayer() const { return player; }
+		GameObject*	GetGhost() const { return ghost; }
 
 		void ExportToObj(const Mesh& mesh, const std::string& filename);
 
 	protected:
-		Mesh* cubeMesh = nullptr;
-		Mesh* sphereMesh = nullptr;
-		Mesh* charMesh = nullptr;
-		Mesh* goatMesh = nullptr;
-		Mesh* capsuleMesh = nullptr;
-		Mesh* bossMesh = nullptr;
-		Mesh* playerMesh = nullptr;
-		Mesh* ghostMesh = nullptr;
-		Mesh* bookshelfMesh = nullptr;
-		Mesh* tableMesh = nullptr;
-		Mesh* columnMesh = nullptr;
-		Mesh* stairMesh = nullptr;
-		Mesh* handrailMesh = nullptr;
+		Mesh* cubeMesh		= nullptr;
+		Mesh* sphereMesh	= nullptr;
+		Mesh* charMesh		= nullptr;
+		Mesh* goatMesh		= nullptr;
+		Mesh* capsuleMesh	= nullptr;
+		Mesh* bossMesh		= nullptr;
+		Mesh* playerMesh	= nullptr;
+		Mesh* ghostMesh		= nullptr;
+		Mesh* bookshelfMesh	= nullptr;
+		Mesh* tableMesh		= nullptr;
+		Mesh* columnMesh	= nullptr;
+		Mesh* stairMesh		= nullptr;
+		Mesh* handrailMesh	= nullptr;
+		Mesh* coinMesh		= nullptr;
 	
 		Texture* basicTexture = nullptr;
 		Texture* IceCubeTexture = nullptr;
-		Texture* DefualtTexture[5] = { nullptr,nullptr,nullptr,nullptr,nullptr };
-		Texture* floorTexture[6] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
-		Texture* layerTexture[6] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
-		Texture* ceilingTexture[6] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
+		Texture* DefualtTexture[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
+		Texture* floorTexture[6]   = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+		Texture* layerTexture[6]   = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+		Texture* ceilingTexture[6] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 		Shader* basicShader = nullptr;
 		Shader* floorShader = nullptr;
 		Shader* modelShader = nullptr;
@@ -106,6 +111,7 @@ namespace NCL {
 		MeshMaterial* columnMat = nullptr;
 		MeshMaterial* stairMat = nullptr;
 		MeshMaterial* handrailMat = nullptr;
+		MeshMaterial* coinMat = nullptr;
 
 		MeshAnimation* bossAnimation = nullptr;
 		MeshAnimation* bossCheersAnimation = nullptr;

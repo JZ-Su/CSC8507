@@ -78,7 +78,7 @@ Door::Door(Player* player, Vector3 position, float rotation) {
 
 	StateTransition* aTob = new StateTransition(keepState, opening,
 		[&](GameObject* player)->bool {
-			if (isOpening == false && (player->GetTransform().GetPosition() - GetTransform().GetPosition()).Length() <= 10) {
+			if (isOpening == false && (player->GetTransform().GetPosition() - GetTransform().GetPosition()).Length() <= 15) {
 				return true;
 			}
 			return false;

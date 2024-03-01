@@ -158,6 +158,9 @@ namespace NCL {
 			void IceCubeBulletLogic(float dt);
 			float h = 0, v = 0;
 
+			void SwitchLevel();
+			GameObject* exit = nullptr;
+
 			bool hasRotation = true;
 			bool hasReverse = false;
 			int mapIndex = 0;
@@ -165,11 +168,9 @@ namespace NCL {
 			int iceCubeBulletFrames = 0;
 			int currentLevel;
 			GameObject* portal;
-			void SwitchLevel();
-			GameUI* ui;
 			float shootingTimer = 0.0f;
 			const float shootingDuration = 0.4f;
-			bool playShootingAnimation=false;
+			bool playShootingAnimation = false;
 		};
 	}
 }

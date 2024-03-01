@@ -168,6 +168,7 @@ void TutorialGame::UpdateGame(float dt) {
 		GameObject* falseEndDet = gameLevel->GetFalseEndArea();
 		trueEndDet->GetRenderObject()->SetColour(Debug::RED);
 		falseEndDet->GetRenderObject()->SetColour(Debug::GREEN);
+		beginDet->GetRenderObject()->SetColour(Debug::BLUE);
 		if (!physics->GetCollisionDetectionList(beginDet).empty() && physics->GetCollisionDetectionList(beginDet)[0] == player && beginDet->isEnable == true) {
 			beginDet->isEnable = false;
 			trueEndDet->isEnable = true;
@@ -200,6 +201,23 @@ void TutorialGame::UpdateGame(float dt) {
 			mapIndex = 0;
 			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
 			hasRotation = !hasRotation;
+		}
+
+		if (score == 6 && exit == nullptr) {
+			if (!hasReverse && !hasRotation) {
+				exit = gameLevel->CreateCube(Vector3(-30, 10, -70), Vector3(15, 15, 15), 0.0f);
+			}
+			else if (!hasReverse && hasRotation) {
+				exit = gameLevel->CreateCube(Vector3(30, 10, 70), Vector3(15, 15, 15), 0.0f);
+			}
+			else if (hasReverse && !hasRotation) {
+				exit = gameLevel->CreateCube(Vector3(-30, 10, -70), Vector3(15, 15, 15), 0.0f);
+			}
+			else if (hasReverse && hasRotation) {
+				exit = gameLevel->CreateCube(Vector3(-70, 10, -30), Vector3(15, 15, 15), 0.0f);
+			}
+			exit->GetRenderObject()->SetColour(Debug::WHITE);
+			world->AddGameObject(exit);
 		}
 	}
 	world->UpdateWorld(dt);
@@ -498,7 +516,7 @@ void TutorialGame::InitWorld() {
 		//Level 1
 		currentLevel = 2;
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		ghost = gameLevel->getGhost();
+		ghost = gameLevel->GetGhost();
 		ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
@@ -514,7 +532,7 @@ void TutorialGame::InitWorld() {
 		bossShootingAnimation = gameLevel->getBossShootingAnimation();
 		fireBallBullet = gameLevel->getFireBallBullet();*/
 
-		//Level 4 initalize function
+		//Level 4 initial function
 		//currentLevel = 8;
 		//gameLevel->AddLevelToWorld(world, 0, true, false);
 		//gameLevel->AddLevelToWorld(world, 0, false, false);
@@ -1004,7 +1022,7 @@ void TutorialGame::SwitchLevel() {
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel1()->portal;
 
-			ghost = gameLevel->getGhost();
+			ghost = gameLevel->GetGhost();
 			ghostAnimation = gameLevel->getGhostAnimation();
 			break;
 		case 2:
