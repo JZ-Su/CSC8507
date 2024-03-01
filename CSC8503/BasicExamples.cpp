@@ -23,6 +23,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	playerMesh = render->LoadMesh("FemaleA.msh");
 	ghostMesh = render->LoadMesh("Ghost.msh");
 	goatMesh    = render->LoadMesh("goat.msh");
+	shieldMesh = render->LoadMesh("shield.msh");
 	bookshelfMesh = render->LoadMesh("bookshelf.msh");
 	tableMesh = render->LoadMesh("table.msh");
 	columnMesh = render->LoadMesh("column.msh");
@@ -593,25 +594,25 @@ Door* BasicExamples::CreateDoor(const Vector3& position, const Vector3& dimensio
 	return d;
 }
 
-//GameObject* BasicExamples::CreateIceCubeBullet(const Vector3& position, float radius, float inverseMass) {
-//	GameObject* cube = new GameObject("icecubebullet");
-//
-//	Vector3 sphereSize = Vector3(radius, radius, radius);
-//	SphereVolume* volume = new SphereVolume(radius);
-//	sphere->SetBoundingVolume((CollisionVolume*)volume);
-//
-//	sphere->GetTransform().SetScale(sphereSize).SetPosition(position);
-//
-//	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), cubeMesh, nullptr, basicShader));
-//	sphere->GetRenderObject()->SetColour(Vector4(1.0, 0.4, 0.0, 1.0));
-//	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
-//
-//	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
-//	sphere->GetPhysicsObject()->InitSphereInertia();
-//	sphere->SetIsHiding(true);
-//	sphere->SetExistenceTime(0.0f);
-//	return sphere;
-//}
+GameObject* BasicExamples::CreateFireBallBullet(const Vector3& position, float radius, float inverseMass) {
+	GameObject* sphere = new GameObject("fireballbullet");
+
+	Vector3 sphereSize = Vector3(radius, radius, radius);
+	SphereVolume* volume = new SphereVolume(radius);
+	sphere->SetBoundingVolume((CollisionVolume*)volume);
+
+	sphere->GetTransform().SetScale(sphereSize).SetPosition(position);
+
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, nullptr, basicShader));
+	sphere->GetRenderObject()->SetColour(Vector4(1.0, 0.4, 0.0, 1.0));
+	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
+
+	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
+	sphere->GetPhysicsObject()->InitSphereInertia();
+	sphere->SetIsHiding(true);
+	sphere->SetExistenceTime(0.0f);
+	return sphere;
+}
 
 GameObject* BasicExamples::CreateIceCubeBullet(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	GameObject* cube = new GameObject("icecubebullet");
@@ -629,4 +630,22 @@ GameObject* BasicExamples::CreateIceCubeBullet(const Vector3& position, const Ve
 	cube->SetExistenceTime(0.0f);
 
 	return cube;
+}
+
+GameObject* BasicExamples::CreateShield(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* shield = new GameObject("shield");
+
+	AABBVolume* volume = new AABBVolume(Vector3(0.6, 1, 0.6) * dimensions);
+	shield->SetVolumeSize(Vector3(0.6, 1, 0.6) * dimensions);
+	shield->SetBoundingVolume((CollisionVolume*)volume);
+
+	shield->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOffset(Vector3(0, dimensions.y, 0));
+	shield->SetRenderObject(new RenderObject(&shield->GetTransform(), shieldMesh, nullptr, basicShader));
+	shield->SetPhysicsObject(new PhysicsObject(&shield->GetTransform(), shield->GetBoundingVolume()));
+	shield->GetRenderObject()->isAnimation = true;
+	//LoadMaterialTextures(player, playerMesh, playerMat, render);
+
+	shield->GetPhysicsObject()->SetInverseMass(inverseMass);
+	shield->GetPhysicsObject()->InitCubeInertia();
+	return shield;
 }

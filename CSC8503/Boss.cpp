@@ -15,6 +15,7 @@ Boss::Boss(Player* player) {
 	bossHealth = 100.0f;
 	isShooting = false;
 	hasIceCubeBullet = true;
+	hasFireBallBullet = true;
 	Idle = new BehaviourAction("Idle", [&](float dt, BehaviourState state)->BehaviourState {
 		if (state == Initialise) {
 			//std::cout << "Idle init\n";
@@ -84,7 +85,7 @@ Boss::Boss(Player* player) {
 			if (this->getIsRencentlyHurt()) {
 				std::cout << "Flinches.\n";
 				flinchAnimationTimer += dt;
-				if (flinchAnimationTimer >= 0.28f) {
+				if (flinchAnimationTimer >= 0.5f) {
 					this->SetIsRencentlyHurt(false);
 					return Failure;
 				}

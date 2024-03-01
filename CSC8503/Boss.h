@@ -38,6 +38,12 @@ namespace NCL {
 			void setHasIceCubeBullet(bool HasIceCubeBullet) {
 				hasIceCubeBullet = HasIceCubeBullet;
 			}
+			bool getHasFireBallBullet() {
+				return hasFireBallBullet;
+			}
+			void setHasFireBallBullet(bool HasFireBallBullet) {
+				hasFireBallBullet = HasFireBallBullet;
+			}
 			float getBossHealth() {
 				return bossHealth;
 			}
@@ -51,6 +57,7 @@ namespace NCL {
 			bool isShooting;
 			bool isRencentlyHurt;
 			bool hasIceCubeBullet;
+			bool hasFireBallBullet;
 			float calculateDistance(Vector3 pos1, Vector3 pos2);
 			float distanceToTarget;
 			float remoteAttackRange;

@@ -38,9 +38,9 @@ namespace NCL {
 		
 		//GameObject* CreateIceCubeBullet(const Vector3& position, float radius, float inverseMass);
 		GameObject* CreateIceCubeBullet(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+
 		GameObject* CreateFireBallBullet(const Vector3& position, float radius, float inverseMass);
 
-		
 		GameObject* CreateBookshelf(const Vector3& position, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
 		GameObject* CreateStairs(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
 		GameObject* CreateTable(const Vector3& position, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
@@ -50,6 +50,7 @@ namespace NCL {
 		GameObject* CreateLight(const Vector3& position, const Vector4& color, float radius, bool islight, bool isshadow);
 		
 		GameObject* CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		GameObject* CreateShield(const Vector3& position, const Vector3& dimensions, float inverseMass);
 		Player*     CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		Boss*       CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player, float inverseMass = 10.0f);
 		Door*       CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float rotation = 0.0f);
@@ -64,6 +65,7 @@ namespace NCL {
 		MeshAnimation* getplayerJumpAnimation() const { return playerJumpAnimation; }
 
 		GameObject* getIceCubeBullet() const { return iceCubeBullet; }
+		GameObject* getFireBallBullet() const { return fireBallBullet; }
 
 		StateGameObject* CreateAItest(const Vector3& position, const Vector3& dimensions,  GameObject* player,float inverseMass = 10.0f);
 
@@ -77,21 +79,22 @@ namespace NCL {
 		void ExportToObj(const Mesh& mesh, const std::string& filename);
 
 	protected:
-		Mesh* cubeMesh		= nullptr;
-		Mesh* sphereMesh	= nullptr;
-		Mesh* charMesh		= nullptr;
-		Mesh* goatMesh		= nullptr;
-		Mesh* capsuleMesh	= nullptr;
-		Mesh* bossMesh		= nullptr;
-		Mesh* playerMesh	= nullptr;
-		Mesh* ghostMesh		= nullptr;
-		Mesh* bookshelfMesh	= nullptr;
-		Mesh* tableMesh		= nullptr;
-		Mesh* columnMesh	= nullptr;
-		Mesh* stairMesh		= nullptr;
-		Mesh* handrailMesh	= nullptr;
-		Mesh* coinMesh		= nullptr;
-	
+		Mesh* cubeMesh = nullptr;
+		Mesh* sphereMesh = nullptr;
+		Mesh* charMesh = nullptr;
+		Mesh* goatMesh = nullptr;
+		Mesh* capsuleMesh = nullptr;
+		Mesh* bossMesh = nullptr;
+		Mesh* playerMesh = nullptr;
+		Mesh* ghostMesh = nullptr;
+		Mesh* shieldMesh = nullptr;
+		Mesh* bookshelfMesh = nullptr;
+		Mesh* tableMesh = nullptr;
+		Mesh* columnMesh = nullptr;
+		Mesh* stairMesh = nullptr;
+		Mesh* handrailMesh = nullptr;
+		Mesh* coinMesh = nullptr;
+
 		Texture* basicTexture = nullptr;
 		Texture* IceCubeTexture = nullptr;
 		Texture* DefualtTexture[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
@@ -129,7 +132,9 @@ namespace NCL {
 		Player* player = nullptr;
 		Boss* boss = nullptr;
 		GameObject* ghost;
+		GameObject* shield;
 		GameObject* iceCubeBullet;
+		GameObject* fireBallBullet;
 
 
 	};
