@@ -91,6 +91,7 @@ Boss::Boss(Player* player) {
 		else if (state == Ongoing) {
 			this->distanceToTarget = calculateDistance(this->GetTransform().GetPosition(), this->player->GetTransform().GetPosition());
 			isShooting = false;
+			//if (this->distanceToTarget > this->remoteAttackRange || this->distanceToTarget < this->chaseRange || this->getIsRencentlyHurt())
 			if (this->distanceToTarget > this->remoteAttackRange) {
 				return Failure;
 			}
