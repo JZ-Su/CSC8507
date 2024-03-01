@@ -160,9 +160,12 @@ void main(void)
 		float halfLambert = (lambert + 1.0) * 0.5;
 		float rFactor = max (0.0 , dot ( halfDir , normal ));
 		float sFactor = pow ( rFactor , 80.0 );
+		float metal = data.r;
+		vec3 baseCol = albedo.rgb * (1.0 -metal);
+		vec3 specCol = vec3(0.04,0.04,0.04) * (1.0 - metal) + albedo.rgb * metal;
 
-		fragColor[0].rgb = albedo.rgb * lightColour.rgb * lambert * atten * shadow;
-		fragColor[1].rgb = lightColour.rgb * sFactor * atten * shadow;
+		fragColor[0].rgb = baseCol * lightColour.rgb * lambert * atten * shadow;
+		fragColor[1].rgb = specCol * lightColour.rgb * sFactor * atten * shadow;
 		fragColor[0].rgb = pow(fragColor[0].rgb, vec3(1.0 / 2.2f));
 		fragColor[1].rgb = pow(fragColor[1].rgb, vec3(1.0 / 2.2f));
 		fragColor[0].a = 1.0;

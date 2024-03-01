@@ -270,7 +270,12 @@ void GameLevel::CreateLevel2() {
 
 void GameLevel::CreateLevel3() {
 	level3.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
-	level3.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, true, false));
+	level3.AddObject(CreateLight(Vector3(60, 30, 60), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
+	level3.AddObject(CreateLight(Vector3(-60, 30, 60), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
+	level3.AddObject(CreateLight(Vector3(60, 30, -60), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
+	level3.AddObject(CreateLight(Vector3(-60, 30, -60), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
+	
+	level3.AddObject(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
 
 	// boss = CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), player, 0.0f);
 	// level3.AddObject(CreateCube(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
