@@ -56,6 +56,7 @@ namespace NCL {
 			void ShowPause(float dt);
 			void ShowWin(float dt);
 			void ShowLose(float dt);
+			void ExecuteAttack(float dt);
 			
 		protected:
 			bool isDebug;

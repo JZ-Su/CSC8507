@@ -128,7 +128,7 @@ void TutorialGame::UpdateGame(float dt) {
 			objClosest->GetRenderObject()->SetColour(Vector4(1, 0, 1, 1));
 		}
 	}
-
+	//gameLevel->GetBoss()->Update(dt);
 	//UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
 
 	UpdateGhostAnim(ghost, ghostAnimation, dt);
@@ -137,13 +137,13 @@ void TutorialGame::UpdateGame(float dt) {
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
 	IceCubeBulletLogic(dt);
+	if (gameLevel->GetBoss()->getIsAttack()) {
+		ExecuteAttack(dt);
+		//gameLevel->GetBoss()->setIsAttack(false);
+	}
 	SelectObject();
 	MoveSelectedObject();
 
-
-	player->UpdatePlayer(dt);
-	// update player animation
-	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
 	// Level 1 stuff
 	if (currentLevel == 2) {
@@ -488,7 +488,7 @@ void TutorialGame::InitWorld() {
 
 	boss = gameLevel->GetBoss();
 	bossAnimation = gameLevel->getBossAnimation();
-	iceCubeBullet = gameLevel->getIceCubeBullet();
+
 	/*
 		Please switch the debug mode here
 	*/
@@ -496,23 +496,23 @@ void TutorialGame::InitWorld() {
 	//isDebug = false;
 	if (isDebug) {
 		//Level 1
-		currentLevel = 2;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		ghost = gameLevel->getGhost();
-		ghostAnimation = gameLevel->getGhostAnimation();
+		//currentLevel = 2;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		//ghost = gameLevel->getGhost();
+		//ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
 		//currentLevel = 4;
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
-		/*currentLevel = 6;
+		currentLevel = 6;
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
 		boss = gameLevel->GetBoss();
 		bossAnimation = gameLevel->getBossAnimation();
 		bossCheersAnimation = gameLevel->getBossCheersAnimation();
 		bossShootingAnimation = gameLevel->getBossShootingAnimation();
-		fireBallBullet = gameLevel->getFireBallBullet();*/
+		iceCubeBullet = gameLevel->getIceCubeBullet();
 
 		//Level 4 initalize function
 		//currentLevel = 8;
@@ -1090,11 +1090,28 @@ void TutorialGame::IceCubeBulletLogic(float dt) {
 		iceCubeBullet->UpdateExistenceTime(dt);
 		Vector3 playerPosition = player->GetTransform().GetPosition();
 		Vector3 ballPosition = iceCubeBullet->GetTransform().GetPosition();
-		UpdateTrackingBall(ballPosition, playerPosition, 20, dt);
+		UpdateTrackingBall(ballPosition, playerPosition, 2, dt);
 		if (iceCubeBullet->GetExistenceTime() >= 6.0f) {
 			iceCubeBullet->GetTransform().SetPosition(Vector3(0, -20, 0));
 			gameLevel->GetBoss()->setHasIceCubeBullet(true);
 			iceCubeBullet->SetIsHiding(true);
+		}
+	}
+}
+void TutorialGame::ExecuteAttack(float dt) {
+	Vector3 targetPosition;
+	Vector3 bossPosition;
+	targetPosition = player->GetTransform().GetPosition();
+	bossPosition = gameLevel->GetBoss()->GetTransform().GetPosition();
+	Vector3 direction = (targetPosition - bossPosition).Normalised();
+	Ray ray = Ray(bossPosition, direction);
+	RayCollision closestCollision;
+	closestCollision.rayDistance = gameLevel->GetBoss()->attackRange;
+	if (world->Raycast(ray, closestCollision, true)) {
+		if (closestCollision.node == player) {
+			player->updateHealth(-1);
+			std::cout << "now player health is " << player->GetHealth() << std::endl;
+			gameLevel->GetBoss()->setIsAttack(false);
 		}
 	}
 }

@@ -23,6 +23,12 @@ namespace NCL {
 			bool getShooting() {
 				return isShooting;
 			}
+			bool getIsAttack() {
+				return isAttack;
+			}
+			void setIsAttack(bool IsAttack) {
+				isAttack = IsAttack;
+			}
 			void SetShooting(bool IsShooting) {
 				isShooting = IsShooting;
 			}
@@ -47,26 +53,29 @@ namespace NCL {
 			void increaseBossHealth(float Health) {
 				bossHealth += Health;
 			}
+			float attackRange;
 		private:
 			bool isShooting;
+			bool isAttack;
 			bool isRencentlyHurt;
 			bool hasIceCubeBullet;
 			float calculateDistance(Vector3 pos1, Vector3 pos2);
 			float distanceToTarget;
 			float remoteAttackRange;
-			float meleeAttackRange;
+			float chaseRange;
+			float chaseSpeed;
 			float bossHealth;
 			float flinchAnimationTimer;
 			BehaviourAction* Idle;
-			BehaviourAction* MeleeAttack;
+			BehaviourAction* ChaseAndAttack;
 			BehaviourAction* RemoteAttack;
 			BehaviourAction* Summon;
 			BehaviourAction* Flinches;
 			BehaviourAction* Death;
 			Player* player;
-			BehaviourSequence* rootSequence;
-			BehaviourSelector* bossSelection = new BehaviourSelector("Boss Selection");
-			BehaviourParallel* bossAttackParallel = new BehaviourParallel("Boss Attack Parallel");
+			BehaviourParallel* Combat;
+			BehaviourSelector* Root;
+			BehaviourParallel* Parallel;
 
 		};
 	}
