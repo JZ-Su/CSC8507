@@ -28,6 +28,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	columnMesh = render->LoadMesh("column.msh");
 	stairMesh = render->LoadMesh("Stair.msh");
 	handrailMesh = render->LoadMesh("handrail.msh");
+	coinMesh = render->LoadMesh("coin.msh");
 
 	basicTexture = render->LoadTexture("checkerboard.png");
 	IceCubeTexture = render->LoadTexture("IceCube.jpg");
@@ -66,6 +67,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	columnMat = new MeshMaterial("Column.mat");
 	stairMat = new MeshMaterial("Stair.mat");
 	handrailMat = new MeshMaterial("handrail.mat");
+	coinMat = new MeshMaterial("coin.mat");
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
@@ -100,6 +102,7 @@ BasicExamples::~BasicExamples() {
 	delete columnMesh;
 	delete stairMesh;
 	delete handrailMesh;
+	delete coinMesh;
 
 	delete playerMat;
 	delete bossMat;
@@ -109,6 +112,7 @@ BasicExamples::~BasicExamples() {
 	delete columnMat;
 	delete stairMat;
 	delete handrailMat;
+	delete coinMat;
 
 	delete basicTexture;
 	for (int i = 0; i < 5; i++)
@@ -558,6 +562,20 @@ StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vect
 	ghost->SetCollisionResponse(false);
 
 	return ghost;
+}
+
+GameObject* BasicExamples::CreateCoin(const Vector3& position, const Vector3& dimensions, float inverseMass, float rotation) {
+	GameObject* coin = new GameObject("coin");
+	AABBVolume* volume = new AABBVolume(dimensions);
+	coin->SetBoundingVolume((CollisionVolume*)volume);
+	coin->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Quaternion(Matrix4::Rotation(rotation, Vector3(0, 1, 0))));
+	coin->SetRenderObject(new RenderObject(&coin->GetTransform(), coinMesh, nullptr, basicShader));
+	coin->SetPhysicsObject(new PhysicsObject(&coin->GetTransform(), coin->GetBoundingVolume()));
+
+	coin->GetPhysicsObject()->SetInverseMass(inverseMass);
+	coin->GetPhysicsObject()->InitCubeInertia();
+	coin->GetRenderObject()->SetColour(Debug::CYAN);
+	return coin;
 }
 
 Door* BasicExamples::CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass, float rotation) {
