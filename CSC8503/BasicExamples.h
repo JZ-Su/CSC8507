@@ -40,8 +40,10 @@ namespace NCL {
 		GameObject* CreateBookshelf(const Vector3& position, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
 		GameObject* CreateStairs(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
 		GameObject* CreateTable(const Vector3& position, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
-		GameObject* CreateColumn(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		GameObject* CreateColumn(const Vector3& position, float inverseMass = 10.0f);
 		GameObject* CreateLayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
+
+		GameObject* CreateLight(const Vector3& position, const Vector4& color, float radius, bool islight, bool isshadow);
 		
 		GameObject* CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		Player*     CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);

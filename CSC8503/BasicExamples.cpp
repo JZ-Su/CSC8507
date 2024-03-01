@@ -178,7 +178,7 @@ GameObject* BasicExamples::CreateAABB(const Vector3& position, const Vector3& di
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
 	cube->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 0.0));
-
+	cube->Deactivate();
 	return cube;
 }
 
@@ -259,7 +259,7 @@ GameObject* BasicExamples::CreateCubeOBB(const Vector3& position, const Vector3&
 	cube->GetPhysicsObject()->InitCubeInertia();
 
 	cube->GetRenderObject()->SetColour(Vector4(0, 1, 0.5, 0.0));
-
+	cube->Deactivate();
 	return cube;
 }
 
@@ -313,10 +313,10 @@ GameObject* BasicExamples::CreateGoat(const Vector3& position, const Vector3& di
 	return goat;
 }
 
-GameObject* BasicExamples::CreateColumn(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+GameObject* BasicExamples::CreateColumn(const Vector3& position, float inverseMass) {
 	GameObject* column = new GameObject("column");
 
-	column->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	column->GetTransform().SetScale(Vector3(0.5, 0.358, 0.5) * 2).SetPosition(position);
 	column->SetRenderObject(new RenderObject(&column->GetTransform(), columnMesh, nullptr, modelShader));
 	column->SetPhysicsObject(new PhysicsObject(&column->GetTransform(), column->GetBoundingVolume()));
 
@@ -438,6 +438,23 @@ GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeig
 	capsule->GetRenderObject()->SetColour(Vector4(1, 1, 1, 0.0));
 	capsule->Deactivate();
 	return capsule;
+}
+
+GameObject* BasicExamples::CreateLight(const Vector3& position, const Vector4& color, float radius, bool islight, bool isshadow) {
+	GameObject* light = new GameObject("sphere");
+
+	light->GetTransform().SetScale(Vector3(radius, radius, radius)).SetPosition(position);
+	light->SetRenderObject(new RenderObject(&light->GetTransform(), sphereMesh, nullptr, basicShader));
+	light->GetRenderObject()->isLight = true;
+	light->GetRenderObject()->onLight = islight;
+	light->GetRenderObject()->isShadow = isshadow;
+	light->GetRenderObject()->SetColour(color);
+
+	light->SetPhysicsObject(new PhysicsObject(&light->GetTransform(), light->GetBoundingVolume()));
+	light->GetPhysicsObject()->SetInverseMass(0.0f);
+	light->GetPhysicsObject()->InitCubeInertia();
+
+	return light;
 }
 
 Player* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {

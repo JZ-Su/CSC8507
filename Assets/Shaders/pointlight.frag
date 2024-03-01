@@ -10,6 +10,7 @@ uniform sampler2D 	skinTex;
 uniform samplerCube shadowTex;
 
 uniform vec3	lightPos;
+uniform vec3	shadowPos;
 uniform float	lightRadius;
 uniform vec4	lightColour;
 uniform mat4 inverseProjView;
@@ -17,22 +18,16 @@ uniform mat4 inverseProjView;
 uniform vec2 pixelSize;
 uniform vec3	cameraPos;
 
-//in Vertex
-//{
-//	//vec4 shadowProj;
-//
-//} IN;
-
 out vec4 fragColor[2];
 
-float ShadowCalculation(vec3 wrldPos)
+float ShadowCalculation(vec3 worldPos)
 {
 	float far_plane = 200;
-    vec3 fragToLight = wrldPos - lightPos; 
+    vec3 fragToLight = worldPos - shadowPos;//lightPos; 
 	float closestDepth = texture(shadowTex, normalize(fragToLight)).r;
-	closestDepth*=far_plane;
-	float currentDepth=length(fragToLight);
-	float bias=0.1;
+	closestDepth *= far_plane;
+	float currentDepth = length(fragToLight);
+	float bias = 0.1;
 	float shadow = currentDepth-bias > closestDepth? 0.0 : 1.0;
 
 	return shadow;
@@ -67,7 +62,6 @@ void main(void)
 	vec4 data = texture(dataTex, texCoord.xy);
 	vec4 addTex = texture(addTex, texCoord.xy);
 	vec4 indexTex = texture(indexTex, texCoord.xy);
-	//float shadow = indexTex.b;
 	float shadow = ShadowCalculation(worldPos);
 
 	fragColor[0].rgb = vec3(0.0, 0.0, 0.0);
@@ -126,14 +120,9 @@ void main(void)
 		fragColor[0].a = 1.0;
 		fragColor[1].a = 0.0;
 	}
-	if(indexTex.r == 0.3){
-		//float roughness = 0.5;
-		//float smoothness = 1.0 - roughness;
-		//float shininess = (1.0 * (1.0 - smoothness) + 80 * smoothness) * smoothness;		
+	if(indexTex.r == 0.3){	
 		float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
 		float halfLambert = (lambert + 1.0) * 0.5;
-		//float rFactor = max (0.0 , dot ( halfDir , normal ));
-		//float sFactor = pow ( rFactor , shininess);
 
 		float noise = indexTex.g;
 		vec3 tangent = data.xyz * 2.0 - 1.0;
@@ -159,7 +148,7 @@ void main(void)
 		float specularDis2 = exp(-(TdotH * TdotH + BdotH2 * BdotH2) / (1.0 + NdotH));
 		vec3 specularCol2 = specularDis2 * lightColour.rgb * specCol2 * specAttenuation;
 		
-		fragColor[0].rgb = lightColour.rgb * albedo.rgb * halfLambert;
+		fragColor[0].rgb = lightColour.rgb * albedo.rgb * halfLambert * atten;
 		fragColor[1].rgb = specularCol1 + specularCol2;
 		fragColor[0].rgb = pow(fragColor[0].rgb, vec3(1.0 / 2.2f));
 		fragColor[1].rgb = pow(fragColor[1].rgb, vec3(1.0 / 2.2f));
@@ -180,11 +169,6 @@ void main(void)
 		fragColor[1].a = 0.0;
 	}
 	if(indexTex.r == 0.5){
-//		float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
-//		float halfLambert = (lambert + 1.0) * 0.5;
-//		float rFactor = max (0.0 , dot ( halfDir , normal ));
-//		float sFactor = pow ( rFactor , 80.0 );
-
 		fragColor[0].rgb = albedo.rgb * atten;
 		fragColor[1].rgb = vec3(0.0, 0.0, 0.0);
 		fragColor[0].rgb = pow(fragColor[0].rgb, vec3(1.0 / 2.2f));
