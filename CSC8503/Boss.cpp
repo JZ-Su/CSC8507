@@ -15,6 +15,7 @@ Boss::Boss(Player* player) {
 	isAttack = false;
 	isShooting = false;
 	hasIceCubeBullet = true;
+	hasFireBallBullet = true;
 	Idle = new BehaviourAction("Idle", [&](float dt, BehaviourState state)->BehaviourState {
 		if (state == Initialise) {
 			std::cout << "Idle init\n";

@@ -23,11 +23,13 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	playerMesh = render->LoadMesh("FemaleA.msh");
 	ghostMesh = render->LoadMesh("Ghost.msh");
 	goatMesh    = render->LoadMesh("goat.msh");
+	shieldMesh = render->LoadMesh("shield.msh");
 	bookshelfMesh = render->LoadMesh("bookshelf.msh");
 	tableMesh = render->LoadMesh("table.msh");
 	columnMesh = render->LoadMesh("column.msh");
 	stairMesh = render->LoadMesh("Stair.msh");
 	handrailMesh = render->LoadMesh("handrail.msh");
+	coinMesh = render->LoadMesh("coin.msh");
 
 	basicTexture = render->LoadTexture("checkerboard.png");
 	IceCubeTexture = render->LoadTexture("IceCube.jpg");
@@ -66,6 +68,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	columnMat = new MeshMaterial("Column.mat");
 	stairMat = new MeshMaterial("Stair.mat");
 	handrailMat = new MeshMaterial("handrail.mat");
+	coinMat = new MeshMaterial("coin.mat");
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
@@ -100,6 +103,7 @@ BasicExamples::~BasicExamples() {
 	delete columnMesh;
 	delete stairMesh;
 	delete handrailMesh;
+	delete coinMesh;
 
 	delete playerMat;
 	delete bossMat;
@@ -109,6 +113,7 @@ BasicExamples::~BasicExamples() {
 	delete columnMat;
 	delete stairMat;
 	delete handrailMat;
+	delete coinMat;
 
 	delete basicTexture;
 	for (int i = 0; i < 5; i++)
@@ -178,7 +183,7 @@ GameObject* BasicExamples::CreateAABB(const Vector3& position, const Vector3& di
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
 	cube->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 0.0));
-
+	cube->Deactivate();
 	return cube;
 }
 
@@ -259,7 +264,7 @@ GameObject* BasicExamples::CreateCubeOBB(const Vector3& position, const Vector3&
 	cube->GetPhysicsObject()->InitCubeInertia();
 
 	cube->GetRenderObject()->SetColour(Vector4(0, 1, 0.5, 0.0));
-
+	cube->Deactivate();
 	return cube;
 }
 
@@ -313,10 +318,10 @@ GameObject* BasicExamples::CreateGoat(const Vector3& position, const Vector3& di
 	return goat;
 }
 
-GameObject* BasicExamples::CreateColumn(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+GameObject* BasicExamples::CreateColumn(const Vector3& position, float inverseMass) {
 	GameObject* column = new GameObject("column");
 
-	column->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	column->GetTransform().SetScale(Vector3(0.5, 0.358, 0.5) * 2).SetPosition(position);
 	column->SetRenderObject(new RenderObject(&column->GetTransform(), columnMesh, nullptr, modelShader));
 	column->SetPhysicsObject(new PhysicsObject(&column->GetTransform(), column->GetBoundingVolume()));
 
@@ -440,6 +445,23 @@ GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeig
 	return capsule;
 }
 
+GameObject* BasicExamples::CreateLight(const Vector3& position, const Vector4& color, float radius, bool islight, bool isshadow) {
+	GameObject* light = new GameObject("sphere");
+
+	light->GetTransform().SetScale(Vector3(radius, radius, radius)).SetPosition(position);
+	light->SetRenderObject(new RenderObject(&light->GetTransform(), sphereMesh, nullptr, basicShader));
+	light->GetRenderObject()->isLight = true;
+	light->GetRenderObject()->onLight = islight;
+	light->GetRenderObject()->isShadow = isshadow;
+	light->GetRenderObject()->SetColour(color);
+
+	light->SetPhysicsObject(new PhysicsObject(&light->GetTransform(), light->GetBoundingVolume()));
+	light->GetPhysicsObject()->SetInverseMass(0.0f);
+	light->GetPhysicsObject()->InitCubeInertia();
+
+	return light;
+}
+
 Player* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	Player* player = new Player("player");
 
@@ -543,6 +565,20 @@ StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vect
 	return ghost;
 }
 
+GameObject* BasicExamples::CreateCoin(const Vector3& position, const Vector3& dimensions, float inverseMass, float rotation) {
+	GameObject* coin = new GameObject("coin");
+	AABBVolume* volume = new AABBVolume(dimensions);
+	coin->SetBoundingVolume((CollisionVolume*)volume);
+	coin->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Quaternion(Matrix4::Rotation(rotation, Vector3(0, 1, 0))));
+	coin->SetRenderObject(new RenderObject(&coin->GetTransform(), coinMesh, nullptr, basicShader));
+	coin->SetPhysicsObject(new PhysicsObject(&coin->GetTransform(), coin->GetBoundingVolume()));
+
+	coin->GetPhysicsObject()->SetInverseMass(inverseMass);
+	coin->GetPhysicsObject()->InitCubeInertia();
+	coin->GetRenderObject()->SetColour(Debug::CYAN);
+	return coin;
+}
+
 Door* BasicExamples::CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass, float rotation) {
 	Door* d = new Door(player, position, rotation);
 	OBBVolume* volume = new OBBVolume(dimensions);
@@ -558,25 +594,25 @@ Door* BasicExamples::CreateDoor(const Vector3& position, const Vector3& dimensio
 	return d;
 }
 
-//GameObject* BasicExamples::CreateIceCubeBullet(const Vector3& position, float radius, float inverseMass) {
-//	GameObject* cube = new GameObject("icecubebullet");
-//
-//	Vector3 sphereSize = Vector3(radius, radius, radius);
-//	SphereVolume* volume = new SphereVolume(radius);
-//	sphere->SetBoundingVolume((CollisionVolume*)volume);
-//
-//	sphere->GetTransform().SetScale(sphereSize).SetPosition(position);
-//
-//	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), cubeMesh, nullptr, basicShader));
-//	sphere->GetRenderObject()->SetColour(Vector4(1.0, 0.4, 0.0, 1.0));
-//	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
-//
-//	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
-//	sphere->GetPhysicsObject()->InitSphereInertia();
-//	sphere->SetIsHiding(true);
-//	sphere->SetExistenceTime(0.0f);
-//	return sphere;
-//}
+GameObject* BasicExamples::CreateFireBallBullet(const Vector3& position, float radius, float inverseMass) {
+	GameObject* sphere = new GameObject("fireballbullet");
+
+	Vector3 sphereSize = Vector3(radius, radius, radius);
+	SphereVolume* volume = new SphereVolume(radius);
+	sphere->SetBoundingVolume((CollisionVolume*)volume);
+
+	sphere->GetTransform().SetScale(sphereSize).SetPosition(position);
+
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, nullptr, basicShader));
+	sphere->GetRenderObject()->SetColour(Vector4(1.0, 0.4, 0.0, 1.0));
+	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
+
+	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
+	sphere->GetPhysicsObject()->InitSphereInertia();
+	sphere->SetIsHiding(true);
+	sphere->SetExistenceTime(0.0f);
+	return sphere;
+}
 
 GameObject* BasicExamples::CreateIceCubeBullet(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	GameObject* cube = new GameObject("icecubebullet");
@@ -594,4 +630,22 @@ GameObject* BasicExamples::CreateIceCubeBullet(const Vector3& position, const Ve
 	cube->SetExistenceTime(0.0f);
 
 	return cube;
+}
+
+GameObject* BasicExamples::CreateShield(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* shield = new GameObject("shield");
+
+	AABBVolume* volume = new AABBVolume(Vector3(0.6, 1, 0.6) * dimensions);
+	shield->SetVolumeSize(Vector3(0.6, 1, 0.6) * dimensions);
+	shield->SetBoundingVolume((CollisionVolume*)volume);
+
+	shield->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOffset(Vector3(0, dimensions.y, 0));
+	shield->SetRenderObject(new RenderObject(&shield->GetTransform(), shieldMesh, nullptr, basicShader));
+	shield->SetPhysicsObject(new PhysicsObject(&shield->GetTransform(), shield->GetBoundingVolume()));
+	shield->GetRenderObject()->isAnimation = true;
+	//LoadMaterialTextures(player, playerMesh, playerMat, render);
+
+	shield->GetPhysicsObject()->SetInverseMass(inverseMass);
+	shield->GetPhysicsObject()->InitCubeInertia();
+	return shield;
 }
