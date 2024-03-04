@@ -59,6 +59,10 @@ namespace NCL {
 			std::vector<Texture*> matAoTextures;
 			std::vector<Texture*> matHeightTextures;
 			bool isAnimation = false;
+			bool onLight = false;
+			bool isLight = false;
+			bool isShadow = false;
+			float radius = 0.0f;
 
 			int			currentFrame;
 			float		frameTime;

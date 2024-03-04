@@ -56,6 +56,7 @@ namespace NCL {
 			void ShowPause(float dt);
 			void ShowWin(float dt);
 			void ShowLose(float dt);
+			void ExecuteAttack(float dt);
 			
 		protected:
 			bool isDebug;
@@ -126,6 +127,7 @@ namespace NCL {
 			Boss* boss;
 			GameObject* ghost;
 			GameObject* iceCubeBullet;
+			GameObject* fireBallBullet;
 			MeshAnimation* bossAnimation;
 			MeshAnimation* bossCheersAnimation;
 			MeshAnimation* bossShootingAnimation;
@@ -156,6 +158,7 @@ namespace NCL {
 			void UpdateGhostAnim(GameObject* ghost, MeshAnimation* ghostAnimation, float dt);
 			void UpdateTrackingBall(Vector3 ballPosition,const Vector3& playerPosition, float speed, float dt);
 			void IceCubeBulletLogic(float dt);
+			void FireBallBulletLogic(float dt);
 			float h = 0, v = 0;
 
 			void SwitchLevel();
@@ -169,8 +172,8 @@ namespace NCL {
 			int currentLevel;
 			GameObject* portal;
 			float shootingTimer = 0.0f;
-			const float shootingDuration = 0.4f;
-			bool playShootingAnimation = false;
+			const float shootingDuration = 0.95f;
+			bool playShootingAnimation=false;
 		};
 	}
 }

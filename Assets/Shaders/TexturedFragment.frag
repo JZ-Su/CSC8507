@@ -1,6 +1,7 @@
 #version 330 core
 uniform sampler2D mainTex;
 uniform sampler2D normalTex;
+uniform sampler2D 	metalTex;
 //uniform sampler2DShadow shadowTex;
 //uniform samplerCube shadowTex;
 //uniform vec3	lightPos;
@@ -57,6 +58,7 @@ void main(void)
 
 	
 	vec4 texColor = texture(mainTex, flippedTexCoord);
+	float metal = texture(metalTex, flippedTexCoord).r;
 
 	//texColor.rgb = pow(texColor.rgb, vec3(2.2));
 	
@@ -73,7 +75,7 @@ void main(void)
 
 	fragColor[0] = vec4(texColor.rgb, 1.0);
 	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);
-	fragColor[2] = vec4(0.0, 0.0, 0.0, 1.0);
+	fragColor[2] = vec4(metal, 0.0, 0.0, 1.0);
 	fragColor[3] = vec4(0.0, 0.0, 0.0, 1.0);
 	fragColor[4] = vec4(0.4, 0.0, 0.0, 1.0);
 }
