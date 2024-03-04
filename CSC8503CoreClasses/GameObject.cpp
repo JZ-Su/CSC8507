@@ -15,9 +15,6 @@ GameObject::GameObject(const std::string& objectName)	{
 	renderObject	= nullptr;
 	networkObject	= nullptr;
 	hasCollision    = true;
-
-	center          = Vector3();
-	volumeSize      = Vector3();
 }
 
 GameObject::~GameObject()	{

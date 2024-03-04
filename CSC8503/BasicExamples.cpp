@@ -349,10 +349,14 @@ GameObject* BasicExamples::CreateStairs(const Vector3& position, const Vector3& 
 GameObject* BasicExamples::CreateBookshelf(const Vector3& position, float inverseMass, const Vector3& tilt, int angle) {
 	GameObject* bookshelf = new GameObject("bookshelf");
 
-	OBBVolume* volume = new OBBVolume(Vector3(8, 20, 2));
+	Vector3 collisionDimensions = Vector3(4, 5, 0.8);
+	OBBVolume* volume = new OBBVolume(collisionDimensions);
+	bookshelf->GetTransform().SetCollisionDimensions(collisionDimensions).SetCollisionOffset(Vector3(0, 5, 0.8));
 	bookshelf->SetBoundingVolume((CollisionVolume*)volume);
 
-	bookshelf->GetTransform().SetPosition(position).SetScale(Vector3(1.6, 1.6, 1.6)).SetOrientation(Matrix4::Rotation(angle, tilt));
+	bookshelf->GetTransform().SetPosition(position).SetScale(Vector3(1.6, 1.6, 1.6));
+	bookshelf->GetTransform().SetOrientation(Matrix4::Rotation(angle, tilt)).SetRotationCenter(Vector3(0, 0, 0.8));
+
 	bookshelf->SetRenderObject(new RenderObject(&bookshelf->GetTransform(), bookshelfMesh, nullptr, modelShader));
 	bookshelf->SetPhysicsObject(new PhysicsObject(&bookshelf->GetTransform(), bookshelf->GetBoundingVolume()));
 	bookshelf->GetRenderObject()->isAnimation = true;
@@ -390,6 +394,7 @@ GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& d
 	LoadMaterialTextures(ghost, ghostMesh, ghostMat, render);
 	ghost->GetPhysicsObject()->SetInverseMass(inverseMass);
 	ghost->GetPhysicsObject()->InitCubeInertia();
+	ghost->GetRenderObject()->SetColour(Vector4(1, 1, 1, 0.5));
 
 	return ghost;
 }
@@ -397,14 +402,14 @@ GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& d
 Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player, float inverseMass) {
 	Boss* character = new Boss(player);
 	//character->BossBehaviourTree(player);
-	AABBVolume* volume = new AABBVolume(dimensions, 60);
+	AABBVolume* volume = new AABBVolume(dimensions);
 	character->SetBoundingVolume((CollisionVolume*)volume);
 
-	character->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOrientation(Matrix4::Rotation(180, Vector3(0, 1, 0))).SetOffset(Vector3(0, dimensions.y, 0));
+	character->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOrientation(Matrix4::Rotation(180, Vector3(0, 1, 0)));
+	character->GetTransform().SetCollisionOffset(Vector3(0, dimensions.y, 0));
+
 	character->SetRenderObject(new RenderObject(&character->GetTransform(), bossMesh, nullptr, bossShader));
-
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
-
 	character->GetRenderObject()->isAnimation = true;
 	LoadMaterialTextures(character, bossMesh, bossMat, render);
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -447,11 +452,12 @@ GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeig
 Player* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	Player* player = new Player("player");
 
-	AABBVolume* volume = new AABBVolume(Vector3(0.6, 1, 0.6) * dimensions);
-	player->SetVolumeSize(Vector3(0.6, 1, 0.6) * dimensions);
+	Vector3 collisionDimensions = Vector3(0.6, 1.0, 0.6) * dimensions;
+	AABBVolume* volume = new AABBVolume(collisionDimensions);
+	player->GetTransform().SetCollisionDimensions(collisionDimensions);
 	player->SetBoundingVolume((CollisionVolume*)volume);
 
-	player->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOffset(Vector3(0, dimensions.y, 0));
+	player->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetCollisionOffset(Vector3(0, dimensions.y, 0));
 	player->SetRenderObject(new RenderObject(&player->GetTransform(), playerMesh, nullptr, playerShader));
 	player->SetPhysicsObject(new PhysicsObject(&player->GetTransform(), player->GetBoundingVolume()));
 	player->GetRenderObject()->isAnimation = true;

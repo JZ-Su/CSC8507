@@ -72,6 +72,9 @@ void TutorialGame::UpdateGame(float dt) {
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
+	for (const auto& ele : gameLevel->GetLevel1()->objectList) {
+		Debug::DrawCollisionBox(ele);
+	}
 	Debug::DrawCollisionBox(player);
 	//gameLevel->GetBoss()->Update(dt);
 	player->UpdatePlayer(dt);
@@ -501,7 +504,7 @@ void TutorialGame::InitWorld() {
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
-	ghost = gameLevel->getGhost();
+	ghost = gameLevel->GetGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
 
 	boss = gameLevel->GetBoss();
@@ -524,13 +527,13 @@ void TutorialGame::InitWorld() {
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
-		/*currentLevel = 6;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-		boss = gameLevel->GetBoss();
-		bossAnimation = gameLevel->getBossAnimation();
-		bossCheersAnimation = gameLevel->getBossCheersAnimation();
-		bossShootingAnimation = gameLevel->getBossShootingAnimation();
-		fireBallBullet = gameLevel->getFireBallBullet();*/
+		//currentLevel = 6;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		//boss = gameLevel->GetBoss();
+		//bossAnimation = gameLevel->getBossAnimation();
+		//bossCheersAnimation = gameLevel->getBossCheersAnimation();
+		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
+		//fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initial function
 		//currentLevel = 8;
