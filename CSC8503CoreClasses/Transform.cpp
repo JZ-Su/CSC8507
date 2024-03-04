@@ -4,7 +4,9 @@ using namespace NCL::CSC8503;
 
 Transform::Transform()	{
 	scale = Vector3(1, 1, 1);
-	offset = Vector3();
+	collisionOffset		= Vector3();
+	collisionDimensions	= Vector3();
+	rotationCenter		= Vector3();
 }
 
 Transform::~Transform()	{
@@ -14,7 +16,9 @@ Transform::~Transform()	{
 void Transform::UpdateMatrix() {
 	matrix =
 		Matrix4::Translation(position) *
+		Matrix4::Translation(rotationCenter) *	// then reset the offset
 		Matrix4(orientation) *
+		Matrix4::Translation(-rotationCenter) *	// move it to the origin first
 		Matrix4::Scale(scale);
 }
 
@@ -36,14 +40,25 @@ Transform& Transform::SetOrientation(const Quaternion& worldOrientation) {
 	return *this;
 }
 
-Transform& Transform::SetOffset(const Vector3& newOff) {
-	offset = newOff;
+Transform& Transform::SetCollisionOffset(const Vector3& newOff) {
+	collisionOffset = newOff;
+	return *this;
+}
+
+Transform& Transform::SetCollisionDimensions(const Vector3& newDi) {
+	collisionDimensions = newDi;
+	return *this;
+}
+
+Transform& Transform::SetRotationCenter(const Vector3& newOr) {
+	rotationCenter = newOr;
+	UpdateMatrix();
 	return *this;
 }
 
 Matrix4 Transform::GetOffsetMatrix() const {
 	Matrix4 mat =
-		Matrix4::Translation(position + offset) *
+		Matrix4::Translation(position + collisionOffset) *
 		Matrix4(orientation) *
 		Matrix4::Scale(scale);
 

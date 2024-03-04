@@ -171,7 +171,6 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glGenBuffers(1, &textColourVBO);
 	glGenBuffers(1, &textTexVBO);
 
-	bias = 0.15;
 	far_plane = 200.0;
 
 	Debug::CreateDebugFont("PressStart2P.fnt", *LoadTexture("PressStart2P.png"));
@@ -325,6 +324,12 @@ void GameTechRenderer::RenderShadowMap() {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, shadowTex);
 	Matrix4 mvpMatrix;
 	for (const auto& i : activeObjects) {
+		if (i->isAnimation == true) {
+		}
+		Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
+		mvpMatrix = modelMatrix;
+		glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
+		glActiveTexture(GL_TEXTURE1);
 		if (!(*i).isLight) {
 			Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
 			mvpMatrix = modelMatrix;

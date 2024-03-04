@@ -53,7 +53,6 @@ protected:
 	string name;
 };
 
-
 void TestNetworking() {
 	NetworkBase::Initialise();
 

@@ -20,15 +20,38 @@ uniform vec3	cameraPos;
 
 out vec4 fragColor[2];
 
-float ShadowCalculation(vec3 worldPos)
+vec3 gridSamplingDisk[20] = vec3[]
+(
+   vec3(1, 1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1, 1,  1), 
+   vec3(1, 1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1, 1, -1),
+   vec3(1, 1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1, 1,  0),
+   vec3(1, 0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1, 0, -1),
+   vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
+);
+
+float ShadowCalculation(vec3 wrldPos)
 {
 	float far_plane = 200;
-    vec3 fragToLight = worldPos - shadowPos;//lightPos; 
-	float closestDepth = texture(shadowTex, normalize(fragToLight)).r;
-	closestDepth *= far_plane;
-	float currentDepth = length(fragToLight);
-	float bias = 0.1;
-	float shadow = currentDepth-bias > closestDepth? 0.0 : 1.0;
+    vec3 fragToLight = wrldPos - lightPos; 
+	//float closestDepth = texture(shadowTex, normalize(fragToLight)).r;
+	//closestDepth*=far_plane;
+	float currentDepth=length(fragToLight);
+	float bias=0.05;
+	//float shadow = currentDepth-bias > closestDepth? 0.0 : 1.0;
+
+	float shadow = 0.0;
+    //float bias = 0.15;
+    int samples = 20;
+    float viewDistance = length(cameraPos - wrldPos);
+    float diskRadius = (1.0 + (viewDistance / far_plane)) / 25.0;
+    for(int i = 0; i < samples; ++i)
+    {
+        float closestDepth = texture(shadowTex, fragToLight + gridSamplingDisk[i] * diskRadius).r;
+        closestDepth *= far_plane;   // undo mapping [0;1]
+        if(currentDepth - bias < closestDepth)
+            shadow += 1.0;
+    }
+    shadow /= float(samples);
 
 	return shadow;
 }
@@ -72,6 +95,7 @@ void main(void)
 	vec4 addTex = texture(addTex, texCoord.xy);
 	vec4 indexTex = texture(indexTex, texCoord.xy);
 	float shadow = ShadowCalculation(worldPos);
+
 
 	fragColor[0].rgb = vec3(0.0, 0.0, 0.0);
 	fragColor[1].rgb = vec3(0.0, 0.0, 0.0);

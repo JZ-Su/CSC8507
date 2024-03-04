@@ -72,6 +72,9 @@ void TutorialGame::UpdateGame(float dt) {
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
+	for (const auto& ele : gameLevel->GetLevel1()->objectList) {
+		Debug::DrawCollisionBox(ele);
+	}
 	Debug::DrawCollisionBox(player);
 	player->UpdatePlayer(dt);
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
@@ -518,8 +521,8 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	isDebug = true;
-	//isDebug = false;
+	//isDebug = true;
+	isDebug = false;
 	if (isDebug) {
 		//Level 1
 		currentLevel = 2;
@@ -553,8 +556,8 @@ void TutorialGame::InitWorld() {
 	}
 	else {
 		currentLevel = 1;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 		portal = gameLevel->GetConnection()->portal;
 		lockedObject = player;
 	}

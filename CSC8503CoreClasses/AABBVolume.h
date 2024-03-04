@@ -11,11 +11,7 @@ namespace NCL {
 			type		= VolumeType::AABB;
 			halfSizes	= halfDims;
 		}
-		AABBVolume(const Vector3& halfDims, float yOffset) {
-			type = VolumeType::AABB;
-			halfSizes = halfDims;
-			halfSizes.y += yOffset; // 修改 Y 坐标
-		}
+
 		~AABBVolume() {
 
 		}

@@ -7,16 +7,16 @@ std::vector<Debug::DebugLineEntry>		Debug::lineEntries;
 
 SimpleFont* Debug::debugFont = nullptr;
 
-const Vector4 Debug::RED		= Vector4(1, 0, 0, 1);
-const Vector4 Debug::GREEN		= Vector4(0, 1, 0, 1);
-const Vector4 Debug::BLUE		= Vector4(0, 0, 1, 1);
+const Vector4 Debug::RED = Vector4(1, 0, 0, 1);
+const Vector4 Debug::GREEN = Vector4(0, 1, 0, 1);
+const Vector4 Debug::BLUE = Vector4(0, 0, 1, 1);
 
-const Vector4 Debug::BLACK		= Vector4(0, 0, 0, 1);
-const Vector4 Debug::WHITE		= Vector4(1, 1, 1, 1);
+const Vector4 Debug::BLACK = Vector4(0, 0, 0, 1);
+const Vector4 Debug::WHITE = Vector4(1, 1, 1, 1);
 
-const Vector4 Debug::YELLOW		= Vector4(1, 1, 0, 1);
-const Vector4 Debug::MAGENTA	= Vector4(1, 0, 1, 1);
-const Vector4 Debug::CYAN		= Vector4(0, 1, 1, 1);
+const Vector4 Debug::YELLOW = Vector4(1, 1, 0, 1);
+const Vector4 Debug::MAGENTA = Vector4(1, 0, 1, 1);
+const Vector4 Debug::CYAN = Vector4(0, 1, 1, 1);
 
 void Debug::Print(const std::string& text, const Vector2& pos, const Vector4& colour) {
 	DebugStringEntry newEntry;
@@ -92,28 +92,29 @@ const std::vector<Debug::DebugLineEntry>& Debug::GetDebugLines() {
 }
 
 const void Debug::DrawCollisionBox(NCL::CSC8503::GameObject* obj) {
+	if (obj->GetBoundingVolume() == NULL) return;
 	switch (obj->GetBoundingVolume()->type)
 	{
 	case VolumeType::AABB:
 	{
-		Vector3 position = obj->GetTransform().GetPosition();
-		Vector3 offset = obj->GetTransform().GetOffset();
+		//return;
+		Vector3 position = obj->GetTransform().GetPosition() + obj->GetTransform().GetCollisionOffset();
 		Vector3 scale = Vector3();
-		if (obj->GetVolumeSize() != Vector3()) {
-			scale = obj->GetVolumeSize();
+		if (obj->GetTransform().GetCollisionDimensions() != Vector3()) {
+			scale = obj->GetTransform().GetCollisionDimensions();
 		}
 		else {
 			scale = obj->GetTransform().GetScale() / 2;
 		}
 
-		Vector3 a = Vector3(position.x + scale.x, position.y + scale.y, position.z + scale.z) + offset;
-		Vector3 b = Vector3(position.x + scale.x, position.y + scale.y, position.z - scale.z) + offset;
-		Vector3 c = Vector3(position.x + scale.x, position.y - scale.y, position.z + scale.z) + offset;
-		Vector3 d = Vector3(position.x + scale.x, position.y - scale.y, position.z - scale.z) + offset;
-		Vector3 e = Vector3(position.x - scale.x, position.y + scale.y, position.z + scale.z) + offset;
-		Vector3 f = Vector3(position.x - scale.x, position.y + scale.y, position.z - scale.z) + offset;
-		Vector3 g = Vector3(position.x - scale.x, position.y - scale.y, position.z + scale.z) + offset;
-		Vector3 h = Vector3(position.x - scale.x, position.y - scale.y, position.z - scale.z) + offset;
+		Vector3 a = Vector3(position.x + scale.x, position.y + scale.y, position.z + scale.z);
+		Vector3 b = Vector3(position.x + scale.x, position.y + scale.y, position.z - scale.z);
+		Vector3 c = Vector3(position.x + scale.x, position.y - scale.y, position.z + scale.z);
+		Vector3 d = Vector3(position.x + scale.x, position.y - scale.y, position.z - scale.z);
+		Vector3 e = Vector3(position.x - scale.x, position.y + scale.y, position.z + scale.z);
+		Vector3 f = Vector3(position.x - scale.x, position.y + scale.y, position.z - scale.z);
+		Vector3 g = Vector3(position.x - scale.x, position.y - scale.y, position.z + scale.z);
+		Vector3 h = Vector3(position.x - scale.x, position.y - scale.y, position.z - scale.z);
 
 		DrawLine(a, b, Debug::GREEN);
 		DrawLine(a, c, Debug::GREEN);
@@ -131,7 +132,44 @@ const void Debug::DrawCollisionBox(NCL::CSC8503::GameObject* obj) {
 	}
 
 	case VolumeType::OBB:
+	{
+		//return;
+		Vector3 position = obj->GetTransform().GetPosition() + obj->GetTransform().GetCollisionOffset();
+		Vector3 scale = Vector3();
+		if (obj->GetTransform().GetCollisionDimensions() != Vector3()) {
+			scale = obj->GetTransform().GetCollisionDimensions();
+		}
+		else {
+			scale = obj->GetTransform().GetScale() / 2;
+		}
+		Vector3 x = obj->GetTransform().GetOrientation() * Vector3(scale.x, 0, 0);
+		Vector3 y = obj->GetTransform().GetOrientation() * Vector3(0, scale.y, 0);
+		Vector3 z = obj->GetTransform().GetOrientation() * Vector3(0, 0, scale.z);
+
+		Vector3 a = position + x + y + z;
+		Vector3 b = position + x + y - z;
+		Vector3 c = position + x - y + z;
+		Vector3 d = position + x - y - z;
+		Vector3 e = position - x + y + z;
+		Vector3 f = position - x + y - z;
+		Vector3 g = position - x - y + z;
+		Vector3 h = position - x - y - z;
+
+		DrawLine(a, b, Debug::GREEN);
+		DrawLine(a, c, Debug::GREEN);
+		DrawLine(d, c, Debug::GREEN);
+		DrawLine(d, b, Debug::GREEN);
+		DrawLine(a, e, Debug::GREEN);
+		DrawLine(b, f, Debug::GREEN);
+		DrawLine(d, h, Debug::GREEN);
+		DrawLine(c, g, Debug::GREEN);
+		DrawLine(e, f, Debug::GREEN);
+		DrawLine(e, g, Debug::GREEN);
+		DrawLine(g, h, Debug::GREEN);
+		DrawLine(f, h, Debug::GREEN);
 		break;
+	}
+
 	case VolumeType::Sphere:
 		break;
 	case VolumeType::Capsule:

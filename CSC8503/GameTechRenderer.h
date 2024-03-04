@@ -82,7 +82,7 @@ namespace NCL {
 
 			Vector4		lightColour;
 			float		lightRadius;
-			//float		fov;
+			//float		fov; 
 			Vector3		lightPosition;
 			Vector3		shadowPosition;
 
