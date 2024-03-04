@@ -72,10 +72,10 @@ void TutorialGame::UpdateGame(float dt) {
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
-	for (const auto& ele : gameLevel->GetLevel1()->objectList) {
-		Debug::DrawCollisionBox(ele);
-	}
-	Debug::DrawCollisionBox(player);
+	//for (const auto& ele : gameLevel->GetLevel1()->objectList) {
+	//	Debug::DrawCollisionBox(ele);
+	//}
+	//Debug::DrawCollisionBox(player);
 	player->UpdatePlayer(dt);
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
@@ -131,29 +131,23 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	}
 
-	//gameLevel->GetBoss()->Update(dt);
-	//UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
-
-
-	UpdateGhostAnim(ghost, ghostAnimation, dt / 5);
-
-	//// update player animation
-	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt / 5);
-
+	// update player animation
+	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
 	//IceCubeBulletLogic(dt);
-	if (gameLevel->GetBoss()->getIsAttack()) {
-		ExecuteAttack(dt);
-	}
-
 
 	SelectObject();
 	MoveSelectedObject();
 
-
 	// Level 1 stuff
 	if (currentLevel == 2) {
 		UpdateGhostAnim(ghost, ghostAnimation, dt);
+		if (portal && !portal->isEnable) {
+			portal->isEnable = gameLevel->CheckCoinList();
+		}
+		else {
+			portal->GetRenderObject()->SetColour(Debug::GREEN);
+		}
 	}
 	// Level 2
 	else if (currentLevel == 4) {
@@ -167,6 +161,10 @@ void TutorialGame::UpdateGame(float dt) {
 		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
 		//IceCubeBulletLogic(dt);
 		FireBallBulletLogic(dt);
+
+		if (gameLevel->GetBoss()->getIsAttack()) {
+			ExecuteAttack(dt);
+		}
 	}
 	// Level 4
 	else if (currentLevel == 8) {
@@ -231,9 +229,9 @@ void TutorialGame::UpdateGame(float dt) {
 	renderer->Update(dt);
 	physics->Update(dt);
 
-	Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
-	Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
-	Debug::Print("Press P to Pause!", Vector2(70, 90));
+	//Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
+	//Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
+	//Debug::Print("Press P to Pause!", Vector2(70, 90));
 
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
@@ -287,7 +285,7 @@ void TutorialGame::UpdateKeys(float dt) {
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::H)) {
 		gameLevel->GetBoss()->decreaseBossHealth(20.0f);
-		std::cout <<"Boss's Health:" << gameLevel->GetBoss()->getBossHealth() << std::endl;
+		std::cout << "Boss's Health:" << gameLevel->GetBoss()->getBossHealth() << std::endl;
 		gameLevel->GetBoss()->SetIsRencentlyHurt(true);
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::H)) {
@@ -398,7 +396,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	world->GetMainCamera().SetYaw(yaw);
 	//renderer.UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
 	UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
-	
+
 }
 
 void TutorialGame::DebugObjectMovement() {
@@ -504,7 +502,6 @@ void TutorialGame::InitCamera() {
 void TutorialGame::InitWorld() {
 	world->ClearAndErase();
 	physics->Clear();
-	blocker = nullptr;
 
 	gameLevel = new GameLevel(renderer);
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
@@ -514,25 +511,24 @@ void TutorialGame::InitWorld() {
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
 	ghost = gameLevel->GetGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
-
 	boss = gameLevel->GetBoss();
 	bossAnimation = gameLevel->getBossAnimation();
 
 	/*
 		Please switch the debug mode here
 	*/
-	//isDebug = true;
+	isDebug = true;
 	isDebug = false;
 	if (isDebug) {
 		//Level 1
-		currentLevel = 2;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		ghost = gameLevel->GetGhost();
-		ghostAnimation = gameLevel->getGhostAnimation();
+		//currentLevel = 2;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		//ghost = gameLevel->GetGhost();
+		//ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
-		//currentLevel = 4;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
+		currentLevel = 4;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
 		//currentLevel = 6;
@@ -542,7 +538,7 @@ void TutorialGame::InitWorld() {
 		//bossCheersAnimation = gameLevel->getBossCheersAnimation();
 		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
 
-		////iceCubeBullet = gameLevel->getIceCubeBullet();
+		//iceCubeBullet = gameLevel->getIceCubeBullet();
 
 		//bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
 		//iceCubeBullet = gameLevel->getIceCubeBullet();
@@ -556,8 +552,7 @@ void TutorialGame::InitWorld() {
 	}
 	else {
 		currentLevel = 1;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 		portal = gameLevel->GetConnection()->portal;
 		lockedObject = player;
 	}
@@ -956,30 +951,29 @@ void TutorialGame::UpdateAnim(GameObject* g, MeshAnimation* anim) {
 void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation, float dt) {
 	if (boss != nullptr) {
 		if (gameLevel->GetBoss()->getIsRencentlyHurt()) {
-			boss->GetRenderObject()->frameTime -= dt/2.0;
+			boss->GetRenderObject()->frameTime -= dt / 2.0;
 			UpdateAnim(boss, bossFlinchAnimation);
 		}
 		else {
-			bool iceCubeBulletShooting = iceCubeBullet->GetIsHiding()&& fireBallBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasIceCubeBullet();
-			bool fireBallBulletShooting = fireBallBullet->GetIsHiding()&& iceCubeBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasFireBallBullet();
-			if (iceCubeBulletShooting|| fireBallBulletShooting) {
+			bool iceCubeBulletShooting = iceCubeBullet->GetIsHiding() && fireBallBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasIceCubeBullet();
+			bool fireBallBulletShooting = fireBallBullet->GetIsHiding() && iceCubeBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasFireBallBullet();
+			if (iceCubeBulletShooting || fireBallBulletShooting) {
 				/*boss->GetRenderObject()->frameTime -= dt;
 				UpdateAnim(boss, bossShootingAnimation);*/
 				playShootingAnimation = true;
 			}
 			if (playShootingAnimation) {
-				boss->GetRenderObject()->frameTime -= dt/1.6;
+				boss->GetRenderObject()->frameTime -= dt / 1.6;
 				UpdateAnim(boss, bossShootingAnimation);
 				shootingTimer += dt;
 				if (shootingTimer >= shootingDuration) {
 					playShootingAnimation = false;
 					shootingTimer = 0.0f; // reset
 					iceCubeBulletFrames = 0.0f;
-
 				}
 			}
 			else {
-				if (!iceCubeBullet->GetIsHiding()|| !fireBallBullet->GetIsHiding()) {
+				if (!iceCubeBullet->GetIsHiding() || !fireBallBullet->GetIsHiding()) {
 					if (iceCubeBulletFrames < 60) {
 						boss->GetRenderObject()->frameTime -= dt;
 						UpdateAnim(boss, bossShootingAnimation);
@@ -1031,6 +1025,7 @@ void TutorialGame::UpdateGhostAnim(GameObject* ghost, MeshAnimation* ghostAnimat
 }
 
 void TutorialGame::SwitchLevel() {
+	if (!portal->isEnable) return;
 	if (!physics->GetCollisionDetectionList(portal).empty() && physics->GetCollisionDetectionList(portal)[0] == player) {
 		switch (currentLevel)
 		{
@@ -1040,7 +1035,8 @@ void TutorialGame::SwitchLevel() {
 			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel1()->portal;
-
+			portal->isEnable = false;
+			portal->GetRenderObject()->SetColour(Debug::RED);
 			ghost = gameLevel->GetGhost();
 			ghostAnimation = gameLevel->getGhostAnimation();
 			break;
@@ -1054,9 +1050,9 @@ void TutorialGame::SwitchLevel() {
 		case 3:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false, false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
-			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(235, 10, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
-			//portal = gameLevel->GetLevel2()->portal;
+			portal = gameLevel->GetLevel2()->portal;
 			break;
 		case 4:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), true, false);
@@ -1070,11 +1066,15 @@ void TutorialGame::SwitchLevel() {
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
 			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
-			//portal = gameLevel->GetLevel3()->portal;
+			portal = gameLevel->GetLevel3()->portal;
 
 			boss = gameLevel->GetBoss();
 			bossAnimation = gameLevel->getBossAnimation();
 			iceCubeBullet = gameLevel->getIceCubeBullet();
+			bossCheersAnimation = gameLevel->getBossCheersAnimation();
+			bossShootingAnimation = gameLevel->getBossShootingAnimation();
+			bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
+			fireBallBullet = gameLevel->getFireBallBullet();
 			break;
 		case 6:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true, false);
@@ -1087,7 +1087,7 @@ void TutorialGame::SwitchLevel() {
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), true, false);
 			gameLevel->AddLevelToWorld(world, 0, true, false);
 			gameLevel->AddLevelToWorld(world, 0, false, false);
-			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(-70, 10, -50)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			break;
 		default:
@@ -1107,6 +1107,7 @@ void TutorialGame::UpdateTrackingBall(Vector3 ballPosition, const Vector3& playe
 
 	iceCubeBullet->GetTransform().SetPosition(ballPosition);
 }
+
 void TutorialGame::UpdateProjMatrixFov(float df) {
 	float fov = world->GetMainCamera().GetFov();
 	fov -= df;
@@ -1171,7 +1172,7 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 		fireBallBullet->GetPhysicsObject()->AddForce(fireBallDirection * 5000);
 	}
 	if (!fireBallBullet->GetIsHiding()) {
-		fireBallBullet->GetPhysicsObject()->AddForce(Vector3(0,2.0f,0));
+		fireBallBullet->GetPhysicsObject()->AddForce(Vector3(0, 2.0f, 0));
 		// Update existence time
 		fireBallBullet->UpdateExistenceTime(dt);
 

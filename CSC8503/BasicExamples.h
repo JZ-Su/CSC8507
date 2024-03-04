@@ -15,7 +15,7 @@
 
 #include "MeshAnimation.h"
 #include "Boss.h"
-
+#include "Coin.h"
 #include "Door.h"
 
 namespace NCL {
@@ -34,7 +34,7 @@ namespace NCL {
 		GameObject* CreateChar(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateGoat(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
-		GameObject* CreateCoin(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float rotation = 0.0f);
+		GameObject* CreateCoin(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f, float rotation = 0.0f);
 		
 		//GameObject* CreateIceCubeBullet(const Vector3& position, float radius, float inverseMass);
 		GameObject* CreateIceCubeBullet(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);

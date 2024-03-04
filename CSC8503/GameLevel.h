@@ -8,7 +8,8 @@ namespace NCL {
 		vector<GameObject*> objectList;
 		GameObject* portal;
 
-		void AddObject(GameObject* o) { this->objectList.push_back(o); }
+		void AddObject(GameObject* o) { objectList.push_back(o); }
+		void AddObject(vector<GameObject*> l) { objectList.insert(objectList.end(), l.begin(), l.end()); }
 
 		// deep copy
 		Level& operator=(const Level& from) {
@@ -70,9 +71,10 @@ namespace NCL {
 		void CreateLevel1_Tables();
 		void CreateLevel1_Columns();
 		void CreateLevel1_Stairs();
+		void CreateLevel1_Coins();
 
-		//void CreateLevel2_Doors();
 		vector<Door*> GetL2Doors() const { return l2_Doors; }
+		bool CheckCoinList();
 
 	protected:
 		Level level1;
@@ -93,5 +95,7 @@ namespace NCL {
 		vector<Level> level4_reverse_rotate;
 
 		vector<Door*> l2_Doors;
+
+		vector<GameObject*> coinList;
 	};
 }

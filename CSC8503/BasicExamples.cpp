@@ -445,7 +445,6 @@ GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeig
 
 	capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
 	capsule->GetPhysicsObject()->InitSphereInertia();
-	capsule->GetRenderObject()->SetColour(Vector4(1, 1, 1, 0.0));
 	capsule->Deactivate();
 	return capsule;
 }
@@ -572,16 +571,17 @@ StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vect
 }
 
 GameObject* BasicExamples::CreateCoin(const Vector3& position, const Vector3& dimensions, float inverseMass, float rotation) {
-	GameObject* coin = new GameObject("coin");
-	AABBVolume* volume = new AABBVolume(dimensions);
+	GameObject* coin = new Coin("coin");
+	AABBVolume* volume = new AABBVolume(dimensions * Vector3(5, 5, 1));
+	coin->GetTransform().SetCollisionDimensions(dimensions * Vector3(5, 5, 1));
 	coin->SetBoundingVolume((CollisionVolume*)volume);
-	coin->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Quaternion(Matrix4::Rotation(rotation, Vector3(0, 1, 0))));
+	coin->GetTransform().SetPosition(position).SetScale(dimensions).SetOrientation(Quaternion(Matrix4::Rotation(rotation, Vector3(0, 1, 0))));
 	coin->SetRenderObject(new RenderObject(&coin->GetTransform(), coinMesh, nullptr, basicShader));
 	coin->SetPhysicsObject(new PhysicsObject(&coin->GetTransform(), coin->GetBoundingVolume()));
 
 	coin->GetPhysicsObject()->SetInverseMass(inverseMass);
 	coin->GetPhysicsObject()->InitCubeInertia();
-	coin->GetRenderObject()->SetColour(Debug::CYAN);
+	coin->GetRenderObject()->SetColour(Debug::YELLOW);
 	return coin;
 }
 

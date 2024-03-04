@@ -144,8 +144,6 @@ namespace NCL {
 			MainMenuState mainMenuState;
 			GameMode gameMode;
 
-			GameObject* blocker;
-
 			RankingPage rankingPage;
 			std::string nameString;
 			std::vector<RankScore> TimeTable, ScoreTable;
@@ -162,8 +160,10 @@ namespace NCL {
 			float h = 0, v = 0;
 
 			void SwitchLevel();
-			GameObject* exit = nullptr;
 
+			int coinCount;
+
+			GameObject* exit = nullptr;
 			bool hasRotation = true;
 			bool hasReverse = false;
 			int mapIndex = 0;
