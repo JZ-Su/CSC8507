@@ -66,7 +66,6 @@ UniqueOGLTexture OGLTexture::TextureFromFile(const std::string&name) {
 
 	free(texData);
 
-	return glTex;
 }
 
 UniqueOGLTexture OGLTexture::LoadCubemap(

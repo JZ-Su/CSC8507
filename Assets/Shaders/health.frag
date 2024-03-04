@@ -14,13 +14,14 @@ in Vertex
 out vec4 fragColor;
 
 void main(void)
-{
+
+{    
+  
 	if(useTexture == 0) {
 		fragColor = IN.colour;
 	}
 	else {
 		fragColor = texture(mainTex, IN.texCoord);
-                fragColor.a=0.00001;
-		//fragColor = IN.colour * vec4(1,1,1,alpha);
+                
 	}
 }

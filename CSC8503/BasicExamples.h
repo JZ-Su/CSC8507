@@ -32,7 +32,14 @@ namespace NCL {
 		Player* GetPlayer() { return player; }
 
 		StateGameObject* CreateAItest(const Vector3& position, const Vector3& dimensions,  GameObject* player,float inverseMass = 10.0f);
-		GameObject* CreateQuad(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		
+		GameObject* CreateTestMesh(const Vector3& position, const Vector3& dimensions, float inverseMass);
+		GameObject* CreateItem(const Vector3& position, const Vector3& dimensions, float inverseMass);
+
+
+		void LoadMaterialTextures(GameObject* character, Mesh* mesh,MeshMaterial* material, GameTechRenderer* renderer);
+
+		void ExportToObj(const Mesh& mesh, const std::string& filename);
 
 	protected:
 		Mesh* cubeMesh = nullptr;

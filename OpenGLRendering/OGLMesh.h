@@ -24,6 +24,18 @@ namespace NCL::Rendering {
 		void UploadToGPU(Rendering::RendererBase* renderer = nullptr) override;
 		void UpdateGPUBuffers(unsigned int startVertex, unsigned int vertexCount);
 
+		void DeteleBuffer() {
+			//glBindBuffer(GL_ARRAY_BUFFER, 0);
+			//glDeleteBuffers(NCL::Rendering::VertexAttribute::MAX_ATTRIBUTES, attributeBuffers);
+			//glDeleteBuffers(1, &vao);
+			//glDeleteBuffers(1, &indexBuffer);
+
+			glDeleteVertexArrays(1, &vao);
+			glDeleteVertexArrays(1, &indexBuffer);
+			glDeleteVertexArrays(VertexAttribute::MAX_ATTRIBUTES, attributeBuffers);
+
+		};
+
 	protected:
 		GLuint	GetVAO()			const { return vao;			}
 		void	BindVertexAttribute(int attribSlot, int bufferID, int bindingID, int elementCount, int elementSize, int elementOffset);

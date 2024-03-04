@@ -90,6 +90,7 @@ int Mesh::GetIndexForJoint(const std::string& name) const {
 }
 
 void Mesh::SetVertexPositions(const std::vector<Vector3>& newVerts) {
+	positions.clear();
 	positions = newVerts;
 }
 

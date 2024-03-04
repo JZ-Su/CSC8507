@@ -185,44 +185,20 @@ StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vect
 }
 
 
-GameObject* BasicExamples::CreateQuad(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 
-	GameObject* quad = new GameObject("quad");
+GameObject* BasicExamples::CreateItem(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* Item = new GameObject("cube");
+
 	AABBVolume* volume = new AABBVolume(dimensions);
-	
-	quad->SetBoundingVolume((CollisionVolume*)volume);
-	quad->GetTransform().SetPosition(position).SetScale(dimensions * 2);
-	quad->SetRenderObject(new RenderObject(&quad->GetTransform(), QuadMesh, basicTexture, basicShader));
-	quad->SetPhysicsObject(new PhysicsObject(&quad->GetTransform(), quad->GetBoundingVolume()));
-	quad->GetPhysicsObject()->SetInverseMass(inverseMass);
-	quad->GetPhysicsObject()->InitCubeInertia();
-	quad->SetCollisionResponse(false);
-	quad->GetRenderObject()->SetTag("UI");
-	//quad->SetTag("UI");
+	Item->SetBoundingVolume((CollisionVolume*)volume);
 
-	/*Matrix4 proj = Matrix4::Orthographic(0.0, 100.0f, 100, 0, -1.0f, 1.0f);
-	int matSlot = glGetUniformLocation(Shader->GetProgramID(), "viewProjMatrix");
-	glUniformMatrix4fv(matSlot, 1, false, (float*)proj.array);
+	Item->GetTransform().SetPosition(position).SetScale(dimensions * 2);
+	Item->SetRenderObject(new RenderObject(&Item->GetTransform(), cubeMesh, basicTexture, basicShader));
+	Item->SetPhysicsObject(new PhysicsObject(&Item->GetTransform(), Item->GetBoundingVolume()));
 
-	vertices = quad->GetRenderObject()->GetMesh()->GetVertices();
+	Item->GetPhysicsObject()->SetInverseMass(inverseMass);
+	Item->GetPhysicsObject()->InitCubeInertia();
+	Item->SetTag("RedBottle");
+	return Item;
 
-	for (Vector3& vertex : vertices) {
-		vertex = proj * vertex;
-	}
-	quad->GetRenderObject()->GetMesh()->SetVertexPositions(vertices);
-
-	glGenBuffers(1, &BlineVertVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, BlineVertVBO);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, 6 * sizeof(Vector3), vertices.data());
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-	glEnableVertexAttribArray(0);
-	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-	glBindVertexArray(0);*/
-	
-	/*Matrix4 viewMatrix = Matrix4::Orthographic(-1.0f,10000.0f,this->windowSize.x/2.0, -(this->windowSize.x) / 2.0, this->windowSize.y/2.0,-(this->windowSize.y)/2.0);
-	Matrix4 projMatrix = gameWorld.GetMainCamera().BuildProjectionMatrix(hostWindow.GetScreenAspect());
-	Matrix4 viewProj = projMatrix * viewMatrix;*/
-
-
-	return quad;
 }

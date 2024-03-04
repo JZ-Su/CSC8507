@@ -1,16 +1,20 @@
 #include "GameUI.h"
 #include "TextureLoader.h"
+
 using namespace NCL;
 using namespace Rendering;
 using namespace CSC8503;
 
 std::vector<GameUI::UIen>	GameUI::UIEntries;
+//std::map<std::string,Texture*> UImap;
 
 GameUI::GameUI() {
 
 healthShader = new OGLShader("health.vert", "health.frag");
 healthMesh = new OGLMesh();
 
+	//UImap["blood"]= renderer->LoadTexture("blood.png");
+	//UImap["redbootle"]= renderer->LoadTexture("redbootle.png");
 }
 
 GameUI::~GameUI() {
@@ -26,51 +30,41 @@ newentry.channels = channelsI;
 newentry.flags = flagsI;
 newentry.name = nameI;
 
-UIEntries.emplace_back(newentry);
-}
+//void GameUI::CreateGameUI(std::vector<Vector3> UIpos, std::vector<Vector2> UItex,const std::string& name, std::string tag) {
+//
+//	UIen newentry;
+//	newentry.mesh = new OGLMesh();
+//	newentry.tag = tag;
+//	newentry.texture = UImap[name];
+//	newentry.mesh->SetVertexPositions({ UIpos });
+//	newentry.mesh->SetVertexTextureCoords({ UItex });
+//	newentry.mesh->SetVertexIndices({ 0,1,2,2,3,0 });
+//	newentry.mesh->UploadToGPU();
+//
+//	UIEntries.push_back(newentry);
+//
+//}
 
-void GameUI::creatGameUI(std::vector<Vector3> UIpos, std::vector<Vector2> UItex,int width,int height,int channels,int flags, const std::string& name) {
-	
-
-//Vector3(-15, 15, -1), Vector3(-15, -15, -1), Vector3(15, -15, -1), Vector3(15, 15, -1);
-//Vector2(-1, 1), Vector2(-1, -1), Vector2(1, -1), Vector2(1, 1);
-
-healthMesh->SetVertexPositions({ UIEntries[0].UIpox});
-healthMesh->SetVertexTextureCoords({ UItex });
-healthMesh->SetVertexIndices({ 0,1,2,2,3,0 });
-//healthMesh->SetVertexIndices({ 0,1,3,1,2,3 });
-healthMesh->UploadToGPU();
-
-//int width = 512;
-//int height = 512;
-//int channels = 3;
-//int flags = 0;
-
-std::vector<char*> texData(1, nullptr);
-
-TextureLoader::LoadTexture(name, texData[0], width, height, channels, flags);
-
-glGenTextures(1, &healthTex);
-glBindTexture(GL_TEXTURE_2D, healthTex);
-
-glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData[0]);
-
-
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-glBindTexture(GL_TEXTURE_2D, 0);
-
-}
-
-void GameUI::Drawhealthline() {
-
-creatGameUI({ Vector3(-0.9f, 0.9f,-1.0f), Vector3(-0.9f, 0.8f, -1.0f) , Vector3(-0.4f, 0.8f, -1.0f) , Vector3(-0.4f, 0.9f, -1.0f) },
-	{ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) }, 512, 512, 4, 0, "blood.png");
-
-creatGameUI({ Vector3(-0.9f, 0.9f,-1.0f), Vector3(-0.9f, 0.8f, -1.0f) , Vector3(-0.4f, 0.8f, -1.0f) , Vector3(-0.4f, 0.9f, -1.0f) },
-	{ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) }, 1980, 360, 4, 0, "transparent.png");
-
-}
+//
+//void GameUI::UpdateUI(const std::string& tag, std::vector<NCL::Maths::Vector3> UIpox) {
+//	
+//	for (int i = 0; i < UIEntries.size(); i++) {
+//		if (UIEntries[i].tag == tag) {
+//			//UIEntries[i].mesh->DeteleBuffer();
+//			//UIEntries[i].mesh->SetVertexPositions({ UIpox });
+//			//UIEntries[i].mesh->UploadToGPU();
+//		}
+//		
+//	} 
+//
+//	for (const auto& element:UIEntries) {
+//		delete element.mesh;
+//
+//	}
+//	//std::vector<UIen>().swap(UIEntries);
+//	UIEntries.clear();	
+//}
+//
+//const std::vector<GameUI::UIen>& GameUI::GetUIEntries() {
+//	return UIEntries;
+//}

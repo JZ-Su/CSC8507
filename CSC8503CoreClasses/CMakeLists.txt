@@ -201,7 +201,7 @@ set(ADDITIONAL_LIBRARY_DEPENDENCIES
     "NCLCoreClasses"
     "ws2_32.lib"
 )
-
+include_directories("../OpenGLRendering/")
 include_directories("../NCLCoreClasses/")
 include_directories("./")
 

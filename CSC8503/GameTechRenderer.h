@@ -3,7 +3,6 @@
 #include "OGLShader.h"
 #include "OGLTexture.h"
 #include "OGLMesh.h"
-#include "GameUI.h"
 #include "GameWorld.h"
 
 namespace NCL {
@@ -14,12 +13,33 @@ namespace NCL {
 
 		class GameTechRenderer : public OGLRenderer	{
 		public:
+
+			struct UIen {
+				NCL::Rendering::OGLMesh* mesh;
+				int width=512;
+				int height=512;
+				int channels=4;
+				int flags=0;
+				char* texture;
+				std::string tag;
+			};
+
 			GameTechRenderer(GameWorld& world);
 			~GameTechRenderer();
 
 			Mesh*		LoadMesh(const std::string& name);
 			Texture*	LoadTexture(const std::string& name);
 			Shader*		LoadShader(const std::string& vertex, const std::string& fragment);
+			void        Loadhealth();
+			static void CreateGameUI(std::vector<NCL::Maths::Vector3> UIpox, const std::string& name, std::string type);
+
+			static const std::vector<UIen>& GetUIEntries();
+
+			static void UpdateUI();
+			static void deletUI(int i);
+
+		protected:
+			std::unordered_map<std::string, SharedOGLTexture> textureCache;
 
 		protected:
 			void NewRenderLines();
@@ -50,6 +70,7 @@ namespace NCL {
 			vector<const RenderObject*> activeObjects;
 
 			OGLShader*  debugShader;
+			OGLShader* healthShader;
 			OGLShader*  skyboxShader;
 			OGLMesh*	skyboxMesh;
 			GLuint		skyboxTex;
@@ -85,12 +106,10 @@ namespace NCL {
 			GLuint textTexVBO;
 			size_t textCount;
 
-			GLuint BlineVAO;
-			GLuint BlineVertVBO;	
-			OGLShader* UIShader;
-			size_t BlineCount;
 
-			GameUI ui;
+			static std::vector<UIen>	UIEntries;
+			GLuint texture;
+
 		};
 	}
 }

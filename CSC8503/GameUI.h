@@ -1,25 +1,28 @@
 #pragma once
-//#include "GameTechRenderer.h"
-#include "OGLTexture.h"
-#include "OGLShader.h"
-#include "OGLMesh.h"
-
+#include "GameTechRenderer.h"
+//#include "../OpenGLRendering/OGLTexture.h"
+#include "../OpenGLRendering/OGLShader.h"
+#include "../OpenGLRendering/OGLMesh.h"
 #include "../NCLCoreClasses/Vector2.h"
+#include "Texture.h"
+#include <map>
 
 namespace NCL {
-	namespace CSC8503 {
-		class GameUI 
-		{
 
-		public:
-			struct UIen {
-				std::vector<NCL::Maths::Vector3> UIpox;
-				std::vector<NCL::Maths::Vector2> uitex;
+	namespace CSC8503 {
+
+		class GameUI
+	{
+		public:	
+			
+			struct UIen {	
+				NCL::Rendering::OGLMesh* mesh;
 				int width;
 				int haight;
 				int channels;
 				int flags;
-				std::string name;
+				Texture* texture;
+				std::string tag;
 			};
 
 			
@@ -34,14 +37,20 @@ namespace NCL {
 		protected:
 			GameUI();
 			~GameUI();
+	
+			static void CreateGameUI(std::vector<NCL::Maths::Vector3> UIpox, std::vector<NCL::Maths::Vector2> uitex,
+		    const std::string& name,std::string type);
+
+			static const std::vector<UIen>& GetUIEntries();
 			
-			NCL::Rendering::OGLShader* healthShader;
-			NCL::Rendering::OGLMesh* healthMesh;
-			GLuint		healthTex;
-			
-			std::vector<NCL::Maths::Vector3> UIpositions;
-			std::vector<NCL::Maths::Vector2> UItexCoords;
+			static void UpdateUI(const std::string& tag, std::vector<NCL::Maths::Vector3> UIpox);
+		    static  GameTechRenderer *renderer;
+		protected:
+
 			static std::vector<UIen>	UIEntries;
+		    UIen UiElementl;
+			Texture* texture;
+
 		};
 
 

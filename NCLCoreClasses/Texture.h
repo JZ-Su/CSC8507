@@ -36,5 +36,6 @@ namespace NCL::Rendering {
 
 		Vector2i		dimensions;
 		uint32_t		assetID;
+
 	};
 }

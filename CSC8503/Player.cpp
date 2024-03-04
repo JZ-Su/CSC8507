@@ -4,6 +4,10 @@
 
 using namespace NCL;
 using namespace CSC8503;
+
+
+std::vector<Player::itemname> Player::playeritem;
+
 Player::Player( const std::string& objectname)
 {
 
@@ -15,9 +19,17 @@ Player::Player( const std::string& objectname)
 		collectibles = 0;
 		timer = 300;
 	}
-
+//itemname newentry;
+//newentry.tag = "RedBottle";
+//playeritem.emplace_back(newentry);
+//newentry.tag = "GreenBottle";
+//playeritem.emplace_back(newentry);
 }
 
+void Player::UpdatePlayer(float dt)
+{
+	//updateJumpTimer(dt);
+}
 float Player::updateTimer(float dt)
 {
 	if (timer > 0)
@@ -64,14 +76,103 @@ void Player::OnCollisionBegin(GameObject* otherObject) {
 	}
 	/*if (this->tag == "player" && otherObject->GetName() == "Key1")
 	{
-		otherObject->deactivate();
-		changeLevel = true;
+		//changeLevel = true;
+
+		canJump = true;
+	}
+	//if (otherObject->GetTag() == "RedBottle") {
+	//	playeritem.emplace_back(otherObject);
+	//	
+	//}
+
+	
+}
+
+void Player::OnCollisionEnd(GameObject* otherObject) {
+	
+	if (otherObject->GetTag() == "Ground")
+	{
+		//changeLevel = true;
+		canJump = false;
 
 	}
-	if (this->tag == "player" && otherObject->GetName() == "Key2")
-	{
-		otherObject->deactivate();
-		changeLevel = true;
+	
+}
 
-	}*/
+void Player::DrawItemui() {
+	int distance = 0.2;
+	int i = 0;
+
+	if (!playeritem.empty()) {
+		//for (int i = 0; i < playeritem.size(); i++) {
+		//	playeritem[i];
+		//}
+		//for (const auto& item : playeritem) {
+		//	if (playeritem.size() < 4) {
+		//		if ((playeritem.begin() + i)->tag == "RedBottle") {
+		//			GameUI::CreateGameUI({ Vector3(-0.5,-0.7,-1) + Vector3(i * distance,0,0),Vector3(-0.5,-0.9,-1) + Vector3(i * distance,0,0) ,
+		//			Vector3(-0.3,-0.9,-1) + Vector3(i * distance,0,0),Vector3(-0.3,-0.7,-1) + Vector3(i * distance,0,0) },
+		//				{ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) }, 512, 512, 4, 0, "redbootle.png", "Item");
+		//			++i;
+		//			break;
+
+		//		}
+		//		if ((playeritem.begin() + i)->tag == "GreenBottle") {
+		//			GameUI::CreateGameUI({ Vector3(-0.5,-0.7,-1) + Vector3(i * distance,0,0),Vector3(-0.5,-0.9,-1) + Vector3(i * distance,0,0) ,
+		//			Vector3(-0.3,-0.9,-1) + Vector3(i * distance,0,0),Vector3(-0.3,-0.7,-1) + Vector3(i * distance,0,0) },
+		//				{ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) }, 512, 512, 4, 0, "greenbottle.png", "Item");
+		//			++i;
+		//			break;
+		//		}
+		//	}
+		//}
+			//  itemname Playeritem[4] = {null};
+			//	for (int i = 0; i < 4;i++) {
+			//	if(playeritem[i]==null)
+			//		continue;
+			//	if (playeritem[i].tag == "RedBottle") {
+			//	
+			//		GameUI::CreateGameUI({ Vector3(-0.5,-0.7,-1) + Vector3(i*distance,0,0),Vector3(-0.5,-0.9,-1)+Vector3(i * distance,0,0) ,
+			//			Vector3(-0.3,-0.9,-1) + Vector3(i * distance,0,0),Vector3(-0.3,-0.7,-1) + Vector3(i * distance,0,0) },
+			//			{ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) }, 512, 512, 4, 0, "redbootle.png", "Item");
+			//	}
+			//	else if (playeritem[i].tag == "GreenBottle") {
+			//		GameUI::CreateGameUI({ Vector3(-0.5,-0.7,-1) + Vector3(i * distance,0,0),Vector3(-0.5,-0.9,-1) + Vector3(i * distance,0,0) ,
+			//			Vector3(-0.3,-0.9,-1) + Vector3(i * distance,0,0),Vector3(-0.3,-0.7,-1) + Vector3(i * distance,0,0) },
+			//			{ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) }, 512, 512, 4, 0, "greenbottle.png", "Item");
+			//	}
+			//}
+	}
+}
+
+
+
+
+void Player::UseItem(Player* player, int i) {
+	if (!playeritem.empty()) {
+		for (const auto& item : playeritem) {
+			if ((playeritem.begin()+i)->tag == "RedBottle") {
+			     player->addhealth(10);
+			}
+		if((playeritem.begin() + i)->tag == "GreenBottle")
+		           player->addhealth(-10);
+		}
+
+		//for (int i = 0; i < 4; i++) {
+		//	if (playeritem[i].tag == "RedBottle") {
+		//		player->addhealth(10);
+		//
+		//	}
+		//	else if (playeritem[i].tag == "GreenBottle") {
+		//		player->addhealth(-10);
+		//	}
+		//}
+
+
+
+	}
+}
+
+void Player::DeleteItem(int i) {
+	playeritem.erase(playeritem.begin() + i);
 }

@@ -148,6 +148,14 @@ namespace NCL {
 			std::vector<RankScore> TimeTable, ScoreTable;
 			void LoadRankingFile();
 			float h = 0, v = 0;
+
+			bool hasRotation = true;
+			bool hasReverse = false;
+			int mapIndex = 0;
+
+			int currentLevel;
+			GameObject* portal;
+			void SwitchLevel();
 		};
 	}
 }

@@ -85,7 +85,7 @@ void TutorialGame::UpdateGame(float dt) {
 	}
 
 	totalTime += dt;
-
+	//health = player->GetHealth();
 	if (!inSelectionMode) {
 		world->GetMainCamera().UpdateCamera(dt);
 	}
@@ -172,12 +172,32 @@ void TutorialGame::UpdateGame(float dt) {
 
 	gameLevel->GetAI()->Update(dt);
 
-	Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
-	Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
-	Debug::Print("Press P to Pause!", Vector2(70, 90));
+	//Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
+	//Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
+	//Debug::Print("Press P to Pause!", Vector2(70, 90));
+
+	health = (player->GetHealth()) / 100;
+	
+	std::cout << health << std::endl;
+    //if (currentLevel == 6) { 
+	GameTechRenderer::CreateGameUI({ Vector3(-0.9, 0.9f, -1.0f), Vector3(-0.9, 0.8f, -1.0f), Vector3(-0.4f *health, 0.8f, -1.0f), Vector3(-0.4f *health, 0.9f, -1.0f) }, "blood", "health");
+
+	GameTechRenderer::CreateGameUI({ Vector3(-0.5, -0.7f, -1.0f), Vector3(-0.5, -0.9f, -1.0f), Vector3(-0.3f, -0.9f, -1.0f), Vector3(-0.3f, -0.7f, -1.0f) }, "blankitem", "item");
+	GameTechRenderer::CreateGameUI({ Vector3(-0.2, -0.7f, -1.0f), Vector3(-0.2, -0.9f, -1.0f), Vector3(0.0f, -0.9f, -1.0f), Vector3(0.0f, -0.7f, -1.0f) }, "blankitem", "item");
+	GameTechRenderer::CreateGameUI({ Vector3(0.1, -0.7f, -1.0f), Vector3(0.1f, -0.9f, -1.0f), Vector3(0.3f, -0.9f, -1.0f), Vector3(0.3f, -0.7f, -1.0f) }, "blankitem", "item");
+	GameTechRenderer::CreateGameUI({ Vector3(0.4, -0.7f, -1.0f), Vector3(0.4, -0.9f, -1.0f), Vector3(0.6f, -0.9f, -1.0f), Vector3(0.6f, -0.7f, -1.0f) }, "blankitem", "item");
+
+	GameTechRenderer::CreateGameUI({ Vector3(-0.5, -0.7f, -1.0f), Vector3(-0.5, -0.9f, -1.0f), Vector3(-0.3f, -0.9f, -1.0f), Vector3(-0.3f, -0.7f, -1.0f) }, "redbottle", "item");
+	GameTechRenderer::CreateGameUI({ Vector3(-0.2, -0.7f, -1.0f), Vector3(-0.2, -0.9f, -1.0f), Vector3(0.0f, -0.9f, -1.0f), Vector3(0.0f, -0.7f, -1.0f) }, "greenbottle", "item");
+
+	//}
 	renderer->Render();
-	Debug::UpdateRenderables(dt);
-	Debug::UpdateRenderablesBB(dt);
+	Debug::UpdateRenderables(dt);  
+	GameTechRenderer::UpdateUI();
+
+	if (!isDebug) {
+		SwitchLevel();
+	}
 }
 
 void TutorialGame::UpdateKeys() {
@@ -221,12 +241,18 @@ void TutorialGame::UpdateKeys() {
 		}
 	}
 
-	//if (lockedObject) {
-		//LockedObjectMovement();
-	//}
-	//else {
-	DebugObjectMovement();
-	//}
+	if (lockedObject) {
+		LockedObjectMovement(dt);
+	}
+	else {
+		DebugObjectMovement();
+	}
+
+	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM1)) {
+	//	player->UseItem(player, 0);
+	//	player->DeleteItem(0);
+
+
 }
 
 void TutorialGame::LockedObjectMovement() {
@@ -332,6 +358,21 @@ void TutorialGame::LockedObjectMovement() {
 		}
 
 
+	}
+	else if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM1)) {
+		player->addhealth(10);
+
+	}
+	else if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM2)) {
+		player->addhealth(-10);
+	}
+	else {
+		if (player->IsJumping()) {
+			if (player->updateJumpTimer(dt)) {
+				player->SetIsJumping(false);
+			}
+		}
+		player->SetIsWalk(false);
 	}
 
 	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
@@ -471,15 +512,62 @@ void TutorialGame::InitWorld() {
 	
 	gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
 	player = gameLevel->GetPlayer();
-	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
-	lockedObject = player;
-	gameLevel->creatai();
-	world->AddGameObject(gameLevel->GetAI());
-	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
-	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel3());
-	//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel4());
-	
-	
+
+	ghost = gameLevel->getGhost();
+	ghostAnimation = gameLevel->getGhostAnimation();
+	fireBallBullet = gameLevel->getFireBallBullet();
+
+	/*
+		Please switch the debug mode here
+	*/
+	isDebug = true;
+	/*isDebug = false;*/
+	if (isDebug) {
+		//Level 1
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+
+		//Level 2
+		//gameLevel->AddLevelToWorld(world, gameLevel->GetLevel2());
+
+		//Level 3
+		//if (currentLevel = 6) {
+		//GameUI::CreateGameUI({ Vector3(-0.9f, 0.9f, -1.0f), Vector3(-0.9f, 0.8f, -1.0f), Vector3(-0.4f, 0.8f, -1.0f), Vector3(-0.4f, 0.9f, -1.0f) },
+		//	{ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) }, 512, 512, 4, 0, "blood.png", "health");
+		//}
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		bossAnimation = gameLevel->getBossAnimation();
+		playerWalkAnimation = gameLevel->getplayerWalkAnimation();
+		playerIdleAnimation = gameLevel->getplayerIdleAnimation();
+		playerJumpAnimation = gameLevel->getplayerJumpAnimation();
+
+		//player->GetHealth();
+		
+		//player->DrawItemui();
+		//portal = gameLevel->GetLevel2()->portal;
+		// 
+		//fireBallBullet = gameLevel->getFireBallBullet();
+
+		//Level 4 initalize function
+		//gameLevel->AddLevelToWorld(world, 0, true, false);
+		//gameLevel->AddLevelToWorld(world, 0, false, false);
+	}
+	else {
+		currentLevel = 1;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
+		portal = gameLevel->GetConnection()->portal;
+
+		player = gameLevel->GetPlayer();
+		boss = gameLevel->GetBoss();
+		ghost = gameLevel->getGhost();
+		ghostAnimation = gameLevel->getGhostAnimation();
+		bossAnimation = gameLevel->getBossAnimation();
+		playerWalkAnimation = gameLevel->getplayerWalkAnimation();
+		playerIdleAnimation = gameLevel->getplayerIdleAnimation();
+
+		lockedObject = player;
+	}
+
 	score = 0;
 	totalTime = 0.0f;
 	timeInterval = 5.0f;
@@ -879,4 +967,134 @@ void TutorialGame::LoadRankingFile() {
 
 	scoreFile.close();
 	timeFile.close();
+}
+
+
+void TutorialGame::DrawAnim(GameObject* g, MeshAnimation* anim) {
+	//const vector <Matrix4 > invBindPose = playerMesh->GetInverseBindPose();
+	const Matrix4* invBindPose = g->GetRenderObject()->GetMesh()->GetInverseBindPose().data();
+	const Matrix4* frameData = anim->GetJointData(g->GetRenderObject()->currentFrame % anim->GetFrameCount());
+	vector <Matrix4 > tempMatrices;
+	for (unsigned int i = 0; i < g->GetRenderObject()->GetMesh()->GetJointCount(); ++i) {
+		tempMatrices.emplace_back(frameData[i] * invBindPose[i]);
+	}
+	g->GetRenderObject()->SetFrameMatrices(tempMatrices);
+}
+
+void TutorialGame::UpdateAnim(GameObject* g, MeshAnimation* anim) {
+	while (g->GetRenderObject()->frameTime < 0.0f) {
+		g->GetRenderObject()->currentFrame = (g->GetRenderObject()->currentFrame + 1) % anim->GetFrameCount();
+		g->GetRenderObject()->frameTime += 1.0f / anim->GetFrameTime();
+	}
+	DrawAnim(g, anim);
+}
+
+void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation, float dt) {
+	if (boss != nullptr) {
+		boss->GetRenderObject()->frameTime -= dt;
+		UpdateAnim(boss, bossAnimation);
+	}
+}
+
+void TutorialGame::UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAnimation, MeshAnimation* playerWalkAnimation, float dt) {
+	if (player != nullptr) {
+		if (player->GetIsWalk()) {
+			player->GetRenderObject()->frameTime -= dt;
+			UpdateAnim(player, playerWalkAnimation);
+		}
+		else if (player->IsJumping()) {
+			player->GetRenderObject()->frameTime -= dt;
+			UpdateAnim(player, playerJumpAnimation);
+		}
+		else {
+			player->GetRenderObject()->frameTime -= dt;
+			UpdateAnim(player, playerIdleAnimation);
+		}
+	}
+}
+
+void TutorialGame::UpdateGhostAnim(GameObject* ghost, MeshAnimation* ghostAnimation, float dt) {
+	if (ghost != nullptr) {
+		ghost->GetRenderObject()->frameTime -= dt;
+		UpdateAnim(ghost, ghostAnimation);
+	}
+}
+
+
+
+void TutorialGame::SwitchLevel() {
+	if (!physics->GetCollisionDetectionList(portal).empty() && physics->GetCollisionDetectionList(portal)[0] == player) {
+		switch (currentLevel)
+		{
+		case 1:
+			GameLevel::RemoveLevel(world, gameLevel->GetConnection(), false, false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			portal = gameLevel->GetLevel1()->portal;
+			break;
+		case 2:
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel1(), true, false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
+			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			portal = gameLevel->GetConnection()->portal;
+			break;
+		case 3:
+			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false, false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
+			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+
+			break;
+		case 4:
+
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), true, false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
+			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			portal = gameLevel->GetConnection()->portal;
+			break;
+		case 5:
+			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false, false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			//portal = gameLevel->GetLevel3()->portal;
+			break;
+		case 6:
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true, false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
+			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			portal = gameLevel->GetConnection()->portal;
+			//player->GetHealth();
+	/*		GameUI::CreateGameUI({ Vector3(-0.9f, 0.9f, -1.0f), Vector3(-0.9f, 0.8f, -1.0f), Vector3(-0.4f, 0.8f, -1.0f), Vector3(-0.4f, 0.9f, -1.0f) },
+				{ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) }, 512, 512, 4, 0, "blood.png", "health");*/
+				//player->DrawItemui();
+				//portal = gameLevel->GetLevel2()->portal;
+			break;
+		case 7:
+			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), true, false);
+			gameLevel->AddLevelToWorld(world, 0, true, false);
+			gameLevel->AddLevelToWorld(world, 0, false, false);
+			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			break;
+		default:
+			break;
+		}
+		currentLevel++;
+	}
+}
+
+void TutorialGame::UpdateTrackingBall(Vector3 ballPosition, const Vector3& playerPosition, float speed, float dt) {
+
+	Debug::DrawLine(ballPosition, playerPosition, Debug::BLACK);
+	Vector3 direction = (playerPosition - ballPosition).Normalised();
+
+	float distance = speed * dt;
+	ballPosition += direction * distance;
+
+	fireBallBullet->GetTransform().SetPosition(ballPosition);
 }

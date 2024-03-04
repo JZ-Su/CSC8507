@@ -2,12 +2,16 @@
 #include "GameObject.h"
 #include "Window.h"
 #include "GameWorld.h"
-
+#include "GameUI.h"
 namespace NCL {
 	namespace CSC8503 {
 		class Player :public GameObject
 		{
 		public:
+			struct itemname {
+				std::string tag;
+			};
+
 			Player( const std::string& objectname = "");
 			~Player();
 			float  GetHealth()
@@ -28,7 +32,7 @@ namespace NCL {
 			}
 			void  ResetPlayerValues(float intimer)
 			{
-				health = 60;
+				health = 100;
 				timer = 60 * intimer;
 			}
 			void SetCollectibles(int incollectibles)
@@ -57,14 +61,28 @@ namespace NCL {
 			float updateCollectibles(int collected);
 			virtual void OnCollisionBegin(GameObject* otherObject) override;
 			bool changeLevel = false;
+
+			void addhealth(float addhealth) {
+				health += addhealth;
+			}
+
+			void UseItem(Player* player,int i);
+			void DrawItemui();
+			void DeleteItem(int i);
+
 		protected:
-			int health;
+			float health=100;
 			int collectibles;
 			float timer;
 			float jumpTimer = 0;
 			bool isDead = false;
 			bool canJump = false;
-			//add timer
+			bool isWalk = false;
+			bool isJumping = false;
+			
+			static std::vector<itemname> playeritem;
+			//static itemname Playeritem[4];
+			
 		};
 	}
 }

@@ -12,6 +12,8 @@ using namespace CSC8503;
 #define SHADOWSIZE 4096
 
 Matrix4 biasMatrix = Matrix4::Translation(Vector3(0.5f, 0.5f, 0.5f)) * Matrix4::Scale(Vector3(0.5f, 0.5f, 0.5f));
+std::vector<GameTechRenderer::UIen>	GameTechRenderer::UIEntries;
+std::map<std::string,char*> UImap;
 
 GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetWindow()), gameWorld(world) {
 	glEnable(GL_DEPTH_TEST);
@@ -19,7 +21,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	debugShader = new OGLShader("debug.vert", "debug.frag");
 	UIShader = new OGLShader("UI.vert", "UI.frag");
 	shadowShader = new OGLShader("shadow.vert", "shadow.frag");
-
+	healthShader = new OGLShader("health.vert", "health.frag");
 	glGenTextures(1, &shadowTex);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -110,6 +112,25 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	SetDebugStringBufferSizes(10000);
 	SetDebugLineBufferSizes(1000);
 	SetDebugBLineBufferSizes(1000);
+
+	//UImap["blood"] = LoadTexture("blood.png");
+
+	vector<char*> data(6, nullptr);
+	int width;
+	int height;
+	int channel;
+	int flag;
+
+     TextureLoader::LoadTexture("blood.png",data[0], width, height, channel, flag);
+	 UImap["blood"] = data[0];
+	 TextureLoader::LoadTexture("greenbottle.png", data[1], width, height, channel, flag);
+	 UImap["greenbottle"] = data[1];
+	 TextureLoader::LoadTexture("redbottle.png", data[2], width, height, channel, flag);
+	 UImap["redbottle"] = data[2];
+	 TextureLoader::LoadTexture("blankitem.png", data[3], width, height, channel, flag);
+	 UImap["blankitem"] = data[3];
+  //	UImap["redbootle"] =LoadTexture("redbootle.png");
+
 }
 
 GameTechRenderer::~GameTechRenderer() {
@@ -158,37 +179,46 @@ void GameTechRenderer::LoadSkybox() {
 }
 
 
-void GameTechRenderer::Loadhealth(GameUI ui) {
+void GameTechRenderer::Loadhealth() {
 	//Matrix4 viewMatrix = gameWorld.GetMainCamera().BuildViewMatrix();
-	ui.healthline();
+    const std::vector<GameTechRenderer::UIen>& uii = GameTechRenderer::GetUIEntries();
+	if (uii.empty()) {
+		return;
+	}
+	Matrix4 proj = Matrix4::Orthographic(0.0, 100.0f, 100, 0, -1.0f, 1.0f);
 
-    Matrix4 proj = Matrix4::Orthographic(0.0, 100.0f, 100, 0, -1.0f, 1.0f);
+	BindShader(*healthShader);
 
-	BindShader(*(ui.getshader()));
+	for (const auto& element : uii) {
+		
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, element.texture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glBindTexture(GL_TEXTURE_2D, 0);  
 
-	int matSlot = glGetUniformLocation(ui.getshader()->GetProgramID(), "viewProjMatrix");
-	glUniformMatrix4fv(matSlot, 1, false, (float*)proj.array);
+		
+		int matSlot = glGetUniformLocation(healthShader->GetProgramID(), "viewProjMatrix");
+		glUniformMatrix4fv(matSlot, 1, false, (float*)proj.array);
 
-	GLuint texSlot = glGetUniformLocation(ui.getshader()->GetProgramID(), "useTexture");
-	glUniform1i(texSlot, 1);
-
-	
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, ui.gettex());
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-    GLuint mainTexLocation = glGetUniformLocation(ui.getshader()->GetProgramID(), "mainTex");
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, ui.gettex());
-	glUniform1i(mainTexLocation, 0);
+		GLuint texSlot = glGetUniformLocation(healthShader->GetProgramID(), "useTexture");
+		glUniform1i(texSlot, 1);
 
 
-	BindMesh(*(ui.getMesh()));
-	DrawBoundMesh();
+		GLuint mainTexLocation = glGetUniformLocation(healthShader->GetProgramID(), "mainTex");
 
+
+		BindMesh(*element.mesh);
+		DrawBoundMesh();
+		element.mesh->DeteleBuffer();
+
+		glDeleteTextures(1, &texture);
+
+	}
+      
 }
 
 
@@ -198,15 +228,15 @@ void GameTechRenderer::RenderFrame() {
 	BuildObjectList();
 	SortObjectList();
 	RenderShadowMap();
-	RenderSkybox();	
+	RenderSkybox();
 	RenderCamera();	
-	Loadhealth(ui);
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	NewRenderLines();
 	NewRenderText();
+    Loadhealth();
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -631,47 +661,39 @@ void GameTechRenderer::SetDebugLineBufferSizes(size_t newVertCount) {
 	}
 }
 
-void GameTechRenderer::SetDebugBLineBufferSizes(size_t newVertCount) {
+void GameTechRenderer::CreateGameUI(std::vector<Vector3> UIpos, const std::string& name, std::string tag) {
 
-	if (newVertCount > BlineCount) {
-		BlineCount = newVertCount;
+	UIen newentry;
+	newentry.mesh = new OGLMesh();
+	newentry.tag = tag;
+	newentry.texture = UImap[name];
+	newentry.mesh->SetVertexPositions({ UIpos });
+	newentry.mesh->SetVertexTextureCoords({ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) });
+	newentry.mesh->SetVertexIndices({ 0,1,2,2,3,0 });
+	newentry.mesh->UploadToGPU();
 
-		glBindBuffer(GL_ARRAY_BUFFER, BlineVertVBO);
-		glBufferData(GL_ARRAY_BUFFER, BlineCount * sizeof(Debug::DebugBLineEntry), nullptr, GL_DYNAMIC_DRAW);
+	UIEntries.push_back(newentry);
 
-		debugBLineData.reserve(BlineCount);
-
-		glBindVertexArray(BlineVAO);
-
-		int realStride = sizeof(Debug::DebugBLineEntry) / 2;
-
-		glVertexAttribFormat(0, 3, GL_FLOAT, false, offsetof(Debug::DebugBLineEntry, startpoint));
-		glVertexAttribBinding(0, 0);
-		glBindVertexBuffer(0, BlineVertVBO, 0, realStride);
-
-		//glVertexAttribFormat(1, 3, GL_FLOAT, false, offsetof(Debug::DebugBLineEntry, Bpoint));
-		//glVertexAttribBinding(1, 0);
-		//glBindVertexBuffer(1, BlineVertVBO, 0, realStride);
-
-		//glVertexAttribFormat(2, 3, GL_FLOAT, false, offsetof(Debug::DebugBLineEntry, Cpoint));
-		//glVertexAttribBinding(2, 0);
-		//glBindVertexBuffer(2, BlineVertVBO, 0, realStride);
-
-		//glVertexAttribFormat(3, 3, GL_FLOAT, false, offsetof(Debug::DebugBLineEntry, Dpoint));
-		//glVertexAttribBinding(3, 0);
-		//glBindVertexBuffer(3, BlineVertVBO, 0, realStride);
-
-		glVertexAttribFormat(1, 4, GL_FLOAT, false, offsetof(Debug::DebugBLineEntry, colourA));
-		glVertexAttribBinding(1, 0);
-		glBindVertexBuffer(1, BlineVertVBO, sizeof(Vector4), realStride);
-
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		//glEnableVertexAttribArray(2);
-		//glEnableVertexAttribArray(3);
-		//glEnableVertexAttribArray(4);
-
-		glBindVertexArray(0);
-
-	}
 }
+void GameTechRenderer::UpdateUI() {
+
+	for (const auto& element : UIEntries) {
+		delete element.mesh;
+	}
+	UIEntries.clear();
+
+}
+
+const std::vector<GameTechRenderer::UIen>& GameTechRenderer::GetUIEntries() {
+	return UIEntries;
+}
+
+//void GameTechRenderer::deletUI(int i) {
+//	if (UIEntries.empty()) {
+//		return;
+//	}
+//	for (int i = 0; i < UIEntries.size(); i++) {
+//		UIEntries.erase(UIEntries.begin() + i);
+//	}
+//}
+    
