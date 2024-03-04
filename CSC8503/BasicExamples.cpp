@@ -642,10 +642,10 @@ GameObject* BasicExamples::CreateShield(const Vector3& position, const Vector3& 
 	GameObject* shield = new GameObject("shield");
 
 	AABBVolume* volume = new AABBVolume(Vector3(0.6, 1, 0.6) * dimensions);
-	shield->SetVolumeSize(Vector3(0.6, 1, 0.6) * dimensions);
+	shield->GetTransform().SetCollisionDimensions(Vector3(0.6, 1, 0.6) * dimensions);
 	shield->SetBoundingVolume((CollisionVolume*)volume);
 
-	shield->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOffset(Vector3(0, dimensions.y, 0));
+	shield->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetCollisionOffset(Vector3(0, dimensions.y, 0));
 	shield->SetRenderObject(new RenderObject(&shield->GetTransform(), shieldMesh, nullptr, basicShader));
 	shield->SetPhysicsObject(new PhysicsObject(&shield->GetTransform(), shield->GetBoundingVolume()));
 	shield->GetRenderObject()->isAnimation = true;
