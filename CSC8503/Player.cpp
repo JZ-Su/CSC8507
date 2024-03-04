@@ -56,11 +56,8 @@ void Player::OnCollisionBegin(GameObject* otherObject) {
 	}
 	if ( otherObject->GetTag() == "Ground")
 	{
-		//changeLevel = true;
-
 		canJump = true;
 	}
-	
 }
 
 void Player::OnCollisionEnd(GameObject* otherObject) {

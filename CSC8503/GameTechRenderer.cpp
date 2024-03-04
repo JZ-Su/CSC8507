@@ -144,6 +144,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	lightColour = Vector4(1.0f, 0.8f, 0.3f, 1.0f);
 	lightRadius = 130.0f;
 	lightPosition = Vector3(0.0f, 50.0f, -30.0f);
+	shadowPosition = Vector3(0.0f, 50.0f, -30.0f);
 
 	lightMesh = LoadMesh("sphere.msh");
 	quadMesh = new OGLMesh();
@@ -295,18 +296,25 @@ void GameTechRenderer::RenderShadowMap() {
 	int mvpLocation = glGetUniformLocation(shadowShader->GetProgramID(), "mvpMatrix");
 	int shadowLocation = glGetUniformLocation(shadowShader->GetProgramID(), "shadowTex");
 	int lightPosLocation = glGetUniformLocation(shadowShader->GetProgramID(), "lightPos");
-	glUniform3fv(lightPosLocation, 1, (float*)&lightPosition);
+	
+	for (const auto& i : activeObjects) {
+		if ((*i).isShadow) {
+			shadowPosition = (*i).GetTransform()->GetPosition();
+		}
+	}	
+	
+	glUniform3fv(lightPosLocation, 1, (float*)&shadowPosition);
 
 	Matrix4 shadowProjMatrix = Matrix4::Perspective(1.0f, far_plane, 1, 90.0f);
 	vector<Matrix4> shadowViewMatrix;
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 90, lightPosition));
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, -90, lightPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 90, shadowPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, -90, shadowPosition));
 
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(90, 0, lightPosition));
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(-90, 0, lightPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(90, 0, shadowPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(-90, 0, shadowPosition));
 
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 0, lightPosition));
-	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 180, lightPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 0, shadowPosition));
+	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 180, shadowPosition));
 
 
 
@@ -323,11 +331,17 @@ void GameTechRenderer::RenderShadowMap() {
 		mvpMatrix = modelMatrix;
 		glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
 		glActiveTexture(GL_TEXTURE1);
+		if (!(*i).isLight) {
+			Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
+			mvpMatrix = modelMatrix;
+			glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
+			glActiveTexture(GL_TEXTURE1);
 
-		BindMesh((OGLMesh&)*(*i).GetMesh());
-		size_t layerCount = (*i).GetMesh()->GetSubMeshCount();
-		for (size_t i = 0; i < layerCount; ++i) {
-			DrawBoundMesh((uint32_t)i);
+			BindMesh((OGLMesh&)*(*i).GetMesh());
+			size_t layerCount = (*i).GetMesh()->GetSubMeshCount();
+			for (size_t i = 0; i < layerCount; ++i) {
+				DrawBoundMesh((uint32_t)i);
+			}
 		}
 	}
 
@@ -395,149 +409,151 @@ void GameTechRenderer::RenderCamera() {
 	//glBindTexture(GL_TEXTURE_CUBE_MAP, shadowTex);
 
 	for (const auto& i : activeObjects) {
-		OGLShader* shader = (OGLShader*)(*i).GetShader();
-		BindShader(*shader);
+		if (!(*i).isLight) {
+			OGLShader* shader = (OGLShader*)(*i).GetShader();
+			BindShader(*shader);
 
-		if ((*i).GetDefaultTexture(0)) {
-			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(0), "mainTex", 0);
-		}
-		else {
-			BindTextureToShader(0, "mainTex", 0);
-		}
-		if ((*i).GetDefaultTexture(1)) {
-			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(1), "normalTex", 2);
-		}
-		else {
-			BindTextureToShader(0, "normalTex", 2);
-		}
-		if ((*i).GetDefaultTexture(2)) {
-			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(2), "metalTex", 3);
-		}
-		else {
-			BindTextureToShader(0, "metalTex", 3);
-		}
-		if ((*i).GetDefaultTexture(3)) {
-			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(3), "roughTex", 4);
-		}
-		else {
-			BindTextureToShader(0, "roughTex", 4);
-		}
-		if ((*i).GetDefaultTexture(4)) {
-			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(4), "aoTex", 5);
-		}
-		else {
-			BindTextureToShader(0, "aoTex", 5);
-		}
-		if ((*i).GetDefaultTexture(5)) {
-			BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(5), "heightTex", 6);
-		}
-		else {
-			BindTextureToShader(0, "heightTex", 6);
-		}
-
-		if (activeShader != shader) {
-			projLocation = glGetUniformLocation(shader->GetProgramID(), "projMatrix");
-			viewLocation = glGetUniformLocation(shader->GetProgramID(), "viewMatrix");
-			modelLocation = glGetUniformLocation(shader->GetProgramID(), "modelMatrix");
-			//shadowLocation = glGetUniformLocation(shader->GetProgramID(), "shadowMatrix");
-			colourLocation = glGetUniformLocation(shader->GetProgramID(), "objectColour");
-			hasVColLocation = glGetUniformLocation(shader->GetProgramID(), "hasVertexColours");
-			hasTexLocation = glGetUniformLocation(shader->GetProgramID(), "hasTexture");
-
-			/*lightPosLocation	= glGetUniformLocation(shader->GetProgramID(), "lightPos");
-			lightColourLocation = glGetUniformLocation(shader->GetProgramID(), "lightColour");
-			lightRadiusLocation = glGetUniformLocation(shader->GetProgramID(), "lightRadius");*/
-
-			cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
-
-			if (i->isAnimation) {
-				int j = glGetUniformLocation(shader->GetProgramID(), "joints");
-				glUniformMatrix4fv(j, i->GetFrameMatrices().size(), false, (float*)i->GetFrameMatrices().data());
+			if ((*i).GetDefaultTexture(0)) {
+				BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(0), "mainTex", 0);
+			}
+			else {
+				BindTextureToShader(0, "mainTex", 0);
+			}
+			if ((*i).GetDefaultTexture(1)) {
+				BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(1), "normalTex", 2);
+			}
+			else {
+				BindTextureToShader(0, "normalTex", 2);
+			}
+			if ((*i).GetDefaultTexture(2)) {
+				BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(2), "metalTex", 3);
+			}
+			else {
+				BindTextureToShader(0, "metalTex", 3);
+			}
+			if ((*i).GetDefaultTexture(3)) {
+				BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(3), "roughTex", 4);
+			}
+			else {
+				BindTextureToShader(0, "roughTex", 4);
+			}
+			if ((*i).GetDefaultTexture(4)) {
+				BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(4), "aoTex", 5);
+			}
+			else {
+				BindTextureToShader(0, "aoTex", 5);
+			}
+			if ((*i).GetDefaultTexture(5)) {
+				BindTextureToShader(*(OGLTexture*)(*i).GetDefaultTexture(5), "heightTex", 6);
+			}
+			else {
+				BindTextureToShader(0, "heightTex", 6);
 			}
 
-			Vector3 camPos = gameWorld.GetMainCamera().GetPosition();
-			glUniform3fv(cameraLocation, 1, &camPos.x);
+			if (activeShader != shader) {
+				projLocation = glGetUniformLocation(shader->GetProgramID(), "projMatrix");
+				viewLocation = glGetUniformLocation(shader->GetProgramID(), "viewMatrix");
+				modelLocation = glGetUniformLocation(shader->GetProgramID(), "modelMatrix");
+				//shadowLocation = glGetUniformLocation(shader->GetProgramID(), "shadowMatrix");
+				colourLocation = glGetUniformLocation(shader->GetProgramID(), "objectColour");
+				hasVColLocation = glGetUniformLocation(shader->GetProgramID(), "hasVertexColours");
+				hasTexLocation = glGetUniformLocation(shader->GetProgramID(), "hasTexture");
 
-			glUniformMatrix4fv(projLocation, 1, false, (float*)&projMatrix);
-			glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);
+				/*lightPosLocation	= glGetUniformLocation(shader->GetProgramID(), "lightPos");
+				lightColourLocation = glGetUniformLocation(shader->GetProgramID(), "lightColour");
+				lightRadiusLocation = glGetUniformLocation(shader->GetProgramID(), "lightRadius");*/
 
-			/*glUniform3fv(lightPosLocation	, 1, (float*)&lightPosition);
-			glUniform4fv(lightColourLocation, 1, (float*)&lightColour);
-			glUniform1f(lightRadiusLocation , lightRadius);*/
+				cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
 
-			//int shadowTexLocation = glGetUniformLocation(shader->GetProgramID(), "shadowTex");
-			//glUniform1i(shadowTexLocation, 1);
-
-			activeShader = shader;
-		}
-
-		Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
-		glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
-
-		//Matrix4 fullShadowMat = shadowMatrix * modelMatrix;
-		//glUniformMatrix4fv(shadowLocation, 1, false, (float*)&fullShadowMat);
-
-		Vector4 colour = i->GetColour();
-		glUniform4fv(colourLocation, 1, &colour.x);
-
-		glUniform1i(hasVColLocation, !(*i).GetMesh()->GetColourData().empty());
-
-		glUniform1i(hasTexLocation, (OGLTexture*)(*i).GetDefaultTexture(0) ? 1 : 0);
-
-		BindMesh((OGLMesh&)*(*i).GetMesh());
-		size_t layerCount = (*i).GetMesh()->GetSubMeshCount();
-		for (size_t x = 0; x < layerCount; ++x) {
-			if ((*i).isAnimation) {
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matDiffuseTextures[x])->GetObjectID());
-				glUniform1i(glGetUniformLocation(shader->GetProgramID(), "mainTex"), 0);
-
-				if (!i->matNormalTextures.empty() && x < i->matNormalTextures.size() && i->matNormalTextures[x] != nullptr) {
-					glActiveTexture(GL_TEXTURE2);
-					glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matNormalTextures[x])->GetObjectID());
-					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "normalTex"), 2);
-				}
-				else {
-					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "normalTex"), 7); // set defalut value
+				if (i->isAnimation) {
+					int j = glGetUniformLocation(shader->GetProgramID(), "joints");
+					glUniformMatrix4fv(j, i->GetFrameMatrices().size(), false, (float*)i->GetFrameMatrices().data());
 				}
 
-				if (!i->matMetalTextures.empty() && x < i->matMetalTextures.size() && i->matMetalTextures[x] != nullptr) {
-					glActiveTexture(GL_TEXTURE3);
-					glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matMetalTextures[x])->GetObjectID());
-					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "metalTex"), 3);
-				}
-				else {
-					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "metalTex"), 7); // set defalut value
-				}
+				Vector3 camPos = gameWorld.GetMainCamera().GetPosition();
+				glUniform3fv(cameraLocation, 1, &camPos.x);
 
-				if (!i->matRoughnessTextures.empty() && x < i->matRoughnessTextures.size() && i->matRoughnessTextures[x] != nullptr) {
-					glActiveTexture(GL_TEXTURE4);
-					glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matRoughnessTextures[x])->GetObjectID());
-					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "roughTex"), 4);
-				}
-				else {
-					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "roughTex"), 7); // set defalut value
-				}
+				glUniformMatrix4fv(projLocation, 1, false, (float*)&projMatrix);
+				glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);
 
-				if (!i->matAoTextures.empty() && x < i->matAoTextures.size() && i->matAoTextures[x] != nullptr) {
-					glActiveTexture(GL_TEXTURE5);
-					glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matAoTextures[x])->GetObjectID());
-					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "aoTex"), 5);
-				}
-				else {
-					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "aoTex"), 7); // set defalut value
-				}
+				/*glUniform3fv(lightPosLocation	, 1, (float*)&lightPosition);
+				glUniform4fv(lightColourLocation, 1, (float*)&lightColour);
+				glUniform1f(lightRadiusLocation , lightRadius);*/
 
-				if (!i->matHeightTextures.empty() && x < i->matHeightTextures.size() && i->matHeightTextures[x] != nullptr) {
-					glActiveTexture(GL_TEXTURE6);
-					glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matHeightTextures[x])->GetObjectID());
-					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "heightTex"), 6);
-				}
-				else {
-					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "heightTex"), 7); // set defalut value
-				}
+				//int shadowTexLocation = glGetUniformLocation(shader->GetProgramID(), "shadowTex");
+				//glUniform1i(shadowTexLocation, 1);
+
+				activeShader = shader;
 			}
-			DrawBoundMesh((uint32_t)x);
+
+			Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
+			glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
+
+			//Matrix4 fullShadowMat = shadowMatrix * modelMatrix;
+			//glUniformMatrix4fv(shadowLocation, 1, false, (float*)&fullShadowMat);
+
+			Vector4 colour = i->GetColour();
+			glUniform4fv(colourLocation, 1, &colour.x);
+
+			glUniform1i(hasVColLocation, !(*i).GetMesh()->GetColourData().empty());
+
+			glUniform1i(hasTexLocation, (OGLTexture*)(*i).GetDefaultTexture(0) ? 1 : 0);
+
+			BindMesh((OGLMesh&)*(*i).GetMesh());
+			size_t layerCount = (*i).GetMesh()->GetSubMeshCount();
+			for (size_t x = 0; x < layerCount; ++x) {
+				if ((*i).isAnimation) {
+					glActiveTexture(GL_TEXTURE0);
+					glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matDiffuseTextures[x])->GetObjectID());
+					glUniform1i(glGetUniformLocation(shader->GetProgramID(), "mainTex"), 0);
+
+					if (!i->matNormalTextures.empty() && x < i->matNormalTextures.size() && i->matNormalTextures[x] != nullptr) {
+						glActiveTexture(GL_TEXTURE2);
+						glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matNormalTextures[x])->GetObjectID());
+						glUniform1i(glGetUniformLocation(shader->GetProgramID(), "normalTex"), 2);
+					}
+					else {
+						glUniform1i(glGetUniformLocation(shader->GetProgramID(), "normalTex"), 7); // set defalut value
+					}
+
+					if (!i->matMetalTextures.empty() && x < i->matMetalTextures.size() && i->matMetalTextures[x] != nullptr) {
+						glActiveTexture(GL_TEXTURE3);
+						glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matMetalTextures[x])->GetObjectID());
+						glUniform1i(glGetUniformLocation(shader->GetProgramID(), "metalTex"), 3);
+					}
+					else {
+						glUniform1i(glGetUniformLocation(shader->GetProgramID(), "metalTex"), 7); // set defalut value
+					}
+
+					if (!i->matRoughnessTextures.empty() && x < i->matRoughnessTextures.size() && i->matRoughnessTextures[x] != nullptr) {
+						glActiveTexture(GL_TEXTURE4);
+						glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matRoughnessTextures[x])->GetObjectID());
+						glUniform1i(glGetUniformLocation(shader->GetProgramID(), "roughTex"), 4);
+					}
+					else {
+						glUniform1i(glGetUniformLocation(shader->GetProgramID(), "roughTex"), 7); // set defalut value
+					}
+
+					if (!i->matAoTextures.empty() && x < i->matAoTextures.size() && i->matAoTextures[x] != nullptr) {
+						glActiveTexture(GL_TEXTURE5);
+						glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matAoTextures[x])->GetObjectID());
+						glUniform1i(glGetUniformLocation(shader->GetProgramID(), "aoTex"), 5);
+					}
+					else {
+						glUniform1i(glGetUniformLocation(shader->GetProgramID(), "aoTex"), 7); // set defalut value
+					}
+
+					if (!i->matHeightTextures.empty() && x < i->matHeightTextures.size() && i->matHeightTextures[x] != nullptr) {
+						glActiveTexture(GL_TEXTURE6);
+						glBindTexture(GL_TEXTURE_2D, ((OGLTexture*)i->matHeightTextures[x])->GetObjectID());
+						glUniform1i(glGetUniformLocation(shader->GetProgramID(), "heightTex"), 6);
+					}
+					else {
+						glUniform1i(glGetUniformLocation(shader->GetProgramID(), "heightTex"), 7); // set defalut value
+					}
+				}
+				DrawBoundMesh((uint32_t)x);
+			}
 		}
 	}
 
@@ -592,19 +608,17 @@ void GameTechRenderer::RenderLight() {
 	lightPosLocation = glGetUniformLocation(lightShader->GetProgramID(), "lightPos");
 	lightColourLocation = glGetUniformLocation(lightShader->GetProgramID(), "lightColour");
 	lightRadiusLocation = glGetUniformLocation(lightShader->GetProgramID(), "lightRadius");
+	int shadowPosLocation = glGetUniformLocation(lightShader->GetProgramID(), "shadowPos");
 	cameraLocation = glGetUniformLocation(lightShader->GetProgramID(), "cameraPos");
 	pixelLocation = glGetUniformLocation(lightShader->GetProgramID(), "pixelSize");
 	glUniformMatrix4fv(invLocation, 1, false, (float*)&invViewProj);
 	Vector3 camPos = gameWorld.GetMainCamera().GetPosition();
 	glUniform3fv(cameraLocation, 1, &camPos.x);
 	glUniform2fv(pixelLocation, 1, &pixel.x);
+	glUniform3fv(shadowPosLocation, 1, (float*)&shadowPosition);
 
 	glUniformMatrix4fv(projLocation, 1, false, (float*)&projMatrix);
 	glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);
-
-	glUniform3fv(lightPosLocation, 1, (float*)&lightPosition);
-	glUniform4fv(lightColourLocation, 1, (float*)&lightColour);
-	glUniform1f(lightRadiusLocation, lightRadius);
 
 	int depthTexLocation = glGetUniformLocation(lightShader->GetProgramID(), "depthTex");
 	glUniform1i(depthTexLocation, 8);
@@ -622,16 +636,18 @@ void GameTechRenderer::RenderLight() {
 	int shadowTexLocation = glGetUniformLocation(lightShader->GetProgramID(), "shadowTex");
 	glUniform1i(shadowTexLocation, 1);
 
-	//for (const auto& i : activeObjects) {
-	//	if()
-	//	BindMesh((OGLMesh&)*(*i).GetMesh());
-	//	size_t layerCount = (*i).GetMesh()->GetSubMeshCount();
-	//	for (size_t i = 0; i < layerCount; ++i) {
-	//		DrawBoundMesh((uint32_t)i);
-	//	}
-	//}
-	BindMesh((OGLMesh&)*lightMesh);
-	DrawBoundMesh();
+	for (const auto& i : activeObjects) {
+		if ((*i).isLight) {
+			lightPosition = (*i).GetTransform()->GetPosition();
+			lightColour = (*i).GetColour();
+			lightRadius = (*i).GetTransform()->GetScale().x;
+			glUniform3fv(lightPosLocation, 1, (float*)&lightPosition);
+			glUniform4fv(lightColourLocation, 1, (float*)&lightColour);
+			glUniform1f(lightRadiusLocation, lightRadius);
+			BindMesh((OGLMesh&)*lightMesh);
+			DrawBoundMesh();
+		}
+	}
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glCullFace(GL_BACK);

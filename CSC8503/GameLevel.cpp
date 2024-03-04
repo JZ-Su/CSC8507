@@ -16,7 +16,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {
-	player = CreatePlayer(Vector3(60, 10, 60), Vector3(2, 2, 2), 15.0f);
+	player = CreatePlayer(Vector3(60, 10, 60), Vector3(2, 2, 2), 35.0f);
 	Generic.AddObject(player);
 	//Level 4 player: 
 	//Generic.AddObject(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
@@ -133,16 +133,23 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateCube(Vector3(20, 5, -20), Vector3(1, 5, 10), 0.0f));
 	level1.AddObject(CreateCube(Vector3(20, 5, -50), Vector3(1, 5, 10), 0.0f));
 	level1.AddObject(CreateCube(Vector3(0, 5, -59), Vector3(19, 5, 1), 0.0f));
-	////columns
+	//columns
 	CreateLevel1_Columns();
-	////stairs
+	//stairs
 	CreateLevel1_Stairs();
-	////book shelfs
+	//book shelfs
 	CreateLevel1_BookShelfs();
-	////small shelfs
+	//small shelfs
 	CreateLevel1_SmallShelfs();
-	////tables
+	//tables
 	CreateLevel1_Tables();
+
+	level1.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
+	//level1.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, true, false));
+	level1.AddObject(CreateLight(Vector3(60,  30, 60),  Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
+	level1.AddObject(CreateLight(Vector3(-60, 30, 60),  Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
+	level1.AddObject(CreateLight(Vector3(60,  30, -60), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
+	level1.AddObject(CreateLight(Vector3(-60, 30, -60), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
 
 	level1.AddObject(ghost = CreateGhost(Vector3(10, 10, 0), Vector3(5, 5, 5), 0.0f));
 
@@ -157,6 +164,8 @@ void GameLevel::CreateLevel1() {
 
 void GameLevel::CreateLevel2() {
 	level2.AddObject(CreateCube(Vector3(150, -2, 150), Vector3(150, 2, 150), 0.0f));
+	level2.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
+	level2.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, true, false));
 
 	vector<Vector4> pixelData = render->LoadMap();
 	const int size = 64;
@@ -260,6 +269,14 @@ void GameLevel::CreateLevel2() {
 }
 
 void GameLevel::CreateLevel3() {
+	level3.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
+	level3.AddObject(CreateLight(Vector3(60, 30, 60), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
+	level3.AddObject(CreateLight(Vector3(-60, 30, 60), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
+	level3.AddObject(CreateLight(Vector3(60, 30, -60), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
+	level3.AddObject(CreateLight(Vector3(-60, 30, -60), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
+	
+	level3.AddObject(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
+
 	// boss = CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), player, 0.0f);
 	// level3.AddObject(CreateCube(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
 	//level3.AddObject(CreateCube(Vector3(70, 0, 77), Vector3(10, 10,5 ), 0.0f));
@@ -277,10 +294,14 @@ void GameLevel::CreateLevel3() {
 	//level3.AddObject(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
 	//BossBehaviourTree(boss,player);
 	//
-	boss = CreateBoss(Vector3(0, 1, -60), Vector3(10, 10, 10), player,0.0f);
-	iceCubeBullet=CreateIceCubeBullet(Vector3(0,-50,0), Vector3(4, 4, 4), 0.0f);
+	boss = CreateBoss(Vector3(0, 1, -40), Vector3(6, 6, 6), player,0.0f);
+	iceCubeBullet = CreateIceCubeBullet(Vector3(0,-50,0), Vector3(4, 4, 4), 0.0f);
+	fireBallBullet = CreateFireBallBullet(Vector3(0, -55, 0), 4, 5.0f);
+	shield = CreateShield(Vector3(0, 20, 0), Vector3(8,8,8), 5.0f);
 	level3.AddObject(boss);
 	level3.AddObject(iceCubeBullet);
+	level3.AddObject(fireBallBullet);
+//	level3.AddObject(shield);
 	// level3.AddObject(boss);
 	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/
 }
@@ -290,6 +311,8 @@ void GameLevel::CreateLevel4() {
 	CreateLevel4_Reverse();
 	CreateLevel4_Rotate();
 	CreateLevel4_RR();
+	level4.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
+	level4.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, true, false));
 }
 
 void GameLevel::CreateLevel4_Normal() {
@@ -1205,29 +1228,23 @@ void GameLevel::CreateLevel1_BookShelfs() {
 }
 
 void GameLevel::CreateLevel1_Columns() {
-	level1.AddObject(CreateColumn(Vector3(-50, 0, -60), Vector3(0.5, 0.343, 0.5), 0.0f));
+	level1.AddObject(CreateColumn(Vector3(-50, 0, -60), 0.0f));
 	level1.AddObject(CreateCapsule(Vector3(-50, 20, -60), 60, 6, 0.0f));
-	//level1.AddObject(CreateAABB(Vector3(-50, 1, -60), Vector3(3, 1, 3), 0.0f));
 
-	level1.AddObject(CreateColumn(Vector3(-50, 0, -20), Vector3(0.5, 0.343, 0.5), 0.0f));
+	level1.AddObject(CreateColumn(Vector3(-50, 0, -20), 0.0f));
 	level1.AddObject(CreateCapsule(Vector3(-50, 20, -20), 60, 6, 0.0f));
-	//level1.AddObject(CreateAABB(Vector3(-50, 1, -20), Vector3(3, 1, 3), 0.0f));
 
-	level1.AddObject(CreateColumn(Vector3(-50, 0, 20), Vector3(0.5, 0.343, 0.5), 0.0f));
+	level1.AddObject(CreateColumn(Vector3(-50, 0, 20), 0.0f));
 	level1.AddObject(CreateCapsule(Vector3(-50, 20, 20), 60, 6, 0.0f));
-	//level1.AddObject(CreateAABB(Vector3(-50, 1, 20), Vector3(3, 1, 3), 0.0f));
 
-	level1.AddObject(CreateColumn(Vector3(50, 0, -60), Vector3(0.5, 0.343, 0.5), 0.0f));
+	level1.AddObject(CreateColumn(Vector3(50, 0, -60), 0.0f));
 	level1.AddObject(CreateCapsule(Vector3(50, 20, -60), 60, 6, 0.0f));
-	//level1.AddObject(CreateAABB(Vector3(50, 1, -60), Vector3(3, 1, 3), 0.0f));
 
-	level1.AddObject(CreateColumn(Vector3(50, 0, -20), Vector3(0.5, 0.343, 0.5), 0.0f));
+	level1.AddObject(CreateColumn(Vector3(50, 0, -20), 0.0f));
 	level1.AddObject(CreateCapsule(Vector3(50, 20, -20), 60, 6, 0.0f));
-	//level1.AddObject(CreateAABB(Vector3(50, 1, -20), Vector3(3, 1, 3), 0.0f));
 
-	level1.AddObject(CreateColumn(Vector3(50, 0, 20), Vector3(0.5, 0.343, 0.5), 0.0f));
+	level1.AddObject(CreateColumn(Vector3(50, 0, 20), 0.0f));
 	level1.AddObject(CreateCapsule(Vector3(50, 20, 20), 60, 6, 0.0f));
-	//level1.AddObject(CreateAABB(Vector3(50, 1, 20), Vector3(3, 1, 3), 0.0f));
 }
 
 void GameLevel::CreateLevel1_Stairs() {

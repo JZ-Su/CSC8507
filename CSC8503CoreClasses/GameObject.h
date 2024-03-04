@@ -115,9 +115,6 @@ namespace NCL::CSC8503 {
 		void SetCollisionResponse(bool b) { hasCollision = b; }
 		bool GetCollisionResponse() const { return hasCollision; }
 
-		void SetVolumeSize(const Vector3& size) { volumeSize = size; }
-		Vector3 GetVolumeSize() const { return volumeSize; }
-
 	protected:
 		Transform			transform;
 
@@ -138,8 +135,6 @@ namespace NCL::CSC8503 {
 		bool hasCollision;
 		bool isHiding;
 
-		Vector3 center;
-		Vector3 volumeSize;
 	};
 }
 
