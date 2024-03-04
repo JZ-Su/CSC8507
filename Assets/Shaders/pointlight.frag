@@ -32,7 +32,7 @@ vec3 gridSamplingDisk[20] = vec3[]
 float ShadowCalculation(vec3 wrldPos)
 {
 	float far_plane = 200;
-    vec3 fragToLight = wrldPos - lightPos; 
+    vec3 fragToLight = wrldPos - shadowPos; 
 	//float closestDepth = texture(shadowTex, normalize(fragToLight)).r;
 	//closestDepth*=far_plane;
 	float currentDepth=length(fragToLight);
