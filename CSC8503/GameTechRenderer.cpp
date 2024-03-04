@@ -246,7 +246,6 @@ void GameTechRenderer::RenderFrame() {
 	RenderCamera();
 	RenderLight();
 	RenderCombine();
-	//RenderSkybox();
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
@@ -391,17 +390,8 @@ void GameTechRenderer::RenderCamera() {
 	int colourLocation = 0;
 	int hasVColLocation = 0;
 	int hasTexLocation = 0;
-	//int shadowLocation = 0;
-
-	//int lightPosLocation	= 0;
-	//int lightColourLocation = 0;
-	//int lightRadiusLocation = 0;
 
 	int cameraLocation = 0;
-
-	//TODO - PUT IN FUNCTION
-	//glActiveTexture(GL_TEXTURE0 + 1);
-	//glBindTexture(GL_TEXTURE_CUBE_MAP, shadowTex);
 
 	for (const auto& i : activeObjects) {
 		if (!(*i).isLight) {
@@ -449,14 +439,9 @@ void GameTechRenderer::RenderCamera() {
 				projLocation = glGetUniformLocation(shader->GetProgramID(), "projMatrix");
 				viewLocation = glGetUniformLocation(shader->GetProgramID(), "viewMatrix");
 				modelLocation = glGetUniformLocation(shader->GetProgramID(), "modelMatrix");
-				//shadowLocation = glGetUniformLocation(shader->GetProgramID(), "shadowMatrix");
 				colourLocation = glGetUniformLocation(shader->GetProgramID(), "objectColour");
 				hasVColLocation = glGetUniformLocation(shader->GetProgramID(), "hasVertexColours");
 				hasTexLocation = glGetUniformLocation(shader->GetProgramID(), "hasTexture");
-
-				/*lightPosLocation	= glGetUniformLocation(shader->GetProgramID(), "lightPos");
-				lightColourLocation = glGetUniformLocation(shader->GetProgramID(), "lightColour");
-				lightRadiusLocation = glGetUniformLocation(shader->GetProgramID(), "lightRadius");*/
 
 				cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
 
@@ -471,21 +456,11 @@ void GameTechRenderer::RenderCamera() {
 				glUniformMatrix4fv(projLocation, 1, false, (float*)&projMatrix);
 				glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);
 
-				/*glUniform3fv(lightPosLocation	, 1, (float*)&lightPosition);
-				glUniform4fv(lightColourLocation, 1, (float*)&lightColour);
-				glUniform1f(lightRadiusLocation , lightRadius);*/
-
-				//int shadowTexLocation = glGetUniformLocation(shader->GetProgramID(), "shadowTex");
-				//glUniform1i(shadowTexLocation, 1);
-
 				activeShader = shader;
 			}
 
 			Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
 			glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
-
-			//Matrix4 fullShadowMat = shadowMatrix * modelMatrix;
-			//glUniformMatrix4fv(shadowLocation, 1, false, (float*)&fullShadowMat);
 
 			Vector4 colour = i->GetColour();
 			glUniform4fv(colourLocation, 1, &colour.x);
@@ -559,7 +534,7 @@ void GameTechRenderer::RenderLight() {
 	glBindFramebuffer(GL_FRAMEBUFFER, lightFBO);
 	BindShader(*lightShader);
 
-	glClearColor(0, 0, 0, 0);
+	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glBlendFunc(GL_ONE, GL_ONE);
 	glCullFace(GL_FRONT);
@@ -632,7 +607,7 @@ void GameTechRenderer::RenderLight() {
 	glUniform1i(shadowTexLocation, 1);
 
 	for (const auto& i : activeObjects) {
-		if ((*i).isLight) {
+		if ((*i).onLight) {
 			lightPosition = (*i).GetTransform()->GetPosition();
 			lightColour = (*i).GetColour();
 			lightRadius = (*i).GetTransform()->GetScale().x;

@@ -1,33 +1,13 @@
 #version 400 core
 
-//uniform vec4 		objectColour;
 uniform sampler2D 	colorTex;
 uniform sampler2D 	lightDiffTex;
 uniform sampler2D 	lightSpecTex;
 uniform sampler2D 	depthTex;
-//uniform sampler2D 	metalTex;
-//uniform sampler2D 	roughTex;
-//uniform sampler2D 	aoTex;
-//uniform sampler2D 	heightTex;
-//uniform sampler2DShadow shadowTex;
-//
-//uniform vec3	lightPos;
-//uniform float	lightRadius;
-//uniform vec4	lightColour;
-//
-//uniform vec3	cameraPos;
-//
-//uniform bool hasTexture;
 
 in Vertex
 {
-	//vec4 colour;
 	vec2 texCoord;
-	//vec4 shadowProj;
-//	vec3 normal;
-//	vec3 tangent;
-//	vec3 binormal;
-//	vec3 worldPos;
 } IN;
 
 out vec4 fragColor;
@@ -62,14 +42,14 @@ void main(void)
 	lightDiff.rgb = pow(lightDiff.rgb, vec3(2.2));
 	lightSpec.rgb = pow(lightSpec.rgb, vec3(2.2));
 
-	fragColor.rgb = albedo.rgb * 0.1f * vec3(0.1,0.3,1.0);
+	fragColor.rgb = albedo.rgb * 0.05f * vec3(0.3,0.5,1.0);//* 0.1f * vec3(0.1,0.3,1.0);
 	fragColor.rgb += lightDiff.rgb;
 	fragColor.rgb += lightSpec.rgb;
 	
 	fragColor.rgb = pow(fragColor.rgb, vec3(1.0 / 2.2f));
 	fragColor.rgb = ACES_Tonemapping(fragColor.rgb);
 	fragColor.a = lightDiff.a;
-	if(fragColor.a == 0){
-		fragColor.a =  albedo.a;
-	}
+//	if(fragColor.a == 0){
+//		fragColor.a =  albedo.a;
+//	}
 }

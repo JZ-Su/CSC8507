@@ -89,8 +89,8 @@ void main(void)
 	}
 	//albedo.rgb = pow(albedo.rgb, vec3(2.2));
 
-	vec3 baseCol = albedo.rgb * (1.0 -metal);
-	vec3 specCol = vec3(0.04,0.04,0.04) * (1.0 - metal) + albedo.rgb * metal; 
+	//vec3 baseCol = albedo.rgb * (1.0 -metal);
+	//vec3 specCol = vec3(0.04,0.04,0.04) * (1.0 - metal) + albedo.rgb * metal; 
 
 	fragColor[0] = vec4(albedo.rgb, 1.0);
 	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);

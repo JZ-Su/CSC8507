@@ -33,6 +33,15 @@ float ShadowCalculation(vec3 worldPos)
 	return shadow;
 }
 
+float smoothstep(float x, float a, float b){
+	x = clamp((x -a) / (b - a), 0.0, 1.0);
+	return x * x * (3 - 2 * x);
+}
+
+float lerp(float x, float a, float b){
+	return a + x * (b - a);
+}
+
 void main(void)
 {
 
@@ -48,7 +57,7 @@ void main(void)
 	vec3 halfDir = normalize ( incident + viewDir );
 
 	float dist = length(lightPos - worldPos);
-	float atten = 1.0 - clamp(dist / lightRadius, 0.0, 1.0);
+	float atten = smoothstep(dist / lightRadius, 1.0, 0.0);
 
 	if ( atten == 0.0) {
 		discard;
@@ -74,7 +83,7 @@ void main(void)
 		float roughness = data.g;
 		vec3 aoCol = addTex.rgb;
 		float smoothness = 1.0 - roughness;
-		float shininess = (1.0 * (1.0 - smoothness) + 80 * smoothness) * smoothness;
+		float shininess = lerp(smoothness, 1.0,  80) * smoothness;
 
 		float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
 		float halfLambert = (lambert + 1.0) * 0.5;
@@ -96,7 +105,7 @@ void main(void)
 		float roughness = data.g;
 		float skin = data.b;
 		float smoothness = 1.0 - roughness;
-		float shininess = (1.0 * (1.0 - smoothness) + 80 * smoothness) * smoothness;
+		float shininess = lerp(smoothness, 1.0,  80) * smoothness;
 
 		float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
 		float halfLambert = (lambert + 1.0) * 0.5;
