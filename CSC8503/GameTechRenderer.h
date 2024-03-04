@@ -82,9 +82,9 @@ namespace NCL {
 
 			Vector4		lightColour;
 			float		lightRadius;
-			//float		fov;
+			//float		fov; 
 			Vector3		lightPosition;
-
+			 
 			//Debug data storage things
 			vector<Vector3> debugLineData;
 

@@ -501,7 +501,7 @@ void TutorialGame::InitWorld() {
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
-	ghost = gameLevel->getGhost();
+	ghost = gameLevel->GetGhost();
 	ghostAnimation = gameLevel->getGhostAnimation();
 
 	boss = gameLevel->GetBoss();
@@ -510,8 +510,8 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	isDebug = true;
-	//isDebug = false;
+	//isDebug = true;
+	isDebug = false;
 	if (isDebug) {
 		//Level 1
 		currentLevel = 2;
@@ -539,8 +539,8 @@ void TutorialGame::InitWorld() {
 	}
 	else {
 		currentLevel = 1;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 		portal = gameLevel->GetConnection()->portal;
 		lockedObject = player;
 	}
