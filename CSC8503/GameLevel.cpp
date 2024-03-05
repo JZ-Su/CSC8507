@@ -112,14 +112,17 @@ void GameLevel::CreateConnectionLevel() {
 
 void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
-	//level1.AddObject(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
+	level1.AddObject(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
 	//layers
-	level1.AddObject(CreateLayer(Vector3(-80, 5, -56), Vector3(20, 5, 44), 0.0f));
+	level1.AddObject(CreateCube(Vector3(-80, 5, -56), Vector3(20, 5, 44), 0.0f));
 	//level1.AddObject(CreateLayer(Vector3(0, -5, 0), Vector3(10, 20, 10), 0.0f));
 	level1.AddObject(CreateCube(Vector3(80, 5, -56), Vector3(20, 5, 44), 0));
 	level1.AddObject(CreateCube(Vector3(0, 5, 45), Vector3(40, 5, 55), 0.0f));
 	level1.AddObject(CreateCube(Vector3(0, 15, 90), Vector3(40, 5, 10), 0.0f));
 	level1.AddObject(CreateCube(Vector3(0, 25, 95), Vector3(20, 5, 5.1), 0.0f));
+	
+	CreateLevel1_Handrail();
+
 	//wall
 	level1.AddObject(CreateCube(Vector3(0, 30, 101), Vector3(100, 30, 1), 0.0f));
 	level1.AddObject(CreateCube(Vector3(0, 30, -101), Vector3(100, 30, 1), 0.0f));
@@ -133,16 +136,16 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateCube(Vector3(20, 5, -20), Vector3(1, 5, 10), 0.0f));
 	level1.AddObject(CreateCube(Vector3(20, 5, -50), Vector3(1, 5, 10), 0.0f));
 	level1.AddObject(CreateCube(Vector3(0, 5, -59), Vector3(19, 5, 1), 0.0f));
-	////columns
-	//CreateLevel1_Columns();
-	////stairs
-	//CreateLevel1_Stairs();
-	////book shelfs
-	//CreateLevel1_BookShelfs();
-	////small shelfs
-	//CreateLevel1_SmallShelfs();
-	////tables
-	//CreateLevel1_Tables();
+	//columns
+	CreateLevel1_Columns();
+	//stairs
+	CreateLevel1_Stairs();
+	//book shelfs
+	CreateLevel1_BookShelfs();
+	//small shelfs
+	CreateLevel1_SmallShelfs();
+	//tables
+	CreateLevel1_Tables();
 
 	level1.AddObject(CreateWallLight(Vector3(38, 40, 80), 0.0f, Vector3(0, 1, 0), -90));
 	level1.AddObject(CreateWallLight(Vector3(-38, 40, 80), 0.0f, Vector3(0, 1, 0), 90));
@@ -150,7 +153,7 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateWallLight(Vector3(-98, 40, -90), 0.0f, Vector3(0, 1, 0),90));
 	level1.AddObject(CreateHangLight(Vector3(0, 53, 0), Vector3(5, 5, 5), 0.0f));
 
-	level1.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 100.0f, false, true));
+	level1.AddObject(CreateLight(Vector3(0, 40, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 100.0f, false, true));
 	level1.AddObject(CreateLight(Vector3(0, 30, 0),  Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 30.0f, true, false));	
 	level1.AddObject(CreateLight(Vector3(-38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 30.0f, true, false));
@@ -276,10 +279,11 @@ void GameLevel::CreateLevel2() {
 }
 
 void GameLevel::CreateLevel3() {
-	level3.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
+	level3.AddObject(CreateLight(Vector3(0, 40, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
 	level3.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 150.0f, true, false));
 	
 	level3.AddObject(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
+	level3.AddObject(CreateHangLight(Vector3(0, 53, 0), Vector3(5, 5, 5), 0.0f));
 
 	// boss = CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), player, 0.0f);
 	// level3.AddObject(CreateCube(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
@@ -1189,8 +1193,8 @@ void GameLevel::CreateLevel1_BookShelfs() {
 	level1.AddObject(CreateBookshelf(Vector3(-50, 0, -44), 0.0f, Vector3(0, 1, 0), 90));
 	level1.AddObject(CreateBookshelf(Vector3(-50, 0, -52), 0.0f, Vector3(0, 1, 0), 90));
 	level1.AddObject(CreateBookshelf(Vector3(-30, 0, -60), 0.0f, Vector3(0, 1, 0), 90));
-	level1.AddObject(CreateBookshelf(Vector3(-39, 0, -14), 0.0f, Vector3(0, 1, 0), 90));
-	level1.AddObject(CreateBookshelf(Vector3(-39, 0, -22), 0.0f, Vector3(0, 1, 0), 90));
+	level1.AddObject(CreateBookshelf(Vector3(-39, 0, -15), 0.0f, Vector3(0, 1, 0), 90));
+	level1.AddObject(CreateBookshelf(Vector3(-39, 0, -23), 0.0f, Vector3(0, 1, 0), 90));
 
 	level1.AddObject(CreateBookshelf(Vector3(-24, 0, -96), 0.0f, Vector3(0, 1, 0), 90));
 	level1.AddObject(CreateBookshelf(Vector3(-24, 0, -88), 0.0f, Vector3(0, 1, 0), 90));
@@ -1216,10 +1220,10 @@ void GameLevel::CreateLevel1_BookShelfs() {
 
 	level1.AddObject(CreateBookshelf(Vector3(66, 10, -96), 0.0f));
 	level1.AddObject(CreateBookshelf(Vector3(74, 10, -96), 0.0f));
-	level1.AddObject(CreateBookshelf(Vector3(66, 10, -16), 0.0f));
+	level1.AddObject(CreateBookshelf(Vector3(66, 10, -17), 0.0f));
 	level1.AddObject(CreateBookshelf(Vector3(-66, 10, -96), 0.0f));
 	level1.AddObject(CreateBookshelf(Vector3(-74, 10, -96), 0.0f));
-	level1.AddObject(CreateBookshelf(Vector3(-66, 10, -16), 0.0f));
+	level1.AddObject(CreateBookshelf(Vector3(-66, 10, -17), 0.0f));
 
 	level1.AddObject(CreateBookshelf(Vector3(90, 10, -86), 0.0f, Vector3(0, 1, 0), 90));
 	level1.AddObject(CreateBookshelf(Vector3(90, 10, -78), 0.0f, Vector3(0, 1, 0), 90));
@@ -1275,6 +1279,43 @@ void GameLevel::CreateLevel1_Stairs() {
 	level1.AddObject(CreateStairs(Vector3(-80, 0, 4), Vector3(2.5, 2, 2), 0.0f));
 	level1.AddObject(CreateCubeOBB(Vector3(-80, -3.7, -8.3), Vector3(10, 10, 10), 0.0f, Vector3(1, 0, 0), 30));
 }
+
+void GameLevel::CreateLevel1_Handrail() {
+	level1.AddObject(CreateHandrail(Vector3(8.2, 33.5, 91), 0.0f, Vector3(0, 1, 0), 0));
+	level1.AddObject(CreateHandrail(Vector3(-8.2, 33.5, 91), 0.0f, Vector3(0, 1, 0), 180));
+	level1.AddObject(CreateHandrail(Vector3(8, 23.5, 81), 0.0f, Vector3(0, 1, 0), 0));
+	level1.AddObject(CreateHandrail(Vector3(24, 23.5, 81), 0.0f, Vector3(0, 1, 0), 0));
+	level1.AddObject(CreateHandrail(Vector3(-8, 23.5, 81), 0.0f, Vector3(0, 1, 0), 180));
+	level1.AddObject(CreateHandrail(Vector3(-24, 23.5, 81), 0.0f, Vector3(0, 1, 0), 180));
+	level1.AddObject(CreateHandrail(Vector3(16, 13.5, -8), 0.0f, Vector3(0, 1, 0), 0));
+	level1.AddObject(CreateHandrail(Vector3(0, 13.5, -8), 0.0f, Vector3(0, 1, 0), 0));
+	level1.AddObject(CreateHandrail(Vector3(31.5, 13.5, -8), 0.0f, Vector3(0, 1, 0), 0));
+	level1.AddObject(CreateHandrail(Vector3(-16, 13.5, -8), 0.0f, Vector3(0, 1, 0), 180));
+	level1.AddObject(CreateHandrail(Vector3(-31.5, 13.5, -8), 0.0f, Vector3(0, 1, 0), 180));
+	level1.AddObject(CreateHandrail(Vector3(-38.5, 13.5, 0), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(-38.5, 13.5, 16), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(-38.5, 13.5, 29), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(38.5, 13.5, 0), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(38.5, 13.5, 16), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(38.5, 13.5, 29), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(-95, 13.5, -13), 0.0f, Vector3(0, 1, 0), 0));
+	level1.AddObject(CreateHandrail(Vector3(-68, 13.5, -13), 0.0f, Vector3(0, 1, 0), 180));
+	level1.AddObject(CreateHandrail(Vector3(-61, 13.5, -20), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(-61, 13.5, -36), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(-61, 13.5, -52), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(-61, 13.5, -68), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(-61, 13.5, -84), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(-61, 13.5, -98), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(95, 13.5, -13), 0.0f, Vector3(0, 1, 0), 180));
+	level1.AddObject(CreateHandrail(Vector3(68, 13.5, -13), 0.0f, Vector3(0, 1, 0), 0));
+	level1.AddObject(CreateHandrail(Vector3(61, 13.5, -20), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(61, 13.5, -36), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(61, 13.5, -52), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(61, 13.5, -68), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(61, 13.5, -84), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateHandrail(Vector3(61, 13.5, -98), 0.0f, Vector3(0, 1, 0), -90));
+}
+
 
 void GameLevel::CreateLevel1_Coins() {
 	Vector3 dimensions = Vector3(0.5, 0.5, 0.5);

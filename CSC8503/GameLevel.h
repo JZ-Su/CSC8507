@@ -71,6 +71,7 @@ namespace NCL {
 		void CreateLevel1_Tables();
 		void CreateLevel1_Columns();
 		void CreateLevel1_Stairs();
+		void CreateLevel1_Handrail();
 		void CreateLevel1_Coins();
 
 		vector<Door*> GetL2Doors() const { return l2_Doors; }

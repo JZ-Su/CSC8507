@@ -241,9 +241,10 @@ void GameTechRenderer::RenderFrame() {
 	BuildObjectList();
 	SortObjectList();
 	RenderShadowMap();
-	RenderSkybox();
+
 	RenderCamera();
 	RenderLight();
+	RenderSkybox();
 	RenderCombine();
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
 	glDisable(GL_BLEND);

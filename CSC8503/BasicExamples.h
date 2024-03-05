@@ -46,6 +46,7 @@ namespace NCL {
 		GameObject* CreateTable(const Vector3& position, float inverseMass = 10.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
 		GameObject* CreateColumn(const Vector3& position, float inverseMass = 10.0f);
 		GameObject* CreateLayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
+		GameObject* CreateHandrail(const Vector3& position, float inverseMass = 0.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
 
 		GameObject* CreateLight(const Vector3& position, const Vector4& color, float radius, bool islight, bool isshadow);
 		
@@ -107,8 +108,7 @@ namespace NCL {
 		Texture* shieldTexture = nullptr;
 		Texture* DefualtTexture[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
 		Texture* floorTexture[6]   = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
-		Texture* layerTexture[6]   = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
-		Texture* ceilingTexture[6] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+		Texture* ceilingTexture[6]   = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 		Shader* basicShader = nullptr;
 		Shader* floorShader = nullptr;
 		Shader* modelShader = nullptr;
@@ -149,7 +149,6 @@ namespace NCL {
 		GameObject* shield;
 		GameObject* iceCubeBullet;
 		GameObject* fireBallBullet;
-
 
 	};
 }

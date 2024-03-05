@@ -44,12 +44,6 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	floorTexture[3] = render->LoadTexture("Floor/floor_roughness.jpg");
 	floorTexture[4] = render->LoadTexture("Floor/floor_ao.jpg");
 	floorTexture[5] = render->LoadTexture("Floor/floor_height.png");
-	layerTexture[0] = render->LoadTexture("Floor/floor1_color.jpg");
-	layerTexture[1] = render->LoadTexture("Floor/floor1_normal.png");
-	layerTexture[2] = DefualtTexture[2];
-	layerTexture[3] = render->LoadTexture("Floor/floor1_roughness.jpg");
-	layerTexture[4] = render->LoadTexture("Floor/floor1_ao.jpg");
-	layerTexture[5] = render->LoadTexture("Floor/floor1_height.png");
 	ceilingTexture[0] = render->LoadTexture("Ceiling/ceiling_color.jpg");
 	ceilingTexture[1] = render->LoadTexture("Ceiling/ceiling_normal.png");
 	ceilingTexture[2] = DefualtTexture[2];
@@ -125,8 +119,6 @@ BasicExamples::~BasicExamples() {
 		delete DefualtTexture[i];
 	for (int i = 0; i < 6; i++)
 		delete floorTexture[i];
-	for (int i = 0; i < 6; i++)
-		delete ceilingTexture[i];
 
 	delete basicShader;
 	delete floorShader;
@@ -221,13 +213,13 @@ GameObject* BasicExamples::CreateLayer(const Vector3& position, const Vector3& d
 	cube->SetBoundingVolume((CollisionVolume*)volume);
 
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, layerTexture[0], basicShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, floorTexture[0], basicShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
-	cube->GetRenderObject()->SetDefaultTexture(layerTexture[1], 1);
-	cube->GetRenderObject()->SetDefaultTexture(layerTexture[2], 2);
-	cube->GetRenderObject()->SetDefaultTexture(layerTexture[3], 3);
-	cube->GetRenderObject()->SetDefaultTexture(layerTexture[4], 4);
-	cube->GetRenderObject()->SetDefaultTexture(layerTexture[5], 5);
+	cube->GetRenderObject()->SetDefaultTexture(floorTexture[1], 1);
+	cube->GetRenderObject()->SetDefaultTexture(floorTexture[2], 2);
+	cube->GetRenderObject()->SetDefaultTexture(floorTexture[3], 3);
+	cube->GetRenderObject()->SetDefaultTexture(floorTexture[4], 4);
+	cube->GetRenderObject()->SetDefaultTexture(floorTexture[5], 5);
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
@@ -692,4 +684,22 @@ GameObject* BasicExamples::CreateHangLight(const Vector3& position, const Vector
 	lightmodel->GetPhysicsObject()->InitCubeInertia();
 
 	return lightmodel;
+}
+
+GameObject* BasicExamples::CreateHandrail(const Vector3& position, float inverseMass, const Vector3& tilt, int angle) {
+	GameObject* handrail = new GameObject("handrail");
+	OBBVolume* volume = new OBBVolume(Vector3(7, 4, 1));
+	handrail->GetTransform().SetCollisionDimensions(Vector3(6, 4, 1));
+	handrail->SetBoundingVolume((CollisionVolume*)volume);
+
+	handrail->GetTransform().SetPosition(position).SetScale(Vector3(2, 2, 2) * 2).SetOrientation(Matrix4::Rotation(angle, tilt));
+	handrail->SetRenderObject(new RenderObject(&handrail->GetTransform(), handrailMesh, nullptr, modelShader));
+	handrail->SetPhysicsObject(new PhysicsObject(&handrail->GetTransform(), handrail->GetBoundingVolume()));
+
+	handrail->GetRenderObject()->isAnimation = true;
+	LoadMaterialTextures(handrail, handrailMesh, handrailMat, render);
+	handrail->GetPhysicsObject()->SetInverseMass(inverseMass);
+	handrail->GetPhysicsObject()->InitCubeInertia();
+
+	return handrail;
 }

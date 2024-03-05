@@ -136,8 +136,6 @@ void TutorialGame::UpdateGame(float dt) {
 	// update player animation
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
-
-
 	//IceCubeBulletLogic(dt);
 
 	SelectObject();
