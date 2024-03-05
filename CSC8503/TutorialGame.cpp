@@ -381,12 +381,14 @@ void TutorialGame::LockedObjectMovement(float dt) {
 			player->SetCanJump(false);
 			player->setJumpTimer(1.1f);
 			player->SetIsJumping(true);
+			//physics->UseGravity(true);
 		}
 	}
 	else {
 		if (player->IsJumping()) {
-			if (player->updateJumpTimer(dt)) {
+			if (player->updateJumpTimer(dt)) { 
 				player->SetIsJumping(false);
+				//physics->UseGravity(false);
 			}
 		}
 		player->SetIsWalk(false);
@@ -530,28 +532,28 @@ void TutorialGame::InitWorld() {
 	//isDebug = false;
 	if (isDebug) {
 		//Level 1
-		currentLevel = 2;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		ghost = gameLevel->GetGhost();
-		ghostAnimation = gameLevel->getGhostAnimation();
+		//currentLevel = 2;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		//ghost = gameLevel->GetGhost();
+		//ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
 		//currentLevel = 4;
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
-		 //currentLevel = 6;
-		 //gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-		 //boss = gameLevel->GetBoss();
-		 //shield = gameLevel->GetShield();
-		 //bossAnimation = gameLevel->getBossAnimation();
-		 //bossCheersAnimation = gameLevel->getBossCheersAnimation();
-		 //bossShootingAnimation = gameLevel->getBossShootingAnimation();
-		 //bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
-		 //bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
-		 //bossChasingAnimation = gameLevel->getBossChasingAnimation();
-		 //iceCubeBullet = gameLevel->getIceCubeBullet();
-		 //fireBallBullet = gameLevel->getFireBallBullet();
+		currentLevel = 6;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		boss = gameLevel->GetBoss();
+		shield = gameLevel->GetShield();
+		bossAnimation = gameLevel->getBossAnimation();
+		bossCheersAnimation = gameLevel->getBossCheersAnimation();
+		bossShootingAnimation = gameLevel->getBossShootingAnimation();
+		bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
+		bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
+		bossChasingAnimation = gameLevel->getBossChasingAnimation();
+		iceCubeBullet = gameLevel->getIceCubeBullet();
+		fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initial function
 		//currentLevel = 8;
@@ -959,7 +961,7 @@ void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation
 				}
 			}
 			else {
-				if ((!iceCubeBullet->GetIsHiding() || !fireBallBullet->GetIsHiding())&&!gameLevel->GetBoss()->getIsChasing()) {
+				if ((!iceCubeBullet->GetIsHiding() || !fireBallBullet->GetIsHiding()) && !gameLevel->GetBoss()->getIsChasing()) {
 					if (iceCubeBulletFrames < 20) {
 						boss->GetRenderObject()->frameTime -= dt;
 						UpdateAnim(boss, bossShootingAnimation);
@@ -976,7 +978,7 @@ void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation
 							boss->GetRenderObject()->frameTime -= dt;
 							UpdateAnim(boss, bossAttackingAnimation);
 							attackingTimer += dt;
-							if (attackingTimer >0.38f) {
+							if (attackingTimer > 0.38f) {
 								playerIsHit = true;
 							}
 						}
@@ -985,13 +987,13 @@ void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation
 						}
 					}
 					else {
-						boss->GetRenderObject()->frameTime -= dt*1.5;
+						boss->GetRenderObject()->frameTime -= dt * 1.5;
 						UpdateAnim(boss, bossChasingAnimation);
 						attackingTimer = 0;
 					}
-				
+
 				}
-				else{
+				else {
 					boss->GetRenderObject()->frameTime -= dt;
 					UpdateAnim(boss, bossAnimation);
 					iceCubeBulletFrames = 0.0f;

@@ -78,7 +78,8 @@ Door::Door(Player* player, Vector3 position, float rotation) {
 
 	StateTransition* aTob = new StateTransition(keepState, opening,
 		[&](GameObject* player)->bool {
-			if (isOpening == false && (player->GetTransform().GetPosition() - GetTransform().GetPosition()).Length() <= 15) {
+			if (!activation) return false;
+			if (!isOpening && (player->GetTransform().GetPosition() - GetTransform().GetPosition()).Length() <= 15) {
 				return true;
 			}
 			return false;
@@ -87,13 +88,15 @@ Door::Door(Player* player, Vector3 position, float rotation) {
 
 	StateTransition* bToa = new StateTransition(opening, keepState,
 		[&](float* timer)->bool {
+			if (!activation) return false;
 			return *timer >= 1.0f;
 		}, &timer);
 	stateMachine->AddTransition(bToa);
 
 	StateTransition* aToc = new StateTransition(keepState, closing,
 		[&](GameObject* player)->bool {
-			if (isOpening == true && (player->GetTransform().GetPosition() - GetTransform().GetPosition()).Length() >= 20) {
+			if (!activation) return false;
+			if (isOpening && (player->GetTransform().GetPosition() - GetTransform().GetPosition()).Length() >= 20) {
 				return true;
 			}
 			return false;
@@ -102,6 +105,7 @@ Door::Door(Player* player, Vector3 position, float rotation) {
 
 	StateTransition* cToa = new StateTransition(closing, keepState,
 		[&](float *timer)->bool {
+			if (!activation) return false;
 			return *timer >= 1.0f;
 		}, &timer); 
 	stateMachine->AddTransition(cToa);
