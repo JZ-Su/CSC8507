@@ -69,15 +69,15 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
-	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
-	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
+	//Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
+	//Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
+	//Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
 	//for (const auto& ele : gameLevel->GetLevel1()->objectList) {
 	//	Debug::DrawCollisionBox(ele);
 	//}
-	Debug::DrawCollisionBox(player);
-	Debug::DrawCollisionBox(boss);
-	Debug::DrawCollisionBox(shield);
+	//Debug::DrawCollisionBox(player);
+	//Debug::DrawCollisionBox(boss);
+	//Debug::DrawCollisionBox(shield);
 	player->UpdatePlayer(dt);
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
@@ -150,7 +150,7 @@ void TutorialGame::UpdateGame(float dt) {
 			portal->isEnable = gameLevel->CheckCoinList();
 		}
 		else {
-			portal->GetRenderObject()->SetColour(Debug::GREEN);
+			if (!isDebug) portal->GetRenderObject()->SetColour(Debug::GREEN);
 		}
 	}
 	// Level 2
@@ -178,7 +178,10 @@ void TutorialGame::UpdateGame(float dt) {
 		trueEndDet->GetRenderObject()->SetColour(Debug::RED);
 		falseEndDet->GetRenderObject()->SetColour(Debug::GREEN);
 		beginDet->GetRenderObject()->SetColour(Debug::BLUE);
-		if (!physics->GetCollisionDetectionList(beginDet).empty() && physics->GetCollisionDetectionList(beginDet)[0] == player && beginDet->isEnable == true) {
+
+		vector<GameObject*> beginCD = physics->GetCollisionDetectionList(beginDet);
+		//if (!physics->GetCollisionDetectionList(beginDet).empty() && physics->GetCollisionDetectionList(beginDet)[0] == player && beginDet->isEnable == true) {}
+		if (std::count(beginCD.begin(), beginCD.end(), player) && beginDet->isEnable) {
 			beginDet->isEnable = false;
 			trueEndDet->isEnable = true;
 			falseEndDet->isEnable = true;
@@ -189,7 +192,9 @@ void TutorialGame::UpdateGame(float dt) {
 				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r(), true, false);
 			}
 		}
-		if (!physics->GetCollisionDetectionList(trueEndDet).empty() && physics->GetCollisionDetectionList(trueEndDet)[0] == player && trueEndDet->isEnable == true) {
+		vector<GameObject*> trueEndCD = physics->GetCollisionDetectionList(trueEndDet);
+		//if (!physics->GetCollisionDetectionList(trueEndDet).empty() && physics->GetCollisionDetectionList(trueEndDet)[0] == player && trueEndDet->isEnable == true) {}
+		if (std::count(trueEndCD.begin(), trueEndCD.end(), player) && trueEndDet->isEnable) {
 			trueEndDet->isEnable = false;
 			falseEndDet->isEnable = false;
 			if (mapIndex >= 1) {
@@ -200,7 +205,9 @@ void TutorialGame::UpdateGame(float dt) {
 			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
 			hasRotation = !hasRotation;
 		}
-		if (!physics->GetCollisionDetectionList(falseEndDet).empty() && physics->GetCollisionDetectionList(falseEndDet)[0] == player && falseEndDet->isEnable == true) {
+		vector<GameObject*> falseEndCD = physics->GetCollisionDetectionList(falseEndDet);
+		//if (!physics->GetCollisionDetectionList(falseEndDet).empty() && physics->GetCollisionDetectionList(falseEndDet)[0] == player && falseEndDet->isEnable == true) {}
+		if (std::count(falseEndCD.begin(), falseEndCD.end(), player) && falseEndDet->isEnable) {
 			trueEndDet->isEnable = false;
 			falseEndDet->isEnable = false;
 			if (mapIndex < 1) {
@@ -525,31 +532,32 @@ void TutorialGame::InitWorld() {
 	//isDebug = false;
 	if (isDebug) {
 		//Level 1
-		//currentLevel = 2;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		//ghost = gameLevel->GetGhost();
-		//ghostAnimation = gameLevel->getGhostAnimation();
+		currentLevel = 2;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		ghost = gameLevel->GetGhost();
+		ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
-		currentLevel = 4;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
+		//currentLevel = 4;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
-		 currentLevel = 6;
-		 gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-		 boss = gameLevel->GetBoss();
-		 shield = gameLevel->GetShield();
-		 bossAnimation = gameLevel->getBossAnimation();
-		 bossCheersAnimation = gameLevel->getBossCheersAnimation();
-		 bossShootingAnimation = gameLevel->getBossShootingAnimation();
-		 bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
-		 bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
-		 bossChasingAnimation = gameLevel->getBossChasingAnimation();
-		 iceCubeBullet = gameLevel->getIceCubeBullet();
-		 fireBallBullet = gameLevel->getFireBallBullet();
+		 //currentLevel = 6;
+		 //gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		 //boss = gameLevel->GetBoss();
+		 //shield = gameLevel->GetShield();
+		 //bossAnimation = gameLevel->getBossAnimation();
+		 //bossCheersAnimation = gameLevel->getBossCheersAnimation();
+		 //bossShootingAnimation = gameLevel->getBossShootingAnimation();
+		 //bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
+		 //bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
+		 //bossChasingAnimation = gameLevel->getBossChasingAnimation();
+		 //iceCubeBullet = gameLevel->getIceCubeBullet();
+		 //fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initial function
 		//currentLevel = 8;
+		//player->GetTransform().SetPosition(Vector3(-70, 10, -50));
 		//gameLevel->AddLevelToWorld(world, 0, true, false);
 		//gameLevel->AddLevelToWorld(world, 0, false, false);
 	}
@@ -563,29 +571,6 @@ void TutorialGame::InitWorld() {
 	score = 0;
 	totalTime = 0.0f;
 }
-
-//void TutorialGame::BridgeConstraintTest() {
-//	Vector3 cubeSize = Vector3(5, 5, 5);
-//
-//	float invCubeMass = 5; //how heavy the middle pieces are
-//	int numLinks = 10;
-//	float maxDistance = 20; //constraint distance
-//	float cubeDistance = 20; //distance between links
-//
-//	Vector3 startPos = Vector3(10, 10, 10);
-//	GameObject* start = AddCubeToWorld(startPos + Vector3(0, 0, 0), cubeSize, 10);
-//	GameObject* end = AddCubeToWorld(startPos + Vector3((numLinks + 2) * cubeDistance, 0, 0), cubeSize, 10);
-//	GameObject* previous = start;
-//
-//	for (int i = 0; i < numLinks; i++) {
-//		GameObject* block = AddCubeToWorld(startPos + Vector3((i + 1) * cubeDistance, 0, 0), cubeSize, invCubeMass);
-//		PositionConstraint* constraint = new PositionConstraint(previous, block, maxDistance);
-//		world->AddConstraint(constraint);
-//		previous = block;
-//	}
-//	PositionConstraint* constraint = new PositionConstraint(previous, end, maxDistance);
-//	world->AddConstraint(constraint);
-//}
 
 /*
 Every frame, this code will let you perform a raycast, to see if there's an object
@@ -1094,6 +1079,7 @@ void TutorialGame::SwitchLevel() {
 
 			boss = gameLevel->GetBoss();
 			bossAnimation = gameLevel->getBossAnimation();
+			shield = gameLevel->GetShield();
 			iceCubeBullet = gameLevel->getIceCubeBullet();
 			bossCheersAnimation = gameLevel->getBossCheersAnimation();
 			bossShootingAnimation = gameLevel->getBossShootingAnimation();
