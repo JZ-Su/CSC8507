@@ -11,7 +11,6 @@
 #include "GameLevel.h"
 #include "BasicExamples.h"
 #include "MeshAnimation.h"
-#include "GameUI.h"
 
 namespace NCL {
 	namespace CSC8503 {

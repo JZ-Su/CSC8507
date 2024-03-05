@@ -3,7 +3,6 @@
 #include "OGLShader.h"
 #include "OGLTexture.h"
 #include "OGLMesh.h"
-#include "GameUI.h"
 #include "GameWorld.h"
 
 namespace NCL {
@@ -103,7 +102,6 @@ namespace NCL {
 			GLuint textTexVBO;
 			size_t textCount;
 
-			GameUI ui;
 		};
 	}
 }
