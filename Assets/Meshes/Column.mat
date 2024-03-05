@@ -1,6 +1,6 @@
 MeshMat
 1
-1
+2
 5
 colmun1
 6
@@ -10,8 +10,16 @@ Metallic:/Defualt/black.jpg
 Roughness:/Stone/stone_roughness.png
 AO:/Stone/stone_AO.png
 Height:/Defualt/halfgrey.jpg
+Column_Pillar
+6
+Diffuse:/Stone/Pillar_Albedo.jpg
+Bump:/Stone/Pillar_Normal.png
+Metallic:/Defualt/black.jpg
+Roughness:/Stone/Pillar_Specular.tif
+AO:/Stone/Pillar_AO.png
+Height:/Defualt/halfgrey.jpg
 0
 0
 0
 0
-0
+1

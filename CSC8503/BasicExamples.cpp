@@ -16,9 +16,6 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	sphereMesh  = render->LoadMesh("sphere.msh");
 	capsuleMesh = render->LoadMesh("capsule.msh");
 	charMesh    = render->LoadMesh("Keeper.msh");
-	//bossMesh	= render->LoadMesh("Role_T.msh");
-	//playerMesh = render->LoadMesh("Male_Guard.msh");
-	//bossMesh = render->LoadMesh("MaleA.msh");
 	bossMesh = render->LoadMesh("Male_Guard.msh");
 	playerMesh = render->LoadMesh("FemaleA.msh");
 	ghostMesh = render->LoadMesh("Ghost.msh");
@@ -30,6 +27,8 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	stairMesh = render->LoadMesh("Stair.msh");
 	handrailMesh = render->LoadMesh("handrail.msh");
 	coinMesh = render->LoadMesh("coin.msh");
+	wallLightMesh = render->LoadMesh("LightWall.msh");
+	hangLightMesh = render->LoadMesh("LightHanging.msh");
 
 	basicTexture = render->LoadTexture("checkerboard.png");
 	IceCubeTexture = render->LoadTexture("IceCube.jpg");
@@ -58,9 +57,6 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	ceilingTexture[4] = render->LoadTexture("Ceiling/ceiling_ao.jpg");
 	ceilingTexture[5] = render->LoadTexture("Ceiling/ceiling_height.png");
 	
-	//bossMat = new MeshMaterial("Role_T.mat");
-	//playerMat = new MeshMaterial("Male_Guard.mat");
-	//bossMat = new MeshMaterial("MaleA.mat");
 	bossMat = new MeshMaterial("Male_Guard.mat");
 	playerMat = new MeshMaterial("FemaleA.mat");
 	ghostMat = new MeshMaterial("Ghost.mat");
@@ -71,6 +67,8 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	stairMat = new MeshMaterial("Stair.mat");
 	handrailMat = new MeshMaterial("handrail.mat");
 	coinMat = new MeshMaterial("coin.mat");
+	wallLightMat = new MeshMaterial("LightWall.mat");
+	hangLightMat = new MeshMaterial("LightHanging.mat");
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
@@ -78,8 +76,8 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	playerShader = render->LoadShader("SkinningVertex.vert", "player.frag");
 	ghostShader = render->LoadShader("SkinningVertex.vert", "ghost.frag");
+	lampShader = render->LoadShader("model.vert", "lamp.frag");
 
-	//bossAnimation = new MeshAnimation("Role_T.anm");
 	bossAnimation = new MeshAnimation("Taunt.anm");
 	bossCheersAnimation = new MeshAnimation("Angry.anm");
 	bossShootingAnimation = new MeshAnimation("Gunfire1.anm");
@@ -88,7 +86,6 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	bossAttackingAnimation = new MeshAnimation("Stow.anm");
 	//bossAnimation = new MeshAnimation("Male_Jump.anm");
 	playerIdleAnimation = new MeshAnimation("Female_Stand.anm");
-	//playerWalkAnimation = new MeshAnimation("StepForwardTwoHand.anm");
 	playerWalkAnimation = new MeshAnimation("Female_Run.anm");
 	playerJumpAnimation = new MeshAnimation("Female_Jump.anm");
 	ghostAnimation = new MeshAnimation("Ghost.anm");
@@ -108,6 +105,8 @@ BasicExamples::~BasicExamples() {
 	delete stairMesh;
 	delete handrailMesh;
 	delete coinMesh;
+	delete wallLightMesh;
+	delete hangLightMesh;
 
 	delete playerMat;
 	delete bossMat;
@@ -118,6 +117,8 @@ BasicExamples::~BasicExamples() {
 	delete stairMat;
 	delete handrailMat;
 	delete coinMat;
+	delete wallLightMat;
+	delete hangLightMat;
 
 	delete basicTexture;
 	for (int i = 0; i < 5; i++)
@@ -133,6 +134,7 @@ BasicExamples::~BasicExamples() {
 	delete ghostShader;
 	delete bossShader;
 	delete playerShader;
+	delete lampShader;
 }
 
 // Todo: the indices is in wrong order
@@ -658,4 +660,36 @@ GameObject* BasicExamples::CreateShield(const Vector3& position, const Vector3& 
 	shield->GetPhysicsObject()->SetInverseMass(inverseMass);
 	shield->GetPhysicsObject()->InitCubeInertia();
 	return shield;
+}
+
+GameObject* BasicExamples::CreateWallLight(const Vector3& position, float inverseMass, const Vector3& tilt, int angle){
+	GameObject* lightmodel = new GameObject("lightmodel");
+	AABBVolume* volume = new AABBVolume(Vector3(4, 4, 4));
+	lightmodel->SetBoundingVolume((CollisionVolume*)volume);
+	lightmodel->GetTransform().SetPosition(position).SetScale(Vector3(4, 4, 4) * 2).SetOrientation(Matrix4::Rotation(angle, tilt));
+	lightmodel->SetRenderObject(new RenderObject(&lightmodel->GetTransform(), wallLightMesh, nullptr, lampShader));
+	lightmodel->SetPhysicsObject(new PhysicsObject(&lightmodel->GetTransform(), lightmodel->GetBoundingVolume()));
+
+	lightmodel->GetRenderObject()->isAnimation = true;
+	LoadMaterialTextures(lightmodel, wallLightMesh, wallLightMat, render);
+	lightmodel->GetPhysicsObject()->SetInverseMass(inverseMass);
+	lightmodel->GetPhysicsObject()->InitCubeInertia();
+
+	return lightmodel;
+}
+
+GameObject* BasicExamples::CreateHangLight(const Vector3& position, const Vector3& dimensions, float inverseMass){
+	GameObject* lightmodel = new GameObject("lightmodel");
+	AABBVolume* volume = new AABBVolume(dimensions);
+	lightmodel->SetBoundingVolume((CollisionVolume*)volume);
+	lightmodel->GetTransform().SetPosition(position).SetScale(dimensions * 2);// .SetOrientation(Quaternion(Matrix4::Rotation(rotation, Vector3(0, 1, 0))));
+	lightmodel->SetRenderObject(new RenderObject(&lightmodel->GetTransform(), hangLightMesh, nullptr, lampShader));
+	lightmodel->SetPhysicsObject(new PhysicsObject(&lightmodel->GetTransform(), lightmodel->GetBoundingVolume()));
+
+	lightmodel->GetRenderObject()->isAnimation = true;
+	LoadMaterialTextures(lightmodel, hangLightMesh, hangLightMat, render);
+	lightmodel->GetPhysicsObject()->SetInverseMass(inverseMass);
+	lightmodel->GetPhysicsObject()->InitCubeInertia();
+
+	return lightmodel;
 }

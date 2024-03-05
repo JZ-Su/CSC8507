@@ -144,6 +144,12 @@ void GameLevel::CreateLevel1() {
 	////tables
 	//CreateLevel1_Tables();
 
+	level1.AddObject(CreateWallLight(Vector3(38, 40, 80), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateWallLight(Vector3(-38, 40, 80), 0.0f, Vector3(0, 1, 0), 90));
+	level1.AddObject(CreateWallLight(Vector3(98, 30, -90), 0.0f, Vector3(0, 1, 0), -90));
+	level1.AddObject(CreateWallLight(Vector3(-98, 40, -90), 0.0f, Vector3(0, 1, 0),90));
+	level1.AddObject(CreateHangLight(Vector3(0, 53, 0), Vector3(5, 5, 5), 0.0f));
+
 	level1.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 100.0f, false, true));
 	level1.AddObject(CreateLight(Vector3(0, 30, 0),  Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 30.0f, true, false));	

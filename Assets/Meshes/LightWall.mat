@@ -1,0 +1,13 @@
+MeshMat
+1
+1
+1
+lamp_18_mat
+6
+Diffuse:/Light/lamp_18_C.tga
+Bump:/Light/lamp_18_N.tga
+Metallic:/Defualt/grey.jpg
+Roughness:/Defualt/grey.jpg
+AO:/Light/lamp_18_E.tga
+Height:/Defualt/halfgrey.jpg
+0
