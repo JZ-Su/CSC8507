@@ -51,6 +51,8 @@ namespace NCL {
 		
 		GameObject* CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateShield(const Vector3& position, const Vector3& dimensions, float inverseMass);
+		GameObject* CreateWallLight(const Vector3& position, float inverseMass = 0.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
+		GameObject* CreateHangLight(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
 		Player*     CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		Boss*       CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player, float inverseMass = 10.0f);
 		Door*       CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float rotation = 0.0f);
@@ -94,6 +96,8 @@ namespace NCL {
 		Mesh* stairMesh = nullptr;
 		Mesh* handrailMesh = nullptr;
 		Mesh* coinMesh = nullptr;
+		Mesh* wallLightMesh = nullptr;
+		Mesh* hangLightMesh = nullptr;
 
 		Texture* basicTexture = nullptr;
 		Texture* IceCubeTexture = nullptr;
@@ -107,6 +111,7 @@ namespace NCL {
 		Shader* ghostShader = nullptr;
 		Shader* bossShader = nullptr;
 		Shader* playerShader = nullptr;
+		Shader* lampShader = nullptr;
 
 		MeshMaterial* bossMat = nullptr;
 		MeshMaterial* playerMat = nullptr;
@@ -117,6 +122,8 @@ namespace NCL {
 		MeshMaterial* stairMat = nullptr;
 		MeshMaterial* handrailMat = nullptr;
 		MeshMaterial* coinMat = nullptr;
+		MeshMaterial* wallLightMat = nullptr;
+		MeshMaterial* hangLightMat = nullptr;
 
 		MeshAnimation* bossAnimation = nullptr;
 		MeshAnimation* bossCheersAnimation = nullptr;
