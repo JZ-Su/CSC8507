@@ -16,7 +16,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {
-	player = CreatePlayer(Vector3(60, 10, 60), Vector3(2, 2, 2), 35.0f);
+	player = CreatePlayer(Vector3(0, 10, 30), Vector3(2, 2, 2), 35.0f);
 	Generic.AddObject(player);
 	//Level 4 player: 
 	//Generic.AddObject(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
@@ -112,7 +112,7 @@ void GameLevel::CreateConnectionLevel() {
 
 void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
-	level1.AddObject(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
+	//level1.AddObject(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
 	//layers
 	level1.AddObject(CreateLayer(Vector3(-80, 5, -56), Vector3(20, 5, 44), 0.0f));
 	//level1.AddObject(CreateLayer(Vector3(0, -5, 0), Vector3(10, 20, 10), 0.0f));
@@ -133,16 +133,16 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateCube(Vector3(20, 5, -20), Vector3(1, 5, 10), 0.0f));
 	level1.AddObject(CreateCube(Vector3(20, 5, -50), Vector3(1, 5, 10), 0.0f));
 	level1.AddObject(CreateCube(Vector3(0, 5, -59), Vector3(19, 5, 1), 0.0f));
-	//columns
-	CreateLevel1_Columns();
-	//stairs
-	CreateLevel1_Stairs();
-	//book shelfs
-	CreateLevel1_BookShelfs();
-	//small shelfs
-	CreateLevel1_SmallShelfs();
-	//tables
-	CreateLevel1_Tables();
+	////columns
+	//CreateLevel1_Columns();
+	////stairs
+	//CreateLevel1_Stairs();
+	////book shelfs
+	//CreateLevel1_BookShelfs();
+	////small shelfs
+	//CreateLevel1_SmallShelfs();
+	////tables
+	//CreateLevel1_Tables();
 
 	level1.AddObject(CreateWallLight(Vector3(38, 40, 80), 0.0f, Vector3(0, 1, 0), -90));
 	level1.AddObject(CreateWallLight(Vector3(-38, 40, 80), 0.0f, Vector3(0, 1, 0), 90));
@@ -156,15 +156,12 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateLight(Vector3(-38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 30.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(90, 30, -90), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 70.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(-90, 30, -90), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 70.0f, true, false));
+	CreateLevel1_Coins();
 
 	level1.AddObject(ghost = CreateGhost(Vector3(10, 10, 0), Vector3(5, 5, 5), 0.0f));
 
-	level1.AddObject(CreateCoin(Vector3(20, 10, -35), Vector3(0.5, 0.5, 0.5), 0.0f, 0.0f));
-
 	vector<GameObject*> port = CreatePortal(Vector3(0, 35, 100));
-	for (const auto& ele : port) {
-		level1.AddObject(ele);
-	}
+	level1.AddObject(port);
 	level1.portal = level1.objectList.back();
 }
 
@@ -272,6 +269,10 @@ void GameLevel::CreateLevel2() {
 		l2_Doors.push_back(door);
 		level2.AddObject(door);
 	}
+
+	vector<GameObject*>port = CreatePortal(Vector3(230, 7, 11));
+	level2.AddObject(port);
+	level2.portal = level2.objectList.back();
 }
 
 void GameLevel::CreateLevel3() {
@@ -300,13 +301,17 @@ void GameLevel::CreateLevel3() {
 	boss = CreateBoss(Vector3(0, 1, -40), Vector3(6, 6, 6), player,0.0f);
 	iceCubeBullet = CreateIceCubeBullet(Vector3(0,-50,0), Vector3(4, 4, 4), 0.0f);
 	fireBallBullet = CreateFireBallBullet(Vector3(0, -55, 0), 4, 5.0f);
-	shield = CreateShield(Vector3(0, 20, 0), Vector3(8,8,8), 5.0f);
+	
 	level3.AddObject(boss);
 	level3.AddObject(iceCubeBullet);
 	level3.AddObject(fireBallBullet);
-//	level3.AddObject(shield);
+	level3.AddObject(shield=CreateShield(Vector3(0, 30, -40), Vector3(8, 8, 8), 5.0f));
 	// level3.AddObject(boss);
 	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/
+
+	vector<GameObject*> port = CreatePortal(Vector3(90, 7, 90));
+	level3.AddObject(port);
+	level3.portal = level3.objectList.back();
 }
 
 void GameLevel::CreateLevel4() {
@@ -1232,22 +1237,22 @@ void GameLevel::CreateLevel1_BookShelfs() {
 
 void GameLevel::CreateLevel1_Columns() {
 	level1.AddObject(CreateColumn(Vector3(-50, 0, -60), 0.0f));
-	level1.AddObject(CreateCapsule(Vector3(-50, 20, -60), 60, 6, 0.0f));
+	level1.AddObject(CreateCapsule(Vector3(-50, 20, -60), 60, 4, 0.0f));
 
 	level1.AddObject(CreateColumn(Vector3(-50, 0, -20), 0.0f));
-	level1.AddObject(CreateCapsule(Vector3(-50, 20, -20), 60, 6, 0.0f));
+	level1.AddObject(CreateCapsule(Vector3(-50, 20, -20), 60, 4, 0.0f));
 
 	level1.AddObject(CreateColumn(Vector3(-50, 0, 20), 0.0f));
-	level1.AddObject(CreateCapsule(Vector3(-50, 20, 20), 60, 6, 0.0f));
+	level1.AddObject(CreateCapsule(Vector3(-50, 20, 20), 60, 4, 0.0f));
 
 	level1.AddObject(CreateColumn(Vector3(50, 0, -60), 0.0f));
-	level1.AddObject(CreateCapsule(Vector3(50, 20, -60), 60, 6, 0.0f));
+	level1.AddObject(CreateCapsule(Vector3(50, 20, -60), 60, 4, 0.0f));
 
 	level1.AddObject(CreateColumn(Vector3(50, 0, -20), 0.0f));
-	level1.AddObject(CreateCapsule(Vector3(50, 20, -20), 60, 6, 0.0f));
+	level1.AddObject(CreateCapsule(Vector3(50, 20, -20), 60, 4, 0.0f));
 
 	level1.AddObject(CreateColumn(Vector3(50, 0, 20), 0.0f));
-	level1.AddObject(CreateCapsule(Vector3(50, 20, 20), 60, 6, 0.0f));
+	level1.AddObject(CreateCapsule(Vector3(50, 20, 20), 60, 4, 0.0f));
 }
 
 void GameLevel::CreateLevel1_Stairs() {
@@ -1269,4 +1274,45 @@ void GameLevel::CreateLevel1_Stairs() {
 	level1.AddObject(CreateCubeOBB(Vector3(80, -3.7, -8.3), Vector3(10, 10, 10), 0.0f, Vector3(1, 0, 0), 30));
 	level1.AddObject(CreateStairs(Vector3(-80, 0, 4), Vector3(2.5, 2, 2), 0.0f));
 	level1.AddObject(CreateCubeOBB(Vector3(-80, -3.7, -8.3), Vector3(10, 10, 10), 0.0f, Vector3(1, 0, 0), 30));
+}
+
+void GameLevel::CreateLevel1_Coins() {
+	Vector3 dimensions = Vector3(0.5, 0.5, 0.5);
+
+	coinList.push_back(CreateCoin(Vector3( 95, 5,  -5), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 80, 5,  35), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 55, 5, -90), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 50, 5,   0), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 37, 5, -90), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 32, 5, -58), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 20, 5, -35), dimensions));
+	coinList.push_back(CreateCoin(Vector3(  0, 5, -70), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-40, 5, -90), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-43, 5, -50), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-90, 5,  40), dimensions));
+
+	coinList.push_back(CreateCoin(Vector3( 20, 15,  20), dimensions));
+	coinList.push_back(CreateCoin(Vector3(  0, 15,  70), dimensions));
+	coinList.push_back(CreateCoin(Vector3(  0, 15,  35), dimensions));
+	coinList.push_back(CreateCoin(Vector3(  0, 15,  -5), dimensions));
+	coinList.push_back(CreateCoin(Vector3(  0, 15, -25), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-30, 15,   5), dimensions));
+
+	coinList.push_back(CreateCoin(Vector3(-67, 15, -35), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-67, 15, -90), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-90, 15, -55), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-95, 15, -35), dimensions));
+
+	coinList.push_back(CreateCoin(Vector3( 68, 15, -35), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 68, 15, -75), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 95, 15, -35), dimensions));
+
+	level1.AddObject(coinList);
+}
+
+bool GameLevel::CheckCoinList() {
+	for (auto element : coinList) {
+		if (element->IsActive()) return false;
+	}
+	return true;
 }

@@ -20,7 +20,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	playerMesh = render->LoadMesh("FemaleA.msh");
 	ghostMesh = render->LoadMesh("Ghost.msh");
 	goatMesh    = render->LoadMesh("goat.msh");
-	shieldMesh = render->LoadMesh("shield.msh");
+	shieldMesh = render->LoadMesh("Shield.msh");
 	bookshelfMesh = render->LoadMesh("bookshelf.msh");
 	tableMesh = render->LoadMesh("table.msh");
 	columnMesh = render->LoadMesh("column.msh");
@@ -32,6 +32,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 
 	basicTexture = render->LoadTexture("checkerboard.png");
 	IceCubeTexture = render->LoadTexture("IceCube.jpg");
+	shieldTexture = render->LoadTexture("Shield_AlbedoTransparency.png");
 	DefualtTexture[0] = render->LoadTexture("Defualt/white.jpg");
 	DefualtTexture[1] = render->LoadTexture("Defualt/grey.jpg");
 	DefualtTexture[2] = render->LoadTexture("Defualt/black.jpg");
@@ -59,6 +60,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	bossMat = new MeshMaterial("Male_Guard.mat");
 	playerMat = new MeshMaterial("FemaleA.mat");
 	ghostMat = new MeshMaterial("Ghost.mat");
+	shieldMat = new MeshMaterial("Shield.mat");
 	bookshelfMat = new MeshMaterial("bookshelf.mat");
 	tableMat = new MeshMaterial("table.mat");
 	columnMat = new MeshMaterial("Column.mat");
@@ -80,6 +82,9 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	bossCheersAnimation = new MeshAnimation("Angry.anm");
 	bossShootingAnimation = new MeshAnimation("Gunfire1.anm");
 	bossFlinchAnimation = new MeshAnimation("Flinches.anm");
+	bossChasingAnimation = new MeshAnimation("StepForwardTwoHand.anm");
+	bossAttackingAnimation = new MeshAnimation("Stow.anm");
+	//bossAnimation = new MeshAnimation("Male_Jump.anm");
 	playerIdleAnimation = new MeshAnimation("Female_Stand.anm");
 	playerWalkAnimation = new MeshAnimation("Female_Run.anm");
 	playerJumpAnimation = new MeshAnimation("Female_Jump.anm");
@@ -446,7 +451,6 @@ GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeig
 
 	capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
 	capsule->GetPhysicsObject()->InitSphereInertia();
-	capsule->GetRenderObject()->SetColour(Vector4(1, 1, 1, 0.0));
 	capsule->Deactivate();
 	return capsule;
 }
@@ -573,16 +577,17 @@ StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vect
 }
 
 GameObject* BasicExamples::CreateCoin(const Vector3& position, const Vector3& dimensions, float inverseMass, float rotation) {
-	GameObject* coin = new GameObject("coin");
-	AABBVolume* volume = new AABBVolume(dimensions);
+	GameObject* coin = new Coin("coin");
+	AABBVolume* volume = new AABBVolume(dimensions * Vector3(5, 5, 1));
+	coin->GetTransform().SetCollisionDimensions(dimensions * Vector3(5, 5, 1));
 	coin->SetBoundingVolume((CollisionVolume*)volume);
-	coin->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Quaternion(Matrix4::Rotation(rotation, Vector3(0, 1, 0))));
+	coin->GetTransform().SetPosition(position).SetScale(dimensions).SetOrientation(Quaternion(Matrix4::Rotation(rotation, Vector3(0, 1, 0))));
 	coin->SetRenderObject(new RenderObject(&coin->GetTransform(), coinMesh, nullptr, basicShader));
 	coin->SetPhysicsObject(new PhysicsObject(&coin->GetTransform(), coin->GetBoundingVolume()));
 
 	coin->GetPhysicsObject()->SetInverseMass(inverseMass);
 	coin->GetPhysicsObject()->InitCubeInertia();
-	coin->GetRenderObject()->SetColour(Debug::CYAN);
+	coin->GetRenderObject()->SetColour(Debug::YELLOW);
 	return coin;
 }
 
@@ -642,15 +647,15 @@ GameObject* BasicExamples::CreateIceCubeBullet(const Vector3& position, const Ve
 GameObject* BasicExamples::CreateShield(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	GameObject* shield = new GameObject("shield");
 
-	AABBVolume* volume = new AABBVolume(Vector3(0.6, 1, 0.6) * dimensions);
-	shield->GetTransform().SetCollisionDimensions(Vector3(0.6, 1, 0.6) * dimensions);
+	AABBVolume* volume = new AABBVolume(Vector3(1.2, 1.2, 0.2) * dimensions);
+	shield->GetTransform().SetCollisionDimensions(Vector3(1.2, 1.2, 0.2) * dimensions);
 	shield->SetBoundingVolume((CollisionVolume*)volume);
 
-	shield->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetCollisionOffset(Vector3(0, dimensions.y, 0));
-	shield->SetRenderObject(new RenderObject(&shield->GetTransform(), shieldMesh, nullptr, basicShader));
+	shield->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	shield->SetRenderObject(new RenderObject(&shield->GetTransform(), shieldMesh, shieldTexture, modelShader));
 	shield->SetPhysicsObject(new PhysicsObject(&shield->GetTransform(), shield->GetBoundingVolume()));
-	shield->GetRenderObject()->isAnimation = true;
-	//LoadMaterialTextures(player, playerMesh, playerMat, render);
+	//shield->GetRenderObject()->isAnimation = true;
+	//LoadMaterialTextures(shield, shieldMesh, shieldMat, render);
 
 	shield->GetPhysicsObject()->SetInverseMass(inverseMass);
 	shield->GetPhysicsObject()->InitCubeInertia();

@@ -16,24 +16,23 @@ Boss::Boss(Player* player) {
 	isShooting = false;
 	hasIceCubeBullet = true;
 	hasFireBallBullet = true;
+	chaseSpeed = 6.0f;
+	attackRange = 30.0f;
+	chaseRange = 40.0f;
+	static float lastAttackTime = 4.0f;
+	static float attackCooldown = 4.0f;
 	Idle = new BehaviourAction("Idle", [&](float dt, BehaviourState state)->BehaviourState {
 		if (state == Initialise) {
-			std::cout << "Idle init\n";
+			//std::cout << "Idle init\n";
+			isChasing = false;
 			state = Ongoing;
 		}
 		else if (state == Ongoing) {
-			this->distanceToTarget = calculateDistance(GetTransform().GetPosition(), this->player->GetTransform().GetPosition());
-			if (this->distanceToTarget <= this->remoteAttackRange) {
-				Debug::DrawLine(GetTransform().GetPosition(), this->player->GetTransform().GetPosition(), Debug::RED);
-				Debug::DrawCollisionBox(this);
-				Debug::DrawCollisionBox(this->player);
-				std::cout << this->distanceToTarget << std::endl;
-				return Failure;
-			}
-			else {
+			this->distanceToTarget = calculateDistance(this->GetTransform().GetPosition(), this->player->GetTransform().GetPosition());
+			if (distanceToTarget > remoteAttackRange) {
 				std::cout << "idle.\n";
-				return Ongoing;
 			}
+			return Failure;
 		}
 		return state;//will be ongoing until success or condition to switch
 		}
@@ -44,73 +43,81 @@ Boss::Boss(Player* player) {
 		float bossHealth = this->getBossHealth();
 		Vector3 targetPosition;
 		Vector3 bossPosition;
-		chaseSpeed = 5.0f;
-		attackRange = 20.0f;
-		chaseRange = 80.0f;
-		static float lastAttackTime = 0.0f;
-		static float attackCooldown = 4.0f;
 		targetPosition = this->player->GetTransform().GetPosition();
 		bossPosition = this->GetTransform().GetPosition();
 		float distanceToPlayer = calculateDistance(targetPosition, bossPosition);
 		Vector3 direction = (targetPosition - bossPosition).Normalised();
-		if (distanceToPlayer > chaseRange) {
-			std::cout << "Player has escaped.\n";
+		if (distanceToPlayer > chaseRange|| this->getIsRencentlyHurt()) {
 			return Failure;
 		}
 		if (playerHealth <= 0) {
 			std::cout << "Player health depleted.\n";
 			return Success;
 		}
-		if (bossHealth <= 0) {
-			std::cout << "Boss health depleted.\n";
-			return Failure;
-		}
-		if ((distanceToPlayer <= attackRange) && (lastAttackTime >= attackCooldown)) {
+		//if (bossHealth <= 0) {
+		//    std::cout << "Boss health depleted.\n";
+		//    return Failure;
+		//}
+		attackBool = (distanceToPlayer <= attackRange) && (lastAttackTime >= attackCooldown);
+		attackCooldownBool = (distanceToPlayer <= chaseRange) && (lastAttackTime < attackCooldown);
+		chaseBool = (distanceToPlayer <= chaseRange) && (distanceToPlayer >= attackRange);
+		std::cout << "Melee cooldown is -->" << lastAttackTime << std::endl;
+		if (attackBool) {
 			isAttack = true;
 			lastAttackTime = 0.0f;
 			Debug::DrawLine(bossPosition, bossPosition + direction * attackRange, Debug::RED);
+			lastAttackTime += dt;
+			return Ongoing;
 		}
-		else if ((distanceToPlayer <= chaseRange) && (distanceToPlayer >= attackRange)) {
+		else if (chaseBool || attackCooldown) {
 			Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(direction.x, -direction.z)));
 			this->GetTransform().SetOrientation(targetOrientation);
 			bossPosition += direction * chaseSpeed * dt;
 			this->GetTransform().SetPosition(bossPosition);
-			Debug::DrawLine(bossPosition, this->player->GetTransform().GetPosition(),Debug::GREEN);
-			std::cout << "Chasing player...\n";
-			std::cout << distanceToPlayer << std::endl;
+			Debug::DrawLine(bossPosition, this->player->GetTransform().GetPosition(), Debug::GREEN);
+			isChasing = true;
+			lastAttackTime += dt;
+			return Ongoing;
 		}
-		lastAttackTime += dt;
+		else {
+			lastAttackTime += dt;
+			return Failure;
+		}
+
+
 		std::cout << "last attack time: " << lastAttackTime << std::endl;
-		return Ongoing;
+
 		});
 	RemoteAttack = new BehaviourAction("RemoteAttack", [&](float dt, BehaviourState state) -> BehaviourState {
 		if (state == Initialise) {
 			//std::cout << "RAttacking init.\n";
+			isChasing = false;
 			state = Ongoing;
 		}
 		else if (state == Ongoing) {
 			this->distanceToTarget = calculateDistance(this->GetTransform().GetPosition(), this->player->GetTransform().GetPosition());
-			isShooting = false;
-			//if (this->distanceToTarget > this->remoteAttackRange || this->distanceToTarget < this->chaseRange || this->getIsRencentlyHurt())
-			if (this->distanceToTarget > this->remoteAttackRange) {
+			if (this->distanceToTarget > this->remoteAttackRange || this->distanceToTarget < this->chaseRange || this->getIsRencentlyHurt()) {
+				isShooting = false;
+				//std::cout << "stop remote attacking" << std::endl;
 				return Failure;
 			}
-			else if (this->distanceToTarget <= this->remoteAttackRange && this->distanceToTarget >=chaseRange ) {
+			else if (this->distanceToTarget <= this->remoteAttackRange && this->distanceToTarget >= chaseRange) {
 				Debug::DrawLine(GetTransform().GetPosition(), this->player->GetTransform().GetPosition(), Debug::RED);
 				Debug::DrawCollisionBox(this);
 				Debug::DrawCollisionBox(this->player);
-				std::cout << "attacking----" << this->distanceToTarget << std::endl;
 				isShooting = true;
-				return Success;
+				//std::cout << "remote attacking" << std::endl;
+				return Ongoing;
 			}
 		}
 		return state;
 		}
 	);
-	Inverter* antiRemoteAttack = new Inverter("antiRemoteAttack", RemoteAttack);
+	//Inverter* antiRemoteAttack = new Inverter("antiRemoteAttack", RemoteAttack);
 	Flinches = new BehaviourAction("Flinches", [&](float dt, BehaviourState state) -> BehaviourState {
 		if (state == Initialise) {
-			std::cout << "Flinches init.\n";
+			//std::cout << "Flinches init.\n";
+			isChasing = false;
 			state = Ongoing;
 			flinchAnimationTimer = 0.0f;
 		}
@@ -155,51 +162,48 @@ Boss::Boss(Player* player) {
 		return Success;
 		}
 	);
-	Inverter* antidizziness = new Inverter("antidizziness", dizziness);
-	Death = new BehaviourAction("Death", [&](float dt, BehaviourState state) -> BehaviourState {
-		if (state == Initialise) {
-			std::cout << "Death init\n";
-			state = Ongoing;
-		}
-		else if (state == Ongoing) {
-			if (bossHealth <= 0) {
-				std::cout << "Death.\n";
-				// handleDeath();
-				/*PlayDeathAnimation();*/
-				//RemoveBossObject();
-				return Success;
-			}
-			else if (bossHealth > 0) {
-				std::cout << "boss live.\n";
-				return Failure;
-			}
-		}
-		return state;
-		}
-	);
-	//BehaviourSelector* selection = new BehaviourSelector("FirstLevel");
-	//selection->AddChild(Flinches);
-	//selection->AddChild(RemoteAttack);
-	//selection->AddChild(MeleeAttack);
-	//selection->AddChild(Idle);
-	////	selection->AddChild(Death);
-	//rootSequence = new BehaviourSequence("Root Sequence");
-	//rootSequence->AddChild(selection);
-	Root = new BehaviourSelector("Root");
-	Combat = new BehaviourParallel("Combat");
-	Combat->AddChild(dizziness);
-	Combat->AddChild(antiRemoteAttack);
-	Combat->AddChild(ChaseAndAttack);
-	Root->AddChild(Death);
-	Root->AddChild(Combat);
-	Root->AddChild(Idle);
+	//Inverter* antidizziness = new Inverter("antidizziness", dizziness);
+	//Death = new BehaviourAction("Death", [&](float dt, BehaviourState state) -> BehaviourState {
+	//    if (state == Initialise) {
+	//          std::cout << "Death init\n";
+	//          state = Ongoing;
+	//    }
+	//    else if (state == Ongoing) {
+	//          if (bossHealth <= 0) {
+	//                std::cout << "Death.\n";
+	//                // handleDeath();
+	//                /*PlayDeathAnimation();*/
+	//                //RemoveBossObject();
+	//                return Success;
+	//          }
+	//          else if (bossHealth > 0) {
+	//                std::cout << "boss live.\n";
+	//                return Failure;
+	//          }
+	//    }
+	//    return state;
+	//    }
+	//);
+	BehaviourSelector* selection = new BehaviourSelector("Boss attack state");
+	selection->AddChild(Flinches);
+	selection->AddChild(RemoteAttack);
+	selection->AddChild(ChaseAndAttack);
+	selection->AddChild(Idle);
+	//    selection->AddChild(Death);
+	Root = new BehaviourSequence("Root Sequence");
+	Root->AddChild(selection);
+	//Root = new BehaviourSelector("Root");
+	//Combat = new BehaviourParallel("Combat");
+	//Combat->AddChild(dizziness);
+	//Combat->AddChild(antiRemoteAttack);
+	//Combat->AddChild(ChaseAndAttack);
+	//Root->AddChild(Death);
+	//Root->AddChild(Combat);
+	//Root->AddChild(Idle);
 }
 
 
 void Boss::Update(float dt) {
-	/*if (rootSequence != nullptr) {
-		rootSequence->Execute(dt);
-	}*/
 	if (Root != nullptr) {
 		Root->Execute(dt);
 	}

@@ -50,6 +50,12 @@ namespace NCL {
 			void setHasFireBallBullet(bool HasFireBallBullet) {
 				hasFireBallBullet = HasFireBallBullet;
 			}
+			bool getIsChasing() {
+				return isChasing;
+			}
+			void setIsChasing(bool IsChasing) {
+				isChasing = IsChasing;
+			}
 			float getBossHealth() {
 				return bossHealth;
 			}
@@ -66,6 +72,10 @@ namespace NCL {
 			bool isRencentlyHurt;
 			bool hasIceCubeBullet;
 			bool hasFireBallBullet;
+			bool attackBool;
+			bool attackCooldownBool;
+			bool chaseBool;
+			bool isChasing;
 			float calculateDistance(Vector3 pos1, Vector3 pos2);
 			float distanceToTarget;
 			float remoteAttackRange;
@@ -82,7 +92,7 @@ namespace NCL {
 			BehaviourAction* Death;
 			Player* player;
 			BehaviourParallel* Combat;
-			BehaviourSelector* Root;
+			BehaviourSequence* Root;
 			BehaviourParallel* Parallel;
 
 		};

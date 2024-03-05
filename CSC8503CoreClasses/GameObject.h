@@ -110,7 +110,7 @@ namespace NCL::CSC8503 {
 			existenceTime += dt;
 		}
 
-		bool isEnable = true;
+		bool isEnable;
 
 		void SetCollisionResponse(bool b) { hasCollision = b; }
 		bool GetCollisionResponse() const { return hasCollision; }
