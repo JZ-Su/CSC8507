@@ -75,7 +75,9 @@ void TutorialGame::UpdateGame(float dt) {
 	//for (const auto& ele : gameLevel->GetLevel1()->objectList) {
 	//	Debug::DrawCollisionBox(ele);
 	//}
-	//Debug::DrawCollisionBox(player);
+	Debug::DrawCollisionBox(player);
+	Debug::DrawCollisionBox(boss);
+	Debug::DrawCollisionBox(shield);
 	player->UpdatePlayer(dt);
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
@@ -133,6 +135,8 @@ void TutorialGame::UpdateGame(float dt) {
 
 	// update player animation
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
+
+
 
 	//IceCubeBulletLogic(dt);
 
@@ -518,7 +522,7 @@ void TutorialGame::InitWorld() {
 		Please switch the debug mode here
 	*/
 	isDebug = true;
-	isDebug = false;
+	//isDebug = false;
 	if (isDebug) {
 		//Level 1
 		//currentLevel = 2;
@@ -531,19 +535,18 @@ void TutorialGame::InitWorld() {
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
-		//currentLevel = 6;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-		//boss = gameLevel->GetBoss();
-		//bossAnimation = gameLevel->getBossAnimation();
-		//bossCheersAnimation = gameLevel->getBossCheersAnimation();
-		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
-
-		//iceCubeBullet = gameLevel->getIceCubeBullet();
-
-		//bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
-		//iceCubeBullet = gameLevel->getIceCubeBullet();
-		//fireBallBullet = gameLevel->getFireBallBullet();
-
+		 currentLevel = 6;
+		 gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		 boss = gameLevel->GetBoss();
+		 shield = gameLevel->GetShield();
+		 bossAnimation = gameLevel->getBossAnimation();
+		 bossCheersAnimation = gameLevel->getBossCheersAnimation();
+		 bossShootingAnimation = gameLevel->getBossShootingAnimation();
+		 bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
+		 bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
+		 bossChasingAnimation = gameLevel->getBossChasingAnimation();
+		 iceCubeBullet = gameLevel->getIceCubeBullet();
+		 fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initial function
 		//currentLevel = 8;
@@ -973,18 +976,39 @@ void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation
 				}
 			}
 			else {
-				if (!iceCubeBullet->GetIsHiding() || !fireBallBullet->GetIsHiding()) {
-					if (iceCubeBulletFrames < 60) {
+				if ((!iceCubeBullet->GetIsHiding() || !fireBallBullet->GetIsHiding())&&!gameLevel->GetBoss()->getIsChasing()) {
+					if (iceCubeBulletFrames < 20) {
 						boss->GetRenderObject()->frameTime -= dt;
 						UpdateAnim(boss, bossShootingAnimation);
 						iceCubeBulletFrames++;
 					}
 					else {
-						boss->GetRenderObject()->frameTime -= dt / 2.0;
+						boss->GetRenderObject()->frameTime -= dt / 1.5;
 						UpdateAnim(boss, bossCheersAnimation);
 					}
 				}
-				else {
+				else if (gameLevel->GetBoss()->getIsChasing()) {
+					if (gameLevel->GetBoss()->getIsAttack()) {
+						if (attackingTimer < attackingDuration) {
+							boss->GetRenderObject()->frameTime -= dt;
+							UpdateAnim(boss, bossAttackingAnimation);
+							attackingTimer += dt;
+							if (attackingTimer >0.38f) {
+								playerIsHit = true;
+							}
+						}
+						else {
+							gameLevel->GetBoss()->setIsAttack(false);
+						}
+					}
+					else {
+						boss->GetRenderObject()->frameTime -= dt*1.5;
+						UpdateAnim(boss, bossChasingAnimation);
+						attackingTimer = 0;
+					}
+				
+				}
+				else{
 					boss->GetRenderObject()->frameTime -= dt;
 					UpdateAnim(boss, bossAnimation);
 					iceCubeBulletFrames = 0.0f;
@@ -1123,6 +1147,7 @@ void TutorialGame::IceCubeBulletLogic(float dt) {
 		iceCubeBullet->SetIsHiding(false);
 		gameLevel->GetBoss()->setHasIceCubeBullet(false);
 		iceCubeBullet->SetExistenceTime(0.0f);
+		std::cout << "Icecube bullet is coming!" << std::endl;
 	}
 	if (!iceCubeBullet->GetIsHiding()) {
 		iceCubeBullet->UpdateExistenceTime(dt);
@@ -1151,9 +1176,12 @@ void TutorialGame::ExecuteAttack(float dt) {
 	closestCollision.rayDistance = gameLevel->GetBoss()->attackRange;
 	if (world->Raycast(ray, closestCollision, true)) {
 		if (closestCollision.node == player) {
-			player->updateHealth(-1);
-			std::cout << "now player health is " << player->GetHealth() << std::endl;
-			gameLevel->GetBoss()->setIsAttack(false);
+			if (playerIsHit) {
+				player->updateHealth(-4);
+				std::cout << "now player health is " << player->GetHealth() << std::endl;
+				player->GetPhysicsObject()->AddForce(-direction * 200);
+				playerIsHit = false;
+			}
 		}
 	}
 }
@@ -1161,7 +1189,6 @@ void TutorialGame::ExecuteAttack(float dt) {
 void TutorialGame::FireBallBulletLogic(float dt) {
 	if (fireBallBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasFireBallBullet() && !playShootingAnimation) {
 		fireBallBullet->GetTransform().SetPosition(gameLevel->GetBoss()->GetTransform().GetPosition() + Vector3(0, 20, 30));
-		std::cout << fireBallBullet->GetTransform().GetPosition() << std::endl;
 		fireBallBullet->SetIsHiding(false);
 		gameLevel->GetBoss()->setHasFireBallBullet(false);
 		fireBallBullet->SetExistenceTime(0.0f);
@@ -1169,7 +1196,8 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 		Vector3 ballPosition = fireBallBullet->GetTransform().GetPosition();
 		// Update position of fireball
 		Vector3 fireBallDirection = (playerPosition - ballPosition).Normalised();
-		fireBallBullet->GetPhysicsObject()->AddForce(fireBallDirection * 5000);
+		fireBallBullet->GetPhysicsObject()->AddForce(fireBallDirection * 1300);
+		std::cout << "Fireball bullet is coming!" << std::endl;
 	}
 	if (!fireBallBullet->GetIsHiding()) {
 		fireBallBullet->GetPhysicsObject()->AddForce(Vector3(0, 2.0f, 0));
@@ -1177,7 +1205,7 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 		fireBallBullet->UpdateExistenceTime(dt);
 
 		// Check if fireball exists for too long
-		if (fireBallBullet->GetExistenceTime() >= 2) {
+		if (fireBallBullet->GetExistenceTime() >= 4) {
 			fireBallBullet->GetTransform().SetPosition(Vector3(0, -55, 0));
 			gameLevel->GetBoss()->setHasFireBallBullet(true);
 			fireBallBullet->SetIsHiding(true);

@@ -126,6 +126,7 @@ namespace NCL {
 
 			Boss* boss;
 			GameObject* ghost;
+			GameObject* shield;
 			GameObject* iceCubeBullet;
 			GameObject* fireBallBullet;
 			MeshAnimation* bossAnimation;
@@ -136,6 +137,9 @@ namespace NCL {
 			MeshAnimation* playerIdleAnimation;
 			MeshAnimation* playerWalkAnimation;
 			MeshAnimation* playerJumpAnimation;
+			MeshAnimation* bossAttackingAnimation;
+			MeshAnimation* bossChasingAnimation;
+			
 
 			float health;
 			float totalTime;
@@ -165,6 +169,7 @@ namespace NCL {
 
 			GameObject* exit = nullptr;
 			bool hasRotation = true;
+			bool playerIsHit = false;
 			bool hasReverse = false;
 			int mapIndex = 0;
 
@@ -172,7 +177,9 @@ namespace NCL {
 			int currentLevel;
 			GameObject* portal;
 			float shootingTimer = 0.0f;
-			const float shootingDuration = 0.95f;
+			float attackingTimer = 0.0f;
+			const float attackingDuration = 0.4f;
+			const float shootingDuration = 0.65f;
 			bool playShootingAnimation=false;
 		};
 	}
