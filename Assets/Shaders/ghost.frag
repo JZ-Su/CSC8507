@@ -1,6 +1,5 @@
 #version 330 core
 uniform sampler2D mainTex;
-//uniform samplerCube shadowTex;
 
 uniform vec3	cameraPos;
 

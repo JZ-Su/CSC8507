@@ -207,6 +207,9 @@ void main(void)
 	if(indexTex.r == 0.5){
 		fragColor[0].rgb = albedo.rgb * atten;
 		fragColor[1].rgb = vec3(0.0, 0.0, 0.0);
+		if(data.r > 0.9){
+			fragColor[0].rgb += vec3(0, 0, 1);
+		}
 		fragColor[0].rgb = pow(fragColor[0].rgb, vec3(1.0 / 2.2f));
 		fragColor[1].rgb = pow(fragColor[1].rgb, vec3(1.0 / 2.2f));
 		fragColor[0].a = data.r;
@@ -218,7 +221,7 @@ void main(void)
 		float bright = addTex.r;
 		float smoothness = 1.0 - roughness;
 		float shininess = lerp(smoothness, 1.0,  80) * smoothness;
-		bright = pow(bright, 2) * 5;
+		bright = pow(bright, 1) * 5;
 
 		float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
 		float halfLambert = (lambert + 1.0) * 0.5;
