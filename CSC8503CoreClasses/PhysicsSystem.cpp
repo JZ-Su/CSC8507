@@ -229,9 +229,8 @@ void PhysicsSystem::BasicCollisionDetection() {
 			continue;
 		}
 		for (auto j = i + 1; j != last; j++) {
-			if ((*j)->GetPhysicsObject() == nullptr || (*j)->GetCollisionResponse() == false) {
-				continue;
-			}
+			if (!(*i)->GetPhysicsObject()->GetInverseMass() && !(*j)->GetPhysicsObject()->GetInverseMass()) continue;
+			if ((*j)->GetPhysicsObject() == nullptr || (*j)->GetCollisionResponse() == false) continue;
 
 			CollisionDetection::CollisionInfo info;
 			if (CollisionDetection::ObjectIntersection(*i, *j, info)) {
