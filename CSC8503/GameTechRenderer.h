@@ -57,6 +57,8 @@ namespace NCL {
 			void RenderSkybox();
 			void RenderLight();
 			void RenderCombine();
+			void RenderProcess();
+			void RenderTone();
 
 			void LoadSkybox();
 
@@ -95,6 +97,13 @@ namespace NCL {
 			GLuint		lightDiffTex;
 			GLuint		lightSpecTex;
 			Texture* skinTex;
+
+			//postprocessing
+			OGLShader* processShader;
+			OGLShader* toneShader;
+			GLuint		processTex[3];
+			GLuint		postFBO;
+			GLuint		processFBO;
 
 			Vector4		lightColour;
 			float		lightRadius;
