@@ -56,7 +56,8 @@ namespace NCL {
 		GameObject* CreateHangLight(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
 		Player*     CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		Boss*       CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player, float inverseMass = 10.0f);
-		Door*       CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float rotation = 0.0f);
+		Door*       CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float rotation = 0.0f, float resDis = 15.0f);
+		
 		GameObject* CreatRedbottle(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float rotation = 0.0f);
 		
 		MeshAnimation* getBossAnimation() const { return bossAnimation; }

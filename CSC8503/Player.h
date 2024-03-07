@@ -93,7 +93,8 @@ namespace NCL {
 			}
 
 			void UseItem(int i);
-			static const std::vector<std::string>& getitemlist();
+			static const std::vector<std::string>& GetItemList() { return itemList; }
+
 		protected:
 			int health;
 			int collectibles;
@@ -105,7 +106,7 @@ namespace NCL {
 			bool isJumping = false;
 			//add timer
 
-			static std::vector<std::string> itemlist;
+			static std::vector<std::string> itemList;
 		};
 	}
 }

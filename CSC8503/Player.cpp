@@ -5,7 +5,7 @@
 using namespace NCL;
 using namespace CSC8503;
 
-std::vector<std::string> Player::itemlist;
+std::vector<std::string> Player::itemList;
 
 Player::Player( const std::string& objectname)
 {
@@ -62,32 +62,26 @@ void Player::OnCollisionBegin(GameObject* otherObject) {
 		canJump = true;
 	}
 	if (otherObject->GetTag() == "item") {
-		if (itemlist.size() < 4) {
-		itemlist.push_back(otherObject->GetName());
+		if (itemList.size() < 4) {
+		itemList.push_back(otherObject->GetName());
 		}
 	}
 }
 
 void Player::OnCollisionEnd(GameObject* otherObject) {
-	
 	if (otherObject->GetTag() == "Ground")
 	{
 		//changeLevel = true;
 		canJump = false;
-
 	}
-	
 }
 
 void Player::UseItem(int i) {
-	if (itemlist.empty()) { return; }
-	if (i>itemlist.size()-1) { return; }
+	if (itemList.empty())  return;
+	if (i > itemList.size() - 1)  return;
 
-	if (itemlist.at(i) == "redbottle") {
+	if (itemList.at(i) == "redbottle") {
 		addhealth(10);
-        itemlist.erase(itemlist.begin() + i);
+        itemList.erase(itemList.begin() + i);
 	}
-	
 }
-
-const std::vector<std::string>& Player::getitemlist() { return itemlist; }

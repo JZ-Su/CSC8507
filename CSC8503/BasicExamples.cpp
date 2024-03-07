@@ -583,8 +583,8 @@ GameObject* BasicExamples::CreateCoin(const Vector3& position, const Vector3& di
 	return coin;
 }
 
-Door* BasicExamples::CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass, float rotation) {
-	Door* d = new Door(player, position, rotation);
+Door* BasicExamples::CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass, float rotation, float resDis) {
+	Door* d = new Door(player, position, rotation, resDis);
 	OBBVolume* volume = new OBBVolume(dimensions);
 
 	d->SetBoundingVolume((CollisionVolume*)volume);

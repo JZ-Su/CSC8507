@@ -163,6 +163,7 @@ namespace NCL {
 			void FireBallBulletLogic(float dt);
 			float h = 0, v = 0;
 
+			void UpdateLevel(float dt);
 			void SwitchLevel();
 
 			int coinCount;
@@ -180,8 +181,8 @@ namespace NCL {
 			float attackingTimer = 0.0f;
 			const float attackingDuration = 0.4f;
 			const float shootingDuration = 0.65f;
-			bool playShootingAnimation=false;
-			static std::vector<std::string> itemlist;
+			bool playShootingAnimation = false;
+			static std::vector<std::string> itemList;
 		};
 	}
 }
