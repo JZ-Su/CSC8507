@@ -1,8 +1,6 @@
 #version 400 core
 
 uniform mat4 mvpMatrix = mat4(1.0f);
-uniform mat4 shadProjMatrix = mat4(1.0f);
-uniform mat4 shadViewMatrix = mat4(1.0f);
 uniform bool isAnimation = false;
 
 layout(location = 0) in vec3 position;
@@ -17,7 +15,7 @@ uniform mat4 joints [128];
 void main(void)
 {
 	if(!isAnimation){
-	gl_Position	= mvpMatrix * vec4(position, 1.0);
+		gl_Position	= mvpMatrix * vec4(position, 1.0);
 	}
 	else{
 		vec4 localPos = vec4 (position,1.0f);
@@ -27,7 +25,6 @@ void main(void)
 			float jointWeight = jointWeights[i];
 			skelPos += joints[jointIndex] * localPos * jointWeight ;
 		}
-		//mat4 mvp = shadProjMatrix * shadViewMatrix * mvpMatrix;
 		gl_Position = mvpMatrix * vec4 (skelPos.xyz,1.0f);
 	}
 }

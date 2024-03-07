@@ -33,14 +33,10 @@ float ShadowCalculation(vec3 wrldPos)
 {
 	float far_plane = 200;
     vec3 fragToLight = wrldPos - shadowPos; 
-	//float closestDepth = texture(shadowTex, normalize(fragToLight)).r;
-	//closestDepth*=far_plane;
 	float currentDepth=length(fragToLight);
-	float bias=0.05;
-	//float shadow = currentDepth-bias > closestDepth? 0.0 : 1.0;
-
+	
+	float bias = 0.05;
 	float shadow = 0.0;
-    //float bias = 0.15;
     int samples = 20;
     float viewDistance = length(cameraPos - wrldPos);
     float diskRadius = (1.0 + (viewDistance / far_plane)) / 25.0;

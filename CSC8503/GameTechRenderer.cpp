@@ -24,7 +24,8 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	lightShader = new OGLShader("pointlight.vert", "pointlight.frag");
 	combineShader = new OGLShader("combine.vert", "combine.frag");
 	healthShader = new OGLShader("health.vert", "health.frag");
-	processShader = new OGLShader("combine.vert", "process.frag");
+	upSampleShader = new OGLShader("combine.vert", "upSample.frag");
+	downSampleShader = new OGLShader("combine.vert", "downSample.frag");
 	toneShader = new OGLShader("combine.vert", "tonemapping.frag");
 
 	glGenTextures(1, &shadowTex);
@@ -135,22 +136,23 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 		return;
 	}
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 6; i++) {
 		glGenTextures(1, &processTex[i]);
 		glBindTexture(GL_TEXTURE_2D, processTex[i]);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, windowSize.x, windowSize.y, 0, GL_RGB, GL_FLOAT, NULL);
+		int sqrt = pow(2, i);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, windowSize.x / sqrt, windowSize.y / sqrt, 0, GL_RGB, GL_FLOAT, NULL);
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glGenFramebuffers(1, &postFBO);
 	glGenFramebuffers(1, &processFBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, postFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, processTex[0], 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, processTex[1], 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, indexTex, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, processTex[0], 0);
 	glDrawBuffers(2, buffers);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 		return;
@@ -718,30 +720,47 @@ void GameTechRenderer::RenderCombine() {
 
 void GameTechRenderer::RenderProcess() {
 	glBindFramebuffer(GL_FRAMEBUFFER, processFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, processTex[2], 0);
-	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	for (int i = 1; i < 5; ++i) {
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, processTex[i], 0);
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	}
 	glDisable(GL_DEPTH_TEST);
 
-	BindShader(*processShader);
+	BindShader(*downSampleShader);
 	BindMesh(*quadMesh);
 	
 	glActiveTexture(GL_TEXTURE0);
-	int verticalLocation = glGetUniformLocation(processShader->GetProgramID(), "isVertical");
-	int colorTexLocation = glGetUniformLocation(processShader->GetProgramID(), "colorTex");
+	int sizeLocation = glGetUniformLocation(downSampleShader->GetProgramID(), "mapSize");
+	int colorTexLocation = glGetUniformLocation(downSampleShader->GetProgramID(), "colorTex");
+	Vector2 size = Vector2(0.0, 0.0);
+	int sqrt = 0;
 
-	for (int i = 0; i < 8; ++i) {
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, processTex[2], 0);
-		glUniform1f(verticalLocation, 0);
-		glBindTexture(GL_TEXTURE_2D, processTex[1]);
+	for (int i = 0; i < 5; ++i) {
+		sqrt = pow(2, i);
+		size = Vector2(windowSize.x / sqrt, windowSize.y / sqrt);
+		glUniform2fv(sizeLocation, 1, &size.x);
+		glBindTexture(GL_TEXTURE_2D, processTex[i]);
 		glUniform1i(colorTexLocation, 0);
-		DrawBoundMesh();
-
-		glUniform1f(verticalLocation, 1);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, processTex[1], 0);
-		glBindTexture(GL_TEXTURE_2D, processTex[2]);
-		glUniform1i(colorTexLocation, 0);
+		int sqrtN = pow(2, i + 1);
+		glViewport(0, 0, windowSize.x / sqrtN, windowSize.y / sqrtN);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, processTex[i + 1], 0);
 		DrawBoundMesh();
 	}
+	BindShader(*upSampleShader);
+	sizeLocation = glGetUniformLocation(upSampleShader->GetProgramID(), "mapSize");
+	colorTexLocation = glGetUniformLocation(upSampleShader->GetProgramID(), "colorTex");
+	for (int i = 5; i > 0; i--) {
+		sqrt = pow(2, i);
+		size = Vector2(windowSize.x / sqrt, windowSize.y / sqrt);
+		glUniform2fv(sizeLocation, 1, &size.x);
+		glBindTexture(GL_TEXTURE_2D, processTex[i]);
+		glUniform1i(colorTexLocation, 0);
+		int sqrtN = pow(2, i - 1);
+		glViewport(0, 0, windowSize.x / sqrtN, windowSize.y / sqrtN);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, processTex[i - 1], 0);
+		DrawBoundMesh();
+	}
+	glViewport(0, 0, windowSize.x, windowSize.y);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -750,7 +769,7 @@ void GameTechRenderer::RenderProcess() {
 void GameTechRenderer::RenderTone() {
 	BindShader(*toneShader);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, processTex[0]);
+	glBindTexture(GL_TEXTURE_2D, indexTex);
 	int colorTexLocation = glGetUniformLocation(toneShader->GetProgramID(), "colorTex");
 	glUniform1i(colorTexLocation, 0);
 
