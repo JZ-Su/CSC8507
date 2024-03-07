@@ -42,7 +42,7 @@ void main(void)
 	lightDiff.rgb = pow(lightDiff.rgb, vec3(2.2));
 	lightSpec.rgb = pow(lightSpec.rgb, vec3(2.2));
 
-	fragColor.rgb = albedo.rgb * 0.05f * vec3(0.3,0.5,1.0);//* 0.1f * vec3(0.1,0.3,1.0);
+	fragColor.rgb = albedo.rgb * 0.02f * vec3(0.3,0.5,1.0);//* 0.1f * vec3(0.1,0.3,1.0);
 	fragColor.rgb += lightDiff.rgb;
 	fragColor.rgb += lightSpec.rgb;
 	

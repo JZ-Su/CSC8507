@@ -134,18 +134,18 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateCube(Vector3(20, 5, -50), Vector3(1, 5, 10), 0.0f));
 	level1.AddObject(CreateCube(Vector3(0, 5, -59), Vector3(19, 5, 1), 0.0f));
 	////columns
-	//CreateLevel1_Columns();
+	CreateLevel1_Columns();
 	////stairs
-	//CreateLevel1_Stairs();
+	CreateLevel1_Stairs();
 	////book shelfs
-	//CreateLevel1_BookShelfs();
+	CreateLevel1_BookShelfs();
 	////small shelfs
-	//CreateLevel1_SmallShelfs();
+	CreateLevel1_SmallShelfs();
 	////tables
-	//CreateLevel1_Tables();
+	CreateLevel1_Tables();
 
-	level1.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 100.0f, false, true));
-	level1.AddObject(CreateLight(Vector3(0, 30, 0),  Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
+	level1.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(0.0f, 0.0f, 0.0f, 1.0f), 100.0f, false, true));
+	level1.AddObject(CreateLight(Vector3(0, 30, 0),  Vector4(0.6f, 0.5f, 0.3f, 1.0f), 80.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 30.0f, true, false));	
 	level1.AddObject(CreateLight(Vector3(-38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 30.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(90, 30, -90), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 70.0f, true, false));

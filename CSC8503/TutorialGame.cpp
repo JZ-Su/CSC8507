@@ -75,9 +75,9 @@ void TutorialGame::UpdateGame(float dt) {
 	//for (const auto& ele : gameLevel->GetLevel1()->objectList) {
 	//	Debug::DrawCollisionBox(ele);
 	//}
-	Debug::DrawCollisionBox(player);
-	Debug::DrawCollisionBox(boss);
-	Debug::DrawCollisionBox(shield);
+	//Debug::DrawCollisionBox(player);
+	//Debug::DrawCollisionBox(boss);
+	//Debug::DrawCollisionBox(shield);
 	player->UpdatePlayer(dt);
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
@@ -149,7 +149,7 @@ void TutorialGame::UpdateGame(float dt) {
 		if (portal && !portal->isEnable) {
 			portal->isEnable = gameLevel->CheckCoinList();
 		}
-		else {
+		else if(portal) {
 			portal->GetRenderObject()->SetColour(Debug::GREEN);
 		}
 	}
@@ -525,17 +525,17 @@ void TutorialGame::InitWorld() {
 	//isDebug = false;
 	if (isDebug) {
 		//Level 1
-		//currentLevel = 2;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		//ghost = gameLevel->GetGhost();
-		//ghostAnimation = gameLevel->getGhostAnimation();
+		currentLevel = 2;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		ghost = gameLevel->GetGhost();
+		ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
-		currentLevel = 4;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
+		/*currentLevel = 4;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());*/
 
-		//Level 3
-		 currentLevel = 6;
+		////Level 3
+		/* currentLevel = 6;
 		 gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
 		 boss = gameLevel->GetBoss();
 		 shield = gameLevel->GetShield();
@@ -546,7 +546,7 @@ void TutorialGame::InitWorld() {
 		 bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
 		 bossChasingAnimation = gameLevel->getBossChasingAnimation();
 		 iceCubeBullet = gameLevel->getIceCubeBullet();
-		 fireBallBullet = gameLevel->getFireBallBullet();
+		 fireBallBullet = gameLevel->getFireBallBullet();*/
 
 		//Level 4 initial function
 		//currentLevel = 8;
@@ -1093,6 +1093,7 @@ void TutorialGame::SwitchLevel() {
 			portal = gameLevel->GetLevel3()->portal;
 
 			boss = gameLevel->GetBoss();
+			shield = gameLevel->GetShield();
 			bossAnimation = gameLevel->getBossAnimation();
 			iceCubeBullet = gameLevel->getIceCubeBullet();
 			bossCheersAnimation = gameLevel->getBossCheersAnimation();
