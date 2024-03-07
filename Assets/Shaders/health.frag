@@ -19,5 +19,8 @@ void main(void)
 	else {
 		fragColor = texture(mainTex, IN.texCoord);
 	}
+if(fragColor.a==0){
+discard;
+}
 
 }

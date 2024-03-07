@@ -4,6 +4,9 @@
 
 using namespace NCL;
 using namespace CSC8503;
+
+std::vector<std::string> Player::itemlist;
+
 Player::Player( const std::string& objectname)
 {
 	//ResetJumpTimer(1.0f);
@@ -58,6 +61,11 @@ void Player::OnCollisionBegin(GameObject* otherObject) {
 	{
 		canJump = true;
 	}
+	if (otherObject->GetTag() == "item") {
+		if (itemlist.size() < 4) {
+		itemlist.push_back(otherObject->GetName());
+		}
+	}
 }
 
 void Player::OnCollisionEnd(GameObject* otherObject) {
@@ -70,3 +78,16 @@ void Player::OnCollisionEnd(GameObject* otherObject) {
 	}
 	
 }
+
+void Player::UseItem(int i) {
+	if (itemlist.empty()) { return; }
+	if (i>itemlist.size()-1) { return; }
+
+	if (itemlist.at(i) == "redbottle") {
+		addhealth(10);
+        itemlist.erase(itemlist.begin() + i);
+	}
+	
+}
+
+const std::vector<std::string>& Player::getitemlist() { return itemlist; }

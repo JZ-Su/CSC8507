@@ -7,6 +7,8 @@ namespace NCL {
 		class Player :public GameObject
 		{
 		public:
+			
+
 			Player( const std::string& objectname = "");
 			~Player();
 			void UpdatePlayer(float dt);
@@ -85,6 +87,13 @@ namespace NCL {
 			virtual void OnCollisionBegin(GameObject* otherObject) override;
 			virtual void OnCollisionEnd(GameObject* otherObject) override;
 			bool changeLevel = false;
+
+			void addhealth(float addhealth) {
+				health += addhealth;
+			}
+
+			void UseItem(int i);
+			static const std::vector<std::string>& getitemlist();
 		protected:
 			int health;
 			int collectibles;
@@ -95,6 +104,8 @@ namespace NCL {
 			bool isWalk = false;
 			bool isJumping = false;
 			//add timer
+
+			static std::vector<std::string> itemlist;
 		};
 	}
 }

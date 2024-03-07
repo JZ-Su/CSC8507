@@ -703,3 +703,19 @@ GameObject* BasicExamples::CreateHandrail(const Vector3& position, float inverse
 
 	return handrail;
 }
+
+GameObject* BasicExamples::CreatRedbottle(const Vector3& position, const Vector3& dimensions, float inverseMass, float rotation ) {
+	GameObject* redbottle = new GameObject("redbottle");
+
+	AABBVolume* volume = new AABBVolume(dimensions);
+	redbottle->SetBoundingVolume((CollisionVolume*)volume);
+	redbottle->GetTransform().SetPosition(position).SetScale(dimensions * 2);
+	redbottle->SetRenderObject(new RenderObject(&redbottle->GetTransform(), cubeMesh, basicTexture, basicShader));
+	redbottle->SetPhysicsObject(new PhysicsObject(&redbottle->GetTransform(), redbottle->GetBoundingVolume()));
+
+	redbottle->GetPhysicsObject()->SetInverseMass(inverseMass);
+	redbottle->GetPhysicsObject()->InitCubeInertia();
+	redbottle->SetTag("item");
+
+	return redbottle;
+}

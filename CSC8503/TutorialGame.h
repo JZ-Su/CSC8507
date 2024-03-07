@@ -142,6 +142,7 @@ namespace NCL {
 
 			float health;
 			float totalTime;
+			float bosshealth;
 
 			GameState gameState;
 			MainMenuState mainMenuState;
@@ -180,6 +181,7 @@ namespace NCL {
 			const float attackingDuration = 0.4f;
 			const float shootingDuration = 0.65f;
 			bool playShootingAnimation=false;
+			static std::vector<std::string> itemlist;
 		};
 	}
 }

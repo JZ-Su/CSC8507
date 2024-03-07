@@ -17,6 +17,8 @@
 using namespace NCL;
 using namespace CSC8503;
 
+std::vector<std::string> TutorialGame::itemlist;
+
 TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *Window::GetWindow()->GetMouse()) {
 	world = new GameWorld();
 #ifdef USEVULKAN
@@ -89,7 +91,6 @@ void TutorialGame::UpdateGame(float dt) {
 	}
 
 	totalTime += dt;
-	health = player->GetHealth();
 	if (!inSelectionMode) {
 		world->GetMainCamera().UpdateCamera(dt);
 	}
@@ -167,6 +168,7 @@ void TutorialGame::UpdateGame(float dt) {
 		if (gameLevel->GetBoss()->getIsAttack()) {
 			ExecuteAttack(dt);
 		}
+
 	}
 	// Level 4
 	else if (currentLevel == 8) {
@@ -238,12 +240,41 @@ void TutorialGame::UpdateGame(float dt) {
 	renderer->Update(dt);
 	physics->Update(dt);
 
-	//Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
-	//Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
-	//Debug::Print("Press P to Pause!", Vector2(70, 90));
+	if (player->GetHealth() > 100) {
+		player->SetHealth(100);
+	}
+	if (player->GetHealth() < 0) {
+		player->SetHealth(0);
+	}
+
+	health=(100-(player->GetHealth())) * 0.01;
+	bosshealth = (100-(gameLevel->GetBoss()->getBossHealth()))*0.01;
+	float width = Window::GetWindow()->GetScreenSize().x;
+	float hight = Window::GetWindow()->GetScreenSize().y;
+	float delta =width/hight;
+	float l =0.1;
+
+	GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) }, "blood", "health");
+
+	GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.8f, -1.0f), Vector3(-0.4, -1.0f, -1.0f), Vector3(-0.2, -1.0f, -1.0f), Vector3(-0.2f, -0.8f, -1.0f) }, "inventory", "item");
+	GameTechRenderer::CreateGameUI({ Vector3(-0.2, -0.8f, -1.0f), Vector3(-0.2, -1.0f, -1.0f), Vector3(0.0f, -1.0f, -1.0f), Vector3(0.0f, -0.8f, -1.0f) }, "inventory", "item");
+	GameTechRenderer::CreateGameUI({ Vector3(0.0, -0.8f, -1.0f), Vector3(0.0f, -1.0f, -1.0f), Vector3(0.2f, -1.0f, -1.0f), Vector3(0.2f, -0.8f, -1.0f) }, "inventory", "item");
+	GameTechRenderer::CreateGameUI({ Vector3(0.2, -0.8f, -1.0f), Vector3(0.2, -1.0f, -1.0f), Vector3(0.4f, -1.0f, -1.0f), Vector3(0.4f, -0.8f, -1.0f) }, "inventory", "item");
+
+	itemlist = Player::getitemlist();
+	
+    float distance = 0.2; 
+     for (int i = 0; i < itemlist.size(); i++) {
+	    GameTechRenderer::CreateGameUI({ Vector3(-0.4f + (i * distance), -0.85f, -1.0f), Vector3(-0.4f + (i * distance), -0.95f, -1.0f),
+		Vector3(-0.2f + (i * distance), -0.95f, -1.0f), Vector3(-0.2f + (i * distance), -0.85f, -1.0f) }, itemlist.at(i), "item");
+       }
+
+	 GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f - bosshealth, 0.9f, -1.0f),
+		 Vector3(0.5f - bosshealth, 0.95f, -1.0f) }, "blood", "health");
 
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
+	GameTechRenderer::UpdateUI();
 
 	if (!isDebug) {
 		SwitchLevel();
@@ -303,7 +334,7 @@ void TutorialGame::UpdateKeys(float dt) {
 		gameLevel->GetBoss()->SetIsRencentlyHurt(true);
 	}
 	if (lockedObject) {
-		LockedObjectMovement(dt);
+		//LockedObjectMovement(dt);
 	}
 	else {
 		DebugObjectMovement();
@@ -393,6 +424,23 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		}
 		player->SetIsWalk(false);
 	}
+
+    if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM1)) {
+		player->UseItem(0);
+
+	}
+	 if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM2)) {
+		player->UseItem(1);
+	}
+	 if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM3)) {
+		 player->UseItem(2);
+
+	 }
+	 if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM4)) {
+		 player->UseItem(3);
+	 }
+
+
 	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
 	Quaternion q(viewMat);
 	float pitch = q.ToEuler().x;

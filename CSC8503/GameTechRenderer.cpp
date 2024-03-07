@@ -13,6 +13,8 @@ using namespace CSC8503;
 #define SHADOWSIZE 4096
 
 Matrix4 biasMatrix = Matrix4::Translation(Vector3(0.5f, 0.5f, 0.5f)) * Matrix4::Scale(Vector3(0.5f, 0.5f, 0.5f));
+std::vector<GameTechRenderer::UIen>	GameTechRenderer::UIEntries;
+std::map<std::string, char*> UImap;
 
 GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetWindow()), gameWorld(world) {
 	glEnable(GL_DEPTH_TEST);
@@ -21,6 +23,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	shadowShader = new OGLShader("shadow.vert", "shadow.frag", "shadow.geom");
 	lightShader = new OGLShader("pointlight.vert", "pointlight.frag");
 	combineShader = new OGLShader("combine.vert", "combine.frag");
+	healthShader = new OGLShader("health.vert", "health.frag");
 
 	glGenTextures(1, &shadowTex);
 
@@ -178,6 +181,22 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	SetDebugStringBufferSizes(10000);
 	SetDebugLineBufferSizes(1000);
+
+	vector<char*> data(6, nullptr);
+	int width;
+	int height;
+	int channel;
+	int flag;
+
+	TextureLoader::LoadTexture("blood.png", data[0], width, height, channel, flag);
+	UImap["blood"] = data[0];
+	TextureLoader::LoadTexture("greenbottle.png", data[1], width, height, channel, flag);
+	UImap["greenbottle"] = data[1];
+	TextureLoader::LoadTexture("redbottle.png", data[2], width, height, channel, flag);
+	UImap["redbottle"] = data[2];
+	TextureLoader::LoadTexture("inventory.png", data[3], width, height, channel, flag);
+	UImap["inventory"] = data[3];
+
 }
 
 GameTechRenderer::~GameTechRenderer() {
@@ -242,7 +261,6 @@ void GameTechRenderer::RenderFrame() {
 	BuildObjectList();
 	SortObjectList();
 	RenderShadowMap();
-
 	RenderCamera();
 	RenderLight();
 	RenderSkybox();
@@ -253,6 +271,7 @@ void GameTechRenderer::RenderFrame() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	NewRenderLines();
 	NewRenderText();
+	Loadhealth();
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -862,3 +881,75 @@ vector<Vector4> GameTechRenderer::LoadMap() {
 	}
 	return pixelData;
 }
+
+void GameTechRenderer::Loadhealth() {
+	//Matrix4 viewMatrix = gameWorld.GetMainCamera().BuildViewMatrix();
+	const std::vector<GameTechRenderer::UIen>& uii = GameTechRenderer::GetUIEntries();
+	if (uii.empty()) {
+		return;
+	}
+	Matrix4 proj = Matrix4::Orthographic(0.0, 100.0f, 100, 0, -1.0f, 1.0f);
+
+	BindShader(*healthShader);
+
+	for (const auto& element : uii) {
+
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, element.texture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+
+		int matSlot = glGetUniformLocation(healthShader->GetProgramID(), "viewProjMatrix");
+		glUniformMatrix4fv(matSlot, 1, false, (float*)proj.array);
+		
+		GLuint texSlot = glGetUniformLocation(healthShader->GetProgramID(), "useTexture");
+		glUniform1i(texSlot, 1);
+
+
+		GLuint mainTexLocation = glGetUniformLocation(healthShader->GetProgramID(), "mainTex");
+		glUniform1i(mainTexLocation, 0);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		BindMesh(*element.mesh);
+		DrawBoundMesh();
+		//element.mesh->DeteleBuffer();
+
+		glDeleteTextures(1, &texture);
+	}
+
+}
+
+void GameTechRenderer::CreateGameUI(std::vector<Vector3> UIpos, const std::string& name, std::string tag) {
+
+	UIen newentry;
+	newentry.mesh = new OGLMesh();
+	newentry.tag = tag;
+	newentry.texture = UImap[name];
+	newentry.mesh->SetVertexPositions({ UIpos });
+	newentry.mesh->SetVertexTextureCoords({ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) });
+	newentry.mesh->SetVertexIndices({ 0,1,2,2,3,0 });
+	newentry.mesh->UploadToGPU();
+
+	UIEntries.push_back(newentry);
+
+}
+void GameTechRenderer::UpdateUI() {
+
+	for (const auto& element : UIEntries) {
+		delete element.mesh;
+	}
+	UIEntries.clear();
+
+}
+
+const std::vector<GameTechRenderer::UIen>& GameTechRenderer::GetUIEntries() {
+	return UIEntries;
+}
+
