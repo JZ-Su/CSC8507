@@ -390,6 +390,7 @@ GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& d
 	ghost->SetRenderObject(new RenderObject(&ghost->GetTransform(), ghostMesh, nullptr, ghostShader));
 	ghost->SetPhysicsObject(new PhysicsObject(&ghost->GetTransform(), ghost->GetBoundingVolume()));
 	ghost->GetRenderObject()->isAnimation = true;
+	ghost->GetRenderObject()->isAnimated = true;
 	LoadMaterialTextures(ghost, ghostMesh, ghostMat, render);
 	ghost->GetPhysicsObject()->SetInverseMass(inverseMass);
 	ghost->GetPhysicsObject()->InitCubeInertia();
@@ -410,6 +411,8 @@ Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensio
 	character->SetRenderObject(new RenderObject(&character->GetTransform(), bossMesh, nullptr, bossShader));
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
 	character->GetRenderObject()->isAnimation = true;
+	character->GetRenderObject()->isAnimated = true;
+
 	LoadMaterialTextures(character, bossMesh, bossMat, render);
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
 	character->GetPhysicsObject()->InitCubeInertia();
@@ -427,6 +430,7 @@ GameObject* BasicExamples::CreateTestMesh(const Vector3& position, const Vector3
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
 	character->GetPhysicsObject()->InitCubeInertia();
+	character->GetRenderObject()->isAnimated = true;
 
 	return character;
 }
@@ -476,6 +480,8 @@ Player* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dime
 	player->SetRenderObject(new RenderObject(&player->GetTransform(), playerMesh, nullptr, playerShader));
 	player->SetPhysicsObject(new PhysicsObject(&player->GetTransform(), player->GetBoundingVolume()));
 	player->GetRenderObject()->isAnimation = true;
+	player->GetRenderObject()->isAnimated = true;
+
 	LoadMaterialTextures(player, playerMesh, playerMat, render);
 
 	player->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -560,6 +566,7 @@ StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vect
 	ghost->SetRenderObject(new RenderObject(&ghost->GetTransform(), cubeMesh, nullptr, basicShader));
 	//LoadMaterialTextures(ghost, ghostMesh, ghostMat, render);
 	ghost->SetPhysicsObject(new PhysicsObject(&ghost->GetTransform(), ghost->GetBoundingVolume()));
+	ghost->GetRenderObject()->isAnimated = true;
 
 	ghost->GetPhysicsObject()->SetInverseMass(inverseMass);
 	ghost->GetPhysicsObject()->InitCubeInertia();

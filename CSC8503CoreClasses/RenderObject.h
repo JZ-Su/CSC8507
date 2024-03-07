@@ -58,7 +58,8 @@ namespace NCL {
 			std::vector<Texture*> matRoughnessTextures;
 			std::vector<Texture*> matAoTextures;
 			std::vector<Texture*> matHeightTextures;
-			bool isAnimation = false;
+			bool isAnimation = false;			
+			bool isAnimated = false;
 			bool onLight = false;
 			bool isLight = false;
 			bool isShadow = false;

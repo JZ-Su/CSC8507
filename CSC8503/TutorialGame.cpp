@@ -370,7 +370,7 @@ void TutorialGame::InitWorld() {
 		Please switch the debug mode here
 	*/
 	isDebug = true;
-	//isDebug = false;
+	isDebug = false;
 	if (isDebug) {
 		//Level 1
 		currentLevel = 2;
@@ -379,22 +379,22 @@ void TutorialGame::InitWorld() {
 		ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
-		//currentLevel = 4;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
+		/*currentLevel = 4;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());*/
 
-		//Level 3
-		//currentLevel = 6;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-		//boss = gameLevel->GetBoss();
-		//shield = gameLevel->GetShield();
-		//bossAnimation = gameLevel->getBossAnimation();
-		//bossCheersAnimation = gameLevel->getBossCheersAnimation();
-		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
-		//bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
-		//bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
-		//bossChasingAnimation = gameLevel->getBossChasingAnimation();
-		//iceCubeBullet = gameLevel->getIceCubeBullet();
-		//fireBallBullet = gameLevel->getFireBallBullet();
+		////Level 3
+		/* currentLevel = 6;
+		 gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		 boss = gameLevel->GetBoss();
+		 shield = gameLevel->GetShield();
+		 bossAnimation = gameLevel->getBossAnimation();
+		 bossCheersAnimation = gameLevel->getBossCheersAnimation();
+		 bossShootingAnimation = gameLevel->getBossShootingAnimation();
+		 bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
+		 bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
+		 bossChasingAnimation = gameLevel->getBossChasingAnimation();
+		 iceCubeBullet = gameLevel->getIceCubeBullet();
+		 fireBallBullet = gameLevel->getFireBallBullet();*/
 
 		//Level 4 initial function
 		//currentLevel = 8;
@@ -916,12 +916,15 @@ void TutorialGame::SwitchLevel() {
 			portal = gameLevel->GetLevel3()->portal;
 
 			boss = gameLevel->GetBoss();
+			shield = gameLevel->GetShield();
 			bossAnimation = gameLevel->getBossAnimation();
 			shield = gameLevel->GetShield();
 			iceCubeBullet = gameLevel->getIceCubeBullet();
 			bossCheersAnimation = gameLevel->getBossCheersAnimation();
 			bossShootingAnimation = gameLevel->getBossShootingAnimation();
 			bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
+			bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
+			bossChasingAnimation = gameLevel->getBossChasingAnimation();
 			fireBallBullet = gameLevel->getFireBallBullet();
 			break;
 		case 6:

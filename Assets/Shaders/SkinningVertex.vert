@@ -32,6 +32,7 @@ void main (void) {
 	float jointWeight = jointWeights[i];
 		skelPos += joints[jointIndex] * localPos * jointWeight ;
 	}
+	//skelPos = localPos;
 	mat4 mvp = projMatrix * viewMatrix * modelMatrix ;
 	gl_Position = mvp * vec4 (skelPos.xyz,1.0f);
 	//gl_Position = mvp * vec4 (position,1.0f);

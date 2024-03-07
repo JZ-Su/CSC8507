@@ -162,10 +162,10 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glClearColor(1, 1, 1, 1);
 
 	//Set up the light properties
-	lightColour = Vector4(1.0f, 0.8f, 0.3f, 1.0f);
-	lightRadius = 130.0f;
-	lightPosition = Vector3(0.0f, 50.0f, -30.0f);
-	shadowPosition = Vector3(0.0f, 50.0f, -30.0f);
+	//lightColour = Vector4(1.0f, 0.8f, 0.3f, 1.0f);
+	//lightRadius = 130.0f;
+	//lightPosition = Vector3(0.0f, 50.0f, -30.0f);
+	//shadowPosition = Vector3(0.0f, 50.0f, -30.0f);
 
 	lightMesh = LoadMesh("sphere.msh");
 	quadMesh = new OGLMesh();
@@ -334,13 +334,17 @@ void GameTechRenderer::RenderShadowMap() {
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glViewport(0, 0, SHADOWSIZE, SHADOWSIZE);
 
-	glCullFace(GL_FRONT);
+	//glCullFace(GL_FRONT);
 
 	BindShader(*shadowShader);
 	int mvpLocation = glGetUniformLocation(shadowShader->GetProgramID(), "mvpMatrix");
 	int shadowLocation = glGetUniformLocation(shadowShader->GetProgramID(), "shadowTex");
 	int lightPosLocation = glGetUniformLocation(shadowShader->GetProgramID(), "lightPos");
 	
+	int projLocation = glGetUniformLocation(shadowShader->GetProgramID(), "shadProjMatrix");
+	int viewLocation = glGetUniformLocation(shadowShader->GetProgramID(), "viewMatrix");
+	int isAnim = glGetUniformLocation(shadowShader->GetProgramID(), "isAnimation");
+
 	for (const auto& i : activeObjects) {
 		if ((*i).isShadow) {
 			shadowPosition = (*i).GetTransform()->GetPosition();
@@ -360,8 +364,6 @@ void GameTechRenderer::RenderShadowMap() {
 	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 0, shadowPosition));
 	shadowViewMatrix.push_back(shadowProjMatrix * Matrix4::lookAt(180, 180, shadowPosition));
 
-
-
 	int shadowMatLocation = glGetUniformLocation(shadowShader->GetProgramID(), "shadowMatrices");
 	glUniformMatrix4fv(shadowMatLocation, 6, false, (float*)shadowViewMatrix.data());
 
@@ -369,8 +371,13 @@ void GameTechRenderer::RenderShadowMap() {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, shadowTex);
 	Matrix4 mvpMatrix;
 	for (const auto& i : activeObjects) {
-		if (i->isAnimation == true) {
+		glUniform1i(isAnim, i->isAnimated);
+
+		if (i->isAnimated == true) {
+			int j = glGetUniformLocation(shadowShader->GetProgramID(), "joints");
+			glUniformMatrix4fv(j, i->GetFrameMatrices().size(), false, (float*)i->GetFrameMatrices().data());
 		}
+
 		Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
 		mvpMatrix = modelMatrix;
 		glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
