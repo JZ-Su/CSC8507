@@ -27,7 +27,7 @@ namespace NCL {
             void MoveFront(float dt, Vector3 ownpos);
             void MoveBack(float dt, Vector3 ownpos);
             void FollowPath(float dt, NavigationPath path, bool inversePath);
-
+           
             formerState state;
             NavigationGrid* grid;
             NavigationPath* patrolPath;
@@ -38,6 +38,8 @@ namespace NCL {
             float counter;
             int nodeIndex;
             bool isChasing;
+            float time;
+            bool timecouculate(float dt);
         };
     }
 }

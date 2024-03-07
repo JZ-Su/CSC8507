@@ -174,7 +174,8 @@ void GameLevel::CreateLevel1() {
 }
 
 void GameLevel::CreateLevel2() {
-	level2.AddObject(CreateCube(Vector3(150, -2, 150), Vector3(150, 2, 150), 0.0f));
+	level2.AddObject(CreateCeiling(Vector3(160, 60, 160), Vector3(240, 1, 240), 0));
+	level2.AddObject(CreateCube(Vector3(150, -2, 150), Vector3(200, 2, 200), 0.0f));
 	level2.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
 	level2.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, true, false));
 
@@ -200,7 +201,7 @@ void GameLevel::CreateLevel2() {
 						isScaned[i][j + width] = true;
 						++width;
 					}
-					wallData.push_back(Vector4(i+0.5, j + (float)width / 2, width, 1));
+					wallData.push_back(Vector4(i + 0.5, j + (float)width / 2, width, 1));
 				}
 				// Vertical
 				else if (pixelData[(i + 1) * size + j] == Debug::WHITE && !isScaned[i + 1][j]) {
@@ -209,40 +210,54 @@ void GameLevel::CreateLevel2() {
 						isScaned[i + length][j] = true;
 						++length;
 					}
-					wallData.push_back(Vector4(i + (float)length / 2, j+0.5, length, 0));
+					wallData.push_back(Vector4(i + (float)length / 2, j + 0.5, length, 0));
 				}
 				// One cube
 				else {
 					wallData.push_back(Vector4(i + 0.5, j + 0.5, 1, 0));
 				}
 			}
-			// door, rotate 0
-			else if (pixelData[i * size + j] == Debug::GREEN && !isScaned[i][j]) {
-				for (int k = 0; k < 3; k++) {
-					isScaned[i + k][j] = true;
+			// door, rotate -90
+			else if (pixelData[i * size + j] == Debug::YELLOW && !isScaned[i][j]) {
+				for (int k = 0; k < 4; k++) {
+					isScaned[i][j + k] = true;
 				}
-				doorData.push_back(Vector3(i + 1.5, j + 0.5, 0));
+				doorData.push_back(Vector3(i + 0.5, j + 2, -90));
+			}
+			//// rotate 270
+			//else if (pixelData[i * size + j] == Debug::CYAN && !isScaned[i][j]) {
+			//	for (int k = 0; k < 4; k++) {
+			//		isScaned[i][j + k] = true;
+			//	}
+			//	doorData.push_back(Vector3(i + 0.5, j + 2, 270));
+			//}
+			// rotate 270
+			else if (pixelData[i * size + j] == Debug::RED && !isScaned[i][j]) {
+				for (int k = 0; k < 4; k++) {
+					isScaned[i][j + k] = true;
+				}
+				doorData.push_back(Vector3(i + 0.5, j + 2, 270));
 			}
 			// rotate 90
-			else if (pixelData[i * size + j] == Debug::RED && !isScaned[i][j]) {
-				for (int k = 0; k < 3; k++) {
+			else if (pixelData[i * size + j] == Debug::MAGENTA && !isScaned[i][j]) {
+				for (int k = 0; k < 4; k++) {
 					isScaned[i][j + k] = true;
 				}
-				doorData.push_back(Vector3(i + 0.5, j + 1.5, 90));
+				doorData.push_back(Vector3(i + 0.5, j + 2, 90));
 			}
-			// rotate 180
+			// rotate -180
 			else if (pixelData[i * size + j] == Debug::BLUE && !isScaned[i][j]) {
-				for (int k = 0; k < 3; k++) {
+				for (int k = 0; k < 4; k++) {
 					isScaned[i + k][j] = true;
 				}
-				doorData.push_back(Vector3(i + 1.5, j + 0.5, 180));
+				doorData.push_back(Vector3(i + 2, j + 0.5, -180));
 			}
-			// rotate 270
-			else if (pixelData[i * size + j] == Debug::YELLOW && !isScaned[i][j]) {
-				for (int k = 0; k < 3; k++) {
-					isScaned[i][j + k] = true;
+			// rotate -270
+			else if (pixelData[i * size + j] == Debug::GREEN && !isScaned[i][j]) {
+				for (int k = 0; k < 4; k++) {
+					isScaned[i + k][j] = true;
 				}
-				doorData.push_back(Vector3(i + 0.5, j + 1.5, 270));
+				doorData.push_back(Vector3(i + 2, j + 0.5, -270));
 			}
 		}
 	}
@@ -250,35 +265,24 @@ void GameLevel::CreateLevel2() {
 	int height = 10;
 	for (auto element : wallData) {
 		if (element.w == 1) {
-			level2.AddObject(CreateCube(Vector3(element.x *5, height, element.y*5), Vector3(2.5, height, element.z*2.5), 0.0f));
+			level2.AddObject(CreateCube(Vector3(element.x * 5, height, element.y * 5), Vector3(2.5, height, element.z * 2.5), 0.0f));
 		}
 		else {
-			level2.AddObject(CreateCube(Vector3(element.x *5, height, element.y*5), Vector3(element.z*2.5, height, 2.5), 0.0f));
+			level2.AddObject(CreateCube(Vector3(element.x * 5, height, element.y * 5), Vector3(element.z * 2.5, height, 2.5), 0.0f));
 		}
 	}
 	for (auto element : doorData) {
-		Door* door = CreateDoor(Vector3(element.x * 5, height, element.y * 5), Vector3(3 * 2.5, height, 1 * 2.5), 0.0f, element.z);
-		switch ((int)element.z)
-		{
-		case 0:
-			door->GetRenderObject()->SetColour(Debug::BLACK);
-			break;
-		case 90:
-			door->GetRenderObject()->SetColour(Debug::RED);
-			break;
-		case 180:
-			break;
-		case 270:
-			door->GetRenderObject()->SetColour(Debug::GREEN);
-			break;
-		default:
-			break;
-		}
+		Door* door = CreateDoor(Vector3(element.x * 5, height, element.y * 5), Vector3(4 * 2.5, height, 1 * 2.5), 0.0f, element.z, 30.0);
 		l2_Doors.push_back(door);
 		level2.AddObject(door);
 	}
 
-	vector<GameObject*>port = CreatePortal(Vector3(230, 7, 11));
+	level2.AddObject(CreateCube(Vector3(0, 20, 160), Vector3(5, 40, 160), 0.0f));
+	level2.AddObject(CreateCube(Vector3(320, 20, 160), Vector3(5, 40, 160), 0.0f));
+	level2.AddObject(CreateCube(Vector3(160, 20, -5), Vector3(160, 40, 5), 0.0f));
+	level2.AddObject(CreateCube(Vector3(160, 20, 315), Vector3(160, 40, 5), 0.0f));
+
+	vector<GameObject*>port = CreatePortal(Vector3(300, 7, 0));
 	level2.AddObject(port);
 	level2.portal = level2.objectList.back();
 }
