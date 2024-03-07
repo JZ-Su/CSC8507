@@ -370,20 +370,20 @@ void TutorialGame::InitWorld() {
 		Please switch the debug mode here
 	*/
 	isDebug = true;
-	isDebug = false;
+	//isDebug = false;
 	if (isDebug) {
-		//Level 1
-		currentLevel = 2;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		ghost = gameLevel->GetGhost();
-		ghostAnimation = gameLevel->getGhostAnimation();
+		////Level 1
+		//currentLevel = 2;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		//ghost = gameLevel->GetGhost();
+		//ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
 		/*currentLevel = 4;
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());*/
 
 		////Level 3
-		/* currentLevel = 6;
+		 currentLevel = 6;
 		 gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
 		 boss = gameLevel->GetBoss();
 		 shield = gameLevel->GetShield();
@@ -394,7 +394,7 @@ void TutorialGame::InitWorld() {
 		 bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
 		 bossChasingAnimation = gameLevel->getBossChasingAnimation();
 		 iceCubeBullet = gameLevel->getIceCubeBullet();
-		 fireBallBullet = gameLevel->getFireBallBullet();*/
+		 fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initial function
 		//currentLevel = 8;
@@ -980,14 +980,14 @@ void TutorialGame::UpdateLevel(float dt) {
 			ExecuteAttack(dt);
 		}
 
+		health = (100 - (player->GetHealth())) * 0.01;
+		bosshealth = (100 - (gameLevel->GetBoss()->getBossHealth())) * 0.01;
 		if (player->GetHealth() > 100) {
 			player->SetHealth(100);
 		}
 		if (player->GetHealth() < 0) {
 			player->SetHealth(0);
 		}
-		health = (100 - (player->GetHealth())) * 0.01;
-		bosshealth = (100 - (gameLevel->GetBoss()->getBossHealth())) * 0.01;
 		//float aspect = Window::GetWindow()->GetScreenAspect();
 		//float delta = 0.1;
 		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) }, "blood", "health");
