@@ -99,9 +99,10 @@ namespace NCL {
 			Texture* skinTex;
 
 			//postprocessing
-			OGLShader* processShader;
+			OGLShader* upSampleShader;
+			OGLShader* downSampleShader;
 			OGLShader* toneShader;
-			GLuint		processTex[3];
+			GLuint		processTex[6];
 			GLuint		postFBO;
 			GLuint		processFBO;
 
