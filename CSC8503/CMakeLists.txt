@@ -14,7 +14,6 @@ set(Header_Files
     "Player.h"
     "Door.h"
     "Boss.h"
-    "GameUI.h"
     "Coin.h"
 )
 source_group("Header Files" FILES ${Header_Files})
@@ -31,7 +30,6 @@ set(Source_Files
     "Player.cpp"
     "Door.cpp"
     "Boss.cpp"
-    "GameUI.cpp"
     "Coin.cpp"
 )
 

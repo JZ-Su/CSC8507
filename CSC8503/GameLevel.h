@@ -12,19 +12,19 @@ namespace NCL {
 		void AddObject(vector<GameObject*> l) { objectList.insert(objectList.end(), l.begin(), l.end()); }
 
 		// deep copy
-		Level& operator=(const Level& from) {
-			if (this != &from) {
-				for (auto ptr : objectList) {
-					delete ptr;
-				}
-				objectList.clear();
-				for (const auto& ptr : from.objectList) {
-					GameObject* newPtr = new GameObject(*ptr);
-					objectList.push_back(newPtr);
-				}
-			}
-			return *this;
-		}
+		//Level& operator=(const Level& from) {
+		//	if (this != &from) {
+		//		for (auto ptr : objectList) {
+		//			delete ptr;
+		//		}
+		//		objectList.clear();
+		//		for (const auto& ptr : from.objectList) {
+		//			GameObject* newPtr = new GameObject(*ptr);
+		//			objectList.push_back(newPtr);
+		//		}
+		//	}
+		//	return *this;
+		//}
 	};
 
 	class GameLevel : public BasicExamples
@@ -60,7 +60,7 @@ namespace NCL {
 		vector<Level> GetReverseL4() { return level4_rotate; }
 		vector<Level> GetRotateL4() { return level4_rotate; }
 		vector<Level> GetReverseRotateL4() { return level4_reverse_rotate; }
-
+		Door* GetL4Door() { return door; }
 
 		GameObject* GetBeginArea() const { return beginArea; }
 		GameObject* GetTrueEndArea() const { return trueEndArea; }
@@ -71,6 +71,7 @@ namespace NCL {
 		void CreateLevel1_Tables();
 		void CreateLevel1_Columns();
 		void CreateLevel1_Stairs();
+		void CreateLevel1_Handrail();
 		void CreateLevel1_Coins();
 
 		vector<Door*> GetL2Doors() const { return l2_Doors; }
@@ -88,6 +89,7 @@ namespace NCL {
 		GameObject* beginArea;
 		GameObject* trueEndArea;
 		GameObject* falseEndArea;
+		Door*		door;
 
 		vector<Level> level4_normal;
 		vector<Level> level4_reverse;

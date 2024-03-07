@@ -17,6 +17,8 @@
 using namespace NCL;
 using namespace CSC8503;
 
+std::vector<std::string> TutorialGame::itemList;
+
 TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *Window::GetWindow()->GetMouse()) {
 	world = new GameWorld();
 #ifdef USEVULKAN
@@ -69,182 +71,29 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
-	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
-	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
-	//for (const auto& ele : gameLevel->GetLevel1()->objectList) {
-	//	Debug::DrawCollisionBox(ele);
-	//}
-	//Debug::DrawCollisionBox(player);
-	//Debug::DrawCollisionBox(boss);
-	//Debug::DrawCollisionBox(shield);
-	player->UpdatePlayer(dt);
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
 		return;
 	}
-	if ((gameMode == TimeLimited && totalTime >= 150) || (gameMode == ScoreRequired && score >= 20)) {
-		gameState = Win;
-		return;
-	}
+	if (!inSelectionMode) world->GetMainCamera().UpdateCamera(dt);
+	if (lockedObject != nullptr) LockedObjectMovement(dt);
+	if (lockedObject == nullptr) Debug::Print("Press F to lock camera", Vector2(5, 80));
+	else Debug::Print("Press F to free camera", Vector2(5, 80));
 
 	totalTime += dt;
-	health = player->GetHealth();
-	if (!inSelectionMode) {
-		world->GetMainCamera().UpdateCamera(dt);
-	}
-	if (lockedObject != nullptr) {
-		LockedObjectMovement(dt);
-	}
-
-	UpdateKeys(dt);
-
-	if (useGravity) {
-		Debug::Print("(G)ravity on", Vector2(5, 95), Debug::RED);
-	}
-	else {
-		Debug::Print("(G)ravity off", Vector2(5, 95), Debug::RED);
-	}
-	if (lockedObject == nullptr) {
-		Debug::Print("Press F to lock camera", Vector2(5, 80));
-	}
-	else {
-		Debug::Print("Press F to free camera", Vector2(5, 80));
-	}
-
-	RayCollision closestCollision;
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::K) && selectionObject) {
-		Vector3 rayPos;
-		Vector3 rayDir;
-
-		rayDir = selectionObject->GetTransform().GetOrientation() * Vector3(0, 0, -1);
-
-		rayPos = selectionObject->GetTransform().GetPosition();
-
-		Ray r = Ray(rayPos, rayDir);
-
-		if (world->Raycast(r, closestCollision, true, selectionObject)) {
-			if (objClosest) {
-				objClosest->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
-			}
-			objClosest = (GameObject*)closestCollision.node;
-
-			objClosest->GetRenderObject()->SetColour(Vector4(1, 0, 1, 1));
-		}
-	}
-
-	// update player animation
-	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
-
-
-
-	//IceCubeBulletLogic(dt);
-
 	SelectObject();
 	MoveSelectedObject();
 
-	// Level 1 stuff
-	if (currentLevel == 2) {
-		UpdateGhostAnim(ghost, ghostAnimation, dt);
-		if (portal && !portal->isEnable) {
-			portal->isEnable = gameLevel->CheckCoinList();
-		}
-		else if(portal) {
-			portal->GetRenderObject()->SetColour(Debug::GREEN);
-		}
-	}
-	// Level 2
-	else if (currentLevel == 4) {
-		for (const auto& element : gameLevel->GetL2Doors()) {
-			element->Update(dt);
-		}
-	}
-	// Level 3
-	else if (currentLevel == 6) {
-		gameLevel->GetBoss()->Update(dt);
-		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
-		//IceCubeBulletLogic(dt);
-		FireBallBulletLogic(dt);
-
-		if (gameLevel->GetBoss()->getIsAttack()) {
-			ExecuteAttack(dt);
-		}
-	}
-	// Level 4
-	else if (currentLevel == 8) {
-		GameObject* beginDet = gameLevel->GetBeginArea();
-		GameObject* trueEndDet = gameLevel->GetTrueEndArea();
-		GameObject* falseEndDet = gameLevel->GetFalseEndArea();
-		trueEndDet->GetRenderObject()->SetColour(Debug::RED);
-		falseEndDet->GetRenderObject()->SetColour(Debug::GREEN);
-		beginDet->GetRenderObject()->SetColour(Debug::BLUE);
-		if (!physics->GetCollisionDetectionList(beginDet).empty() && physics->GetCollisionDetectionList(beginDet)[0] == player && beginDet->isEnable == true) {
-			beginDet->isEnable = false;
-			trueEndDet->isEnable = true;
-			falseEndDet->isEnable = true;
-			if (!hasRotation) {
-				GameLevel::RemoveLevel(world, gameLevel->GetLevel4(), true, false);
-			}
-			else {
-				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r(), true, false);
-			}
-		}
-		if (!physics->GetCollisionDetectionList(trueEndDet).empty() && physics->GetCollisionDetectionList(trueEndDet)[0] == player && trueEndDet->isEnable == true) {
-			trueEndDet->isEnable = false;
-			falseEndDet->isEnable = false;
-			if (mapIndex >= 1) {
-				hasReverse = !hasReverse;
-			}
-			score++;
-			mapIndex = static_cast<int>(RandomValue(-4, 5));
-			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
-			hasRotation = !hasRotation;
-		}
-		if (!physics->GetCollisionDetectionList(falseEndDet).empty() && physics->GetCollisionDetectionList(falseEndDet)[0] == player && falseEndDet->isEnable == true) {
-			trueEndDet->isEnable = false;
-			falseEndDet->isEnable = false;
-			if (mapIndex < 1) {
-				hasReverse = !hasReverse;
-			}
-			score = 0;
-			mapIndex = 0;
-			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
-			hasRotation = !hasRotation;
-		}
-
-		if (score == 6 && exit == nullptr) {
-			if (!hasReverse && !hasRotation) {
-				exit = gameLevel->CreateCube(Vector3(-30, 10, -70), Vector3(15, 15, 15), 0.0f);
-			}
-			else if (!hasReverse && hasRotation) {
-				exit = gameLevel->CreateCube(Vector3(30, 10, 70), Vector3(15, 15, 15), 0.0f);
-			}
-			else if (hasReverse && !hasRotation) {
-				exit = gameLevel->CreateCube(Vector3(-30, 10, -70), Vector3(15, 15, 15), 0.0f);
-			}
-			else if (hasReverse && hasRotation) {
-				exit = gameLevel->CreateCube(Vector3(-70, 10, -30), Vector3(15, 15, 15), 0.0f);
-			}
-			exit->GetRenderObject()->SetColour(Debug::WHITE);
-			world->AddGameObject(exit);
-		}
-	}
+	UpdateLevel(dt);
+	UpdateKeys(dt);
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);
-
-	//Debug::Print("Score: " + std::to_string(score), Vector2(70, 80));
-	//Debug::Print("Totaltime: " + std::to_string(totalTime), Vector2(70, 85));
-	//Debug::Print("Press P to Pause!", Vector2(70, 90));
-
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
+	GameTechRenderer::UpdateUI();
 
-	if (!isDebug) {
-		SwitchLevel();
-	}
-
-	if (totalTime > 100) totalTime = 0;
+	if (!isDebug) SwitchLevel();
 }
 
 void TutorialGame::UpdateKeys(float dt) {
@@ -298,7 +147,7 @@ void TutorialGame::UpdateKeys(float dt) {
 		gameLevel->GetBoss()->SetIsRencentlyHurt(true);
 	}
 	if (lockedObject) {
-		LockedObjectMovement(dt);
+		//LockedObjectMovement(dt);
 	}
 	else {
 		DebugObjectMovement();
@@ -323,7 +172,6 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	fwdAxis.y = 0.0f;
 	fwdAxis.Normalise();
 
-
 	Vector3 rightAxis = Vector3::Cross(UpAxis, fwdAxis);
 
 	v += (Window::GetMouse()->GetRelativePosition().y);
@@ -339,11 +187,10 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	Vector3 targetpos = lockedObject->GetTransform().GetPosition();
 	Vector3 camdir = Mrot * Vector3(0, 0, -1);
-
 	Vector3 campos = targetpos - camdir * 20.0f;
 
-	Ray collisionRay = Ray(targetpos, -camdir);
-	RayCollision collisionRayData;
+	//Ray collisionRay = Ray(targetpos, -camdir);
+	//RayCollision collisionRayData;
 	//if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
 	//{
 	//	if (collisionRayData.rayDistance < 6)
@@ -386,6 +233,23 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		}
 		player->SetIsWalk(false);
 	}
+
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM1)) {
+		player->UseItem(0);
+
+	}
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM2)) {
+		player->UseItem(1);
+	}
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM3)) {
+		player->UseItem(2);
+
+	}
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM4)) {
+		player->UseItem(3);
+	}
+
+
 	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
 	Quaternion q(viewMat);
 	float pitch = q.ToEuler().x;
@@ -395,7 +259,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	lockedObject->GetTransform().SetOrientation(lookat);
 
-	world->GetMainCamera().SetPosition(Vector3(campos.x, campos.y + 3.0f, campos.z + 3.0f));
+	world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));
 	world->GetMainCamera().SetPitch(pitch);
 	world->GetMainCamera().SetYaw(yaw);
 	//renderer.UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
@@ -482,18 +346,6 @@ void TutorialGame::DebugObjectMovement() {
 	}
 }
 
-/*
-
-A single function to add a large immoveable cube to the bottom of our world
-
-*/
-
-/*
-Builds a game object that uses a sphere mesh for its graphics, and a bounding sphere for its
-rigid body representation. This and the cube function will let you build a lot of 'simple'
-physics worlds. You'll probably need another function for the creation of OBB cubes too.
-*/
-
 void TutorialGame::InitCamera() {
 	world->GetMainCamera().SetNearPlane(0.1f);
 	world->GetMainCamera().SetFarPlane(500.0f);
@@ -513,16 +365,12 @@ void TutorialGame::InitWorld() {
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
-	ghost = gameLevel->GetGhost();
-	ghostAnimation = gameLevel->getGhostAnimation();
-	boss = gameLevel->GetBoss();
-	bossAnimation = gameLevel->getBossAnimation();
 
 	/*
 		Please switch the debug mode here
 	*/
 	isDebug = true;
-	//isDebug = false;
+	isDebug = false;
 	if (isDebug) {
 		//Level 1
 		currentLevel = 2;
@@ -550,6 +398,7 @@ void TutorialGame::InitWorld() {
 
 		//Level 4 initial function
 		//currentLevel = 8;
+		//player->GetTransform().SetPosition(Vector3(-70, 10, -50));
 		//gameLevel->AddLevelToWorld(world, 0, true, false);
 		//gameLevel->AddLevelToWorld(world, 0, false, false);
 	}
@@ -563,29 +412,6 @@ void TutorialGame::InitWorld() {
 	score = 0;
 	totalTime = 0.0f;
 }
-
-//void TutorialGame::BridgeConstraintTest() {
-//	Vector3 cubeSize = Vector3(5, 5, 5);
-//
-//	float invCubeMass = 5; //how heavy the middle pieces are
-//	int numLinks = 10;
-//	float maxDistance = 20; //constraint distance
-//	float cubeDistance = 20; //distance between links
-//
-//	Vector3 startPos = Vector3(10, 10, 10);
-//	GameObject* start = AddCubeToWorld(startPos + Vector3(0, 0, 0), cubeSize, 10);
-//	GameObject* end = AddCubeToWorld(startPos + Vector3((numLinks + 2) * cubeDistance, 0, 0), cubeSize, 10);
-//	GameObject* previous = start;
-//
-//	for (int i = 0; i < numLinks; i++) {
-//		GameObject* block = AddCubeToWorld(startPos + Vector3((i + 1) * cubeDistance, 0, 0), cubeSize, invCubeMass);
-//		PositionConstraint* constraint = new PositionConstraint(previous, block, maxDistance);
-//		world->AddConstraint(constraint);
-//		previous = block;
-//	}
-//	PositionConstraint* constraint = new PositionConstraint(previous, end, maxDistance);
-//	world->AddConstraint(constraint);
-//}
 
 /*
 Every frame, this code will let you perform a raycast, to see if there's an object
@@ -910,7 +736,6 @@ void TutorialGame::ShowLose(float dt) {
 void TutorialGame::LoadRankingFile() {
 	std::ifstream timeFile(Assets::SCOREDIR + "timeMode.txt");
 	std::ifstream scoreFile(Assets::SCOREDIR + "scoreMode.txt");
-
 	while (!scoreFile.eof()) {
 		std::string name;
 		scoreFile >> name;
@@ -918,7 +743,6 @@ void TutorialGame::LoadRankingFile() {
 		scoreFile >> s;
 		TimeTable.emplace_back(name, s);
 	}
-
 	while (!timeFile.eof())
 	{
 		std::string name;
@@ -927,7 +751,6 @@ void TutorialGame::LoadRankingFile() {
 		timeFile >> s;
 		ScoreTable.emplace_back(name, s);
 	}
-
 	scoreFile.close();
 	timeFile.close();
 }
@@ -976,7 +799,7 @@ void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation
 				}
 			}
 			else {
-				if ((!iceCubeBullet->GetIsHiding() || !fireBallBullet->GetIsHiding())&&!gameLevel->GetBoss()->getIsChasing()) {
+				if ((!iceCubeBullet->GetIsHiding() || !fireBallBullet->GetIsHiding()) && !gameLevel->GetBoss()->getIsChasing()) {
 					if (iceCubeBulletFrames < 20) {
 						boss->GetRenderObject()->frameTime -= dt;
 						UpdateAnim(boss, bossShootingAnimation);
@@ -993,7 +816,7 @@ void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation
 							boss->GetRenderObject()->frameTime -= dt;
 							UpdateAnim(boss, bossAttackingAnimation);
 							attackingTimer += dt;
-							if (attackingTimer >0.38f) {
+							if (attackingTimer > 0.38f) {
 								playerIsHit = true;
 							}
 						}
@@ -1002,13 +825,13 @@ void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation
 						}
 					}
 					else {
-						boss->GetRenderObject()->frameTime -= dt*1.5;
+						boss->GetRenderObject()->frameTime -= dt * 1.5;
 						UpdateAnim(boss, bossChasingAnimation);
 						attackingTimer = 0;
 					}
-				
+
 				}
-				else{
+				else {
 					boss->GetRenderObject()->frameTime -= dt;
 					UpdateAnim(boss, bossAnimation);
 					iceCubeBulletFrames = 0.0f;
@@ -1054,7 +877,7 @@ void TutorialGame::SwitchLevel() {
 		switch (currentLevel)
 		{
 		case 1:
-			GameLevel::RemoveLevel(world, gameLevel->GetConnection(), false, false);
+			GameLevel::RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
@@ -1065,28 +888,28 @@ void TutorialGame::SwitchLevel() {
 			ghostAnimation = gameLevel->getGhostAnimation();
 			break;
 		case 2:
-			gameLevel->RemoveLevel(world, gameLevel->GetLevel1(), true, false);
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel1(), true);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			break;
 		case 3:
-			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false, false);
+			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 			player->GetTransform().SetPosition(Vector3(235, 10, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel2()->portal;
 			break;
 		case 4:
-			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), true, false);
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), true);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			break;
 		case 5:
-			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false, false);
+			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
 			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
@@ -1095,21 +918,24 @@ void TutorialGame::SwitchLevel() {
 			boss = gameLevel->GetBoss();
 			shield = gameLevel->GetShield();
 			bossAnimation = gameLevel->getBossAnimation();
+			shield = gameLevel->GetShield();
 			iceCubeBullet = gameLevel->getIceCubeBullet();
 			bossCheersAnimation = gameLevel->getBossCheersAnimation();
 			bossShootingAnimation = gameLevel->getBossShootingAnimation();
 			bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
+			bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
+			bossChasingAnimation = gameLevel->getBossChasingAnimation();
 			fireBallBullet = gameLevel->getFireBallBullet();
 			break;
 		case 6:
-			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true, false);
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			break;
 		case 7:
-			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), true, false);
+			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), true);
 			gameLevel->AddLevelToWorld(world, 0, true, false);
 			gameLevel->AddLevelToWorld(world, 0, false, false);
 			player->GetTransform().SetPosition(Vector3(-70, 10, -50)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
@@ -1119,6 +945,133 @@ void TutorialGame::SwitchLevel() {
 			break;
 		}
 		currentLevel++;
+	}
+}
+
+void TutorialGame::UpdateLevel(float dt) {
+	// update player
+	player->UpdatePlayer(dt);
+	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
+
+	// Level 1 stuff
+	if (currentLevel == 2) {
+		UpdateGhostAnim(ghost, ghostAnimation, dt);
+		if (portal && !portal->isEnable) {
+			portal->isEnable = gameLevel->CheckCoinList();
+		}
+		else {
+			if (!isDebug) portal->GetRenderObject()->SetColour(Debug::GREEN);
+		}
+	}
+	// Level 2
+	else if (currentLevel == 4) {
+		for (const auto& element : gameLevel->GetL2Doors()) {
+			element->Update(dt);
+		}
+	}
+	// Level 3
+	else if (currentLevel == 6) {
+		gameLevel->GetBoss()->Update(dt);
+		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
+		//IceCubeBulletLogic(dt);
+		FireBallBulletLogic(dt);
+
+		if (gameLevel->GetBoss()->getIsAttack()) {
+			ExecuteAttack(dt);
+		}
+
+		if (player->GetHealth() > 100) {
+			player->SetHealth(100);
+		}
+		if (player->GetHealth() < 0) {
+			player->SetHealth(0);
+		}
+		health = (100 - (player->GetHealth())) * 0.01;
+		bosshealth = (100 - (gameLevel->GetBoss()->getBossHealth())) * 0.01;
+		//float aspect = Window::GetWindow()->GetScreenAspect();
+		//float delta = 0.1;
+		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) }, "blood", "health");
+		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.8f, -1.0f), Vector3(-0.4, -1.0f, -1.0f), Vector3(-0.2, -1.0f, -1.0f), Vector3(-0.2f, -0.8f, -1.0f) }, "inventory", "item");
+		GameTechRenderer::CreateGameUI({ Vector3(-0.2, -0.8f, -1.0f), Vector3(-0.2, -1.0f, -1.0f), Vector3(0.0f, -1.0f, -1.0f), Vector3(0.0f, -0.8f, -1.0f) }, "inventory", "item");
+		GameTechRenderer::CreateGameUI({ Vector3(0.0, -0.8f, -1.0f), Vector3(0.0f, -1.0f, -1.0f), Vector3(0.2f, -1.0f, -1.0f), Vector3(0.2f, -0.8f, -1.0f) }, "inventory", "item");
+		GameTechRenderer::CreateGameUI({ Vector3(0.2, -0.8f, -1.0f), Vector3(0.2, -1.0f, -1.0f), Vector3(0.4f, -1.0f, -1.0f), Vector3(0.4f, -0.8f, -1.0f) }, "inventory", "item");
+
+		itemList = Player::GetItemList();
+
+		float distance = 0.2;
+		for (int i = 0; i < itemList.size(); i++) {
+			GameTechRenderer::CreateGameUI({ Vector3(-0.4f + (i * distance), -0.85f, -1.0f), Vector3(-0.4f + (i * distance), -0.95f, -1.0f),
+			Vector3(-0.2f + (i * distance), -0.95f, -1.0f), Vector3(-0.2f + (i * distance), -0.85f, -1.0f) }, itemList.at(i), "item");
+		}
+		GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f - bosshealth, 0.9f, -1.0f),
+			Vector3(0.5f - bosshealth, 0.95f, -1.0f) }, "blood", "health");
+	}
+	// Level 4
+	else if (currentLevel == 8) {
+		gameLevel->GetL4Door()->Update(dt);
+
+		GameObject* beginDet = gameLevel->GetBeginArea();
+		GameObject* trueEndDet = gameLevel->GetTrueEndArea();
+		GameObject* falseEndDet = gameLevel->GetFalseEndArea();
+		trueEndDet->GetRenderObject()->SetColour(Debug::RED);
+		falseEndDet->GetRenderObject()->SetColour(Debug::GREEN);
+		beginDet->GetRenderObject()->SetColour(Debug::BLUE);
+
+		vector<GameObject*> beginCD = physics->GetCollisionDetectionList(beginDet);
+		if (std::count(beginCD.begin(), beginCD.end(), player) && beginDet->isEnable) {
+			beginDet->isEnable = false;
+			trueEndDet->isEnable = true;
+			falseEndDet->isEnable = true;
+			if (!hasRotation) {
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4(), false);
+			}
+			else {
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r(), false);
+			}
+		}
+		vector<GameObject*> trueEndCD = physics->GetCollisionDetectionList(trueEndDet);
+		if (std::count(trueEndCD.begin(), trueEndCD.end(), player) && trueEndDet->isEnable) {
+			trueEndDet->isEnable = false;
+			falseEndDet->isEnable = false;
+			gameLevel->GetL4Door()->Deactivation();
+			if (mapIndex >= 1) {
+				hasReverse = !hasReverse;
+			}
+			score++;
+			mapIndex = static_cast<int>(RandomValue(-4, 5));
+			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
+			hasRotation = !hasRotation;
+		}
+		vector<GameObject*> falseEndCD = physics->GetCollisionDetectionList(falseEndDet);
+		if (std::count(falseEndCD.begin(), falseEndCD.end(), player) && falseEndDet->isEnable) {
+			trueEndDet->isEnable = false;
+			falseEndDet->isEnable = false;
+			gameLevel->GetL4Door()->Deactivation();
+			if (mapIndex < 1) {
+				hasReverse = !hasReverse;
+			}
+			score = 0;
+			mapIndex = 0;
+			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
+			hasRotation = !hasRotation;
+		}
+
+		if (score == 6 && exit == nullptr) {
+			if (!hasReverse && !hasRotation) {
+				exit = gameLevel->CreateCube(Vector3(-30, 10, -70), Vector3(15, 15, 15), 0.0f);
+			}
+			else if (!hasReverse && hasRotation) {
+				exit = gameLevel->CreateCube(Vector3(30, 10, 70), Vector3(15, 15, 15), 0.0f);
+			}
+			else if (hasReverse && !hasRotation) {
+				exit = gameLevel->CreateCube(Vector3(70, 10, 30), Vector3(15, 15, 15), 0.0f);
+			}
+			else if (hasReverse && hasRotation) {
+				exit = gameLevel->CreateCube(Vector3(-70, 10, -30), Vector3(15, 15, 15), 0.0f);
+			}
+			exit->GetRenderObject()->SetColour(Debug::WHITE);
+			world->AddGameObject(exit);
+		}
 	}
 }
 

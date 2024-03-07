@@ -207,9 +207,36 @@ void main(void)
 	if(indexTex.r == 0.5){
 		fragColor[0].rgb = albedo.rgb * atten;
 		fragColor[1].rgb = vec3(0.0, 0.0, 0.0);
+		if(data.r > 0.9){
+			fragColor[0].rgb += vec3(0, 0, 1);
+		}
 		fragColor[0].rgb = pow(fragColor[0].rgb, vec3(1.0 / 2.2f));
 		fragColor[1].rgb = pow(fragColor[1].rgb, vec3(1.0 / 2.2f));
 		fragColor[0].a = data.r;
+		fragColor[1].a = 0.0;
+	}
+	if(indexTex.r == 0.6){
+		float metal = data.r;
+		float roughness = data.g;
+		float bright = addTex.r;
+		float smoothness = 1.0 - roughness;
+		float shininess = lerp(smoothness, 1.0,  80) * smoothness;
+		bright = pow(bright, 1) * 5;
+
+		float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
+		float halfLambert = (lambert + 1.0) * 0.5;
+		float rFactor = max (0.0 , dot ( halfDir , normal ));
+		float sFactor = pow ( rFactor , shininess);
+
+		vec3 baseCol = albedo.rgb * (1.0 -metal);
+		vec3 specCol = vec3(0.04,0.04,0.04) * (1.0 - metal) + albedo.rgb * metal;
+		vec3 brightCol = vec3(0.9, 0.6, 0.1) * bright;
+
+		fragColor[0].rgb = baseCol * lightColour.rgb * lambert * atten * shadow + brightCol;
+		fragColor[1].rgb = specCol * lightColour.rgb * sFactor * atten * shadow;
+		fragColor[0].rgb = pow(fragColor[0].rgb, vec3(1.0 / 2.2f));
+		fragColor[1].rgb = pow(fragColor[1].rgb, vec3(1.0 / 2.2f));
+		fragColor[0].a = 1.0;
 		fragColor[1].a = 0.0;
 	}
 }

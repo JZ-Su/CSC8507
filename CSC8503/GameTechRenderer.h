@@ -3,7 +3,6 @@
 #include "OGLShader.h"
 #include "OGLTexture.h"
 #include "OGLMesh.h"
-#include "GameUI.h"
 #include "GameWorld.h"
 
 namespace NCL {
@@ -13,7 +12,18 @@ namespace NCL {
 		class RenderObject;
 
 		class GameTechRenderer : public OGLRenderer	{
+
 		public:
+			struct UIen {
+				NCL::Rendering::OGLMesh* mesh;
+				int width = 512;
+				int height = 512;
+				int channels = 4;
+				int flags = 0;
+				char* texture;
+				std::string tag;
+			};
+
 			GameTechRenderer(GameWorld& world);
 			~GameTechRenderer();
 			Mesh*		LoadMesh(const std::string& name);
@@ -22,6 +32,12 @@ namespace NCL {
 
 			vector<Vector4> LoadMap();
 
+			static void CreateGameUI(std::vector<NCL::Maths::Vector3> UIpox, const std::string& name, std::string type);
+
+			static const std::vector<UIen>& GetUIEntries();
+
+			static void UpdateUI();
+			static void deletUI(int i);
 		protected:
 			std::unordered_map<std::string, SharedOGLTexture> textureCache;
 
@@ -41,6 +57,8 @@ namespace NCL {
 			void RenderSkybox();
 			void RenderLight();
 			void RenderCombine();
+			void RenderProcess();
+			void RenderTone();
 
 			void LoadSkybox();
 
@@ -80,6 +98,13 @@ namespace NCL {
 			GLuint		lightSpecTex;
 			Texture* skinTex;
 
+			//postprocessing
+			OGLShader* processShader;
+			OGLShader* toneShader;
+			GLuint		processTex[3];
+			GLuint		postFBO;
+			GLuint		processFBO;
+
 			Vector4		lightColour;
 			float		lightRadius;
 			//float		fov; 
@@ -103,7 +128,10 @@ namespace NCL {
 			GLuint textTexVBO;
 			size_t textCount;
 
-			GameUI ui;
+			static std::vector<UIen>	UIEntries;
+			GLuint texture;
+			OGLShader* healthShader;
+			void Loadhealth();
 		};
 	}
 }

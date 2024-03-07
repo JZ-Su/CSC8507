@@ -11,7 +11,6 @@
 #include "GameLevel.h"
 #include "BasicExamples.h"
 #include "MeshAnimation.h"
-#include "GameUI.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -143,6 +142,7 @@ namespace NCL {
 
 			float health;
 			float totalTime;
+			float bosshealth;
 
 			GameState gameState;
 			MainMenuState mainMenuState;
@@ -163,6 +163,7 @@ namespace NCL {
 			void FireBallBulletLogic(float dt);
 			float h = 0, v = 0;
 
+			void UpdateLevel(float dt);
 			void SwitchLevel();
 
 			int coinCount;
@@ -180,7 +181,8 @@ namespace NCL {
 			float attackingTimer = 0.0f;
 			const float attackingDuration = 0.4f;
 			const float shootingDuration = 0.65f;
-			bool playShootingAnimation=false;
+			bool playShootingAnimation = false;
+			static std::vector<std::string> itemList;
 		};
 	}
 }
