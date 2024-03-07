@@ -9,7 +9,6 @@ in Vertex
 } IN;
 
 out vec4 fragColor;
-//const float scaleFactors[7] = float[](0.006, 0.061, 0.242, 0.383, 0.242, 0.061, 0.006);
 
 void main(void)
 {
@@ -22,7 +21,6 @@ void main(void)
     vec4 c = texture2D(colorTex, vec2(IN.texCoord.x + 2 * delta.x, IN.texCoord.y + 2 * delta.y));
 
     vec4 d = texture2D(colorTex, vec2(IN.texCoord.x - 2 * delta.x, IN.texCoord.y));
-    //vec4 e = texture2D(colorTex, vec2(IN.texCoord.x, IN.texCoord.y));
     vec4 e = texture2D(colorTex, IN.texCoord.xy);
     vec4 f = texture2D(colorTex, vec2(IN.texCoord.x + 2 * delta.x, IN.texCoord.y));
 

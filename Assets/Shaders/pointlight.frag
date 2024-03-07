@@ -127,7 +127,7 @@ void main(void)
 		float smoothness = 1.0 - roughness;
 		float shininess = lerp(smoothness, 1.0,  80) * smoothness;
 
-		float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
+		float lambert  = max (0.01 , dot ( incident , normal ));
 		float halfLambert = (lambert + 1.0) * 0.5;
 		float rFactor = max (0.0 , dot ( halfDir , normal ));
 		float sFactor = pow ( rFactor , shininess);
@@ -136,11 +136,15 @@ void main(void)
 		vec3 specCol = vec3(0.04,0.04,0.04) * (1.0 - metal) + albedo.rgb * metal;
 		vec3 diffuseCol = baseCol.rgb * lightColour.rgb * lambert * atten * shadow;
 
-		float skinX = clamp(lambert + 0.5, 0.0, 1.0);
-		vec2 skinUV = vec2(skinX, 1);
+		float skinX = smoothstep(lambert * atten + 0.4, 0.0, 1.0);
+		skinX = min(skinX, shadow);
+		vec2 skinUV = vec2(1 - skinX, 0.1);
 		vec3 skinCol = texture(skinTex, skinUV).rgb;
 		skinCol = pow(skinCol, vec3(2.2));
-		vec3 skinDiffCol = skinCol * lightColour.rgb * baseCol;
+		vec3 skinDiffCol = skinCol * lightColour.rgb * baseCol * atten;
+		if(skin > 0.5){
+			vec3 specCol = albedo.rgb * 0.15;
+		}
 
 		fragColor[0].rgb = diffuseCol * (1.0 - skin) + skinDiffCol * skin;
 		fragColor[1].rgb = specCol * lightColour.rgb * sFactor * atten * shadow;
@@ -150,7 +154,7 @@ void main(void)
 		fragColor[1].a = 0.0;
 	}
 	if(indexTex.r == 0.3){	
-		float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
+		float lambert  = max (0.0 , dot ( incident , normal ));
 		float halfLambert = (lambert + 1.0) * 0.5;
 
 		float noise = indexTex.g;
@@ -185,7 +189,7 @@ void main(void)
 		fragColor[1].a = 0.0;
 	}
 	if(indexTex.r == 0.4){
-		float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
+		float lambert  = max (0.0 , dot ( incident , normal ));
 		float halfLambert = (lambert + 1.0) * 0.5;
 		float rFactor = max (0.0 , dot ( halfDir , normal ));
 		float sFactor = pow ( rFactor , 80.0 );
@@ -219,7 +223,7 @@ void main(void)
 		float shininess = lerp(smoothness, 1.0,  80) * smoothness;
 		bright = pow(bright, 1) * 5;
 
-		float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
+		float lambert  = max (0.0 , dot ( incident , normal ));
 		float halfLambert = (lambert + 1.0) * 0.5;
 		float rFactor = max (0.0 , dot ( halfDir , normal ));
 		float sFactor = pow ( rFactor , shininess);
