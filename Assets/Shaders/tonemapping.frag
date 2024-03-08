@@ -33,5 +33,7 @@ void main(void)
     hdrColor += bloomColor; // additive blending
    
     fragColor = hdrColor;
+	//fragColor.rgb = pow(fragColor.rgb, vec3(1.0 / 2.2f));
 	fragColor.rgb = ACES_Tonemapping(fragColor.rgb);
+	fragColor.rgb = pow(fragColor.rgb, vec3(1.0 / 2.2f));
 }
