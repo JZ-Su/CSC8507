@@ -61,6 +61,48 @@ float lerp(float x, float a, float b){
 	return a + x * (b - a);
 }
 
+const float PI = 3.14159265359;
+
+vec3 fresnelSchlick(float a, vec3 f)
+{
+    return f + (1.0 - f) * pow(clamp(1.0 - a, 0.0, 1.0), 5.0);
+} 
+
+float DistributionGGX(vec3 n, vec3 h, float r)
+{
+    float a      = r * r;
+    float a2     = a * a;
+    float NdotH  = max(dot(n, h), 0.0);
+    float NdotH2 = NdotH * NdotH;
+
+    float num   = a2;
+    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+    denom = PI * denom * denom;
+
+    return num / denom;
+}
+
+float GeometrySchlickGGX(float x, float rough)
+{
+    float r = (rough + 1.0);
+    float k = (r*r) / 8.0;
+
+    float num   = x;
+    float denom = x * (1.0 - k) + k;
+
+    return num / denom;
+}
+
+float GeometrySmith(vec3 n, vec3 v, vec3 l, float r)
+{
+    float NdotV = max(dot(n, v), 0.0);
+    float NdotL = max(dot(n, l), 0.0);
+    float ggx2  = GeometrySchlickGGX(NdotV, r);
+    float ggx1  = GeometrySchlickGGX(NdotL, r);
+
+    return ggx1 * ggx2;
+}
+
 void main(void)
 {
 
@@ -105,18 +147,17 @@ void main(void)
 		float smoothness = 1.0 - roughness;
 		float shininess = lerp(smoothness, 1.0,  80) * smoothness;
 
-		float lambert  = max (0.0 , dot ( incident , normal ));// * 0.9; 
+		float lambert  = max (0.0 , dot ( incident , normal ));
 		float halfLambert = (lambert + 1.0) * 0.5;
 		float rFactor = max (0.0 , dot ( halfDir , normal ));
 		float sFactor = pow ( rFactor , shininess);
+		sFactor = max(0.0, sFactor);
 
 		vec3 baseCol = albedo.rgb * (1.0 -metal);
 		vec3 specCol = vec3(0.04,0.04,0.04) * (1.0 - metal) + albedo.rgb * metal;
 
-		fragColor[0].rgb = baseCol * lightColour.rgb * lambert * atten * shadow * aoCol;
+		fragColor[0].rgb = baseCol * lightColour.rgb * atten * lambert  * shadow * aoCol;
 		fragColor[1].rgb = specCol * lightColour.rgb * sFactor * atten * shadow * aoCol;
-		fragColor[0].rgb = pow(fragColor[0].rgb, vec3(1.0 / 2.2f));
-		fragColor[1].rgb = pow(fragColor[1].rgb, vec3(1.0 / 2.2f));
 		fragColor[0].a = 1.0;
 		fragColor[1].a = 0.0;
 	}
@@ -148,8 +189,6 @@ void main(void)
 
 		fragColor[0].rgb = diffuseCol * (1.0 - skin) + skinDiffCol * skin;
 		fragColor[1].rgb = specCol * lightColour.rgb * sFactor * atten * shadow;
-		fragColor[0].rgb = pow(fragColor[0].rgb, vec3(1.0 / 2.2f));
-		fragColor[1].rgb = pow(fragColor[1].rgb, vec3(1.0 / 2.2f));
 		fragColor[0].a = 1.0;
 		fragColor[1].a = 0.0;
 	}
@@ -183,8 +222,6 @@ void main(void)
 		
 		fragColor[0].rgb = lightColour.rgb * albedo.rgb * halfLambert * atten;
 		fragColor[1].rgb = specularCol1 + specularCol2;
-		fragColor[0].rgb = pow(fragColor[0].rgb, vec3(1.0 / 2.2f));
-		fragColor[1].rgb = pow(fragColor[1].rgb, vec3(1.0 / 2.2f));
 		fragColor[0].a = 1.0;
 		fragColor[1].a = 0.0;
 	}
@@ -199,8 +236,6 @@ void main(void)
 
 		fragColor[0].rgb = baseCol * lightColour.rgb * lambert * atten * shadow;
 		fragColor[1].rgb = specCol * lightColour.rgb * sFactor * atten * shadow;
-		fragColor[0].rgb = pow(fragColor[0].rgb, vec3(1.0 / 2.2f));
-		fragColor[1].rgb = pow(fragColor[1].rgb, vec3(1.0 / 2.2f));
 		fragColor[0].a = 1.0;
 		fragColor[1].a = 0.0;
 	}
@@ -210,8 +245,6 @@ void main(void)
 		if(data.r > 0.9){
 			fragColor[0].rgb += vec3(0, 0, 1);
 		}
-		fragColor[0].rgb = pow(fragColor[0].rgb, vec3(1.0 / 2.2f));
-		fragColor[1].rgb = pow(fragColor[1].rgb, vec3(1.0 / 2.2f));
 		fragColor[0].a = data.r;
 		fragColor[1].a = 0.0;
 	}
@@ -234,8 +267,6 @@ void main(void)
 
 		fragColor[0].rgb = baseCol * lightColour.rgb * lambert * atten * shadow + brightCol;
 		fragColor[1].rgb = specCol * lightColour.rgb * sFactor * atten * shadow;
-		fragColor[0].rgb = pow(fragColor[0].rgb, vec3(1.0 / 2.2f));
-		fragColor[1].rgb = pow(fragColor[1].rgb, vec3(1.0 / 2.2f));
 		fragColor[0].a = 1.0;
 		fragColor[1].a = 0.0;
 	}
