@@ -48,5 +48,5 @@ void main(void)
 	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);
 	fragColor[2] = vec4(metal, roughness, 0.0, 1.0);
 	fragColor[3] = aoCol;
-	fragColor[4] = vec4(0.1, 0.0, 0.0, 1.0);
+	fragColor[4] = vec4(0.7, 0.0, 0.0, 1.0);
 }

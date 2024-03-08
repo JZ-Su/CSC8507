@@ -181,8 +181,6 @@ GameObject* BasicExamples::CreateBigWall(const Vector3& position, const Vector3&
 	cube->SetBoundingVolume((CollisionVolume*)volume);
 
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
-	//cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTexture /*wallTexture[0]*/, basicShader));
-	//cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, wallTexture[0], floorShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));

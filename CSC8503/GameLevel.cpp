@@ -136,11 +136,11 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateBigWall(Vector3(70, 30, 77), Vector3(30, 30, 23), 0.0f));
 	level1.AddObject(CreateBigWall(Vector3(-70, 30, 77), Vector3(30, 30, 23), 0.0f));
 	//room
-	level1.AddObject(CreateCube(Vector3(-20, 5, -20), Vector3(1, 5, 10), 0.0f));
-	level1.AddObject(CreateCube(Vector3(-20, 5, -50), Vector3(1, 5, 10), 0.0f));
-	level1.AddObject(CreateCube(Vector3(20, 5, -20), Vector3(1, 5, 10), 0.0f));
-	level1.AddObject(CreateCube(Vector3(20, 5, -50), Vector3(1, 5, 10), 0.0f));
-	level1.AddObject(CreateCube(Vector3(0, 5, -59), Vector3(19, 5, 1), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(-20, 5, -20), Vector3(1, 5, 10), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(-20, 5, -50), Vector3(1, 5, 10), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(20, 5, -20), Vector3(1, 5, 10), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(20, 5, -50), Vector3(1, 5, 10), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(0, 5, -59), Vector3(19, 5, 1), 0.0f));
 	//columns
 	CreateLevel1_Columns();
 	//stairs

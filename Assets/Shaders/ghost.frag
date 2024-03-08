@@ -30,7 +30,7 @@ void main(void) {
 	vec3 insideColor = vec3(0.7, 0.9, 1);
 
 	vec3 color = mainColor * fresnel;
-	color = insideColor * (1.0 - fresnel) + mainColor * fresnel;
+	color = mix(insideColor,mainColor,fresnel);
 	fresnel = clamp(fresnel, 0.3, 1.0);
 
 	fragColor[0] = vec4(color, fresnel);

@@ -378,6 +378,7 @@ void TutorialGame::InitWorld() {
 		currentLevel = 2;
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 		ghost = gameLevel->GetGhost();
+		ghostai = gameLevel->GetGhostai();
 		ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
