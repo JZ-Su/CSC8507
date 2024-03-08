@@ -50,7 +50,13 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	ceilingTexture[3] = render->LoadTexture("Ceiling/ceiling_roughness.jpg");
 	ceilingTexture[4] = render->LoadTexture("Ceiling/ceiling_ao.jpg");
 	ceilingTexture[5] = render->LoadTexture("Ceiling/ceiling_height.png");
-	
+	wallTexture[0] = render->LoadTexture("Wall/tiles_0100_color_1k.png");
+	wallTexture[1] = render->LoadTexture("Wall/tiles_0100_normal_opengl_1k.png");
+	wallTexture[2] = DefualtTexture[2];// render->LoadTexture("Wall/wall_metalic.png");
+	wallTexture[3] = render->LoadTexture("Wall/tiles_0100_roughness_1k.jpg");
+	wallTexture[4] = render->LoadTexture("Wall/tiles_0100_ao_1k.jpg");
+	wallTexture[5] = render->LoadTexture("Wall/tiles_0100_height_1k.png");
+
 	bossMat = new MeshMaterial("Male_Guard.mat");
 	playerMat = new MeshMaterial("FemaleA.mat");
 	ghostMat = new MeshMaterial("Ghost.mat");
@@ -161,6 +167,31 @@ GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& di
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTexture, basicShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+
+	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
+	cube->GetPhysicsObject()->InitCubeInertia();
+
+	return cube;
+}
+
+GameObject* BasicExamples::CreateBigWall(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* cube = new GameObject("cube");
+
+	AABBVolume* volume = new AABBVolume(dimensions);
+	cube->SetBoundingVolume((CollisionVolume*)volume);
+
+	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTexture /*wallTexture[0]*/, basicShader));
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+
+	//cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, wallTexture[0], floorShader));
+	//cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+	//cube->GetRenderObject()->SetDefaultTexture(wallTexture[1], 1);
+	//cube->GetRenderObject()->SetDefaultTexture(wallTexture[2], 2);
+	//cube->GetRenderObject()->SetDefaultTexture(wallTexture[3], 3);
+	//cube->GetRenderObject()->SetDefaultTexture(wallTexture[4], 4);
+	//cube->GetRenderObject()->SetDefaultTexture(wallTexture[5], 5);
+
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
@@ -381,8 +412,8 @@ GameObject* BasicExamples::CreateTable(const Vector3& position, float inverseMas
 }
 
 GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-	GameObject* ghost = new GameObject("ghost");
 
+	GameObject* ghost = new GameObject("ghost");
 	AABBVolume* volume = new AABBVolume(dimensions);
 	ghost->SetBoundingVolume((CollisionVolume*)volume);
 	
@@ -556,21 +587,19 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 	}
 }
 
-StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vector3& dimensions, GameObject* player, float inverseMass) {
-	//GameObject* cube = new GameObject("cube");
-	AABBVolume* volume = new AABBVolume(dimensions); 
-	StateGameObject* ghost = new StateGameObject(player);
-
+StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vector3& dimensions, GameObject* player, float inverseMass, const Vector3& star, const Vector3& end) {
+	StateGameObject* ghost = new StateGameObject(star,end,player);
+	AABBVolume* volume = new AABBVolume(dimensions);
 	ghost->SetBoundingVolume((CollisionVolume*)volume);
-	ghost->GetTransform().SetPosition(position).SetScale(dimensions * 2);
-	ghost->SetRenderObject(new RenderObject(&ghost->GetTransform(), cubeMesh, nullptr, basicShader));
-	//LoadMaterialTextures(ghost, ghostMesh, ghostMat, render);
+	ghost->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	ghost->SetRenderObject(new RenderObject(&ghost->GetTransform(), ghostMesh, nullptr, ghostShader));
 	ghost->SetPhysicsObject(new PhysicsObject(&ghost->GetTransform(), ghost->GetBoundingVolume()));
+	ghost->GetRenderObject()->isAnimation = true;
 	ghost->GetRenderObject()->isAnimated = true;
-
+	LoadMaterialTextures(ghost, ghostMesh, ghostMat, render);
 	ghost->GetPhysicsObject()->SetInverseMass(inverseMass);
 	ghost->GetPhysicsObject()->InitCubeInertia();
-	ghost->SetCollisionResponse(false);
+	ghost->GetRenderObject()->SetColour(Vector4(1, 1, 1, 0.5));
 
 	return ghost;
 }

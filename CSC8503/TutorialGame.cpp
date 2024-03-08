@@ -192,13 +192,13 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Vector3 camdir = Mrot * Vector3(0, 0, -1);
 	Vector3 campos = targetpos - camdir * 20.0f;
 
-	//Ray collisionRay = Ray(targetpos, -camdir);
-	//RayCollision collisionRayData;
-	//if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
-	//{
-	//	if (collisionRayData.rayDistance < 6)
-	//		campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
-	//}
+	/*Ray collisionRay = Ray(targetpos, -camdir);
+	RayCollision collisionRayData;
+	if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
+	{
+		if (collisionRayData.rayDistance < 6)
+			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
+	}*/
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
@@ -259,7 +259,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	float yaw = q.ToEuler().y;
 
 	Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
-
+	gameLevel->GetGhostai()->Update(dt);
 	lockedObject->GetTransform().SetOrientation(lookat);
 
 	world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));
@@ -372,8 +372,8 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	isDebug = true;
-	//isDebug = false;
+	//isDebug = true;
+	isDebug = false;
 	if (isDebug) {
 		//Level 1
 		currentLevel = 2;
@@ -385,19 +385,19 @@ void TutorialGame::InitWorld() {
 		//currentLevel = 4;
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
-		//Level 3
-		//currentLevel = 6;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-		//boss = gameLevel->GetBoss();
-		//shield = gameLevel->GetShield();
-		//bossAnimation = gameLevel->getBossAnimation();
-		//bossCheersAnimation = gameLevel->getBossCheersAnimation();
-		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
-		//bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
-		//bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
-		//bossChasingAnimation = gameLevel->getBossChasingAnimation();
-		//iceCubeBullet = gameLevel->getIceCubeBullet();
-		//fireBallBullet = gameLevel->getFireBallBullet();
+		////Level 3
+		 //currentLevel = 6;
+		 //gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		 //boss = gameLevel->GetBoss();
+		 //shield = gameLevel->GetShield();
+		 //bossAnimation = gameLevel->getBossAnimation();
+		 //bossCheersAnimation = gameLevel->getBossCheersAnimation();
+		 //bossShootingAnimation = gameLevel->getBossShootingAnimation();
+		 //bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
+		 //bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
+		 //bossChasingAnimation = gameLevel->getBossChasingAnimation();
+		 //iceCubeBullet = gameLevel->getIceCubeBullet();
+		 //fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initial function
 		//currentLevel = 8;
@@ -406,7 +406,7 @@ void TutorialGame::InitWorld() {
 		//gameLevel->AddLevelToWorld(world, 0, false, false);
 	}
 	else {
-		currentLevel = 1;
+		currentLevel = 2;
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 		portal = gameLevel->GetConnection()->portal;
 		lockedObject = player;
@@ -958,6 +958,9 @@ void TutorialGame::UpdateLevel(float dt) {
 
 	// Level 1 stuff
 	if (currentLevel == 2) {
+		ghostai = gameLevel->GetGhostai();
+		ghostai->Update(dt);
+		UpdateGhostAnim(ghostai,ghostAnimation, dt);
 		UpdateGhostAnim(ghost, ghostAnimation, dt);
 		if (portal && !portal->isEnable) {
 			portal->isEnable = gameLevel->CheckCoinList();
@@ -965,6 +968,7 @@ void TutorialGame::UpdateLevel(float dt) {
 		else {
 			if (!isDebug) portal->GetRenderObject()->SetColour(Debug::GREEN);
 		}
+		
 	}
 	// Level 2
 	else if (currentLevel == 4) {
@@ -983,14 +987,23 @@ void TutorialGame::UpdateLevel(float dt) {
 			ExecuteAttack(dt);
 		}
 
-		health = (100 - (player->GetHealth())) * 0.01;
-		bosshealth = (100 - (gameLevel->GetBoss()->getBossHealth())) * 0.01;
 		if (player->GetHealth() > 100) {
 			player->SetHealth(100);
 		}
 		if (player->GetHealth() < 0) {
 			player->SetHealth(0);
 		}
+		health = (100 - (player->GetHealth())) * 0.01;
+		if (player->GetHealth() > 100) {
+			player->SetHealth(100);
+		}
+		if (player->GetHealth() < 0) {
+			player->SetHealth(0);
+		}
+
+		if (gameLevel->GetBoss()->getBossHealth() < 0) {gameLevel->GetBoss()->setHealth(0);}
+         bosshealth = (100 - (gameLevel->GetBoss()->getBossHealth())) * 0.01;
+		if (gameLevel->GetBoss()->getBossHealth() < 0) { gameLevel->GetBoss()->setHealth(0); }
 		//float aspect = Window::GetWindow()->GetScreenAspect();
 		//float delta = 0.1;
 		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) }, "blood", "health");
@@ -1003,9 +1016,10 @@ void TutorialGame::UpdateLevel(float dt) {
 
 		float distance = 0.2;
 		for (int i = 0; i < itemList.size(); i++) {
-			GameTechRenderer::CreateGameUI({ Vector3(-0.4f + (i * distance), -0.85f, -1.0f), Vector3(-0.4f + (i * distance), -0.95f, -1.0f),
-			Vector3(-0.2f + (i * distance), -0.95f, -1.0f), Vector3(-0.2f + (i * distance), -0.85f, -1.0f) }, itemList.at(i), "item");
+			GameTechRenderer::CreateGameUI({ Vector3(-0.4f + (i * distance), -0.83f, -1.0f), Vector3(-0.4f + (i * distance), -0.96f, -1.0f),
+			Vector3(-0.2f + (i * distance), -0.96f, -1.0f), Vector3(-0.2f + (i * distance), -0.83f, -1.0f) }, itemList.at(i), "item");
 		}
+		
 		GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f - bosshealth, 0.9f, -1.0f),
 			Vector3(0.5f - bosshealth, 0.95f, -1.0f) }, "blood", "health");
 	}

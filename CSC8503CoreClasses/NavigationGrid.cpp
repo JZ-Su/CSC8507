@@ -161,7 +161,7 @@ bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, Navigation
 
 	GridNode* startNode = &allNodes[(fromZ * gridWidth) + fromX];
 	GridNode* endNode	= &allNodes[(toZ * gridWidth) + toX];
-
+	
 	std::vector<GridNode*>  openList;
 	std::vector<GridNode*>  closedList;
 

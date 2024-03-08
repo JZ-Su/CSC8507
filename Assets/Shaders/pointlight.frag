@@ -29,13 +29,22 @@ vec3 gridSamplingDisk[20] = vec3[]
    vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
 );
 
+float smoothstep(float x, float a, float b){
+	x = clamp((x -a) / (b - a), 0.0, 1.0);
+	return x * x * (3 - 2 * x);
+}
+
+
 float ShadowCalculation(vec3 wrldPos)
 {
 	float far_plane = 200;
     vec3 fragToLight = wrldPos - shadowPos; 
 	float currentDepth=length(fragToLight);
 	
-	float bias = 0.05;
+	//float bias = 0.05;
+	vec3 normal = normalize(texture(normalTex, wrldPos.xy).xyz);
+    vec3 lightDir = normalize(lightPos - wrldPos);
+    float bias = smoothstep(max(0.1 * (1.0 - dot(normal, lightDir)), 0.05), 1.0, 0.0);
 	float shadow = 0.0;
     int samples = 20;
     float viewDistance = length(cameraPos - wrldPos);
@@ -43,7 +52,7 @@ float ShadowCalculation(vec3 wrldPos)
     for(int i = 0; i < samples; ++i)
     {
         float closestDepth = texture(shadowTex, fragToLight + gridSamplingDisk[i] * diskRadius).r;
-        closestDepth *= far_plane;   // undo mapping [0;1]
+        closestDepth *= far_plane;
         if(currentDepth - bias < closestDepth)
             shadow += 1.0;
     }
@@ -52,10 +61,6 @@ float ShadowCalculation(vec3 wrldPos)
 	return shadow;
 }
 
-float smoothstep(float x, float a, float b){
-	x = clamp((x -a) / (b - a), 0.0, 1.0);
-	return x * x * (3 - 2 * x);
-}
 
 float lerp(float x, float a, float b){
 	return a + x * (b - a);
