@@ -192,13 +192,13 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Vector3 camdir = Mrot * Vector3(0, 0, -1);
 	Vector3 campos = targetpos - camdir * 20.0f;
 
-	//Ray collisionRay = Ray(targetpos, -camdir);
-	//RayCollision collisionRayData;
-	//if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
-	//{
-	//	if (collisionRayData.rayDistance < 6)
-	//		campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
-	//}
+	/*Ray collisionRay = Ray(targetpos, -camdir);
+	RayCollision collisionRayData;
+	if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
+	{
+		if (collisionRayData.rayDistance < 6)
+			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
+	}*/
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
@@ -372,18 +372,18 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	isDebug = true;
-	//isDebug = false;
+	//isDebug = true;
+	isDebug = false;
 	if (isDebug) {
 		//Level 1
-		//currentLevel = 2;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		//ghost = gameLevel->GetGhost();
-		//ghostAnimation = gameLevel->getGhostAnimation();
+		currentLevel = 2;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		ghost = gameLevel->GetGhost();
+		ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
-		currentLevel = 4;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
+		//currentLevel = 4;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
 		//currentLevel = 6;
@@ -406,7 +406,7 @@ void TutorialGame::InitWorld() {
 		//gameLevel->AddLevelToWorld(world, 0, false, false);
 	}
 	else {
-		currentLevel = 1;
+		currentLevel = 2;
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 		portal = gameLevel->GetConnection()->portal;
 		lockedObject = player;

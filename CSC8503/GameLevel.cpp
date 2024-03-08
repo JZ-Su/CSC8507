@@ -129,10 +129,10 @@ void GameLevel::CreateLevel1() {
 	CreateLevel1_Handrail();
 
 	//wall
-	level1.AddObject(CreateCube(Vector3(0, 30, 101), Vector3(100, 30, 1), 0.0f));
-	level1.AddObject(CreateCube(Vector3(0, 30, -101), Vector3(100, 30, 1), 0.0f));
-	level1.AddObject(CreateCube(Vector3(101, 30, 0), Vector3(1, 30, 100), 0.0f));
-	level1.AddObject(CreateCube(Vector3(-101, 30, 0), Vector3(1, 30, 100), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(0, 30, 101), Vector3(100, 30, 1), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(0, 30, -101), Vector3(100, 30, 1), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(101, 30, 0), Vector3(1, 30, 100), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(-101, 30, 0), Vector3(1, 30, 100), 0.0f));
 	level1.AddObject(CreateCube(Vector3(70, 30, 77), Vector3(30, 30, 23), 0.0f));
 	level1.AddObject(CreateCube(Vector3(-70, 30, 77), Vector3(30, 30, 23), 0.0f));
 	//room
@@ -158,10 +158,10 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateWallLight(Vector3(-98, 40, -90), 0.0f, Vector3(0, 1, 0),90));
 	level1.AddObject(CreateHangLight(Vector3(0, 53, 0), Vector3(5, 5, 5), 0.0f));
 
-	level1.AddObject(CreateLight(Vector3(0, 40, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 100.0f, false, true));
-	level1.AddObject(CreateLight(Vector3(0, 30, 0),  Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, true, false));
-	level1.AddObject(CreateLight(Vector3(38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 30.0f, true, false));	
-	level1.AddObject(CreateLight(Vector3(-38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 30.0f, true, false));
+	level1.AddObject(CreateLight(Vector3(0, 40, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, false, true));
+	level1.AddObject(CreateLight(Vector3(0, 30, 0),  Vector4(1.0f, 0.8f, 0.3f, 1.0f), 70.0f, true, false));
+	level1.AddObject(CreateLight(Vector3(38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 25.0f, true, false));	
+	level1.AddObject(CreateLight(Vector3(-38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 25.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(90, 30, -90), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 70.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(-90, 30, -90), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 70.0f, true, false));
 	CreateLevel1_Coins();
@@ -175,9 +175,10 @@ void GameLevel::CreateLevel1() {
 
 void GameLevel::CreateLevel2() {
 	level2.AddObject(CreateCeiling(Vector3(160, 60, 160), Vector3(240, 1, 240), 0));
+	
 	level2.AddObject(CreateCube(Vector3(150, -2, 150), Vector3(200, 2, 200), 0.0f));
-	level2.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
-	level2.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, true, false));
+	level2.AddObject(CreateLight(Vector3(160, 58, 160), Vector4(0.0f, 0.0f, 0.0f, 1.0f), 200.0f, false, true));
+	level2.AddObject(CreateLight(Vector3(160, 58, 160), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 200.0f, true, false));
 
 	vector<Vector4> pixelData = render->LoadMap();
 	const int size = 64;

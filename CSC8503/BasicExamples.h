@@ -26,6 +26,8 @@ namespace NCL {
 		BasicExamples();
 		~BasicExamples();
 		GameObject* CreateCube(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+		GameObject* CreateBigWall(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
+
 		GameObject* CreateFloor(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
 		GameObject* CreateCeiling(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
 		GameObject* CreateAABB(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
@@ -111,6 +113,7 @@ namespace NCL {
 		Texture* DefualtTexture[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
 		Texture* floorTexture[6]   = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 		Texture* ceilingTexture[6]   = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+		Texture* wallTexture[6] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 		Shader* basicShader = nullptr;
 		Shader* floorShader = nullptr;
 		Shader* modelShader = nullptr;
