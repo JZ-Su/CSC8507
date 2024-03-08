@@ -372,8 +372,8 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	//isDebug = true;
-	isDebug = false;
+	isDebug = true;
+	//isDebug = false;
 	if (isDebug) {
 		//Level 1
 		currentLevel = 2;
@@ -382,8 +382,8 @@ void TutorialGame::InitWorld() {
 		ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
-		//currentLevel = 4;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
+		/*currentLevel = 4;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());*/
 
 		//Level 3
 		//currentLevel = 6;

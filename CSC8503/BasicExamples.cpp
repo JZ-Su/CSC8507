@@ -50,12 +50,12 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	ceilingTexture[3] = render->LoadTexture("Ceiling/ceiling_roughness.jpg");
 	ceilingTexture[4] = render->LoadTexture("Ceiling/ceiling_ao.jpg");
 	ceilingTexture[5] = render->LoadTexture("Ceiling/ceiling_height.png");
-	wallTexture[0] = render->LoadTexture("Wall/tiles_0100_color_1k.png");
-	wallTexture[1] = render->LoadTexture("Wall/tiles_0100_normal_opengl_1k.png");
+	wallTexture[0] = render->LoadTexture("Wall/tiles_0044_color_1k.jpg");
+	wallTexture[1] = render->LoadTexture("Wall/tiles_0044_normal_opengl_1k.png");
 	wallTexture[2] = DefualtTexture[2];// render->LoadTexture("Wall/wall_metalic.png");
-	wallTexture[3] = render->LoadTexture("Wall/tiles_0100_roughness_1k.jpg");
-	wallTexture[4] = render->LoadTexture("Wall/tiles_0100_ao_1k.jpg");
-	wallTexture[5] = render->LoadTexture("Wall/tiles_0100_height_1k.png");
+	wallTexture[3] = render->LoadTexture("Wall/tiles_0044_roughness_1k.jpg");
+	wallTexture[4] = render->LoadTexture("Wall/tiles_0044_ao_1k.jpg");
+	wallTexture[5] = render->LoadTexture("Wall/tiles_0044_height_1k.png");
 
 	bossMat = new MeshMaterial("Male_Guard.mat");
 	playerMat = new MeshMaterial("FemaleA.mat");
@@ -181,16 +181,16 @@ GameObject* BasicExamples::CreateBigWall(const Vector3& position, const Vector3&
 	cube->SetBoundingVolume((CollisionVolume*)volume);
 
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTexture /*wallTexture[0]*/, basicShader));
-	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
-
-	//cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, wallTexture[0], floorShader));
+	//cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTexture /*wallTexture[0]*/, basicShader));
 	//cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
-	//cube->GetRenderObject()->SetDefaultTexture(wallTexture[1], 1);
-	//cube->GetRenderObject()->SetDefaultTexture(wallTexture[2], 2);
-	//cube->GetRenderObject()->SetDefaultTexture(wallTexture[3], 3);
-	//cube->GetRenderObject()->SetDefaultTexture(wallTexture[4], 4);
-	//cube->GetRenderObject()->SetDefaultTexture(wallTexture[5], 5);
+
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, wallTexture[0], floorShader));
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+	cube->GetRenderObject()->SetDefaultTexture(wallTexture[1], 1);
+	cube->GetRenderObject()->SetDefaultTexture(wallTexture[2], 2);
+	cube->GetRenderObject()->SetDefaultTexture(wallTexture[3], 3);
+	cube->GetRenderObject()->SetDefaultTexture(wallTexture[4], 4);
+	cube->GetRenderObject()->SetDefaultTexture(wallTexture[5], 5);
 
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
