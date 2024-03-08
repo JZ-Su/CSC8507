@@ -412,8 +412,8 @@ GameObject* BasicExamples::CreateTable(const Vector3& position, float inverseMas
 }
 
 GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-	GameObject* ghost = new GameObject("ghost");
 
+	GameObject* ghost = new GameObject("ghost");
 	AABBVolume* volume = new AABBVolume(dimensions);
 	ghost->SetBoundingVolume((CollisionVolume*)volume);
 	
@@ -587,21 +587,19 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 	}
 }
 
-StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vector3& dimensions, GameObject* player, float inverseMass) {
-	//GameObject* cube = new GameObject("cube");
-	AABBVolume* volume = new AABBVolume(dimensions); 
-	StateGameObject* ghost = new StateGameObject(player);
-
+StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vector3& dimensions, GameObject* player, float inverseMass, const Vector3& star, const Vector3& end) {
+	StateGameObject* ghost = new StateGameObject(star,end,player);
+	AABBVolume* volume = new AABBVolume(dimensions);
 	ghost->SetBoundingVolume((CollisionVolume*)volume);
-	ghost->GetTransform().SetPosition(position).SetScale(dimensions * 2);
-	ghost->SetRenderObject(new RenderObject(&ghost->GetTransform(), cubeMesh, nullptr, basicShader));
-	//LoadMaterialTextures(ghost, ghostMesh, ghostMat, render);
+	ghost->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	ghost->SetRenderObject(new RenderObject(&ghost->GetTransform(), ghostMesh, nullptr, ghostShader));
 	ghost->SetPhysicsObject(new PhysicsObject(&ghost->GetTransform(), ghost->GetBoundingVolume()));
+	ghost->GetRenderObject()->isAnimation = true;
 	ghost->GetRenderObject()->isAnimated = true;
-
+	LoadMaterialTextures(ghost, ghostMesh, ghostMat, render);
 	ghost->GetPhysicsObject()->SetInverseMass(inverseMass);
 	ghost->GetPhysicsObject()->InitCubeInertia();
-	ghost->SetCollisionResponse(false);
+	ghost->GetRenderObject()->SetColour(Vector4(1, 1, 1, 0.5));
 
 	return ghost;
 }

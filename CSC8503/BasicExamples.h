@@ -76,16 +76,16 @@ namespace NCL {
 		GameObject* getIceCubeBullet() const { return iceCubeBullet; }
 		GameObject* getFireBallBullet() const { return fireBallBullet; }
 
-		StateGameObject* CreateAItest(const Vector3& position, const Vector3& dimensions,  GameObject* player,float inverseMass = 10.0f);
+		StateGameObject* CreateAItest(const Vector3& position, const Vector3& dimensions, GameObject* player, float inverseMass, const Vector3& star, const Vector3& end);
 
 		GameObject* CreateTestMesh(const Vector3& position, const Vector3& dimensions, float inverseMass);
 		void LoadMaterialTextures(GameObject* character, Mesh* mesh,MeshMaterial* material, GameTechRenderer* renderer);
 
 		Boss*		GetBoss() const { return boss; }
 		Player*		GetPlayer() const { return player; }
-		GameObject*	GetGhost() const { return ghost; }
+		GameObject*	GetGhost() const { return ghostmodle; }
 		GameObject* GetShield() const{ return shield; }
-
+		StateGameObject* GetGhostai() const { return ghost; }
 		void ExportToObj(const Mesh& mesh, const std::string& filename);
 
 	protected:
@@ -150,10 +150,12 @@ namespace NCL {
 		
 		Player* player = nullptr;
 		Boss* boss = nullptr;
-		GameObject* ghost;
+		GameObject* ghostmodle;
 		GameObject* shield;
 		GameObject* iceCubeBullet;
 		GameObject* fireBallBullet;
+
+		StateGameObject* ghost;
 
 	};
 }
