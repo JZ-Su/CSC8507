@@ -28,7 +28,7 @@ Debug/
 /x64/Debug/ALL_BUILD/
 /x64/Debug/*.lib
 *.pch
-*.sln
+#*.sln
 *.vcxproj
 *.filters
 *.json
