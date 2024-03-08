@@ -259,7 +259,6 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	float yaw = q.ToEuler().y;
 
 	Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
-	gameLevel->GetGhostai()->Update(dt);
 	lockedObject->GetTransform().SetOrientation(lookat);
 
 	world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));
@@ -372,7 +371,7 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	//isDebug = true;
+	isDebug = true;
 	isDebug = false;
 	if (isDebug) {
 		//Level 1
@@ -406,7 +405,7 @@ void TutorialGame::InitWorld() {
 		//gameLevel->AddLevelToWorld(world, 0, false, false);
 	}
 	else {
-		currentLevel = 2;
+		currentLevel = 1;
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 		portal = gameLevel->GetConnection()->portal;
 		lockedObject = player;
@@ -888,6 +887,7 @@ void TutorialGame::SwitchLevel() {
 			portal->isEnable = false;
 			portal->GetRenderObject()->SetColour(Debug::RED);
 			ghost = gameLevel->GetGhost();
+			ghostai = gameLevel->GetGhostai();
 			ghostAnimation = gameLevel->getGhostAnimation();
 			break;
 		case 2:
@@ -958,7 +958,6 @@ void TutorialGame::UpdateLevel(float dt) {
 
 	// Level 1 stuff
 	if (currentLevel == 2) {
-		ghostai = gameLevel->GetGhostai();
 		ghostai->Update(dt);
 		UpdateGhostAnim(ghostai,ghostAnimation, dt);
 		UpdateGhostAnim(ghost, ghostAnimation, dt);

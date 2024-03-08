@@ -412,7 +412,6 @@ GameObject* BasicExamples::CreateTable(const Vector3& position, float inverseMas
 }
 
 GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-
 	GameObject* ghost = new GameObject("ghost");
 	AABBVolume* volume = new AABBVolume(dimensions);
 	ghost->SetBoundingVolume((CollisionVolume*)volume);
@@ -447,22 +446,6 @@ Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensio
 	LoadMaterialTextures(character, bossMesh, bossMat, render);
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
 	character->GetPhysicsObject()->InitCubeInertia();
-	return character;
-}
-
-GameObject* BasicExamples::CreateTestMesh(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-	GameObject* character = new GameObject("testmesh");
-
-	AABBVolume* volume = new AABBVolume(dimensions);
-	character->SetBoundingVolume((CollisionVolume*)volume);
-
-	character->GetTransform().SetScale(dimensions * 2).SetPosition(position);
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), ghostMesh, nullptr, basicShader));
-	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
-	character->GetPhysicsObject()->SetInverseMass(inverseMass);
-	character->GetPhysicsObject()->InitCubeInertia();
-	character->GetRenderObject()->isAnimated = true;
-
 	return character;
 }
 

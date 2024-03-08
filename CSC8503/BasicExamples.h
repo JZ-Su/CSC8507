@@ -78,7 +78,6 @@ namespace NCL {
 
 		StateGameObject* CreateAItest(const Vector3& position, const Vector3& dimensions, GameObject* player, float inverseMass, const Vector3& star, const Vector3& end);
 
-		GameObject* CreateTestMesh(const Vector3& position, const Vector3& dimensions, float inverseMass);
 		void LoadMaterialTextures(GameObject* character, Mesh* mesh,MeshMaterial* material, GameTechRenderer* renderer);
 
 		Boss*		GetBoss() const { return boss; }
