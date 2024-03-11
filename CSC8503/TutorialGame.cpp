@@ -391,11 +391,11 @@ void TutorialGame::InitWorld() {
 	/*isDebug = false;*/
 	if (isDebug) {
 		//Level 1
-		currentLevel = 2;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		ghost = gameLevel->GetGhost();
-		ghostai = gameLevel->GetGhostai();
-		ghostAnimation = gameLevel->getGhostAnimation();
+		//currentLevel = 2;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		//ghost = gameLevel->GetGhost();
+		//ghostai = gameLevel->GetGhostai();
+		//ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
 		currentLevel = 4;
@@ -1240,7 +1240,8 @@ void TutorialGame::InitAudio() {
 		std::cout << "Failed to initialize SoundManager" << std::endl;
 	}
 	AddSound();
-	soundManager.setSoundVolume("walking", 1.0f);
+	soundManager.setSoundVolume("walking", 0.7f);
+	soundManager.setSoundVolume("door", 1.0f);
 	/*previousPlayerPosition = player->GetTransform().GetPosition();*/
 	previousMainCameraPosition = world->GetMainCamera().GetPosition();
 }
