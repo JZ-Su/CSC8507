@@ -65,6 +65,9 @@ namespace NCL {
 			void increaseBossHealth(float Health) {
 				bossHealth += Health;
 			}
+			void setHealth(float Inhealth) {
+				bossHealth = Inhealth;
+			}
 			float attackRange;
 		private:
 			bool isShooting;

@@ -5,7 +5,6 @@ uniform sampler2D 	metalTex;
 uniform sampler2D 	roughTex;
 uniform sampler2D 	aoTex;
 uniform sampler2D 	heightTex;
-//uniform samplerCube shadowTex;
 
 uniform vec3	cameraPos;
 
@@ -20,23 +19,8 @@ in Vertex {
 
 out vec4 fragColor[5];
 
-//float ShadowCalculation(vec3 wrldPos)
-//{
-//	float far_plane = 200;
-//    vec3 fragToLight = wrldPos - lightPos; 
-//	float closestDepth = texture(shadowTex, normalize(fragToLight)).r;
-//	closestDepth*=far_plane;
-//	float currentDepth=length(fragToLight);
-//	float bias=0.1;
-//	float shadow = currentDepth-bias > closestDepth? 0.0 : 1.0;
-//
-//	return shadow;
-//}
-
 void main(void)
 {
-	//float shadow = ShadowCalculation(IN.worldPos);
-
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
 
 	vec3 viewDir = normalize ( cameraPos - IN . worldPos );
@@ -64,5 +48,5 @@ void main(void)
 	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);
 	fragColor[2] = vec4(metal, roughness, 0.0, 1.0);
 	fragColor[3] = aoCol;
-	fragColor[4] = vec4(0.1, 0.0, 0.0, 1.0);
+	fragColor[4] = vec4(0.7, 0.0, 0.0, 1.0);
 }

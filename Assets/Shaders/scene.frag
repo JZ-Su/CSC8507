@@ -8,13 +8,6 @@ uniform sampler2D 	roughTex;
 uniform sampler2D 	aoTex;
 uniform sampler2D 	heightTex;
 
-//uniform samplerCubeShadow shadowTex;
-//uniform samplerCube shadowTex;
-
-//uniform vec3	lightPos;
-//uniform float	lightRadius;
-//uniform vec4	lightColour;
-
 uniform vec3	cameraPos;
 
 uniform bool hasTexture;
@@ -32,28 +25,11 @@ in Vertex
 
 out vec4 fragColor[5];
 
-//float ShadowCalculation(vec3 wrldPos)
-//{
-//	float far_plane = 200;
-//    vec3 fragToLight = wrldPos - lightPos; 
-//	float closestDepth = texture(shadowTex, normalize(fragToLight)).r;
-//	closestDepth*=far_plane;
-//	float currentDepth=length(fragToLight);
-//	float bias=0.1;
-//	float shadow = currentDepth-bias > closestDepth? 0.0 : 1.0;
-//
-//	return shadow;
-//}
-
 void main(void)
 {
-	//float shadow = ShadowCalculation(IN.worldPos);//= texture(shadowTex, IN.shadowProj)*0.5f;
-
-	//vec3  incident = normalize ( lightPos - IN.worldPos );
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
 
 	vec3 viewDir = normalize ( cameraPos - IN . worldPos );
-	//vec3 halfDir = normalize ( incident + viewDir );
 	vec3 viewTangent = normalize(TBN * viewDir);
 	
 	vec4 albedo = IN.colour;

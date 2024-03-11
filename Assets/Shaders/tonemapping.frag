@@ -30,8 +30,10 @@ void main(void)
 {
     vec4 hdrColor = texture(colorTex, IN.texCoord);      
     vec4 bloomColor = texture(bloomTex, IN.texCoord);
-    hdrColor += bloomColor; // additive blending
+    hdrColor.rgb += bloomColor.rgb; // additive blending
    
     fragColor = hdrColor;
+	//fragColor.rgb = pow(fragColor.rgb, vec3(1.0 / 2.2f));
 	fragColor.rgb = ACES_Tonemapping(fragColor.rgb);
+	fragColor.rgb = pow(fragColor.rgb, vec3(1.0 / 2.2f));
 }

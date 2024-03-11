@@ -140,7 +140,7 @@ namespace NCL {
 			MeshAnimation* playerJumpAnimation;
 			MeshAnimation* bossAttackingAnimation;
 			MeshAnimation* bossChasingAnimation;
-			
+			StateGameObject* ghostai;
 
 			float health;
 			float totalTime;

@@ -113,7 +113,7 @@ int main() {
 	
 	TutorialGame* g = new TutorialGame();
 
-	//NetworkedGame* h = new NetworkedGame();
+	NetworkedGame* h = new NetworkedGame();
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 
 	//sound
@@ -123,9 +123,7 @@ int main() {
 	//}
 	//engine->play2D("../externals/media/getout.ogg", true);
 
-	//TestNetworking();
-	//TestBehaviourTree();
-	//TestPushdownAutomata(w); 
+	TestNetworking();
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
 		float dt = w->GetTimer().GetTimeDeltaSeconds();
