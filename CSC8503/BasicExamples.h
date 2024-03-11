@@ -105,6 +105,7 @@ namespace NCL {
 		Mesh* coinMesh = nullptr;
 		Mesh* wallLightMesh = nullptr;
 		Mesh* hangLightMesh = nullptr;
+		Mesh* layerMesh = nullptr;
 
 		Texture* basicTexture = nullptr;
 		Texture* IceCubeTexture = nullptr;
@@ -133,6 +134,7 @@ namespace NCL {
 		MeshMaterial* coinMat = nullptr;
 		MeshMaterial* wallLightMat = nullptr;
 		MeshMaterial* hangLightMat = nullptr;
+		MeshMaterial* layerMat = nullptr;
 
 		MeshAnimation* bossAnimation = nullptr;
 		MeshAnimation* bossCheersAnimation = nullptr;

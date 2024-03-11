@@ -119,12 +119,16 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
 	level1.AddObject(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
 	//layers
-	level1.AddObject(CreateCube(Vector3(-80, 5, -56), Vector3(20, 5, 44), 0.0f));
-	//level1.AddObject(CreateLayer(Vector3(0, -5, 0), Vector3(10, 20, 10), 0.0f));
-	level1.AddObject(CreateCube(Vector3(80, 5, -56), Vector3(20, 5, 44), 0));
-	level1.AddObject(CreateCube(Vector3(0, 5, 45), Vector3(40, 5, 55), 0.0f));
-	level1.AddObject(CreateCube(Vector3(0, 15, 90), Vector3(40, 5, 10), 0.0f));
-	level1.AddObject(CreateCube(Vector3(0, 25, 95), Vector3(20, 5, 5.1), 0.0f));
+	level1.AddObject(CreateAABB(Vector3(-80, 5, -56), Vector3(20, 5, 44), 0.0f));
+	level1.AddObject(CreateAABB(Vector3(80, 5, -56), Vector3(20, 5, 44), 0));
+	level1.AddObject(CreateAABB(Vector3(0, 5, 45), Vector3(40, 5, 55), 0.0f));
+	level1.AddObject(CreateAABB(Vector3(0, 15, 90), Vector3(40, 5, 10), 0.0f));
+	level1.AddObject(CreateAABB(Vector3(0, 25, 95), Vector3(20, 5, 5.1), 0.0f));
+	level1.AddObject(CreateLayer(Vector3(0, 0, 41), Vector3(40, 10, 45), 0.0f));
+	level1.AddObject(CreateLayer(Vector3(0, 10, 125), Vector3(40, 10, 40), 0.0f));
+	level1.AddObject(CreateLayer(Vector3(0, 20, 112), Vector3(20, 10, 20), 0.0f));
+	level1.AddObject(CreateLayer(Vector3(-100, 0, -51), Vector3(40, 10, 45), 0.0f));
+	level1.AddObject(CreateLayer(Vector3(100, 0, -51), Vector3(40, 10, 45), 0.0f));
 	
 	CreateLevel1_Handrail();
 
