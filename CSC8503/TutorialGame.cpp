@@ -61,6 +61,7 @@ for this module, even in the coursework, but you can add it if you like!
 
 void TutorialGame::InitialiseAssets() {
 	InitCamera();
+	InitAudio();
 	InitWorld();
 }
 
@@ -79,7 +80,24 @@ void TutorialGame::UpdateGame(float dt) {
 	if (lockedObject != nullptr) LockedObjectMovement(dt);
 	if (lockedObject == nullptr) Debug::Print("Press F to lock camera", Vector2(5, 80));
 	else Debug::Print("Press F to free camera", Vector2(5, 80));
-
+	isWalking = player->GetIsWalk();
+	/*playerPosition = player->GetTransform().GetPosition();*/
+	mainCameraPosition = world->GetMainCamera().GetPosition();
+	if (isWalking) {
+		FMOD_VECTOR position = { mainCameraPosition.x, mainCameraPosition.y, mainCameraPosition.z };
+		if (!lastWalkingState) {
+			soundManager.play3DSound("walking", position);
+		}
+		else {
+			soundManager.update3DSoundPosition("walking", position);
+		}
+		UpdateListenerPosition(dt, mainCameraPosition);
+	}
+	else if (lastWalkingState) {
+		soundManager.stopSound("walking");
+	}
+	lastWalkingState = isWalking;
+	soundManager.update();
 	totalTime += dt;
 	SelectObject();
 	MoveSelectedObject();
@@ -358,19 +376,17 @@ void TutorialGame::InitCamera() {
 void TutorialGame::InitWorld() {
 	world->ClearAndErase();
 	physics->Clear();
-
 	gameLevel = new GameLevel(renderer);
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 	player = gameLevel->GetPlayer();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
-
 	/*
 		Please switch the debug mode here
 	*/
 	isDebug = true;
-	//isDebug = false;
+	/*isDebug = false;*/
 	if (isDebug) {
 		////Level 1
 		//currentLevel = 2;
@@ -379,11 +395,11 @@ void TutorialGame::InitWorld() {
 		//ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
-		/*currentLevel = 4;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());*/
+		currentLevel = 4;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		////Level 3
-		 currentLevel = 6;
+		 /*currentLevel = 6;
 		 gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
 		 boss = gameLevel->GetBoss();
 		 shield = gameLevel->GetShield();
@@ -394,19 +410,20 @@ void TutorialGame::InitWorld() {
 		 bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
 		 bossChasingAnimation = gameLevel->getBossChasingAnimation();
 		 iceCubeBullet = gameLevel->getIceCubeBullet();
-		 fireBallBullet = gameLevel->getFireBallBullet();
+		 fireBallBullet = gameLevel->getFireBallBullet();*/
 
 		//Level 4 initial function
-		//currentLevel = 8;
-		//player->GetTransform().SetPosition(Vector3(-70, 10, -50));
-		//gameLevel->AddLevelToWorld(world, 0, true, false);
-		//gameLevel->AddLevelToWorld(world, 0, false, false);
+		/*currentLevel = 8;
+		player->GetTransform().SetPosition(Vector3(-70, 10, -50));
+		gameLevel->AddLevelToWorld(world, 0, true, false);
+		gameLevel->AddLevelToWorld(world, 0, false, false);*/
 	}
 	else {
 		currentLevel = 1;
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 		portal = gameLevel->GetConnection()->portal;
 		lockedObject = player;
+		PlayLevelBGM("level0");
 	}
 
 	score = 0;
@@ -886,6 +903,7 @@ void TutorialGame::SwitchLevel() {
 			portal->GetRenderObject()->SetColour(Debug::RED);
 			ghost = gameLevel->GetGhost();
 			ghostAnimation = gameLevel->getGhostAnimation();
+			PlayLevelBGM("level1");
 			break;
 		case 2:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel1(), true);
@@ -893,6 +911,7 @@ void TutorialGame::SwitchLevel() {
 			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
+			PlayLevelBGM("level0");
 			break;
 		case 3:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
@@ -900,6 +919,7 @@ void TutorialGame::SwitchLevel() {
 			player->GetTransform().SetPosition(Vector3(235, 10, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel2()->portal;
+			PlayLevelBGM("level2");
 			break;
 		case 4:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), true);
@@ -907,6 +927,7 @@ void TutorialGame::SwitchLevel() {
 			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
+			PlayLevelBGM("level0");
 			break;
 		case 5:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
@@ -926,6 +947,7 @@ void TutorialGame::SwitchLevel() {
 			bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
 			bossChasingAnimation = gameLevel->getBossChasingAnimation();
 			fireBallBullet = gameLevel->getFireBallBullet();
+			PlayLevelBGM("level3");
 			break;
 		case 6:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true);
@@ -933,6 +955,7 @@ void TutorialGame::SwitchLevel() {
 			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
+			PlayLevelBGM("level0");
 			break;
 		case 7:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), true);
@@ -940,6 +963,7 @@ void TutorialGame::SwitchLevel() {
 			gameLevel->AddLevelToWorld(world, 0, false, false);
 			player->GetTransform().SetPosition(Vector3(-70, 10, -50)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			PlayLevelBGM("level4");
 			break;
 		default:
 			break;
@@ -967,6 +991,9 @@ void TutorialGame::UpdateLevel(float dt) {
 	else if (currentLevel == 4) {
 		for (const auto& element : gameLevel->GetL2Doors()) {
 			element->Update(dt);
+			if (element->GetState() != "keepState" && element->GetTimer() - dt == 0) {
+				soundManager.playSound("door");
+			}
 		}
 	}
 	// Level 3
@@ -1165,4 +1192,46 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 			fireBallBullet->SetIsHiding(true);
 		}
 	}
+}
+
+void TutorialGame::AddSound() {
+	soundManager.loadSound("walking", "../externals/media/walk.mp3",true,false);
+	soundManager.loadSound("door", "../externals/media/door.mp3", false, false);
+	std::map<std::string, std::string> bgmPaths = {
+	   {"level1", "../externals/media/bgm/ophelia.mp3"},
+	   {"level2", "../externals/media/bgm/TownTheme.mp3"},
+	   {"level3", "../externals/media/bgm/BattleInTheWinter.mp3"},
+	   {"level4", "../externals/media/bgm/jntm.mp3"},
+	   {"level0","../externals/media/bgm/safezone.mp3"},
+	};
+	soundManager.loadAllBGM(bgmPaths);
+}
+void TutorialGame::UpdateListenerPosition(float dt, const Vector3& playerPosition) {
+	//Vector3 playerVelocity = (playerPosition - previousMainCameraPosition) / dt;
+	FMOD_VECTOR position = { playerPosition.x, playerPosition.y, playerPosition.z };
+	/*FMOD_VECTOR velocity = { playerVelocity.x, playerVelocity.y, playerVelocity.z };*/
+	FMOD_VECTOR velocity = { 0,0,0};
+	FMOD_VECTOR forward = { std::sin(world->GetMainCamera().GetYaw()) * std::cos(world->GetMainCamera().GetPitch()),
+		std::sin(world->GetMainCamera().GetPitch()), std::cos(world->GetMainCamera().GetYaw())* std::cos(world->GetMainCamera().GetPitch()) };
+	FMOD_VECTOR up = { 0, 1, 0 };
+	
+	soundManager.setListenerPosition(position, velocity, forward, up);
+	previousMainCameraPosition = playerPosition;
+}
+void TutorialGame::InitAudio() {
+	if (!soundManager.init()) {
+		std::cout << "Failed to initialize SoundManager" << std::endl;
+	}
+	AddSound();
+	soundManager.setSoundVolume("walking", 1.0f);
+	/*previousPlayerPosition = player->GetTransform().GetPosition();*/
+	previousMainCameraPosition = world->GetMainCamera().GetPosition();
+}
+
+void TutorialGame::PlayLevelBGM(const std::string& levelName) {
+	if (!currentBGM.empty()) {
+		soundManager.stopSound(currentBGM);
+	}
+	currentBGM = levelName;
+	soundManager.playSound(currentBGM);
 }

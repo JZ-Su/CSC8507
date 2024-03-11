@@ -11,6 +11,7 @@
 #include "GameLevel.h"
 #include "BasicExamples.h"
 #include "MeshAnimation.h"
+#include "SoundManager.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -63,6 +64,7 @@ namespace NCL {
 			void InitialiseAssets();
 
 			void InitCamera();
+			void InitAudio();
 			void UpdateKeys(float dt);
 
 			void InitWorld();
@@ -161,11 +163,13 @@ namespace NCL {
 			void UpdateTrackingBall(Vector3 ballPosition,const Vector3& playerPosition, float speed, float dt);
 			void IceCubeBulletLogic(float dt);
 			void FireBallBulletLogic(float dt);
+			void AddSound();
+			void UpdateListenerPosition(float dt, const Vector3& playerPosition);
 			float h = 0, v = 0;
 
 			void UpdateLevel(float dt);
 			void SwitchLevel();
-
+			void PlayLevelBGM(const std::string& levelName);
 			int coinCount;
 
 			GameObject* exit = nullptr;
@@ -183,6 +187,13 @@ namespace NCL {
 			const float shootingDuration = 0.65f;
 			bool playShootingAnimation = false;
 			static std::vector<std::string> itemList;
+
+			SoundManager soundManager;
+			Vector3 previousMainCameraPosition;
+			bool lastWalkingState = false;
+			Vector3 mainCameraPosition;
+			bool isWalking = false;
+			string currentBGM="";
 		};
 	}
 }

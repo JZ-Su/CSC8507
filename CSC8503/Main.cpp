@@ -24,11 +24,9 @@
 #include "BehaviourSequence.h"
 #include "BehaviourAction.h"
 
-#include <irrKlang.h>
 
 using namespace NCL;
 using namespace CSC8503;
-using namespace irrklang;
 
 
 #include <chrono>
@@ -119,11 +117,11 @@ int main() {
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 
 	//sound
-	ISoundEngine* engine = createIrrKlangDevice();
-	if (!engine) {
-		return 0;
-	}
-	engine->play2D("../externals/media/getout.ogg", true);
+	//ISoundEngine* engine = createIrrKlangDevice();
+	//if (!engine) {
+	//	return 0;
+	//}
+	//engine->play2D("../externals/media/getout.ogg", true);
 
 	//TestNetworking();
 	//TestBehaviourTree();

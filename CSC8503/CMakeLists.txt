@@ -15,6 +15,7 @@ set(Header_Files
     "Door.h"
     "Boss.h"
     "Coin.h"
+    "SoundManager.h"
 )
 source_group("Header Files" FILES ${Header_Files})
 
@@ -31,6 +32,7 @@ set(Source_Files
     "Door.cpp"
     "Boss.cpp"
     "Coin.cpp"
+    "SoundManager.cpp"
 )
 
 if(USE_VULKAN)
@@ -217,9 +219,12 @@ include_directories("../OpenGLRendering/")
 include_directories("../NCLCoreClasses/")
 include_directories("../CSC8503CoreClasses/")
 include_directories("../externals/includes/")
+include_directories("../externals/includes/fmod")
+
 #include_directories("../assimp-5.3.1/include/")
 
-target_link_libraries(${PROJECT_NAME} LINK_PUBLIC "../externals/libs/irrKlang")
+target_link_libraries(${PROJECT_NAME} LINK_PUBLIC "../externals/libs/fmod_vc")
+target_link_libraries(${PROJECT_NAME} LINK_PUBLIC "../externals/libs/fmodL_vc")
 target_link_libraries(${PROJECT_NAME} LINK_PUBLIC NCLCoreClasses)
 target_link_libraries(${PROJECT_NAME} LINK_PUBLIC CSC8503CoreClasses)
 target_link_libraries(${PROJECT_NAME} LINK_PUBLIC OpenGLRendering)
