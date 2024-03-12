@@ -202,7 +202,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	SetDebugStringBufferSizes(10000);
 	SetDebugLineBufferSizes(1000);
 
-	vector<char*> data(6, nullptr);
+	vector<char*> data(7, nullptr);
 	int width;
 	int height;
 	int channel;
@@ -214,9 +214,15 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	UImap["greenbottle"] = data[1];
 	TextureLoader::LoadTexture("redbottle.png", data[2], width, height, channel, flag);
 	UImap["redbottle"] = data[2];
-	TextureLoader::LoadTexture("inventory.png", data[3], width, height, channel, flag);
-	UImap["inventory"] = data[3];
-
+	TextureLoader::LoadTexture("inventory1.png", data[3], width, height, channel, flag);
+	UImap["inventory1"] = data[3];
+	TextureLoader::LoadTexture("inventory2.png", data[4], width, height, channel, flag);
+	UImap["inventory2"] = data[4];
+	TextureLoader::LoadTexture("inventory3.png", data[5], width, height, channel, flag);
+	UImap["inventory3"] = data[5];
+	TextureLoader::LoadTexture("inventory4.png", data[6], width, height, channel, flag);
+	UImap["inventory4"] = data[6];
+	
 }
 
 GameTechRenderer::~GameTechRenderer() {

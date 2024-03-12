@@ -85,6 +85,8 @@ namespace NCL {
 		GameObject*	GetGhost() const { return ghostmodle; }
 		GameObject* GetShield() const{ return shield; }
 		StateGameObject* GetGhostai() const { return ghost; }
+		StateGameObject* GetGhostai2() const { return ghost2; }
+
 		void ExportToObj(const Mesh& mesh, const std::string& filename);
 
 	protected:
@@ -157,6 +159,7 @@ namespace NCL {
 		GameObject* fireBallBullet;
 
 		StateGameObject* ghost;
+		StateGameObject* ghost2;
 
 	};
 }

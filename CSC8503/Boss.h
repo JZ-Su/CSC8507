@@ -61,6 +61,7 @@ namespace NCL {
 			}
 			void decreaseBossHealth(float Health) {
 				bossHealth -= Health;
+				bossHealth = std::max(bossHealth, 0.0f);
 			}
 			void increaseBossHealth(float Health) {
 				bossHealth += Health;
