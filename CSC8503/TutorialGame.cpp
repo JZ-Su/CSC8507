@@ -1053,7 +1053,9 @@ void TutorialGame::UpdateLevel(float dt) {
 	// Level 4
 	else if (currentLevel == 8) {
 		gameLevel->GetL4Door()->Update(dt);
-
+		if (gameLevel->GetL4Door()->GetState() != "keepState" && gameLevel->GetL4Door()->GetTimer() - dt == 0) {
+			soundManager.playSound("door");
+		}
 		GameObject* beginDet = gameLevel->GetBeginArea();
 		GameObject* trueEndDet = gameLevel->GetTrueEndArea();
 		GameObject* falseEndDet = gameLevel->GetFalseEndArea();
