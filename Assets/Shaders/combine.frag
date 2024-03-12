@@ -23,13 +23,14 @@ void main(void)
 	albedo.rgb = pow(albedo.rgb, vec3(2.2));
 	vec4 lightDiff = texture(lightDiffTex, IN.texCoord);
 	vec4 lightSpec = texture(lightSpecTex, IN.texCoord);
+	float halfLambert = lightSpec.a;
 
-	fragColor[0].rgb = albedo.rgb * 0.08f * vec3(0.3,0.5,1.0);//* 0.1f * vec3(0.1,0.3,1.0);
+	fragColor[0].rgb = albedo.rgb * 0.08f * vec3(0.3,0.5,1.0) * halfLambert;//* 0.1f * vec3(0.1,0.3,1.0);
 	fragColor[0].rgb += lightDiff.rgb;
 	fragColor[0].rgb += lightSpec.rgb;
 	
 	fragColor[0].a = lightDiff.a;
-	if(lightDiff.a <= 0.1){
+	if(lightDiff.a == 0.1){
 		fragColor[0].rgb = albedo.rgb;
 		fragColor[0].a = albedo.a;
 	}
