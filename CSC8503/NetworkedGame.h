@@ -37,15 +37,20 @@ namespace NCL {
 
 			bool isServer() { return thisServer != nullptr; }
 			bool isClient() { return thisClient != nullptr; }
+
+			int GetPlayerPeerID(int num) { return PlayersList[num]; }
 			int GetClientPlayerNum();
 			int GetClientPlayerNum(int peerID);
 			void ServerUpdatePlayerList();
 		protected:
+
+			void InitialiseAssets() override;
 			void UpdateAsServer(float dt);
 			void UpdateAsClient(float dt);
 
 			void BroadcastSnapshot(bool deltaFrame);
 			void UpdateMinimumState();
+			GameObject* AddNetPlayerToWorld(const Vector3& position, int playerNum);
 			std::map<int, int> stateIDs;
 
 			GameServer* thisServer;
@@ -53,10 +58,10 @@ namespace NCL {
 			float timeToNextPacket;
 			int packetsToSnapshot;
 
-			std::vector<int> PlayersList;
-			std::vector<NetworkObject*> networkObjects;
+			std::map<int, NetworkObject*> networkObjects;
 
-			std::map<int, GameObject*> serverPlayers;
+			std::vector<int> PlayersList;
+			std::vector<GameObject*> serverPlayers;
 			GameObject* localPlayer;
 			PushdownMachine* MenuSystem;
 		};

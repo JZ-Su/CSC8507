@@ -111,12 +111,12 @@ int main() {
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
 	
-	TutorialGame* g = new TutorialGame();
-	bool networkDebug = false;
+	//TutorialGame* g = new TutorialGame();
+	bool networkDebug = true;
 	
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 	
-		NetworkedGame* h = new NetworkedGame();
+		NetworkedGame* g = new NetworkedGame();
 	//sound
 	//ISoundEngine* engine = createIrrKlangDevice();
 	//if (!engine) {
@@ -179,7 +179,7 @@ int main() {
 
 		if (networkDebug)
 		{
-			h->UpdateGame(dt);
+			g->UpdateGame(dt);
 		}
 		
 	}

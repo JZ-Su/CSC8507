@@ -61,7 +61,7 @@ namespace NCL {
 		protected:
 			bool isDebug;
 
-			void InitialiseAssets();
+			virtual void InitialiseAssets();
 
 			void InitCamera();
 			void InitAudio();
