@@ -99,7 +99,6 @@ namespace NCL {
 			GLuint		lightDiffTex;
 			GLuint		lightSpecTex;
 			Texture* skinTex;
-			//Texture* hdrTex;
 
 			//postprocessing
 			OGLShader* upSampleShader;

@@ -4,6 +4,7 @@ uniform sampler2D 	colorTex;
 uniform sampler2D 	lightDiffTex;
 uniform sampler2D 	lightSpecTex;
 uniform sampler2D 	depthTex;
+uniform sampler2D 	indexTex;
 
 in Vertex
 {
@@ -23,14 +24,14 @@ void main(void)
 	albedo.rgb = pow(albedo.rgb, vec3(2.2));
 	vec4 lightDiff = texture(lightDiffTex, IN.texCoord);
 	vec4 lightSpec = texture(lightSpecTex, IN.texCoord);
+	float halfLambert = texture(indexTex, IN.texCoord).b;
 	
 	fragColor[0].a = 1.0;
-	if(lightDiff.a > 5){
+	if(halfLambert > 1){
 		fragColor[0].rgb = albedo.rgb;
 		fragColor[0].a = albedo.a;
 	}
 	else{
-		float halfLambert = lightSpec.a / lightDiff.a;
 		fragColor[0].rgb = albedo.rgb * 0.08f * vec3(0.3,0.5,1.0) * halfLambert;//* 0.1f * vec3(0.1,0.3,1.0);
 		fragColor[0].rgb += lightDiff.rgb;
 		fragColor[0].rgb += lightSpec.rgb;

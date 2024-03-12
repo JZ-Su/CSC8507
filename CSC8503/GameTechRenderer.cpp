@@ -87,7 +87,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowSize.x, windowSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, NULL);
 
 	glGenTextures(1, &indexTex);
 	glBindTexture(GL_TEXTURE_2D, indexTex);
@@ -151,7 +151,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glGenFramebuffers(1, &postFBO);
 	glGenFramebuffers(1, &processFBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, postFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, indexTex, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, addTex, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, processTex[0], 0);
 	glDrawBuffers(2, buffers);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -174,7 +174,6 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	quadMesh->SetVertexTextureCoords({ Vector2(0.0, 1.0), Vector2(0.0, 0.0) , Vector2(1.0, 0.0) , Vector2(1.0, 1.0) });
 	quadMesh->UploadToGPU();
 	skinTex = LoadTexture("Player/preintegrated_falloff_2D.png");
-	//hdrTex = LoadTexture("hall.hdr");
 
 	//Skybox!
 	skyboxShader = new OGLShader("skybox.vert", "skybox.frag");
@@ -281,43 +280,26 @@ void GameTechRenderer::LoadSkybox() {
 }
 
 void GameTechRenderer::Loadhdr() {
-	/*std::string filenames[6] = {
-		"/Cubemap/skyrender0004.png",
-		"/Cubemap/skyrender0001.png",
-		"/Cubemap/skyrender0003.png",
-		"/Cubemap/skyrender0006.png",
-		"/Cubemap/skyrender0002.png",
-		"/Cubemap/skyrender0005.png"
-	};
+	std::string filenames= "hall.hdr";
 
-	int width[6] = { 0 };
-	int height[6] = { 0 };
-	int channels[6] = { 0 };
-	int flags[6] = { 0 };
+	int width = 0;
+	int height = 0;
+	int channels = 0;
+	int flags = 0;
+	char* texData = nullptr;
 
-	vector<char*> texData(6, nullptr);
+	TextureLoader::LoadTexture(filenames, texData, width, height, channels, flags);
+	glGenTextures(1, &hdrTex);
+	glBindTexture(GL_TEXTURE_2D, hdrTex);
 
-	for (int i = 0; i < 6; ++i) {
-		TextureLoader::LoadTexture(filenames[i], texData[i], width[i], height[i], channels[i], flags[i]);
-		if (i > 0 && (width[i] != width[0] || height[0] != height[0])) {
-			std::cout << __FUNCTION__ << " cubemap input textures don't match in size?\n";
-			return;
-		}
-	}
-	glGenTextures(1, &skyboxTex);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, texData);
 
-	GLenum type = channels[0] == 4 ? GL_RGBA : GL_RGB;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	for (int i = 0; i < 6; ++i) {
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width[i], height[i], 0, type, GL_UNSIGNED_BYTE, texData[i]);
-	}
-
-	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);*/
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void GameTechRenderer::RenderFrame() {
@@ -496,7 +478,7 @@ void GameTechRenderer::RenderCamera() {
 	int colourLocation = 0;
 	int hasVColLocation = 0;
 	int hasTexLocation = 0;
-
+	int shadowPosLocation = 0;
 	int cameraLocation = 0;
 
 	for (const auto& i : activeObjects) {
@@ -548,6 +530,7 @@ void GameTechRenderer::RenderCamera() {
 				colourLocation = glGetUniformLocation(shader->GetProgramID(), "objectColour");
 				hasVColLocation = glGetUniformLocation(shader->GetProgramID(), "hasVertexColours");
 				hasTexLocation = glGetUniformLocation(shader->GetProgramID(), "hasTexture");
+				shadowPosLocation = glGetUniformLocation(shader->GetProgramID(), "shadowPos");
 
 				cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
 
@@ -561,6 +544,7 @@ void GameTechRenderer::RenderCamera() {
 
 				glUniformMatrix4fv(projLocation, 1, false, (float*)&projMatrix);
 				glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);
+				glUniform3fv(shadowPosLocation, 1, (float*)&shadowPosition);
 
 				activeShader = shader;
 			}
@@ -758,6 +742,11 @@ void GameTechRenderer::RenderCombine() {
 	int colorTexLocation = glGetUniformLocation(combineShader->GetProgramID(), "colorTex");
 	glUniform1i(colorTexLocation, 3);
 
+	glActiveTexture(GL_TEXTURE0 + 4);
+	glBindTexture(GL_TEXTURE_2D, indexTex);
+	int indexTexLocation = glGetUniformLocation(combineShader->GetProgramID(), "indexTex");
+	glUniform1i(indexTexLocation, 4);
+
 	BindMesh(*quadMesh);
 	DrawBoundMesh();
 	glDepthFunc(GL_LEQUAL);
@@ -815,7 +804,7 @@ void GameTechRenderer::RenderProcess() {
 void GameTechRenderer::RenderTone() {
 	BindShader(*toneShader);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, indexTex);
+	glBindTexture(GL_TEXTURE_2D, addTex);
 	int colorTexLocation = glGetUniformLocation(toneShader->GetProgramID(), "colorTex");
 	glUniform1i(colorTexLocation, 0);
 

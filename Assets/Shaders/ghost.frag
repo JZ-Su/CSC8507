@@ -2,6 +2,7 @@
 uniform sampler2D mainTex;
 
 uniform vec3	cameraPos;
+uniform vec3	shadowPos;
 
 in Vertex {
 	vec2 texCoord;
@@ -41,5 +42,5 @@ void main(void) {
 	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);
 	fragColor[2] = vec4(fresnel, 0.0, 0.0, 1.0);
 	fragColor[3] = vec4(0.0, 0.0, 0.0, 1.0);
-	fragColor[4] = vec4(0.5, 0.0, 1.0, 1.0);
+	fragColor[4] = vec4(0.5, 0.0, 2.0, 1.0);
 }

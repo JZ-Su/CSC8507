@@ -7,6 +7,7 @@ uniform sampler2D 	aoTex;
 uniform sampler2D 	heightTex;
 
 uniform vec3	cameraPos;
+uniform vec3	shadowPos;
 
 in Vertex {
 	vec2 texCoord;
@@ -40,10 +41,12 @@ void main(void)
 	vec3 aoCol = texture(aoTex,uv).rgb;
 
 	vec4 albedo = texture(mainTex, uv);
+	vec3  shadowDir = normalize ( shadowPos - IN.worldPos);
+	float halL = (max (0.01 , dot ( shadowDir , normal ))+ 1.0) * 0.5;
 
 	fragColor[0] = vec4(albedo.rgb, 1.0);
 	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);
 	fragColor[2] = vec4(metal, roughness, 0.0, 1.0);
 	fragColor[3] = vec4(aoCol, 1.0);
-	fragColor[4] = vec4(0.6, 0.0, 0.0, 1.0);
+	fragColor[4] = vec4(0.6, 0.0, halL, 1.0);
 }
