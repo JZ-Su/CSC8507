@@ -174,6 +174,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	quadMesh->SetVertexTextureCoords({ Vector2(0.0, 1.0), Vector2(0.0, 0.0) , Vector2(1.0, 0.0) , Vector2(1.0, 1.0) });
 	quadMesh->UploadToGPU();
 	skinTex = LoadTexture("Player/preintegrated_falloff_2D.png");
+	//hdrTex = LoadTexture("hall.hdr");
 
 	//Skybox!
 	skyboxShader = new OGLShader("skybox.vert", "skybox.frag");
@@ -184,6 +185,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	skyboxMesh->UploadToGPU();
 
 	LoadSkybox();
+	//Loadhdr();
 
 	glGenVertexArrays(1, &lineVAO);
 	glGenVertexArrays(1, &textVAO);
@@ -276,6 +278,46 @@ void GameTechRenderer::LoadSkybox() {
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}
+
+void GameTechRenderer::Loadhdr() {
+	/*std::string filenames[6] = {
+		"/Cubemap/skyrender0004.png",
+		"/Cubemap/skyrender0001.png",
+		"/Cubemap/skyrender0003.png",
+		"/Cubemap/skyrender0006.png",
+		"/Cubemap/skyrender0002.png",
+		"/Cubemap/skyrender0005.png"
+	};
+
+	int width[6] = { 0 };
+	int height[6] = { 0 };
+	int channels[6] = { 0 };
+	int flags[6] = { 0 };
+
+	vector<char*> texData(6, nullptr);
+
+	for (int i = 0; i < 6; ++i) {
+		TextureLoader::LoadTexture(filenames[i], texData[i], width[i], height[i], channels[i], flags[i]);
+		if (i > 0 && (width[i] != width[0] || height[0] != height[0])) {
+			std::cout << __FUNCTION__ << " cubemap input textures don't match in size?\n";
+			return;
+		}
+	}
+	glGenTextures(1, &skyboxTex);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTex);
+
+	GLenum type = channels[0] == 4 ? GL_RGBA : GL_RGB;
+
+	for (int i = 0; i < 6; ++i) {
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width[i], height[i], 0, type, GL_UNSIGNED_BYTE, texData[i]);
+	}
+
+	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);*/
 }
 
 void GameTechRenderer::RenderFrame() {
@@ -441,6 +483,8 @@ void GameTechRenderer::RenderSkybox() {
 void GameTechRenderer::RenderCamera() {
 	glBindFramebuffer(GL_FRAMEBUFFER, bufferFBO);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
 
 	Matrix4 viewMatrix = gameWorld.GetMainCamera().BuildViewMatrix();
 	Matrix4 projMatrix = gameWorld.GetMainCamera().BuildProjectionMatrix(hostWindow.GetScreenAspect());
@@ -599,6 +643,7 @@ void GameTechRenderer::RenderLight() {
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glBlendFunc(GL_ONE, GL_ONE);
+	glEnable(GL_BLEND);
 	glCullFace(GL_FRONT);
 	glDepthFunc(GL_ALWAYS);
 	glDepthMask(GL_FALSE);
@@ -686,7 +731,7 @@ void GameTechRenderer::RenderLight() {
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 	glClearColor(0.2f, 0.2f, 0.2f, 1);
-
+	glDisable(GL_BLEND);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
