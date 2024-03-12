@@ -395,6 +395,7 @@ void TutorialGame::InitWorld() {
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 		ghost = gameLevel->GetGhost();
 		ghostai = gameLevel->GetGhostai();
+		ghostai2 = gameLevel->GetGhostai2();
 		ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
@@ -984,7 +985,9 @@ void TutorialGame::UpdateLevel(float dt) {
 	// Level 1 stuff
 	if (currentLevel == 2) {
 		ghostai->Update(dt);
+		ghostai2->Update(dt);
 		UpdateGhostAnim(ghostai,ghostAnimation, dt);
+		UpdateGhostAnim(ghostai2, ghostAnimation, dt);
 		UpdateGhostAnim(ghost, ghostAnimation, dt);
 		if (portal && !portal->isEnable) {
 			portal->isEnable = gameLevel->CheckCoinList();
@@ -1034,10 +1037,10 @@ void TutorialGame::UpdateLevel(float dt) {
 		//float aspect = Window::GetWindow()->GetScreenAspect();
 		//float delta = 0.1;
 		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) }, "blood", "health");
-		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.8f, -1.0f), Vector3(-0.4, -1.0f, -1.0f), Vector3(-0.2, -1.0f, -1.0f), Vector3(-0.2f, -0.8f, -1.0f) }, "inventory", "item");
-		GameTechRenderer::CreateGameUI({ Vector3(-0.2, -0.8f, -1.0f), Vector3(-0.2, -1.0f, -1.0f), Vector3(0.0f, -1.0f, -1.0f), Vector3(0.0f, -0.8f, -1.0f) }, "inventory", "item");
-		GameTechRenderer::CreateGameUI({ Vector3(0.0, -0.8f, -1.0f), Vector3(0.0f, -1.0f, -1.0f), Vector3(0.2f, -1.0f, -1.0f), Vector3(0.2f, -0.8f, -1.0f) }, "inventory", "item");
-		GameTechRenderer::CreateGameUI({ Vector3(0.2, -0.8f, -1.0f), Vector3(0.2, -1.0f, -1.0f), Vector3(0.4f, -1.0f, -1.0f), Vector3(0.4f, -0.8f, -1.0f) }, "inventory", "item");
+		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.8f, -1.0f), Vector3(-0.4, -1.0f, -1.0f), Vector3(-0.2, -1.0f, -1.0f), Vector3(-0.2f, -0.8f, -1.0f) }, "inventory1", "item");
+		GameTechRenderer::CreateGameUI({ Vector3(-0.2, -0.8f, -1.0f), Vector3(-0.2, -1.0f, -1.0f), Vector3(0.0f, -1.0f, -1.0f), Vector3(0.0f, -0.8f, -1.0f) }, "inventory2", "item");
+		GameTechRenderer::CreateGameUI({ Vector3(0.0, -0.8f, -1.0f), Vector3(0.0f, -1.0f, -1.0f), Vector3(0.2f, -1.0f, -1.0f), Vector3(0.2f, -0.8f, -1.0f) }, "inventory3", "item");
+		GameTechRenderer::CreateGameUI({ Vector3(0.2, -0.8f, -1.0f), Vector3(0.2, -1.0f, -1.0f), Vector3(0.4f, -1.0f, -1.0f), Vector3(0.4f, -0.8f, -1.0f) }, "inventory4", "item");
 
 		itemList = Player::GetItemList();
 

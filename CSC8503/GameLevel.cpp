@@ -171,8 +171,8 @@ void GameLevel::CreateLevel1() {
 	CreateLevel1_Coins();
 
 	level1.AddObject(ghostmodle = CreateGhost(Vector3(15, 10, 0), Vector3(5, 5, 5), 0.0f));
-	level1.AddObject(ghost = CreateAItest(Vector3(20,2,20), Vector3(5, 5, 5),player, 0.0f,Vector3(20, 2, 20),Vector3(40,2,40)));
-
+	level1.AddObject(ghost = CreateAItest(Vector3(-85,10,-30), Vector3(5, 5, 5),player, 0.0f,Vector3(-85, 10, -20),Vector3(-85,10,-70)));
+	level1.AddObject(ghost2 = CreateAItest(Vector3(85, 10, -30), Vector3(5, 5, 5), player, 0.0f, Vector3(85, 10, -20), Vector3(85, 10, -70)));
 	vector<GameObject*> port = CreatePortal(Vector3(0, 35, 100));
 	level1.AddObject(port);
 	level1.portal = level1.objectList.back();
