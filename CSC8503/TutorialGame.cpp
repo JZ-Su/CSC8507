@@ -401,25 +401,25 @@ void TutorialGame::InitWorld() {
 		//currentLevel = 4;
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
-		////Level 3
-		 //currentLevel = 6;
-		 //gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-		 //boss = gameLevel->GetBoss();
-		 //shield = gameLevel->GetShield();
-		 //bossAnimation = gameLevel->getBossAnimation();
-		 //bossCheersAnimation = gameLevel->getBossCheersAnimation();
-		 //bossShootingAnimation = gameLevel->getBossShootingAnimation();
-		 //bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
-		 //bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
-		 //bossChasingAnimation = gameLevel->getBossChasingAnimation();
-		 //iceCubeBullet = gameLevel->getIceCubeBullet();
-		 //fireBallBullet = gameLevel->getFireBallBullet();
+		//Level 3
+		//currentLevel = 6;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		//boss = gameLevel->GetBoss();
+		//shield = gameLevel->GetShield();
+		//bossAnimation = gameLevel->getBossAnimation();
+		//bossCheersAnimation = gameLevel->getBossCheersAnimation();
+		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
+		//bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
+		//bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
+		//bossChasingAnimation = gameLevel->getBossChasingAnimation();
+		//iceCubeBullet = gameLevel->getIceCubeBullet();
+		//fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initial function
-		/*currentLevel = 8;
-		player->GetTransform().SetPosition(Vector3(-70, 10, -50));
-		gameLevel->AddLevelToWorld(world, 0, true, false);
-		gameLevel->AddLevelToWorld(world, 0, false, false);*/
+		//currentLevel = 8;
+		//player->GetTransform().SetPosition(Vector3(-70, 10, -50));
+		//gameLevel->AddLevelToWorld(world, 0, true, false);
+		//gameLevel->AddLevelToWorld(world, 0, false, false);
 	}
 	else {
 		currentLevel = 1;

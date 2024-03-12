@@ -116,7 +116,7 @@ int main() {
 	
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 	
-		NetworkedGame* g = new NetworkedGame();
+	NetworkedGame* g = new NetworkedGame();
 	//sound
 	//ISoundEngine* engine = createIrrKlangDevice();
 	//if (!engine) {
@@ -160,7 +160,7 @@ int main() {
 			g->InitGame();
 			break;
 		case NCL::CSC8503::OnGoing:
-			g->UpdateGame(dt);
+			if(!networkDebug) g->UpdateGame(dt);
 			break;
 		case NCL::CSC8503::Pause:
 			g->ShowPause(dt);
