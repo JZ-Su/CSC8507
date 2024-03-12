@@ -31,9 +31,13 @@ void main(void) {
 
 	vec3 color = mainColor * fresnel;
 	color = mix(insideColor,mainColor,fresnel);
+	color= clamp(color, 0.0, 1.0);
 	fresnel = clamp(fresnel, 0.3, 1.0);
 
 	fragColor[0] = vec4(color, fresnel);
+	if(fresnel > 0.9){
+		fragColor[0].rgb += vec3(0.0, 0.0, 0.5);
+	}
 	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);
 	fragColor[2] = vec4(fresnel, 0.0, 0.0, 1.0);
 	fragColor[3] = vec4(0.0, 0.0, 0.0, 1.0);

@@ -29,6 +29,10 @@ void main(void)
 	fragColor[0].rgb += lightSpec.rgb;
 	
 	fragColor[0].a = lightDiff.a;
+	if(lightDiff.a <= 0.1){
+		fragColor[0].rgb = albedo.rgb;
+		fragColor[0].a = albedo.a;
+	}
 
 	fragColor[1] = vec4(0, 0, 0, 1);
 	float brightness = max(max(fragColor[0].r, fragColor[0].g), fragColor[0].b);
