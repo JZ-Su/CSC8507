@@ -7,7 +7,7 @@ layer
 Diffuse:/Floor/floor_color.jpg
 Bump:/Floor/floor_normal.png
 Metallic:/Defualt/black.jpg
-Roughness:/Defualt/halfgrey.jpg
+Roughness:/Floor/floor_roughness.jpg
 AO:/Floor/floor_ao.jpg
 Height:/Floor/floor_height.png
 player

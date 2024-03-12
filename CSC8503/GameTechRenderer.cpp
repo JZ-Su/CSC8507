@@ -177,6 +177,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	//Skybox!
 	skyboxShader = new OGLShader("skybox.vert", "skybox.frag");
+	//skyboxShader = new OGLShader("skybox.vert", "environment.frag");
 	skyboxMesh = new OGLMesh();
 	skyboxMesh->SetVertexPositions({ Vector3(-1, 1,-1), Vector3(-1,-1,-1) , Vector3(1,-1,-1) , Vector3(1,1,-1) });
 	skyboxMesh->SetVertexIndices({ 0,1,2,2,3,0 });

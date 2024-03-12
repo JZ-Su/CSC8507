@@ -133,12 +133,6 @@ void main(void)
 	vec4 addTex = texture(addTex, texCoord.xy);
 	vec4 indexTex = texture(indexTex, texCoord.xy);
 	float shadow = ShadowCalculation(worldPos);
-
-
-	fragColor[0].rgb = vec3(0.0, 0.0, 0.0);
-	fragColor[1].rgb = vec3(0.0, 0.0, 0.0);
-	fragColor[0].a = 1.0;
-	fragColor[1].a = 1.0;
 	
 	if(indexTex.r == 0.1){
 		float metal = data.r;
@@ -158,7 +152,9 @@ void main(void)
 
 		fragColor[0].rgb = baseCol * lightColour.rgb * atten * lambert  * shadow * aoCol;
 		fragColor[1].rgb = specCol * lightColour.rgb * sFactor * atten * shadow * aoCol;
-
+		fragColor[1].rgb = vec3(0.0, 0.0, 0.0);
+		fragColor[0].a = 1.0;
+		fragColor[1].a = 1.0;
 	}
 
 	if(indexTex.r == 0.2){
@@ -189,6 +185,8 @@ void main(void)
 
 		fragColor[0].rgb = diffuseCol * (1.0 - skin) + skinDiffCol * skin;
 		fragColor[1].rgb = specCol * lightColour.rgb * sFactor * atten * shadow;
+		fragColor[0].a = 1.0;
+		fragColor[1].a = 1.0;
 	}
 
 	if(indexTex.r == 0.3){	
@@ -221,6 +219,8 @@ void main(void)
 		
 		fragColor[0].rgb = lightColour.rgb * albedo.rgb * halfLambert * atten;
 		fragColor[1].rgb = specularCol1 + specularCol2;
+		fragColor[0].a = 1.0;
+		fragColor[1].a = 1.0;
 	}
 
 	if(indexTex.r == 0.4){
@@ -234,6 +234,8 @@ void main(void)
 
 		fragColor[0].rgb = baseCol * lightColour.rgb * lambert * atten * shadow;
 		fragColor[1].rgb = specCol * lightColour.rgb * sFactor * atten * shadow;
+		fragColor[0].a = 1.0;
+		fragColor[1].a = 1.0;
 	}
 
 	if(indexTex.r == 0.5){
@@ -242,6 +244,8 @@ void main(void)
 			fragColor[0].rgb += vec3(0, 0, 0.5);
 		}
 		fragColor[0].a = data.r;
+		fragColor[1].rgb = vec3(0.0, 0.0, 0.0);
+		fragColor[1].a = 1.0;
 	}
 
 	if(indexTex.r == 0.6){
@@ -249,8 +253,8 @@ void main(void)
 		float roughness = data.g;
 		float bright = addTex.r;
 
-		bright = pow(bright, 1) * 5;
-		vec3 brightCol = vec3(0.9, 0.6, 0.1) * bright;
+		bright = pow(bright, 2) * 3;
+		vec3 brightCol = vec3(0.8, 0.6, 0.2) * bright;
 		
 		vec3 F0 = vec3(0.04);
 		F0 = mix(F0, albedo.rgb, metal);
@@ -273,6 +277,8 @@ void main(void)
 		
 		fragColor[0].rgb = Lo;
 		fragColor[1].rgb = brightCol;
+		fragColor[0].a = 1.0;
+		fragColor[1].a = 1.0;
 	}
 
 	if(indexTex.r == 0.7){
@@ -300,6 +306,8 @@ void main(void)
         vec3 Lo = (kD * albedo.rgb / PI + specular) * lightColour.rgb * atten * NdotL * shadow; 
 		
 		fragColor[0].rgb = Lo;
-
+		fragColor[1].rgb = vec3(0.0, 0.0, 0.0);
+		fragColor[0].a = 1.0;
+		fragColor[1].a = 1.0;
 	}
 }

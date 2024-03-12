@@ -391,15 +391,15 @@ void TutorialGame::InitWorld() {
 	/*isDebug = false;*/
 	if (isDebug) {
 		//Level 1
-		//currentLevel = 2;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		//ghost = gameLevel->GetGhost();
-		//ghostai = gameLevel->GetGhostai();
-		//ghostAnimation = gameLevel->getGhostAnimation();
+		currentLevel = 2;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		ghost = gameLevel->GetGhost();
+		ghostai = gameLevel->GetGhostai();
+		ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
-		currentLevel = 4;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
+		//currentLevel = 4;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		////Level 3
 		 //currentLevel = 6;
