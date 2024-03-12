@@ -112,10 +112,11 @@ int main() {
 	w->LockMouseToWindow(true);
 	
 	TutorialGame* g = new TutorialGame();
-
-	NetworkedGame* h = new NetworkedGame();
+	bool networkDebug = false;
+	
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
-
+	
+		NetworkedGame* h = new NetworkedGame();
 	//sound
 	//ISoundEngine* engine = createIrrKlangDevice();
 	//if (!engine) {
@@ -123,7 +124,8 @@ int main() {
 	//}
 	//engine->play2D("../externals/media/getout.ogg", true);
 
-	TestNetworking();
+	//TestNetworking();
+	
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
 		float dt = w->GetTimer().GetTimeDeltaSeconds();
@@ -143,7 +145,6 @@ int main() {
 		}
 
 		w->SetTitle("Gametech frame time:" + std::to_string(1000.0f * dt));
-
 		switch (g->GetState())
 		{
 		case NCL::CSC8503::MainMenu:
@@ -175,7 +176,12 @@ int main() {
 		}
 
 		if (g->GetState() == Exit) break;
-		//h->UpdateGame(dt);
+
+		if (networkDebug)
+		{
+			h->UpdateGame(dt);
+		}
+		
 	}
 	Window::DestroyGameWindow();
 }

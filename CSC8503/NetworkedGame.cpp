@@ -1,3 +1,4 @@
+#include "GameServer.h"
 #include "NetworkedGame.h"
 #include "NetworkPlayer.h"
 #include "NetworkObject.h"
@@ -28,6 +29,14 @@ NetworkedGame::NetworkedGame()	{
 
 
 	MenuSystem = new PushdownMachine(new MultiplayerMenu());
+	MenuSystem->SetGame(this);
+
+	InitialiseAssets();
+	PlayersList.clear();
+	for (int i = 0; i < 4; ++i)
+	{
+		PlayersList.push_back(-1);
+	}
 }
 
 NetworkedGame::~NetworkedGame()	{
@@ -36,15 +45,24 @@ NetworkedGame::~NetworkedGame()	{
 	delete MenuSystem;
 }
 
-void NetworkedGame::StartAsServer() {
+bool NetworkedGame::StartAsServer() {
+	if (thisServer != nullptr)
+	{
+		return true;
+	}
 	thisServer = new GameServer(NetworkBase::GetDefaultPort(), 4);
 
 	thisServer->RegisterPacketHandler(Received_State, this);
 
 	StartLevel();
+	return true;
 }
 
-void NetworkedGame::StartAsClient(char a, char b, char c, char d) {
+bool NetworkedGame::StartAsClient(char a, char b, char c, char d) {
+	if (thisClient != nullptr)
+	{
+		return true;
+	}
 	thisClient = new GameClient();
 	thisClient->Connect(a, b, c, d, NetworkBase::GetDefaultPort());
 
@@ -54,9 +72,15 @@ void NetworkedGame::StartAsClient(char a, char b, char c, char d) {
 	thisClient->RegisterPacketHandler(Player_Disconnected, this);
 
 	StartLevel();
+	return true;
 }
 
 void NetworkedGame::UpdateGame(float dt) {
+	if (!MenuSystem->Update(dt))
+	{
+		return;
+		//isGameover = true;
+	}
 	timeToNextPacket -= dt;
 	if (timeToNextPacket < 0) {
 		if (thisServer) {
@@ -75,7 +99,7 @@ void NetworkedGame::UpdateGame(float dt) {
 		StartAsClient(127,0,0,1);
 	}
 
-	//TutorialGame::UpdateGame(dt);
+	TutorialGame::UpdateGame(dt);
 }
 
 void NetworkedGame::UpdateAsServer(float dt) {
@@ -172,5 +196,54 @@ void NetworkedGame::OnPlayerCollision(NetworkPlayer* a, NetworkPlayer* b) {
 		newPacket.playerID = b->GetPlayerNum();
 		thisClient->SendPacket(newPacket);
 	}
+}
+
+int NetworkedGame::GetClientPlayerNum()
+{
+	if (thisClient)
+	{
+		for (int i = 1; i < 4; ++i)
+		{
+			if (PlayersList[i] == thisClient->GetPeerID())
+			{
+				return i;
+			}
+		}
+	}
+	return -1;
+}
+
+int NetworkedGame::GetClientPlayerNum(int peerID)
+{
+	for (int i = 1; i < 4; ++i)
+	{
+		if (PlayersList[i] == peerID)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+void NetworkedGame::ServerUpdatePlayerList()
+{
+	if (thisServer == nullptr)
+	{
+		return;
+	}
+	PlayersList[0] = 0;
+	int peerID;
+	for (int i = 0; i < 3; ++i)
+	{
+		if (thisServer->GetNetPeer(i, peerID))
+		{
+			PlayersList[i + 1] = peerID;
+		}
+		else
+		{
+			PlayersList[i + 1] = -1;
+		}
+	}
+	PLayerListPacket plist(PlayersList);
+	thisServer->SendGlobalPacket(plist);
 }
 

@@ -37,6 +37,39 @@ namespace NCL::CSC8503 {
 		}
 	};
 
+	struct PLayerListPacket : public GamePacket
+	{
+		char playerList[4];
+		PLayerListPacket(std::vector<int>& serverPlayerList)
+		{
+			type = Message;
+			size = sizeof(PLayerListPacket);
+
+			for (int i = 0; i < 4; ++i)
+			{
+				playerList[i] = serverPlayerList[i] + 48;
+			}
+		}
+
+		void GetPlayerList(std::vector<int>& clientPlayerList)
+		{
+			for (int i = 0; i < 4; ++i)
+			{
+				clientPlayerList[i] = playerList[i] - 48;
+			}
+		}
+	};
+	struct PlayerStatePacket : public GamePacket
+	{
+		char playerNum;
+		char state[4] = { 0,0,0,0 };
+
+		PlayerStatePacket()
+		{
+			type = Player_State;
+			size = sizeof(PlayerStatePacket);
+		}
+	};
 	class NetworkObject		{
 	public:
 		NetworkObject(GameObject& o, int id);
