@@ -34,8 +34,7 @@ namespace NCL::Maths {
 		void		Normalise(); 
 		Quaternion	Normalised() const;
 
-		static Quaternion LookRotation(const Vector3& forward, const Vector3& up);
-
+			
 		static float Dot(const Quaternion &a, const Quaternion &b);
 
 		static Quaternion	Lerp(const Quaternion &from, const Quaternion &to, float by);

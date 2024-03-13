@@ -54,10 +54,7 @@ namespace NCL {
 		GameObject* CreateLight(const Vector3& position, const Vector4& color, float radius, bool islight, bool isshadow);
 		
 		GameObject* CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		GameObject* CreateRollingRock(const Vector3& position, float radius, float inverseMass = 2.0f);
 		GameObject* CreateShield(const Vector3& position, const Vector3& dimensions, float inverseMass);
-		GameObject* CreateShieldProp(const Vector3& position, const Vector3& dimensions, float inverseMass=0.0f);
-		GameObject* CreateSpeedProp(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
 		GameObject* CreateWallLight(const Vector3& position, float inverseMass = 0.0f, const Vector3& tilt = Vector3(1, 0, 0), int angle = 0.0f);
 		GameObject* CreateHangLight(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
 		Player*     CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
@@ -68,7 +65,6 @@ namespace NCL {
 		
 		MeshAnimation* getBossAnimation() const { return bossAnimation; }
 		MeshAnimation* getBossCheersAnimation() const { return bossCheersAnimation; }
-		MeshAnimation* getBossAngryAnimation() const { return bossAngryAnimation; }
 		MeshAnimation* getBossShootingAnimation() const { return bossShootingAnimation; }
 		MeshAnimation* getBossFlinchAnimation() const { return bossFlinchAnimation; }
 		MeshAnimation* getGhostAnimation() const { return ghostAnimation; }
@@ -103,9 +99,7 @@ namespace NCL {
 		Mesh* bossMesh = nullptr;
 		Mesh* playerMesh = nullptr;
 		Mesh* ghostMesh = nullptr;
-		Mesh* rockMesh = nullptr;
 		Mesh* shieldMesh = nullptr;
-		Mesh* speedPropMesh = nullptr;
 		Mesh* bookshelfMesh = nullptr;
 		Mesh* tableMesh = nullptr;
 		Mesh* columnMesh = nullptr;
@@ -119,8 +113,6 @@ namespace NCL {
 		Texture* basicTexture = nullptr;
 		Texture* IceCubeTexture = nullptr;
 		Texture* shieldTexture = nullptr;
-		Texture* speedPropTexture = nullptr;
-		Texture* FireBallTexture = nullptr;
 		Texture* DefualtTexture[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
 		Texture* floorTexture[6]   = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 		Texture* ceilingTexture[6]   = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
@@ -151,7 +143,6 @@ namespace NCL {
 
 		MeshAnimation* bossAnimation = nullptr;
 		MeshAnimation* bossCheersAnimation = nullptr;
-		MeshAnimation* bossAngryAnimation = nullptr;
 		MeshAnimation* bossShootingAnimation = nullptr;
 		MeshAnimation* bossFlinchAnimation = nullptr;
 		MeshAnimation* bossChasingAnimation = nullptr;

@@ -94,24 +94,12 @@ namespace NCL::CSC8503 {
 			return worldID;
 		}
 
-		void SetIsHiding(bool IsHiding,Vector3 position) {
+		void SetIsHiding(bool IsHiding) {
 			isHiding = IsHiding;
-			this->GetTransform().SetPosition(position);
-		}
-
-		void SetIsNotHiding() {
-			isHiding = false;
 		}
 
 		bool GetIsHiding() const {
 			return isHiding;
-		}
-		void SetIsBolckBack(bool IsBlockBack) {
-			isBlockBack = IsBlockBack;
-		}
-
-		bool GetIsBlockBack() const {
-			return isBlockBack;
 		}
 
 		void SetExistenceTime(float ExistenceTime) {
@@ -149,7 +137,7 @@ namespace NCL::CSC8503 {
 
 		bool hasCollision;
 		bool isHiding;
-		bool isBlockBack;
+
 	};
 }
 

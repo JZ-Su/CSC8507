@@ -132,7 +132,6 @@ namespace NCL {
 			GameObject* fireBallBullet;
 			MeshAnimation* bossAnimation;
 			MeshAnimation* bossCheersAnimation;
-			MeshAnimation* bossAngryAnimation;
 			MeshAnimation* bossShootingAnimation;
 			MeshAnimation* bossFlinchAnimation;
 			MeshAnimation* ghostAnimation;
@@ -165,9 +164,6 @@ namespace NCL {
 			void UpdateTrackingBall(Vector3 ballPosition,const Vector3& playerPosition, float speed, float dt);
 			void IceCubeBulletLogic(float dt);
 			void FireBallBulletLogic(float dt);
-			void UpdateShieldPosition(float dt);
-			void RollStone(GameObject* stone, const Vector3& forceDirection, float forceMagnitude);
-			
 			void AddSound();
 			void UpdateListenerPosition(float dt, const Vector3& playerPosition);
 			float h = 0, v = 0;
@@ -178,28 +174,18 @@ namespace NCL {
 			int coinCount;
 
 			GameObject* exit = nullptr;
-			GameObject* rollingRock = nullptr;
-			GameObject* shieldProp = nullptr;
-			GameObject* speedProp = nullptr;
 			bool hasRotation = true;
 			bool playerIsHit = false;
-			bool isCloseToPlayer = false;
 			bool hasReverse = false;
 			int mapIndex = 0;
 
 			int iceCubeBulletFrames = 0;
 			int currentLevel;
-			int randomBullet;
 			GameObject* portal;
 			float shootingTimer = 0.0f;
 			float attackingTimer = 0.0f;
-			float shieldPropTimer = 0.0f;
-			const float shieldPropDuration = 18.6f;
-			float bossAngryTimer = 0.0f;
-			const float bossAngryDuration = 1.6f;
 			const float attackingDuration = 0.4f;
 			const float shootingDuration = 0.65f;
-			const float bulletInterval = 4.0f;
 			bool playShootingAnimation = false;
 			static std::vector<std::string> itemList;
 
@@ -209,7 +195,6 @@ namespace NCL {
 			Vector3 mainCameraPosition;
 			bool isWalking = false;
 			string currentBGM="";
-			std::vector<GameObject*> propList;
 		};
 	}
 }

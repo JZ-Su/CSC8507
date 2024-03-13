@@ -1,7 +1,5 @@
 #pragma once
 #include "GameWorld.h"
-#include "../CSC8503/Player.h"
-#include "../CSC8503/Boss.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -26,12 +24,6 @@ namespace NCL {
 
 			std::vector<GameObject*> GetCollisionDetectionList(GameObject* o);
 
-			void HandleFireballBulletCollisionLogic(GameObject* i, GameObject* j);
-
-			void HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject* j);
-
-			void ParryBackBullet(GameObject* bullet, Player* player, Boss* boss);
-
 		protected:
 			void BasicCollisionDetection();
 			void BroadPhase();
@@ -52,7 +44,6 @@ namespace NCL {
 			GameWorld& gameWorld;
 
 			bool	applyGravity;
-			bool    skipImpulseResolveCollision;
 			Vector3 gravity;
 			float	dTOffset;
 			float	globalDamping;

@@ -20,11 +20,6 @@ namespace NCL {
 			~Boss();
 			BehaviourState state;
 			void Update(float dt);
-			float updateHealth(float inhealth)
-			{
-				bossHealth += inhealth;
-				return bossHealth;
-			}
 			bool getShooting() {
 				return isShooting;
 			}
@@ -61,33 +56,6 @@ namespace NCL {
 			void setIsChasing(bool IsChasing) {
 				isChasing = IsChasing;
 			}
-			bool getIsShootingFireBall() {
-				return isShootingFireBall;
-			}
-			void setIsShootingFireBall(bool IsShootingFireBall) {
-				isShootingFireBall = IsShootingFireBall;
-			}
-			bool getIsShootingIceCube() {
-				return isShootingIceCube;
-			}
-			void setIsShootingIceCube(bool IsShootingIceCube) {
-				isShootingIceCube = IsShootingIceCube;
-			}
-			float getBulletTimer() {
-				return bulletTimer;
-			}
-			void setBulletTimer(float BulletTimer) {
-				bulletTimer = BulletTimer;
-			}
-			int getNextBullet() {
-				return nextBullet;
-			}
-			void setNextBullet(int NextBullet) {
-				nextBullet = NextBullet;
-			}
-			void updateBulletTimer(float dt) {
-				bulletTimer += dt;
-			}
 			float getBossHealth() {
 				return bossHealth;
 			}
@@ -103,14 +71,9 @@ namespace NCL {
 			}
 			float attackRange;
 		private:
-			int nextBullet = 0;
-			float bulletTimer=4.0f;
 			bool isShooting;
-			bool firstBelow50=true;
 			bool isAttack;
 			bool isRencentlyHurt;
-			bool isShootingFireBall;
-			bool isShootingIceCube;
 			bool hasIceCubeBullet;
 			bool hasFireBallBullet;
 			bool attackBool;
