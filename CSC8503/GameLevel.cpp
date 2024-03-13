@@ -16,7 +16,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {
-	player = CreatePlayer(Vector3(0, 10, 30), Vector3(2, 2, 2), 65.0f);
+	player = CreatePlayer(Vector3(0, 10, 70), Vector3(2, 2, 2), 65.0f);
 	Generic.AddObject(player);
 	//Level 4 player: 
 	//Generic.AddObject(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
@@ -168,7 +168,7 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateLight(Vector3(-38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 25.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(90, 30, -90), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 70.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(-90, 30, -90), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 70.0f, true, false));
-	level1.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 70.0f, true, false));
+	//level1.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 70.0f, true, false));
 	CreateLevel1_Coins();
 
 	level1.AddObject(ghostmodle = CreateGhost(Vector3(15, 10, 0), Vector3(5, 5, 5), 0.0f));
@@ -293,8 +293,8 @@ void GameLevel::CreateLevel2() {
 }
 
 void GameLevel::CreateLevel3() {
-	level3.AddObject(CreateLight(Vector3(0, 40, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
-	level3.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 150.0f, true, false));
+	//level3.AddObject(CreateLight(Vector3(0, 40, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
+	level3.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 150.0f, true, true));
 	
 	level3.AddObject(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
 	level3.AddObject(CreateHangLight(Vector3(0, 53, 0), Vector3(5, 5, 5), 0.0f));
@@ -317,17 +317,17 @@ void GameLevel::CreateLevel3() {
 	//BossBehaviourTree(boss,player);
 	//
 	boss = CreateBoss(Vector3(0, 1, -40), Vector3(6, 6, 6), player,0.0f);
-	iceCubeBullet = CreateIceCubeBullet(Vector3(0,-50,0), Vector3(4, 4, 4), 0.0f);
-	fireBallBullet = CreateFireBallBullet(Vector3(0, -55, 0), 4, 5.0f);
+	iceCubeBullet = CreateIceCubeBullet(Vector3(20,-98,0), Vector3(3, 3, 3), 5.0f);
+	fireBallBullet = CreateFireBallBullet(Vector3(0, -98, 0), 2, 5.0f);
 	
 	level3.AddObject(boss);
 	level3.AddObject(iceCubeBullet);
 	level3.AddObject(fireBallBullet);
-	level3.AddObject(shield=CreateShield(Vector3(0, 30, -40), Vector3(8, 8, 8), 5.0f));
+	level3.AddObject(shield=CreateShield(Vector3(0, -30, 20), Vector3(1,1,1), 5.0f));
 	// level3.AddObject(boss);
 	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/
 
-	level3.AddObject(CreatRedbottle(Vector3(10, -2, 10), Vector3(10, 10, 10), 0.0f));
+	level3.AddObject(CreatRedbottle(Vector3(10, -2, 10), Vector3(3, 3, 3), 0.0f));
 
 	vector<GameObject*> port = CreatePortal(Vector3(90, 7, 90));
 	level3.AddObject(port);
