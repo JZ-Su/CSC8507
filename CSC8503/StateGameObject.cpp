@@ -39,92 +39,63 @@ StateGameObject::StateGameObject() {
 
 StateGameObject::StateGameObject(Vector3 startPos, Vector3 endPos, GameObject* player,const std::string& objectName) : GameObject(objectName) {
 	stateMachine = new StateMachine();
-	patrolPath = new NavigationPath();
-	chasingPath = new NavigationPath();
-	counter = 0.0f;
-	nodeIndex = 0;
-	isChasing = false;	
-	ghoststrat = startPos;
-	grid = new NavigationGrid("TestGrid3.txt", Vector3(-100, 2, -100));
-	bool found = (*grid).FindPath(startPos, endPos, *patrolPath);
-	if (found) {
-	
-		//Forward patrol
-		State* stateA = new State([&](float dt)->void {
-			counter = 0.0f;
-			isChasing = false;
-			state = forward;
-			FollowPath(dt, *patrolPath, false);
-			}
-		);
-		//Reverse patrol
-		State* stateB = new State([&](float dt)->void {
-			counter = 0.0f;
-			isChasing = false;
-			state = reverse;
-			FollowPath(dt, *patrolPath, true);
-			}
-		);
+	GhostStrat = startPos;
+	GhostEnd = endPos;
 
-		//Chasing
-		State* stateChasing = new State([&](float dt, GameObject* player)->void {
-	        Vector3 playerposition = player->GetRenderObject()->GetTransform()->GetPosition();
-	        Vector3 ghostPosition = GetRenderObject()->GetTransform()->GetPosition();
-			Vector3 ghostgo = (playerposition-ghostPosition).Normalised()*0.05;
-			GetTransform().SetPosition(ghostPosition +ghostgo);
-			Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(-ghostgo.x, ghostgo.z)));
-			this->GetTransform().SetOrientation(targetOrientation);
+	State* stateHunt = new State([&](float dt,GameObject* player)->void {
+      Vector3 ghosthunt = (GetTransform().GetPosition() - player->GetTransform().GetPosition()).Normalised() * 0.05;
+		GetTransform().SetPosition(GetTransform().GetPosition() - ghosthunt);
+		Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(ghosthunt.x, -ghosthunt.z)));
+		this->GetTransform().SetOrientation(targetOrientation);
+		},player);
 
-			}, player
-		);
-		State* returnstra = new State([&](float dt)->void {
-			Vector3 ghostPosition = GetRenderObject()->GetTransform()->GetPosition();
-   		    Vector3 ghostback = (ghoststrat-ghostPosition).Normalised() * 0.05;
+	State* stateBackA = new State([&](float dt)->void {
+		Vector3 ghostbackA = (GetTransform().GetPosition() - GhostStrat).Normalised() * 0.05;
+		GetTransform().SetPosition(GetTransform().GetPosition()-ghostbackA);
+		Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(ghostbackA.x, -ghostbackA.z)));
+		this->GetTransform().SetOrientation(targetOrientation);
+		});
 
-			GetTransform().SetPosition(ghostPosition + ghostback);
+	State* stateBackB = new State([&](float dt)->void {
+		Vector3 ghostbackB = (GetTransform().GetPosition() - GhostEnd).Normalised() * 0.05;
+		GetTransform().SetPosition(GetTransform().GetPosition() - ghostbackB);
+		Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(ghostbackB.x, -ghostbackB.z)));
+		this->GetTransform().SetOrientation(targetOrientation);
+		});
 
-			Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(-ghostback.x, ghostback.z)));
-		    this->GetTransform().SetOrientation(targetOrientation);
-			}
-		);
+	stateMachine->AddState(stateBackB);
+	stateMachine->AddState(stateBackA);	
+	stateMachine->AddState(stateHunt);
 
-		stateMachine->AddState(stateA);
-		stateMachine->AddState(stateB);
-		stateMachine->AddState(stateChasing);
-		stateMachine->AddState(returnstra);
+	stateMachine->AddTransition(new StateTransition(stateHunt, stateBackA, [&](GameObject* player)->bool {
+		float GPdistance = (GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length();
+		float GAdistance = (GetTransform().GetPosition() - GhostStrat).Length();
+		float GBdistance = (GetTransform().GetPosition() - GhostEnd).Length();
+		return GPdistance >= 30 && GBdistance>GAdistance;
+		},player));
+	stateMachine->AddTransition(new StateTransition(stateHunt, stateBackB, [&](GameObject* player)->bool {
+		float GPdistance = (GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length();
+		float GAdistance = (GetTransform().GetPosition() - GhostStrat).Length();
+		float GBdistance = (GetTransform().GetPosition() - GhostEnd).Length();
+		return GPdistance >= 30 && GBdistance < GAdistance;
+		},player));
+	stateMachine->AddTransition(new StateTransition(stateBackA, stateHunt, [&](GameObject* player)->bool {
+		float GPdistance = (GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length();
+		return GPdistance <= 20.0f;
+		},player));
+	stateMachine->AddTransition(new StateTransition(stateBackB, stateHunt, [&](GameObject* player)->bool {
+		float GPdistance = (GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length();
+		return GPdistance <= 20.0f;
+		},player));
+	stateMachine->AddTransition(new StateTransition(stateBackA, stateBackB, [&]()->bool {
+		float GAdistance = (GetTransform().GetPosition() - GhostStrat).Length();
+		return GAdistance< 1;
+		}));
+	stateMachine->AddTransition(new StateTransition(stateBackB, stateBackA, [&]()->bool {
+		float GBdistance = (GetTransform().GetPosition() - GhostEnd).Length();
+		return GBdistance < 1;
+		}));
 
-		stateMachine->AddTransition(new StateTransition(stateA, stateB,
-			[&](Vector3 endPos)->bool {
-				Vector3 position = this->GetRenderObject()->GetTransform()->GetPosition();
-				return (position - endPos).Length() <= position.y;
-			}, endPos)
-		);
-		stateMachine->AddTransition(new StateTransition(stateB, stateA,
-			[&](Vector3 startPos)->bool {
-				Vector3 position = this->GetRenderObject()->GetTransform()->GetPosition();
-				return (position - startPos).Length() <= position.y;
-			}, startPos)
-		);
-		stateMachine->AddTransition(new StateTransition(stateA, stateChasing,
-			[&](GameObject* player)->bool {
-				if (this->isChasing) return false;
-				return FindPlayer(player);
-			}, player)
-		);
-		stateMachine->AddTransition(new StateTransition(stateB, stateChasing,
-			[&](GameObject* player)->bool {
-				if (this->isChasing) return false;
-				return FindPlayer(player);
-			}, player)
-		);
-		stateMachine->AddTransition(new StateTransition(stateChasing, returnstra,[&](GameObject* player)->bool {
-			return leavePlayer(player);
-			},player)
-           );
-
-	}
-	
-	
 }
 
 StateGameObject::~StateGameObject() {
@@ -138,25 +109,25 @@ void StateGameObject::Update(float dt) {
 void StateGameObject::MoveLeft(float dt, Vector3 ownpos) {
 	//GetPhysicsObject()->AddForce({ -10,0,0 });
 	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x - (dt * 10), ownpos.y, ownpos.z));
-	//GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 0.0f));
+	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.5f));
 }
 
 void StateGameObject::MoveRight(float dt, Vector3 ownpos) {
 	//GetPhysicsObject()->AddForce({ 10,0,0 });
 	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x + (dt * 10), ownpos.y, ownpos.z));
-	//GetRenderObject()->GetTransform()->SetOrientation(Quaternion(-1.0f, 0.0f, 0.0f, 0.0f));
+	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, -0.5f));
 }
 
 void StateGameObject::MoveFront(float dt, Vector3 ownpos) {
 	//GetPhysicsObject()->AddForce({ 0,0,-10 });
 	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x, ownpos.y, ownpos.z - (dt * 10)));
-	//GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 0.0f, 1.0f, 0.0f));
+	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
 void StateGameObject::MoveBack(float dt, Vector3 ownpos) {
 	//GetPhysicsObject()->AddForce({ 0,0,10 });
 	GetRenderObject()->GetTransform()->SetPosition(Vector3(ownpos.x, ownpos.y, ownpos.z + (10 * dt)));
-	//GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 0.0f, -1.0f, 0.0f));
+	GetRenderObject()->GetTransform()->SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, -1.0f));
 }
 
 void StateGameObject::FollowPath(float dt, NavigationPath path, bool inversePath) {

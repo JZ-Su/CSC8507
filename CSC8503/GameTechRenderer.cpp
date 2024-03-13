@@ -63,7 +63,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowSize.x, windowSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, NULL);
 
 	glGenTextures(1, &normalTex);
 	glBindTexture(GL_TEXTURE_2D, normalTex);
@@ -87,7 +87,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowSize.x, windowSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, NULL);
 
 	glGenTextures(1, &indexTex);
 	glBindTexture(GL_TEXTURE_2D, indexTex);
@@ -117,7 +117,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, NULL);
 
 	glGenTextures(1, &lightSpecTex);
 	glBindTexture(GL_TEXTURE_2D, lightSpecTex);
@@ -125,7 +125,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, NULL);
 
 	glGenFramebuffers(1, &lightFBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, lightFBO);
@@ -151,7 +151,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glGenFramebuffers(1, &postFBO);
 	glGenFramebuffers(1, &processFBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, postFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, indexTex, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, addTex, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, processTex[0], 0);
 	glDrawBuffers(2, buffers);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -177,12 +177,14 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	//Skybox!
 	skyboxShader = new OGLShader("skybox.vert", "skybox.frag");
+	//skyboxShader = new OGLShader("skybox.vert", "environment.frag");
 	skyboxMesh = new OGLMesh();
 	skyboxMesh->SetVertexPositions({ Vector3(-1, 1,-1), Vector3(-1,-1,-1) , Vector3(1,-1,-1) , Vector3(1,1,-1) });
 	skyboxMesh->SetVertexIndices({ 0,1,2,2,3,0 });
 	skyboxMesh->UploadToGPU();
 
 	LoadSkybox();
+	//Loadhdr();
 
 	glGenVertexArrays(1, &lineVAO);
 	glGenVertexArrays(1, &textVAO);
@@ -199,7 +201,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	SetDebugStringBufferSizes(10000);
 	SetDebugLineBufferSizes(1000);
 
-	vector<char*> data(6, nullptr);
+	vector<char*> data(7, nullptr);
 	int width;
 	int height;
 	int channel;
@@ -211,9 +213,15 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	UImap["greenbottle"] = data[1];
 	TextureLoader::LoadTexture("redbottle.png", data[2], width, height, channel, flag);
 	UImap["redbottle"] = data[2];
-	TextureLoader::LoadTexture("inventory.png", data[3], width, height, channel, flag);
-	UImap["inventory"] = data[3];
-
+	TextureLoader::LoadTexture("inventory1.png", data[3], width, height, channel, flag);
+	UImap["inventory1"] = data[3];
+	TextureLoader::LoadTexture("inventory2.png", data[4], width, height, channel, flag);
+	UImap["inventory2"] = data[4];
+	TextureLoader::LoadTexture("inventory3.png", data[5], width, height, channel, flag);
+	UImap["inventory3"] = data[5];
+	TextureLoader::LoadTexture("inventory4.png", data[6], width, height, channel, flag);
+	UImap["inventory4"] = data[6];
+	
 }
 
 GameTechRenderer::~GameTechRenderer() {
@@ -275,6 +283,29 @@ void GameTechRenderer::LoadSkybox() {
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}
+
+void GameTechRenderer::Loadhdr() {
+	std::string filenames= "hall.hdr";
+
+	int width = 0;
+	int height = 0;
+	int channels = 0;
+	int flags = 0;
+	char* texData = nullptr;
+
+	TextureLoader::LoadTexture(filenames, texData, width, height, channels, flags);
+	glGenTextures(1, &hdrTex);
+	glBindTexture(GL_TEXTURE_2D, hdrTex);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, texData);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void GameTechRenderer::RenderFrame() {
@@ -442,6 +473,8 @@ void GameTechRenderer::RenderSkybox() {
 void GameTechRenderer::RenderCamera() {
 	glBindFramebuffer(GL_FRAMEBUFFER, bufferFBO);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
 
 	Matrix4 viewMatrix = gameWorld.GetMainCamera().BuildViewMatrix();
 	Matrix4 projMatrix = gameWorld.GetMainCamera().BuildProjectionMatrix(hostWindow.GetScreenAspect());
@@ -453,7 +486,7 @@ void GameTechRenderer::RenderCamera() {
 	int colourLocation = 0;
 	int hasVColLocation = 0;
 	int hasTexLocation = 0;
-
+	int shadowPosLocation = 0;
 	int cameraLocation = 0;
 
 	for (const auto& i : activeObjects) {
@@ -505,6 +538,7 @@ void GameTechRenderer::RenderCamera() {
 				colourLocation = glGetUniformLocation(shader->GetProgramID(), "objectColour");
 				hasVColLocation = glGetUniformLocation(shader->GetProgramID(), "hasVertexColours");
 				hasTexLocation = glGetUniformLocation(shader->GetProgramID(), "hasTexture");
+				shadowPosLocation = glGetUniformLocation(shader->GetProgramID(), "shadowPos");
 
 				cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
 
@@ -518,6 +552,7 @@ void GameTechRenderer::RenderCamera() {
 
 				glUniformMatrix4fv(projLocation, 1, false, (float*)&projMatrix);
 				glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);
+				glUniform3fv(shadowPosLocation, 1, (float*)&shadowPosition);
 
 				activeShader = shader;
 			}	
@@ -702,9 +737,8 @@ void GameTechRenderer::RenderLight() {
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 	glClearColor(0.2f, 0.2f, 0.2f, 1);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0); 
 	glDisable(GL_BLEND);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void GameTechRenderer::RenderCombine() {
@@ -729,6 +763,11 @@ void GameTechRenderer::RenderCombine() {
 	glBindTexture(GL_TEXTURE_2D, colorTex);
 	int colorTexLocation = glGetUniformLocation(combineShader->GetProgramID(), "colorTex");
 	glUniform1i(colorTexLocation, 3);
+
+	glActiveTexture(GL_TEXTURE0 + 4);
+	glBindTexture(GL_TEXTURE_2D, indexTex);
+	int indexTexLocation = glGetUniformLocation(combineShader->GetProgramID(), "indexTex");
+	glUniform1i(indexTexLocation, 4);
 
 	BindMesh(*quadMesh);
 	DrawBoundMesh();
@@ -787,7 +826,7 @@ void GameTechRenderer::RenderProcess() {
 void GameTechRenderer::RenderTone() {
 	BindShader(*toneShader);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, indexTex);
+	glBindTexture(GL_TEXTURE_2D, addTex);
 	int colorTexLocation = glGetUniformLocation(toneShader->GetProgramID(), "colorTex");
 	glUniform1i(colorTexLocation, 0);
 

@@ -19,7 +19,15 @@ namespace NCL {
 			void SetDefaultRotation(float r) { defaultRotation = r; }
 			float GetDafaultRotation() const { return defaultRotation; }
 
+			std::string GetState() const { return currentState; }
+			float GetTimer() const { return timer; }
+
 		protected:
+			std::string currentState;
+			State* keepState;
+			State* opening;
+			State* closing;
+
 			float timer;
 			bool isOpening;
 			bool activation;

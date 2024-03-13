@@ -33,11 +33,13 @@ namespace NCL {
             NavigationPath* chasingPath;
             bool FindPlayer(GameObject* player);
             bool leavePlayer(GameObject* player);
+
             StateMachine* stateMachine;
             float counter;
             int nodeIndex;
             bool isChasing;
-            Vector3 ghoststrat;
+            Vector3 GhostStrat;
+            Vector3 GhostEnd;
      
         };
     }

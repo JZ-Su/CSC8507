@@ -30,12 +30,14 @@ Door::Door(Player* player, Vector3 position, float rotation, float resDis) {
 	defaultRotation = rotation;
 	responseDistance = resDis;
 
-	State* keepState = new State([&](float dt)->void {
+	keepState = new State([&](float dt)->void {
+		currentState = "keepState";
 		timer = 0.0f;
 		});
 	stateMachine->AddState(keepState);
 
-	State* opening = new State([&](float dt)->void {
+	opening = new State([&](float dt)->void {
+		currentState = "opening";
 		float halfLength = GetTransform().GetScale().x / 2;
 		switch ((int)defaultRotation)
 		{
@@ -79,7 +81,8 @@ Door::Door(Player* player, Vector3 position, float rotation, float resDis) {
 		});
 	stateMachine->AddState(opening);
 
-	State* closing = new State([&](float dt)->void {
+	closing = new State([&](float dt)->void {
+		currentState = "closing";
 		float halfLength = GetTransform().GetScale().x / 2;
 		switch ((int)defaultRotation)
 		{

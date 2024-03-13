@@ -19,7 +19,7 @@ namespace NCL {
 			bool SendGlobalPacket(GamePacket& packet);
 			bool SendPacketToPeer(int playerNum, GamePacket& packet);
 			bool GetMultiNetPeer(int peerNum, int& peerID);
-
+			bool GetNetPeer(int peerNum, int& peerID);
 			virtual void UpdateServer();
 
 		protected:
@@ -36,6 +36,8 @@ namespace NCL {
 			void clearPeerArray();
 			void AddPeer(int val);
 			void RemovePeer(int val);
+
+			void DeletPeer(int Peer);
 
 			void DebugNetPeer();
 

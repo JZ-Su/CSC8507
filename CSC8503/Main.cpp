@@ -24,11 +24,9 @@
 #include "BehaviourSequence.h"
 #include "BehaviourAction.h"
 
-#include <irrKlang.h>
 
 using namespace NCL;
 using namespace CSC8503;
-using namespace irrklang;
 
 
 #include <chrono>
@@ -113,19 +111,21 @@ int main() {
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
 	
-	TutorialGame* g = new TutorialGame();
-
-	NetworkedGame* h = new NetworkedGame();
+	//TutorialGame* g = new TutorialGame();
+	bool networkDebug = true;
+	
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
-
+	
+	NetworkedGame* g = new NetworkedGame();
 	//sound
-	ISoundEngine* engine = createIrrKlangDevice();
-	if (!engine) {
-		return 0;
-	}
-	engine->play2D("../externals/media/getout.ogg", true);
+	//ISoundEngine* engine = createIrrKlangDevice();
+	//if (!engine) {
+	//	return 0;
+	//}
+	//engine->play2D("../externals/media/getout.ogg", true);
 
-	TestNetworking();
+	//TestNetworking();
+	
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
 		float dt = w->GetTimer().GetTimeDeltaSeconds();
@@ -145,7 +145,6 @@ int main() {
 		}
 
 		w->SetTitle("Gametech frame time:" + std::to_string(1000.0f * dt));
-
 		switch (g->GetState())
 		{
 		case NCL::CSC8503::MainMenu:
@@ -161,7 +160,7 @@ int main() {
 			g->InitGame();
 			break;
 		case NCL::CSC8503::OnGoing:
-			g->UpdateGame(dt);
+			if(!networkDebug) g->UpdateGame(dt);
 			break;
 		case NCL::CSC8503::Pause:
 			g->ShowPause(dt);
@@ -177,7 +176,12 @@ int main() {
 		}
 
 		if (g->GetState() == Exit) break;
-		//h->UpdateGame(dt);
+
+		if (networkDebug)
+		{
+			g->UpdateGame(dt);
+		}
+		
 	}
 	Window::DestroyGameWindow();
 }

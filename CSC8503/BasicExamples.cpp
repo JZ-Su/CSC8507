@@ -29,6 +29,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	coinMesh = render->LoadMesh("coin.msh");
 	wallLightMesh = render->LoadMesh("LightWall.msh");
 	hangLightMesh = render->LoadMesh("LightHanging.msh");
+	layerMesh = render->LoadMesh("layer.msh");
 
 	basicTexture = render->LoadTexture("checkerboard.png");
 	IceCubeTexture = render->LoadTexture("IceCube.jpg");
@@ -52,7 +53,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	ceilingTexture[5] = render->LoadTexture("Ceiling/ceiling_height.png");
 	wallTexture[0] = render->LoadTexture("Wall/tiles_0044_color_1k.jpg");
 	wallTexture[1] = render->LoadTexture("Wall/tiles_0044_normal_opengl_1k.png");
-	wallTexture[2] = DefualtTexture[2];// render->LoadTexture("Wall/wall_metalic.png");
+	wallTexture[2] = DefualtTexture[2];
 	wallTexture[3] = render->LoadTexture("Wall/tiles_0044_roughness_1k.jpg");
 	wallTexture[4] = render->LoadTexture("Wall/tiles_0044_ao_1k.jpg");
 	wallTexture[5] = render->LoadTexture("Wall/tiles_0044_height_1k.png");
@@ -66,7 +67,6 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	bossMat = new MeshMaterial("Male_Guard.mat");
 	playerMat = new MeshMaterial("FemaleA.mat");
 	ghostMat = new MeshMaterial("Ghost.mat");
-	shieldMat = new MeshMaterial("Shield.mat");
 	bookshelfMat = new MeshMaterial("bookshelf.mat");
 	tableMat = new MeshMaterial("table.mat");
 	columnMat = new MeshMaterial("Column.mat");
@@ -75,6 +75,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	coinMat = new MeshMaterial("coin.mat");
 	wallLightMat = new MeshMaterial("LightWall.mat");
 	hangLightMat = new MeshMaterial("LightHanging.mat");
+	layerMat = new MeshMaterial("Layer.mat");
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
@@ -114,6 +115,7 @@ BasicExamples::~BasicExamples() {
 	delete coinMesh;
 	delete wallLightMesh;
 	delete hangLightMesh;
+	delete layerMesh;
 
 	delete playerMat;
 	delete bossMat;
@@ -126,12 +128,17 @@ BasicExamples::~BasicExamples() {
 	delete coinMat;
 	delete wallLightMat;
 	delete hangLightMat;
+	delete layerMat;
 
 	delete basicTexture;
 	for (int i = 0; i < 5; i++)
 		delete DefualtTexture[i];
 	for (int i = 0; i < 6; i++)
 		delete floorTexture[i];
+	for (int i = 0; i < 6; i++)
+		delete ceilingTexture[i];
+	for (int i = 0; i < 6; i++)
+		delete wallTexture[i];
 
 	delete basicShader;
 	delete floorShader;
@@ -177,7 +184,7 @@ GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& di
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
-
+	cube->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 0.1));
 	return cube;
 }
 
@@ -269,24 +276,19 @@ GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& d
 }
 
 GameObject* BasicExamples::CreateLayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-	GameObject* cube = new GameObject("layer");
+	GameObject* layer = new GameObject("layer");
 
-	AABBVolume* volume = new AABBVolume(dimensions);
-	cube->SetBoundingVolume((CollisionVolume*)volume);
+	layer->GetTransform().SetPosition(position).SetScale(dimensions * 1.67);
+	layer->SetRenderObject(new RenderObject(&layer->GetTransform(), layerMesh, nullptr, modelShader));
+	layer->SetPhysicsObject(new PhysicsObject(&layer->GetTransform(), layer->GetBoundingVolume()));
 
-	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, floorTexture[0], basicShader));
-	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
-	cube->GetRenderObject()->SetDefaultTexture(floorTexture[1], 1);
-	cube->GetRenderObject()->SetDefaultTexture(floorTexture[2], 2);
-	cube->GetRenderObject()->SetDefaultTexture(floorTexture[3], 3);
-	cube->GetRenderObject()->SetDefaultTexture(floorTexture[4], 4);
-	cube->GetRenderObject()->SetDefaultTexture(floorTexture[5], 5);
+	layer->GetRenderObject()->isAnimation = true;
+	LoadMaterialTextures(layer, layerMesh, layerMat, render);
 
-	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
-	cube->GetPhysicsObject()->InitCubeInertia();
+	layer->GetPhysicsObject()->SetInverseMass(inverseMass);
+	layer->GetPhysicsObject()->InitCubeInertia();
 	//cube->SetTag("Ground");
-	return cube;
+	return layer;
 }
 
 GameObject* BasicExamples::CreateCeiling(const Vector3& position, const Vector3& dimensions, float inverseMass) {
@@ -614,7 +616,7 @@ StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vect
 	ghost->GetPhysicsObject()->SetInverseMass(inverseMass);
 	ghost->GetPhysicsObject()->InitCubeInertia();
 	ghost->GetRenderObject()->SetColour(Vector4(1, 1, 1, 0.5));
-
+	ghost->SetTag("ghost");
 	return ghost;
 }
 

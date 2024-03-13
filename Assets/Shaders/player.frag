@@ -4,6 +4,7 @@ uniform sampler2D 	normalTex;
 uniform sampler2D 	metalTex;
 uniform sampler2D 	roughTex;
 
+uniform vec3	shadowPos;
 uniform vec3	cameraPos;
 
 in Vertex {
@@ -33,6 +34,10 @@ void main(void)
 	vec4 albedo = texture(mainTex, uv);
 	float metal = 0;
 	float roughness = 1;
+	vec3  shadowDir = normalize ( shadowPos - IN.worldPos );
+	float l = max (0.01 , dot ( shadowDir , normal ));
+	float halL = (l + 1.0) * 0.5;
+	halL = clamp(halL, 0.01, 1.0);
 
 	if(albedo.a == 1)
 	{
@@ -43,7 +48,7 @@ void main(void)
 
 	fragColor[2] = vec4(metal, roughness, skin, 1.0);
 	fragColor[3] = vec4(0.0, 0.0, 0.0, 0.0);
-	fragColor[4] = vec4(0.2, 0.0, 0.0, 1.0);
+	fragColor[4] = vec4(0.2, 0.0, halL, 1.0);
 	}
 	else{
     vec2 noiseUV = uv * (2, 1);
@@ -51,7 +56,7 @@ void main(void)
 
 	fragColor[2] = vec4(IN.tangent * 0.5 + 0.5, 1.0);
 	fragColor[3] = vec4(IN.binormal * 0.5 + 0.5, 1.0);
-	fragColor[4] = vec4(0.3, noise, 0.0, 1.0);
+	fragColor[4] = vec4(0.3, noise, halL, 1.0);
 	}
 
 	fragColor[0] = vec4(albedo.rgb, 1.0);

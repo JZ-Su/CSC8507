@@ -142,6 +142,14 @@ void GameServer::AddPeer(int Peer)
 		netPeers[minVacantPos] = Peer;
 	}
 }
+bool GameServer::GetNetPeer(int peerNum, int& peerID)
+{
+	if (peerNum >= clientMax) { return false; }
+	if (netPeers[peerNum] == -1) { return false; }
+	peerID = netPeers[peerNum];
+	return true;
+}
+
 void GameServer::SetGameWorld(GameWorld &g) {
 	gameWorld = &g;
 }

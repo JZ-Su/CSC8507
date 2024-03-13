@@ -86,6 +86,8 @@ namespace NCL {
 		GameObject*	GetGhost() const { return ghostmodle; }
 		GameObject* GetShield() const{ return shield; }
 		StateGameObject* GetGhostai() const { return ghost; }
+		StateGameObject* GetGhostai2() const { return ghost2; }
+
 		void ExportToObj(const Mesh& mesh, const std::string& filename);
 
 	protected:
@@ -106,6 +108,7 @@ namespace NCL {
 		Mesh* coinMesh = nullptr;
 		Mesh* wallLightMesh = nullptr;
 		Mesh* hangLightMesh = nullptr;
+		Mesh* layerMesh = nullptr;
 
 		Texture* basicTexture = nullptr;
 		Texture* IceCubeTexture = nullptr;
@@ -136,6 +139,7 @@ namespace NCL {
 		MeshMaterial* coinMat = nullptr;
 		MeshMaterial* wallLightMat = nullptr;
 		MeshMaterial* hangLightMat = nullptr;
+		MeshMaterial* layerMat = nullptr;
 
 		MeshAnimation* bossAnimation = nullptr;
 		MeshAnimation* bossCheersAnimation = nullptr;
@@ -158,6 +162,7 @@ namespace NCL {
 		GameObject* fireBallBullet;
 
 		StateGameObject* ghost;
+		StateGameObject* ghost2;
 
 	};
 }
