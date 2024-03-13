@@ -5,6 +5,7 @@
 #include "Camera.h"
 
 
+
 using namespace NCL;
 using namespace NCL::CSC8503;
 
@@ -146,3 +147,21 @@ void GameWorld::GetConstraintIterators(
 void GameWorld::ClearConstraint() {
 	constraints.clear();
 }
+
+GameObject* GameWorld::GetObject(std::string tag) {
+	for (auto& obj : gameObjects) {
+		if (obj->GetTag() == tag) {
+			return obj;
+		}
+	}
+	return nullptr;
+}
+//
+//Boss* GameWorld::GetBossObject() {
+//	for (auto& obj : gameObjects) {
+//		if (obj->GetTag() == "boss") {
+//			return obj;
+//		}
+//	}
+//	return nullptr;
+//}
