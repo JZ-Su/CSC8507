@@ -164,6 +164,12 @@ namespace NCL {
 			void UpdateTrackingBall(Vector3 ballPosition,const Vector3& playerPosition, float speed, float dt);
 			void IceCubeBulletLogic(float dt);
 			void FireBallBulletLogic(float dt);
+<<<<<<< Updated upstream
+=======
+			void UpdateShieldPosition(float dt) {}
+			void RollStone(GameObject* stone, const Vector3& forceDirection, float forceMagnitude) {}
+			
+>>>>>>> Stashed changes
 			void AddSound();
 			void UpdateListenerPosition(float dt, const Vector3& playerPosition);
 			float h = 0, v = 0;
