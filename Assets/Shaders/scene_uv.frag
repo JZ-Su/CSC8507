@@ -60,9 +60,6 @@ void main(void)
 		//fragColor = vec4(shadow,shadow,shadow,1);
 	//return;
 
-
-	vec3 shadcolor = vec3(0.1,0.3,1);
-
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
 
 	vec3 viewDir = normalize ( cameraPos - IN . worldPos );

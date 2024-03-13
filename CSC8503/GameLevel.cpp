@@ -158,8 +158,8 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateWallLight(Vector3(-98, 30, -90), 0.0f, Vector3(0, 1, 0),90));
 	level1.AddObject(CreateHangLight(Vector3(0, 53, 0), Vector3(5, 5, 5), 0.0f));
 
-	level1.AddObject(CreateLight(Vector3(0, 40, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 80.0f, false, true));
-	level1.AddObject(CreateLight(Vector3(0, 30, 0),  Vector4(1.0f, 0.8f, 0.3f, 1.0f), 70.0f, true, false));
+	//level1.AddObject(CreateLight(Vector3(0, 40, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 70.0f, false, true));
+	level1.AddObject(CreateLight(Vector3(0, 40, 0),  Vector4(1.0f, 0.8f, 0.3f, 1.0f), 90.0f, true, true));
 	level1.AddObject(CreateLight(Vector3(38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 25.0f, true, false));	
 	level1.AddObject(CreateLight(Vector3(-38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 25.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(90, 30, -90), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 70.0f, true, false));
@@ -175,11 +175,10 @@ void GameLevel::CreateLevel1() {
 }
 
 void GameLevel::CreateLevel2() {
-	level2.AddObject(CreateCeiling(Vector3(160, 60, 160), Vector3(240, 1, 240), 0));
+	//level2.AddObject(CreateCeiling(Vector3(160, 60, 160), Vector3(240, 1, 240), 0));
 	
 	level2.AddObject(CreateFloor(Vector3(150, -2, 150), Vector3(200, 2, 200), 0.0f));
-	level2.AddObject(CreateLight(Vector3(160, 58, 160), Vector4(0.0f, 0.0f, 0.0f, 1.0f), 200.0f, false, true));
-	level2.AddObject(CreateLight(Vector3(160, 58, 160), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 200.0f, true, false));
+	level2.AddObject(CreateLight(Vector3(160, 100, 160), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 300.0f, true, true));
 
 	vector<Vector4> pixelData = render->LoadMap();
 	const int size = 64;
@@ -254,12 +253,12 @@ void GameLevel::CreateLevel2() {
 				}
 				doorData.push_back(Vector3(i + 2, j + 0.5, -180));
 			}
-			// rotate -270
+			// rotate 180
 			else if (pixelData[i * size + j] == Debug::GREEN && !isScaned[i][j]) {
 				for (int k = 0; k < 4; k++) {
 					isScaned[i + k][j] = true;
 				}
-				doorData.push_back(Vector3(i + 2, j + 0.5, -270));
+				doorData.push_back(Vector3(i + 2, j + 0.5, 180));
 			}
 		}
 	}
@@ -267,10 +266,10 @@ void GameLevel::CreateLevel2() {
 	int height = 10;
 	for (auto element : wallData) {
 		if (element.w == 1) {
-			level2.AddObject(CreateCube(Vector3(element.x * 5, height, element.y * 5), Vector3(2.5, height, element.z * 2.5), 0.0f));
+			level2.AddObject(CreateGreenWall(Vector3(element.x * 5, height, element.y * 5), Vector3(2.5, height, element.z * 2.5), 0.0f));
 		}
 		else {
-			level2.AddObject(CreateCube(Vector3(element.x * 5, height, element.y * 5), Vector3(element.z * 2.5, height, 2.5), 0.0f));
+			level2.AddObject(CreateGreenWall(Vector3(element.x * 5, height, element.y * 5), Vector3(element.z * 2.5, height, 2.5), 0.0f));
 		}
 	}
 	for (auto element : doorData) {
@@ -278,7 +277,6 @@ void GameLevel::CreateLevel2() {
 		l2_Doors.push_back(door);
 		level2.AddObject(door);
 	}
-
 	level2.AddObject(CreateBigWall(Vector3(0, 20, 160), Vector3(5, 40, 160), 0.0f));
 	level2.AddObject(CreateBigWall(Vector3(320, 20, 160), Vector3(5, 40, 160), 0.0f));
 	level2.AddObject(CreateBigWall(Vector3(160, 20, -5), Vector3(160, 40, 5), 0.0f));
@@ -299,10 +297,10 @@ void GameLevel::CreateLevel3() {
 	// boss = CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), player, 0.0f);
 	// level3.AddObject(CreateCube(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
 	//level3.AddObject(CreateCube(Vector3(70, 0, 77), Vector3(10, 10,5 ), 0.0f));
-	level3.AddObject(CreateCube(Vector3(100, 30, 0), Vector3(2, 30, 100), 0.0f));
-	level3.AddObject(CreateCube(Vector3(-100, 30, 0), Vector3(2, 30, 100), 0.0f));
-	level3.AddObject(CreateCube(Vector3(0, 30, -100), Vector3(100, 30, 2), 0.0f));
-	level3.AddObject(CreateCube(Vector3(0, 30, 100), Vector3(100, 30, 2), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(100, 30, 0), Vector3(2, 30, 100), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(-100, 30, 0), Vector3(2, 30, 100), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(0, 30, -100), Vector3(100, 30, 2), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(0, 30, 100), Vector3(100, 30, 2), 0.0f));
 	//level3.AddObject(CreateCube(Vector3(0, 0, 0), Vector3(5, 5, 5), 0.0f));
 
 	//player = CreateSphere(Vector3(20, 5, 20), 5, 0.0f);

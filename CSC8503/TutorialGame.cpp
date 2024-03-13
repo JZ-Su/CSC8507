@@ -374,7 +374,7 @@ void TutorialGame::InitWorld() {
 	isDebug = true;
 	//isDebug = false;
 	if (isDebug) {
-		//Level 1
+		////Level 1
 		currentLevel = 2;
 		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 		ghost = gameLevel->GetGhost();
