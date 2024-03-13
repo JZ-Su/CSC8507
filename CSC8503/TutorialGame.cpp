@@ -1212,7 +1212,7 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 		if (fireBallBullet->GetExistenceTime() >= 4) {
 			fireBallBullet->GetTransform().SetPosition(Vector3(0, -55, 0));
 			gameLevel->GetBoss()->setHasFireBallBullet(true);
-			fireBallBullet->SetIsHiding(true);
+			//fireBallBullet->SetIsHiding(true);
 		}
 	}
 }

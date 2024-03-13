@@ -95,6 +95,13 @@ void NetworkedGame::UpdateGame(float dt) {
 		timeToNextPacket += 1.0f / 20.0f; //20hz server/client update
 	}
 
+	if (thisServer) {
+		thisServer->UpdateServer();
+	}
+	else if (thisClient) {
+		thisClient->UpdateClient();
+	}
+
 	if (!thisServer && Window::GetKeyboard()->KeyPressed(KeyCodes::F9)) {
 		StartAsServer();
 	}
@@ -119,11 +126,23 @@ void NetworkedGame::UpdateAsServer(float dt) {
 void NetworkedGame::UpdateAsClient(float dt) {
 	ClientPacket newPacket;
 
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
-		//fire button pressed!
-		newPacket.buttonstates[0] = 1;
-		newPacket.lastID = 0; //You'll need to work this out somehow...
-	}
+	
+	/*Vector3 PointerPos;
+	findOSpointerWorldPosition(PointerPos);
+	newPacket.PointerPos = PointerPos;*/
+	newPacket.buttonstates[0] = Window::GetKeyboard()->KeyHeld		(KeyCodes::W)		? 1 : 0;
+	newPacket.buttonstates[1] = Window::GetKeyboard()->KeyHeld		(KeyCodes::S)		? 1 : 0;
+	newPacket.buttonstates[2] = Window::GetKeyboard()->KeyHeld		(KeyCodes::D)		? 1 : 0;
+	newPacket.buttonstates[3] = Window::GetKeyboard()->KeyHeld		(KeyCodes::A)		? 1 : 0;
+	newPacket.buttonstates[4] = Window::GetKeyboard()->KeyPressed	(KeyCodes::SPACE)	? 1 : 0;
+	//newPacket.btnStates[5] = Window::GetMouse()->ButtonPressed(MouseButtons::Type::Left) ? 1 : 0;
+	newPacket.lastID = GlobalStateID;
+
+	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
+	//	//fire button pressed!
+	//	//newPacket.buttonstates[0] = 1;
+	//	newPacket.lastID = 0; //You'll need to work this out somehow...
+	//}
 	thisClient->SendPacket(newPacket);
 }
 
@@ -221,7 +240,44 @@ void NetworkedGame::StartLevel() {
 }
 
 void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
-	
+	switch (type)
+	{
+	/*case BasicNetworkMessages::Message: {
+		PLayerListPacket* realPacket = (PLayerListPacket*)payload;
+		realPacket->GetPlayerList(PlayersList);
+		break;
+	}
+	case BasicNetworkMessages::Round_State: {
+		RoundStatePacket* realPacket = (RoundStatePacket*)payload;
+		clientProcessRp(realPacket);
+		break;
+	}*/
+	case BasicNetworkMessages::Full_State: {
+		FullPacket* realPacket = (FullPacket*)payload;
+		clientProcessFp(realPacket);
+		break;
+	}
+	case BasicNetworkMessages::Delta_State: {
+		DeltaPacket* realPacket = (DeltaPacket*)payload;
+		clientProcessDp(realPacket);
+		break;
+	}
+	case BasicNetworkMessages::Received_State: {
+		ClientPacket* realPacket = (ClientPacket*)payload;
+		serverProcessCP(realPacket, source);
+		break;
+	}
+	/*case BasicNetworkMessages::Player_State: {
+		PlayerStatePacket* realPacket = (PlayerStatePacket*)payload;
+		clientProcessPp(realPacket);
+		break;
+	}
+	case BasicNetworkMessages::bullet_state: {
+		BulletStatePacket* realPacket = (BulletStatePacket*)payload;
+		clientProcessBp(realPacket);
+		break;
+	}*/
+	}
 }
 
 void NetworkedGame::OnPlayerCollision(NetworkPlayer* a, NetworkPlayer* b) {
