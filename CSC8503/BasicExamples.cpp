@@ -51,7 +51,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	ceilingTexture[3] = render->LoadTexture("Ceiling/ceiling_roughness.jpg");
 	ceilingTexture[4] = render->LoadTexture("Ceiling/ceiling_ao.jpg");
 	ceilingTexture[5] = render->LoadTexture("Ceiling/ceiling_height.png");
-	wallTexture[0] = render->LoadTexture("Wall/tiles_0044_color_1k.jpg");
+	wallTexture[0] = render->LoadTexture("Wall/tiles_0045_color_1k.jpg");
 	wallTexture[1] = render->LoadTexture("Wall/tiles_0044_normal_opengl_1k.png");
 	wallTexture[2] = DefualtTexture[2];
 	wallTexture[3] = render->LoadTexture("Wall/tiles_0044_roughness_1k.jpg");
