@@ -109,6 +109,18 @@ void NetworkedGame::UpdateGame(float dt) {
 		StartAsClient(127,0,0,1);
 	}
 
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q))
+	{
+		if (lockedObject == nullptr) {
+			lockedObject = localPlayer;
+			Window::GetWindow()->ShowOSPointer(true);
+		}
+		else if (lockedObject == lockedObject) {
+			lockedObject = nullptr;
+			Window::GetWindow()->ShowOSPointer(false);
+		}
+	}
+
 	TutorialGame::UpdateGame(dt);
 }
 
