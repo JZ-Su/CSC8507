@@ -57,6 +57,12 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	wallTexture[3] = render->LoadTexture("Wall/tiles_0044_roughness_1k.jpg");
 	wallTexture[4] = render->LoadTexture("Wall/tiles_0044_ao_1k.jpg");
 	wallTexture[5] = render->LoadTexture("Wall/tiles_0044_height_1k.png");
+	greenWallTexture[0] = render->LoadTexture("Wall/Texture_13_Diffuse.png");
+	greenWallTexture[1] = render->LoadTexture("Wall/Texture_13_Normal.png");
+	greenWallTexture[2] = DefualtTexture[2]; 
+	greenWallTexture[3] = render->LoadTexture("Wall/Texture_131_roughness.png");
+	greenWallTexture[4] = render->LoadTexture("Wall/Texture_13_ao.png");
+	greenWallTexture[5] = DefualtTexture[5];
 
 	bossMat = new MeshMaterial("Male_Guard.mat");
 	playerMat = new MeshMaterial("FemaleA.mat");
@@ -73,6 +79,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
+	wallShader = render->LoadShader("scene.vert", "scene_uv2.frag");
 	modelShader = render->LoadShader("model.vert", "model.frag");
 	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	playerShader = render->LoadShader("SkinningVertex.vert", "player.frag");
@@ -181,7 +188,7 @@ GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& di
 	return cube;
 }
 
-GameObject* BasicExamples::CreateBigWall(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+GameObject* BasicExamples::CreateBigWall(const Vector3& position, const Vector3& dimensions, float inverseMass, float scale) {
 	GameObject* cube = new GameObject("cube");
 
 	AABBVolume* volume = new AABBVolume(dimensions);
@@ -189,13 +196,39 @@ GameObject* BasicExamples::CreateBigWall(const Vector3& position, const Vector3&
 
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
 
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, wallTexture[0], floorShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, wallTexture[0], wallShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 	cube->GetRenderObject()->SetDefaultTexture(wallTexture[1], 1);
 	cube->GetRenderObject()->SetDefaultTexture(wallTexture[2], 2);
 	cube->GetRenderObject()->SetDefaultTexture(wallTexture[3], 3);
 	cube->GetRenderObject()->SetDefaultTexture(wallTexture[4], 4);
 	cube->GetRenderObject()->SetDefaultTexture(wallTexture[5], 5);
+	cube->GetRenderObject()->isWall = true;
+	cube->GetRenderObject()->scale = scale;
+
+	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
+	cube->GetPhysicsObject()->InitCubeInertia();
+
+	return cube;
+}
+
+GameObject* BasicExamples::CreateGreenWall(const Vector3& position, const Vector3& dimensions, float inverseMass, float scale) {
+	GameObject* cube = new GameObject("cube");
+
+	AABBVolume* volume = new AABBVolume(dimensions);
+	cube->SetBoundingVolume((CollisionVolume*)volume);
+
+	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
+
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, greenWallTexture[0], wallShader));
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+	cube->GetRenderObject()->SetDefaultTexture(greenWallTexture[1], 1);
+	cube->GetRenderObject()->SetDefaultTexture(greenWallTexture[2], 2);
+	cube->GetRenderObject()->SetDefaultTexture(greenWallTexture[3], 3);
+	cube->GetRenderObject()->SetDefaultTexture(greenWallTexture[4], 4);
+	cube->GetRenderObject()->SetDefaultTexture(greenWallTexture[5], 5);
+	cube->GetRenderObject()->isWall = true;
+	cube->GetRenderObject()->scale = scale;
 
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);

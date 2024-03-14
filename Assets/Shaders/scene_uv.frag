@@ -28,6 +28,13 @@ out vec4 fragColor[5];
 
 void main(void)
 {
+	//float shadow = 1.0; 
+	//shadow = ShadowCalculation(IN.worldPos);
+	//if( IN.shadowProj.w > 0.0) { 
+		//= texture(shadowTex, IN.shadowProj)*0.5f;
+	//}
+		//fragColor = vec4(shadow,shadow,shadow,1);
+	//return;
 	vec3 shadcolor = vec3(0.1,0.3,1);
 
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));

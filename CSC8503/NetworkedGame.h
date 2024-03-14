@@ -17,6 +17,17 @@ namespace NCL {
 		class PlayerStatePacket;
 		class BulletStatePacket;
 		class Item;
+
+		enum PlayInputBtns {
+			Up,
+			Down,
+			Right,
+			Left,
+			Sprint,
+			Fire
+		};
+
+
 		class NetworkedGame : public TutorialGame, public PacketReceiver {
 		public:
 			NetworkedGame();
@@ -42,6 +53,8 @@ namespace NCL {
 			int GetClientPlayerNum();
 			int GetClientPlayerNum(int peerID);
 			void ServerUpdatePlayerList();
+
+			
 		protected:
 
 			void InitialiseAssets() override;
@@ -51,7 +64,15 @@ namespace NCL {
 			void BroadcastSnapshot(bool deltaFrame);
 			void UpdateMinimumState();
 			GameObject* AddNetPlayerToWorld(const Vector3& position, int playerNum);
+
+			bool clientProcessFp(FullPacket* fp);
+			bool clientProcessDp(DeltaPacket* dp);
+
+			bool serverProcessCP(ClientPacket* cp, int source);
+
 			std::map<int, int> stateIDs;
+
+			int GlobalStateID;
 
 			GameServer* thisServer;
 			GameClient* thisClient;

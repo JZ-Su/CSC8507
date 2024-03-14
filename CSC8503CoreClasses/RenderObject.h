@@ -60,6 +60,7 @@ namespace NCL {
 			std::vector<Texture*> matHeightTextures;
 			bool isAnimation = false;			
 			bool isAnimated = false;
+			bool isWall = false;
 			bool onLight = false;
 			bool isLight = false;
 			bool isShadow = false;
@@ -67,7 +68,7 @@ namespace NCL {
 
 			int			currentFrame;
 			float		frameTime;
-
+			float		scale;
 		protected:
 			Mesh*		mesh;
 			Texture*	texture[6];

@@ -12,9 +12,10 @@ uniform samplerCube shadowTex;
 uniform vec3	lightPos;
 uniform vec3	shadowPos;
 uniform float	lightRadius;
+uniform float far_plane;
 uniform vec4	lightColour;
 uniform mat4 inverseProjView;
-
+uniform bool isShadow = false;
 uniform vec2 pixelSize;
 uniform vec3	cameraPos;
 
@@ -37,7 +38,7 @@ float smoothstep(float x, float a, float b){
 
 float ShadowCalculation(vec3 wrldPos)
 {
-	float far_plane = 200;
+	//float far_plane = 200;
     vec3 fragToLight = wrldPos - shadowPos; 
 	float currentDepth=length(fragToLight);
 	
@@ -132,7 +133,12 @@ void main(void)
 	vec4 data = texture(dataTex, texCoord.xy);
 	vec4 addTex = texture(addTex, texCoord.xy);
 	vec4 indexTex = texture(indexTex, texCoord.xy);
-	float shadow = ShadowCalculation(worldPos);
+	float shadow = 1;
+
+	if(isShadow)
+		 shadow = ShadowCalculation(worldPos);
+
+	//float shadow = ShadowCalculation(worldPos);
 	float attenuation = atten * shadow;
 	attenuation = smoothstep(attenuation, 0.0, 1.0);
 	if ( attenuation == 0.0) {

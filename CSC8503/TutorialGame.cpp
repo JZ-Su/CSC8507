@@ -390,8 +390,8 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	isDebug = true;
-	/*isDebug = false;*/
+	/*isDebug = true;*/
+	isDebug = false;
 	if (isDebug) {
 		//Level 1
 		//currentLevel = 2;
@@ -910,6 +910,7 @@ void TutorialGame::SwitchLevel() {
 			portal->GetRenderObject()->SetColour(Debug::RED);
 			ghost = gameLevel->GetGhost();
 			ghostai = gameLevel->GetGhostai();
+			ghostai2 = gameLevel->GetGhostai2();
 			ghostAnimation = gameLevel->getGhostAnimation();
 			PlayLevelBGM("level1");
 			break;
@@ -1234,7 +1235,7 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 		if (fireBallBullet->GetExistenceTime() >= 4) {
 			fireBallBullet->GetTransform().SetPosition(Vector3(0, -55, 0));
 			gameLevel->GetBoss()->setHasFireBallBullet(true);
-			fireBallBullet->SetIsHiding(true);
+			//fireBallBullet->SetIsHiding(true);
 		}
 	}
 }

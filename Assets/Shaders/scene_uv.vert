@@ -4,6 +4,8 @@ uniform mat4 modelMatrix 	= mat4(1.0f);
 uniform mat4 viewMatrix 	= mat4(1.0f);
 uniform mat4 projMatrix 	= mat4(1.0f);
 uniform mat4 shadowMatrix 	= mat4(1.0f);
+//uniform vec3 scale;
+//uniform bool isWall = false;
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec4 colour;
@@ -28,6 +30,7 @@ out Vertex
 
 void main(void)
 {
+	
 	mat4 mvp 		  = (projMatrix * viewMatrix * modelMatrix);
 	mat3 normalMatrix = transpose ( inverse ( mat3 ( modelMatrix )));
 
@@ -38,6 +41,19 @@ void main(void)
 	OUT.binormal = cross(OUT.tangent, OUT.normal) * tangent.w;
 	
 	OUT.texCoord	= texCoord;
+	
+	//if(isWall){
+	//	vec3 changedScale = Change_rotation(scale);
+	//	if(changedScale.x > changedScale.z){
+	//		OUT.texCoord = texCoord * (vec2( changedScale.x, changedScale.y)/changedScale.y) ;
+	//		}
+	//	else //if(scale.x < scale.z)
+	//		OUT.texCoord = texCoord * (vec2( changedScale.x, changedScale.y)/changedScale.y) ;
+	//	//else //if(scale.z > scale.y)
+	//		//OUT.texCoord = texCoord * (vec2( scale.x, scale.y)/scale.y);
+	//	//else if ((scale.z < scale.y))
+	//		//OUT.texCoord = texCoord * (vec2( scale.z, scale.y)/1) ;
+	//}
 	OUT.colour		= objectColour;
 
 	if(hasVertexColours) {

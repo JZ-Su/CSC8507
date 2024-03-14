@@ -194,7 +194,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glGenBuffers(1, &textColourVBO);
 	glGenBuffers(1, &textTexVBO);
 
-	far_plane = 200.0;
+	far_plane = 400.0;
 
 	Debug::CreateDebugFont("PressStart2P.fnt", *LoadTexture("PressStart2P.png"));
 
@@ -372,7 +372,7 @@ void GameTechRenderer::RenderShadowMap() {
 	glViewport(0, 0, SHADOWSIZE, SHADOWSIZE);
 
 	//glCullFace(GL_FRONT);
-
+	
 	BindShader(*shadowShader);
 	int mvpLocation = glGetUniformLocation(shadowShader->GetProgramID(), "mvpMatrix");
 	int shadowLocation = glGetUniformLocation(shadowShader->GetProgramID(), "shadowTex");
@@ -381,6 +381,7 @@ void GameTechRenderer::RenderShadowMap() {
 	int projLocation = glGetUniformLocation(shadowShader->GetProgramID(), "shadProjMatrix");
 	int viewLocation = glGetUniformLocation(shadowShader->GetProgramID(), "viewMatrix");
 	int isAnim = glGetUniformLocation(shadowShader->GetProgramID(), "isAnimation");
+	int far_planeLocation = glGetUniformLocation(shadowShader->GetProgramID(), "far_plane");
 
 	for (const auto& i : activeObjects) {
 		if ((*i).isShadow) {
@@ -388,7 +389,8 @@ void GameTechRenderer::RenderShadowMap() {
 		}
 	}	
 	
-	glUniform3fv(lightPosLocation, 1, (float*)&shadowPosition);
+	glUniform3fv(lightPosLocation, 1, (float*)&shadowPosition);	
+	glUniform1f(far_planeLocation, far_plane);
 
 	Matrix4 shadowProjMatrix = Matrix4::Perspective(1.0f, far_plane, 1, 90.0f);
 	vector<Matrix4> shadowViewMatrix;
@@ -420,10 +422,10 @@ void GameTechRenderer::RenderShadowMap() {
 		glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
 		glActiveTexture(GL_TEXTURE1);
 		if (!(*i).isLight) {
-			Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
+			/*Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
 			mvpMatrix = modelMatrix;
 			glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
-			glActiveTexture(GL_TEXTURE1);
+			glActiveTexture(GL_TEXTURE1);*/
 
 			BindMesh((OGLMesh&)*(*i).GetMesh());
 			size_t layerCount = (*i).GetMesh()->GetSubMeshCount();
@@ -559,6 +561,14 @@ void GameTechRenderer::RenderCamera() {
 				glUniform3fv(shadowPosLocation, 1, (float*)&shadowPosition);
 
 				activeShader = shader;
+			}	
+
+			int isWallLocation = glGetUniformLocation(shader->GetProgramID(), "isWall");
+			glUniform1i(isWallLocation, i->isWall);
+
+			if (i->isWall) {
+				int scaleLocation = glGetUniformLocation(shader->GetProgramID(), "scale");
+				glUniform1f(scaleLocation, i->scale);
 			}
 
 			Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
@@ -638,7 +648,7 @@ void GameTechRenderer::RenderLight() {
 
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
-	glBlendFunc(GL_ONE, GL_ONE);
+	glBlendFunc(GL_ONE, GL_ONE); 
 	glEnable(GL_BLEND);
 	glCullFace(GL_FRONT);
 	glDepthFunc(GL_ALWAYS);
@@ -684,6 +694,9 @@ void GameTechRenderer::RenderLight() {
 	int shadowPosLocation = glGetUniformLocation(lightShader->GetProgramID(), "shadowPos");
 	cameraLocation = glGetUniformLocation(lightShader->GetProgramID(), "cameraPos");
 	pixelLocation = glGetUniformLocation(lightShader->GetProgramID(), "pixelSize");
+	int far_planeLocation = glGetUniformLocation(lightShader->GetProgramID(), "far_plane");
+	glUniform1f(far_planeLocation, far_plane);
+
 	glUniformMatrix4fv(invLocation, 1, false, (float*)&invViewProj);
 	Vector3 camPos = gameWorld.GetMainCamera().GetPosition();
 	glUniform3fv(cameraLocation, 1, &camPos.x);
@@ -710,7 +723,10 @@ void GameTechRenderer::RenderLight() {
 	glUniform1i(shadowTexLocation, 1);
 
 	for (const auto& i : activeObjects) {
-		if ((*i).onLight) {
+
+		if ((*i).onLight) {		
+			int isShadowLocation = glGetUniformLocation(lightShader->GetProgramID(), "isShadow");
+			glUniform1i(isShadowLocation, (*i).isShadow);
 			lightPosition = (*i).GetTransform()->GetPosition();
 			lightColour = (*i).GetColour();
 			lightRadius = (*i).GetTransform()->GetScale().x;

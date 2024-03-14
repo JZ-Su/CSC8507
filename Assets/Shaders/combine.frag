@@ -43,4 +43,5 @@ void main(void)
 		fragColor[1].rgb = fragColor[0].rgb;
 		fragColor[1].a = fragColor[0].a;
 	}
+	fragColor[0].a=1.0f;
 }
