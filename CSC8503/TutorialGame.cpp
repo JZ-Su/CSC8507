@@ -417,7 +417,8 @@ void TutorialGame::InitWorld() {
 		bossShootingAnimation = gameLevel->getBossShootingAnimation();
 		bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
 		bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
-		bossChasingAnimation = gameLevel->getBossChasingAnimation();
+		bossChasingAnimation = gameLevel->getBossChasingAnimation(); 
+		bossAngryAnimation = gameLevel->getBossAngryAnimation();
 		iceCubeBullet = gameLevel->getIceCubeBullet();
 		fireBallBullet = gameLevel->getFireBallBullet();
 
@@ -1221,9 +1222,8 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 
 		// Check if fireball exists for too long
 		if (fireBallBullet->GetExistenceTime() >= 4) {
-			fireBallBullet->GetTransform().SetPosition(Vector3(0, -55, 0));
 			gameLevel->GetBoss()->setHasFireBallBullet(true);
-			//fireBallBullet->SetIsHiding(true);
+			fireBallBullet->SetIsHiding(true,Vector3(0,-98,0));
 		}
 	}
 }
@@ -1271,12 +1271,36 @@ void TutorialGame::PlayLevelBGM(const std::string& levelName) {
 	soundManager.playSound(currentBGM);
 }
 
+void TutorialGame::RollStone(GameObject * stone, const Vector3 & forceDirection, float forceMagnitude) {
+	PhysicsObject* stonePhysics = stone->GetPhysicsObject();
 
-//class maintume:public PushdownState {
-//	PushdownResult OnUpdate(float dt, PushdownState** newState)override {
-//	
-//	}
-//	void OnAwake() override {
-//	
-//	}
-//};
+	if (stonePhysics) {
+		Vector3 stoneCenter = stone->GetTransform().GetPosition()+Vector3(0,2,0);
+
+		Vector3 force = forceDirection * forceMagnitude;
+
+		stonePhysics->AddForceAtPosition(force, stoneCenter);
+	}
+}
+
+void TutorialGame::UpdateShieldPosition(float dt) {
+	Vector3 playerPosition = player->GetTransform().GetPosition()+Vector3(0,5,0);
+	Vector3 shieldPosition = shield->GetTransform().GetPosition();
+
+	Vector3 direction = (playerPosition - shieldPosition).Normalised();
+
+	Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(direction.x, -direction.z)));
+
+	shield->GetTransform().SetOrientation(targetOrientation);
+
+	float radius = 3.0f;
+	float speed = 2.5f;
+	static float angle = 0.0f;
+	angle += speed * dt;
+
+	float x = playerPosition.x + radius * cos(angle);
+	float y = playerPosition.y;
+	float z = playerPosition.z + radius * sin(angle);
+
+	shield->GetTransform().SetPosition(Vector3(x, y, z));
+}
