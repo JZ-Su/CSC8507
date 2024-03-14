@@ -21,6 +21,8 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	ghostMesh = render->LoadMesh("Ghost.msh");
 	goatMesh    = render->LoadMesh("goat.msh");
 	shieldMesh = render->LoadMesh("Shield.msh");
+	rockMesh = render->LoadMesh("Rock.msh");
+	speedPropMesh = render->LoadMesh("CoffeCup.msh");
 	bookshelfMesh = render->LoadMesh("bookshelf.msh");
 	tableMesh = render->LoadMesh("table.msh");
 	columnMesh = render->LoadMesh("column.msh");
@@ -34,6 +36,8 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	basicTexture = render->LoadTexture("checkerboard.png");
 	IceCubeTexture = render->LoadTexture("IceCube.jpg");
 	shieldTexture = render->LoadTexture("Shield_AlbedoTransparency.png");
+	FireBallTexture = render->LoadTexture("FireBall.jpg");
+	speedPropTexture = render->LoadTexture("LowPolyFoodLiteTexture_01.png");
 	DefualtTexture[0] = render->LoadTexture("Defualt/white.jpg");
 	DefualtTexture[1] = render->LoadTexture("Defualt/grey.jpg");
 	DefualtTexture[2] = render->LoadTexture("Defualt/black.jpg");
@@ -92,6 +96,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	bossFlinchAnimation = new MeshAnimation("Flinches.anm");
 	bossChasingAnimation = new MeshAnimation("StepForwardTwoHand.anm");
 	bossAttackingAnimation = new MeshAnimation("Stow.anm");
+	bossAngryAnimation = new MeshAnimation("Cheer1.anm");
 	//bossAnimation = new MeshAnimation("Male_Jump.anm");
 	playerIdleAnimation = new MeshAnimation("Female_Stand.anm");
 	playerWalkAnimation = new MeshAnimation("Female_Run.anm");
@@ -479,6 +484,7 @@ Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensio
 	LoadMaterialTextures(character, bossMesh, bossMat, render);
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
 	character->GetPhysicsObject()->InitCubeInertia();
+	character->SetTag("boss");
 	return character;
 }
 
@@ -534,7 +540,7 @@ Player* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dime
 	player->GetPhysicsObject()->SetInverseMass(inverseMass);
 	player->GetPhysicsObject()->InitCubeInertia();
 	player->GetPhysicsObject()->SetApplyAngImp(false);
-
+	player->SetTag("player");
 	return player;
 }
 
@@ -652,28 +658,27 @@ Door* BasicExamples::CreateDoor(const Vector3& position, const Vector3& dimensio
 
 GameObject* BasicExamples::CreateFireBallBullet(const Vector3& position, float radius, float inverseMass) {
 	GameObject* sphere = new GameObject("fireballbullet");
-
 	Vector3 sphereSize = Vector3(radius, radius, radius);
-	SphereVolume* volume = new SphereVolume(radius);
+	SphereVolume* volume = new SphereVolume(radius + 2);
 	sphere->SetBoundingVolume((CollisionVolume*)volume);
 
 	sphere->GetTransform().SetScale(sphereSize).SetPosition(position);
 
-	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, nullptr, basicShader));
-	sphere->GetRenderObject()->SetColour(Vector4(1.0, 0.4, 0.0, 1.0));
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, FireBallTexture, basicShader));
 	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
 
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
 	sphere->GetPhysicsObject()->InitSphereInertia();
-	sphere->SetIsHiding(true);
+	sphere->SetIsHiding(true, position);
 	sphere->SetExistenceTime(0.0f);
+	sphere->SetTag("fireballbullet");
 	return sphere;
 }
 
 GameObject* BasicExamples::CreateIceCubeBullet(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	GameObject* cube = new GameObject("icecubebullet");
 
-	AABBVolume* volume = new AABBVolume(dimensions);
+	OBBVolume* volume = new OBBVolume(dimensions);
 	cube->SetBoundingVolume((CollisionVolume*)volume);
 
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
@@ -682,18 +687,36 @@ GameObject* BasicExamples::CreateIceCubeBullet(const Vector3& position, const Ve
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
-	cube->SetIsHiding(true);
+	cube->SetIsHiding(true, position);
 	cube->SetExistenceTime(0.0f);
+	cube->SetTag("icecubebullet");
 
 	return cube;
+}
+
+GameObject* BasicExamples::CreateRollingRock(const Vector3& position, float radius, float inverseMass) {
+	GameObject* sphere = new GameObject("rollingrock");
+	Vector3 sphereSize = Vector3(radius, radius, radius);
+	SphereVolume* volume = new SphereVolume(radius + 1);
+	sphere->SetBoundingVolume((CollisionVolume*)volume);
+
+	sphere->GetTransform().SetScale(sphereSize).SetPosition(position);
+
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), rockMesh, nullptr, basicShader));
+	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
+	sphere->GetRenderObject()->SetColour(Vector4(0.3f, 0.3f, 0.3f, 1.0f));
+	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
+	sphere->GetPhysicsObject()->InitSphereInertia();
+	sphere->SetTag("rollingrock");
+	return sphere;
 }
 
 GameObject* BasicExamples::CreateShield(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	GameObject* shield = new GameObject("shield");
 
-	AABBVolume* volume = new AABBVolume(Vector3(1.2, 1.2, 0.2) * dimensions);
-	shield->GetTransform().SetCollisionDimensions(Vector3(1.2, 1.2, 0.2) * dimensions);
-	shield->SetBoundingVolume((CollisionVolume*)volume);
+	//AABBVolume* volume = new AABBVolume(Vector3(1.2, 1.2, 0.2) * dimensions);
+	//shield->GetTransform().SetCollisionDimensions(Vector3(1.2, 1.2, 0.2) * dimensions);
+	//shield->SetBoundingVolume((CollisionVolume*)volume);
 
 	shield->GetTransform().SetScale(dimensions * 2).SetPosition(position);
 	shield->SetRenderObject(new RenderObject(&shield->GetTransform(), shieldMesh, shieldTexture, modelShader));
@@ -703,6 +726,8 @@ GameObject* BasicExamples::CreateShield(const Vector3& position, const Vector3& 
 
 	shield->GetPhysicsObject()->SetInverseMass(inverseMass);
 	shield->GetPhysicsObject()->InitCubeInertia();
+	shield->SetIsHiding(true, Vector3(0, -100, 0));
+	shield->SetTag("shield");
 	return shield;
 }
 
@@ -770,4 +795,42 @@ GameObject* BasicExamples::CreatRedbottle(const Vector3& position, const Vector3
 	redbottle->SetTag("item");
 
 	return redbottle;
+}
+
+GameObject* BasicExamples::CreateSpeedProp(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* coffeecup = new GameObject("speedprop");
+
+	AABBVolume* volume = new AABBVolume(Vector3(0.15, 0.15, 0.15) * dimensions);
+	coffeecup->GetTransform().SetCollisionDimensions(Vector3(0.15, 0.15, 0.15) * dimensions);
+	coffeecup->SetBoundingVolume((CollisionVolume*)volume);
+
+	coffeecup->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	coffeecup->SetRenderObject(new RenderObject(&coffeecup->GetTransform(), speedPropMesh, speedPropTexture, modelShader));
+	coffeecup->SetPhysicsObject(new PhysicsObject(&coffeecup->GetTransform(), coffeecup->GetBoundingVolume()));
+	//shield->GetRenderObject()->isAnimation = true;
+	//LoadMaterialTextures(shield, shieldMesh, shieldMat, render);
+
+	coffeecup->GetPhysicsObject()->SetInverseMass(inverseMass);
+	coffeecup->GetPhysicsObject()->InitCubeInertia();
+	coffeecup->SetTag("speedprop");
+	return coffeecup;
+}
+
+GameObject* BasicExamples::CreateShieldProp(const Vector3& position, const Vector3& dimensions, float inverseMass) {
+	GameObject* shield = new GameObject("shieldprop");
+
+	AABBVolume* volume = new AABBVolume(Vector3(1.2, 1.2, 0.2) * dimensions);
+	shield->GetTransform().SetCollisionDimensions(Vector3(1.2, 1.2, 0.2) * dimensions);
+	shield->SetBoundingVolume((CollisionVolume*)volume);
+
+	shield->GetTransform().SetScale(dimensions * 2).SetPosition(position);
+	shield->SetRenderObject(new RenderObject(&shield->GetTransform(), shieldMesh, shieldTexture, modelShader));
+	shield->SetPhysicsObject(new PhysicsObject(&shield->GetTransform(), shield->GetBoundingVolume()));
+	//shield->GetRenderObject()->isAnimation = true;
+	//LoadMaterialTextures(shield, shieldMesh, shieldMat, render);
+
+	shield->GetPhysicsObject()->SetInverseMass(inverseMass);
+	shield->GetPhysicsObject()->InitCubeInertia();
+	shield->SetTag("shieldprop");
+	return shield;
 }

@@ -61,7 +61,7 @@ namespace NCL {
 
 			int GetWorldIDCounter() const { return worldIDCounter; }
 			void SetWorldIDCounter(int i) { worldIDCounter = i; }
-
+			GameObject* GetObject(std::string tag);
 		protected:
 			std::vector<GameObject*> gameObjects;
 			std::vector<Constraint*> constraints;

@@ -82,6 +82,12 @@ namespace NCL {
 				}
 				return false;
 			}
+			void SetIsRencentlyHurt(bool IsRencentlyHurt) {
+				isRencentlyHurt = IsRencentlyHurt;
+			}
+			bool getIsRencentlyHurt() {
+				return isRencentlyHurt;
+			}
 			//bool updateJumpTimer(float dt);
 			float updateTimer(float dt);
 			float updateHealth(float inhealth);
@@ -105,6 +111,7 @@ namespace NCL {
 			static const std::vector<std::string>& GetItemList() { return itemList; }
 
 		protected:
+			bool isRencentlyHurt;
 			float health;
 			int collectibles;
 			float timer;

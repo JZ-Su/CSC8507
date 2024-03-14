@@ -266,11 +266,27 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM2)) {
-		player->UseItem(1);
+		//player->UseItem(1);
+		gameLevel->GetShield()->SetIsNotHiding();
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM3)) {
-		player->UseItem(2);
+		//player->UseItem(2);
+		if (gameLevel == nullptr) {
+			return;
+		}
+		//speedProp = gameLevel->CreateSpeedProp(Vector3(0, 5, 65), Vector3(16, 16, 16));
+		//
+		//world->AddGameObject(speedProp);
 
+		//propList.push_back(speedProp);
+		rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + Vector3(0, 5, -10), 3);
+		world->AddGameObject(rollingRock);
+		if (rollingRock) {
+			Quaternion playerQuaternion = player->GetTransform().GetOrientation();
+			Vector3 defaultForward = Vector3(0, 0, -1);
+			Vector3 currentDirection = playerQuaternion * defaultForward;
+			RollStone(rollingRock, currentDirection, 12000);
+		}
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM4)) {
 		player->UseItem(3);
@@ -817,14 +833,34 @@ void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation
 				playShootingAnimation = true;
 			}
 			if (playShootingAnimation) {
-				boss->GetRenderObject()->frameTime -= dt / 1.6;
-				UpdateAnim(boss, bossShootingAnimation);
-				shootingTimer += dt;
-				if (shootingTimer >= shootingDuration) {
-					playShootingAnimation = false;
-					shootingTimer = 0.0f; // reset
-					iceCubeBulletFrames = 0.0f;
+				if (gameLevel->GetBoss()->getIsShootingIceCube()) {
+					boss->GetRenderObject()->frameTime -= dt / 1.6;
+					UpdateAnim(boss, bossShootingAnimation);
+					shootingTimer += dt;
+					if (shootingTimer >= shootingDuration) {
+						playShootingAnimation = false;
+						shootingTimer = 0.0f; // reset
+						iceCubeBulletFrames = 0.0f;
+					}
 				}
+				else if (gameLevel->GetBoss()->getIsShootingFireBall()) {
+					boss->GetRenderObject()->frameTime -= dt;
+					UpdateAnim(boss, bossAngryAnimation);
+					std::cout << "Boss is angry, be ready to counter the FIREBALL!" << std::endl;
+					bossAngryTimer += dt;
+					if (bossAngryTimer >= bossAngryDuration) {
+						boss->GetRenderObject()->frameTime -= dt / 1.6;
+						UpdateAnim(boss, bossShootingAnimation);
+						shootingTimer += dt;
+						if (shootingTimer >= shootingDuration) {
+							playShootingAnimation = false;
+							shootingTimer = 0.0f; // reset
+							iceCubeBulletFrames = 0.0f;
+						}
+					}
+
+				}
+
 			}
 			else {
 				if ((!iceCubeBullet->GetIsHiding() || !fireBallBullet->GetIsHiding()) && !gameLevel->GetBoss()->getIsChasing()) {
@@ -1014,36 +1050,93 @@ void TutorialGame::UpdateLevel(float dt) {
 	}
 	// Level 3
 	else if (currentLevel == 6) {
+
 		gameLevel->GetBoss()->Update(dt);
 		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
-		//IceCubeBulletLogic(dt);
-		FireBallBulletLogic(dt);
+		if (fireBallBullet->GetIsHiding() && iceCubeBullet->GetIsHiding()) {
+			boss->updateBulletTimer(dt);
+		}
+		if (gameLevel->GetBoss()->getShooting()) {
+			if (boss->getNextBullet() == 0) {
+				// 发射冰块子弹
+				gameLevel->GetBoss()->setIsShootingIceCube(true);
+				IceCubeBulletLogic(dt);
+			}
+			else {
+				// 发射火球子弹
+				gameLevel->GetBoss()->setIsShootingFireBall(true);
+				FireBallBulletLogic(dt);
+			}
 
+		}
+		if (fireBallBullet->GetIsHiding() && iceCubeBullet->GetIsHiding()) {
+			boss->updateBulletTimer(dt);
+		}
 		if (gameLevel->GetBoss()->getIsAttack()) {
 			ExecuteAttack(dt);
 		}
+		if (!gameLevel->GetShield()->GetIsHiding()) {
+			Debug::DrawCollisionBox(shield);
+			UpdateShieldPosition(dt);
+			shieldPropTimer += dt;
+			if (shieldPropTimer > shieldPropDuration) {
+				gameLevel->GetShield()->SetIsHiding(true, Vector3(0, -65, 30));
+				shieldPropTimer = 0.0f;
+			}
+		}
+		if (player->getIsRencentlyHurt()) {
+			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
+			Vector3 bossPosition = boss->GetTransform().GetPosition();
+			Vector3 hurtDirection = (playerPosition - bossPosition).Normalised();
+			player->GetPhysicsObject()->AddForce(hurtDirection * 50);
+			player->SetIsRencentlyHurt(false);
+		}
+		if (fireBallBullet->GetIsBlockBack()) {
+			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
+			Vector3 bossPosition = boss->GetTransform().GetPosition() + Vector3(0, 12, 0);
+			Vector3 backDirection = (playerPosition - bossPosition).Normalised();
+			fireBallBullet->GetPhysicsObject()->AddForce(-backDirection * 4000);
+			fireBallBullet->SetIsBolckBack(false);
+		}
+		if (iceCubeBullet->GetIsBlockBack()) {
+			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
+			Vector3 bossPosition = boss->GetTransform().GetPosition() + Vector3(0, 12, 0);
+			Vector3 iceCubePosition = iceCubeBullet->GetTransform().GetPosition();
+			Vector3 backDirection = (playerPosition - iceCubePosition).Normalised();
+			float distanceToBoss = (bossPosition - iceCubePosition).Length();
+			backDirection.y *= 0.2;
+			backDirection.x *= 0.6;
+			backDirection.z *= 0.6;
+			iceCubeBullet->GetPhysicsObject()->AddForce(-backDirection * 600);
 
-		health = (100.0f - (player->GetHealth())) * 0.01;
-	
+			if (distanceToBoss < 20) {
+				if (isCloseToPlayer) {
+					iceCubeBullet->GetPhysicsObject()->SetLinearVelocity(Vector3());
+					isCloseToPlayer = false;
+				}
+				UpdateTrackingBall(iceCubePosition, bossPosition, 900, dt);
+			}
+		}
+		if (player->GetHealth() > 100) {
+			player->SetHealth(100);
+		}
+		if (player->GetHealth() < 0) {
+			player->SetHealth(0);
+		}
+		health = (100 - (player->GetHealth())) * 0.01;
+		if (player->GetHealth() > 100) {
+			player->SetHealth(100);
+		}
+		if (player->GetHealth() < 0) {
+			player->SetHealth(0);
+		}
 
-		if (gameLevel->GetBoss()->getBossHealth() < 0) {gameLevel->GetBoss()->setHealth(0);}
-         bosshealth = (100 - (gameLevel->GetBoss()->getBossHealth())) * 0.01;
 		if (gameLevel->GetBoss()->getBossHealth() < 0) { gameLevel->GetBoss()->setHealth(0); }
-
+		bosshealth = (100 - (gameLevel->GetBoss()->getBossHealth())) * 0.01;
+		if (gameLevel->GetBoss()->getBossHealth() < 0) { gameLevel->GetBoss()->setHealth(0); }
 		//float aspect = Window::GetWindow()->GetScreenAspect();
-		//float delta = 0.1;	
-
-		healthLength = (100 - PlayerPreHealth) * 0.01;
-
-		GameTechRenderer::CreateGameUI({ Vector3(-0.5, -0.75f, -1.0f), Vector3(-0.5, -0.8f, -1.0f), Vector3(0.5f, -0.8f, -1.0f), Vector3(0.5f, -0.75f, -1.0f) }, "background", "health");
-
-		GameTechRenderer::CreateGameUI({ Vector3(0.5f - health, -0.8f, -1.0f), Vector3(0.5f - health, -0.75f, -1.0f) ,
-			Vector3(0.5 - healthLength , -0.75f, -1.0f), Vector3(0.5 - healthLength, -0.8f, -1.0f) }, "changingblood", "health");
-
-		GameTechRenderer::CreateGameUI({ Vector3(-0.5, -0.75f, -1.0f), Vector3(-0.5, -0.8f, -1.0f), Vector3(0.5f - health, -0.8f, -1.0f), Vector3(0.5f - health, -0.75f, -1.0f) }, "blood", "health");
-
-		GameTechRenderer::CreateGameUI({ Vector3(-0.5, -0.75f, -1.0f), Vector3(-0.5, -0.8f, -1.0f), Vector3(0.5f, -0.8f, -1.0f), Vector3(0.5f, -0.75f, -1.0f) }, "frame", "health");
-
+		//float delta = 0.1;
+		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) }, "blood", "health");
 		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.8f, -1.0f), Vector3(-0.4, -1.0f, -1.0f), Vector3(-0.2, -1.0f, -1.0f), Vector3(-0.2f, -0.8f, -1.0f) }, "inventory1", "item");
 		GameTechRenderer::CreateGameUI({ Vector3(-0.2, -0.8f, -1.0f), Vector3(-0.2, -1.0f, -1.0f), Vector3(0.0f, -1.0f, -1.0f), Vector3(0.0f, -0.8f, -1.0f) }, "inventory2", "item");
 		GameTechRenderer::CreateGameUI({ Vector3(0.0, -0.8f, -1.0f), Vector3(0.0f, -1.0f, -1.0f), Vector3(0.2f, -1.0f, -1.0f), Vector3(0.2f, -0.8f, -1.0f) }, "inventory3", "item");
@@ -1056,15 +1149,9 @@ void TutorialGame::UpdateLevel(float dt) {
 			GameTechRenderer::CreateGameUI({ Vector3(-0.4f + (i * distance), -0.83f, -1.0f), Vector3(-0.4f + (i * distance), -0.96f, -1.0f),
 			Vector3(-0.2f + (i * distance), -0.96f, -1.0f), Vector3(-0.2f + (i * distance), -0.83f, -1.0f) }, itemList.at(i), "item");
 		}
-		
-		GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
-		Vector3(0.5f, 0.95f, -1.0f) }, "background", "health");
-	    GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f - bosshealth, 0.9f, -1.0f),
-			Vector3(0.5f - bosshealth, 0.95f, -1.0f) }, "blood", "health");	
-		GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
-			Vector3(0.5f, 0.95f, -1.0f) }, "bossframe", "health");
 
-	
+		GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f - bosshealth, 0.9f, -1.0f),
+			Vector3(0.5f - bosshealth, 0.95f, -1.0f) }, "blood", "health");
 	}
 	// Level 4
 	else if (currentLevel == 8) {
@@ -1141,11 +1228,9 @@ void TutorialGame::UpdateTrackingBall(Vector3 ballPosition, const Vector3& playe
 
 	Debug::DrawLine(ballPosition, playerPosition, Debug::BLACK);
 	Vector3 direction = (playerPosition - ballPosition).Normalised();
-
-	float distance = speed * dt;
-	ballPosition += direction * distance;
-
-	iceCubeBullet->GetTransform().SetPosition(ballPosition);
+	Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(direction.x, -direction.z)));
+	iceCubeBullet->GetTransform().SetOrientation(targetOrientation);
+	iceCubeBullet->GetPhysicsObject()->AddForce(direction * speed);
 }
 
 void TutorialGame::UpdateProjMatrixFov(float df) {
@@ -1156,27 +1241,37 @@ void TutorialGame::UpdateProjMatrixFov(float df) {
 	world->GetMainCamera().SetFov(fov);
 }
 
+
 void TutorialGame::IceCubeBulletLogic(float dt) {
 	if (iceCubeBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasIceCubeBullet() && !playShootingAnimation) {
-		iceCubeBullet->GetTransform().SetPosition(gameLevel->GetBoss()->GetTransform().GetPosition() + Vector3(0, 20, 30));
-		std::cout << iceCubeBullet->GetTransform().GetPosition() << std::endl;
-		iceCubeBullet->SetIsHiding(false);
+		Quaternion orientationQuaternion = boss->GetTransform().GetOrientation();
+		Vector3 forwardVector = orientationQuaternion * Vector3(0, 0, -1);
+		Vector3 bulletOffset = forwardVector * 20;
+		Vector3 bulletStartPosition = gameLevel->GetBoss()->GetTransform().GetPosition() + bulletOffset + Vector3(0, 20, 0);
+		iceCubeBullet->GetTransform().SetPosition(bulletStartPosition);
+		iceCubeBullet->SetIsNotHiding();
 		gameLevel->GetBoss()->setHasIceCubeBullet(false);
 		iceCubeBullet->SetExistenceTime(0.0f);
+		iceCubeBullet->GetPhysicsObject()->AddForce(forwardVector * 800);
+		isCloseToPlayer = true;
 		std::cout << "Icecube bullet is coming!" << std::endl;
 	}
 	if (!iceCubeBullet->GetIsHiding()) {
+		iceCubeBullet->GetPhysicsObject()->AddForce(Vector3(0, 2.0f, 0));
 		iceCubeBullet->UpdateExistenceTime(dt);
-		Vector3 playerPosition = player->GetTransform().GetPosition();
+		Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 		Vector3 ballPosition = iceCubeBullet->GetTransform().GetPosition();
 		//UpdateTrackingBall(ballPosition, playerPosition, 2, dt);
 		//if (iceCubeBullet->GetExistenceTime() >= 6.0f) {
-		UpdateTrackingBall(ballPosition, playerPosition, 10, dt);
+		if (!iceCubeBullet->GetIsBlockBack()) {
+			UpdateTrackingBall(ballPosition, playerPosition, 15, dt);
+		}
 		if (iceCubeBullet->GetExistenceTime() >= 10.0f) {
 
-			iceCubeBullet->GetTransform().SetPosition(Vector3(0, -20, 0));
 			gameLevel->GetBoss()->setHasIceCubeBullet(true);
-			iceCubeBullet->SetIsHiding(true);
+			iceCubeBullet->SetIsHiding(true, Vector3(20, -98, 0));
+			iceCubeBullet->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			iceCubeBullet->SetIsBolckBack(false);
 		}
 	}
 }
@@ -1204,15 +1299,20 @@ void TutorialGame::ExecuteAttack(float dt) {
 
 void TutorialGame::FireBallBulletLogic(float dt) {
 	if (fireBallBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasFireBallBullet() && !playShootingAnimation) {
-		fireBallBullet->GetTransform().SetPosition(gameLevel->GetBoss()->GetTransform().GetPosition() + Vector3(0, 20, 30));
-		fireBallBullet->SetIsHiding(false);
+		Quaternion orientationQuaternion = boss->GetTransform().GetOrientation();
+		Vector3 forwardVector = orientationQuaternion * Vector3(0, 0, -1);
+		Vector3 bulletOffset = forwardVector * 20;
+		Vector3 bulletStartPosition = gameLevel->GetBoss()->GetTransform().GetPosition() + bulletOffset + Vector3(0, 20, 0);
+		fireBallBullet->GetTransform().SetPosition(bulletStartPosition);
+		fireBallBullet->SetIsNotHiding();
 		gameLevel->GetBoss()->setHasFireBallBullet(false);
 		fireBallBullet->SetExistenceTime(0.0f);
-		Vector3 playerPosition = player->GetTransform().GetPosition();
+		bossAngryTimer = 0.0f;
+		Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 		Vector3 ballPosition = fireBallBullet->GetTransform().GetPosition();
 		// Update position of fireball
 		Vector3 fireBallDirection = (playerPosition - ballPosition).Normalised();
-		fireBallBullet->GetPhysicsObject()->AddForce(fireBallDirection * 1300);
+		fireBallBullet->GetPhysicsObject()->AddForce(fireBallDirection * 9300);
 		std::cout << "Fireball bullet is coming!" << std::endl;
 	}
 	if (!fireBallBullet->GetIsHiding()) {
@@ -1223,10 +1323,11 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 		// Check if fireball exists for too long
 		if (fireBallBullet->GetExistenceTime() >= 4) {
 			gameLevel->GetBoss()->setHasFireBallBullet(true);
-			fireBallBullet->SetIsHiding(true,Vector3(0,-98,0));
+			fireBallBullet->SetIsHiding(true, Vector3(0, -98, 0));
 		}
 	}
 }
+
 
 void TutorialGame::AddSound() {
 	soundManager.loadSound("walking", "../externals/media/walk.mp3",true,false);
