@@ -470,11 +470,13 @@ GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& d
 Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player, float inverseMass) {
 	Boss* character = new Boss(player);
 	//character->BossBehaviourTree(player);
+	Vector3 collisionDimensions = Vector3(1, 2.0, 1) * dimensions;
 	AABBVolume* volume = new AABBVolume(dimensions);
+	character->GetTransform().SetCollisionDimensions(collisionDimensions);
 	character->SetBoundingVolume((CollisionVolume*)volume);
 
 	character->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOrientation(Matrix4::Rotation(180, Vector3(0, 1, 0)));
-	character->GetTransform().SetCollisionOffset(Vector3(0, dimensions.y, 0));
+	character->GetTransform().SetCollisionOffset(Vector3(0, dimensions.y * 2, 0));
 
 	character->SetRenderObject(new RenderObject(&character->GetTransform(), bossMesh, nullptr, bossShader));
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
@@ -487,6 +489,7 @@ Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensio
 	character->SetTag("boss");
 	return character;
 }
+
 
 GameObject* BasicExamples::CreateCapsule(const Vector3& position, float halfHeight, float radius, float inverseMass) {
 	GameObject* capsule = new GameObject("capsule");
@@ -524,12 +527,12 @@ GameObject* BasicExamples::CreateLight(const Vector3& position, const Vector4& c
 Player* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	Player* player = new Player("player");
 
-	Vector3 collisionDimensions = Vector3(0.6, 1.0, 0.6) * dimensions;
+	Vector3 collisionDimensions = Vector3(.6, 2.0, 0.6) * dimensions;
 	AABBVolume* volume = new AABBVolume(collisionDimensions);
 	player->GetTransform().SetCollisionDimensions(collisionDimensions);
 	player->SetBoundingVolume((CollisionVolume*)volume);
 
-	player->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetCollisionOffset(Vector3(0, dimensions.y, 0));
+	player->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetCollisionOffset(Vector3(0, dimensions.y*2, 0));
 	player->SetRenderObject(new RenderObject(&player->GetTransform(), playerMesh, nullptr, playerShader));
 	player->SetPhysicsObject(new PhysicsObject(&player->GetTransform(), player->GetBoundingVolume()));
 	player->GetRenderObject()->isAnimation = true;
