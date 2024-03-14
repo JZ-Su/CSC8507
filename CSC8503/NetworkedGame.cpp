@@ -136,7 +136,7 @@ void NetworkedGame::UpdateAsClient(float dt) {
 	newPacket.buttonstates[3] = Window::GetKeyboard()->KeyHeld		(KeyCodes::A)		? 1 : 0;
 	newPacket.buttonstates[4] = Window::GetKeyboard()->KeyPressed	(KeyCodes::SPACE)	? 1 : 0;
 	//newPacket.btnStates[5] = Window::GetMouse()->ButtonPressed(MouseButtons::Type::Left) ? 1 : 0;
-	newPacket.lastID = GlobalStateID;
+	//newPacket.lastID = GlobalStateID;
 
 	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
 	//	//fire button pressed!
@@ -254,17 +254,17 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 	}*/
 	case BasicNetworkMessages::Full_State: {
 		FullPacket* realPacket = (FullPacket*)payload;
-		clientProcessFp(realPacket);
+		//clientProcessFp(realPacket);
 		break;
 	}
 	case BasicNetworkMessages::Delta_State: {
 		DeltaPacket* realPacket = (DeltaPacket*)payload;
-		clientProcessDp(realPacket);
+		//clientProcessDp(realPacket);
 		break;
 	}
 	case BasicNetworkMessages::Received_State: {
 		ClientPacket* realPacket = (ClientPacket*)payload;
-		serverProcessCP(realPacket, source);
+		//serverProcessCP(realPacket, source);
 		break;
 	}
 	/*case BasicNetworkMessages::Player_State: {
