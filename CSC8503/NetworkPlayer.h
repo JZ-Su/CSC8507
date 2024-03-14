@@ -13,6 +13,10 @@ namespace NCL {
 
 			void OnCollisionBegin(GameObject* otherObject) override;
 
+			void SetPlayerYaw(const Vector3& pointPos);
+			void SetBtnState(int btn, char val) { btnState[btn] = val; }
+			char GetBtnState(int btn)const { return btnState[btn]; }
+
 			int GetPlayerNum() const {
 				return playerNum;
 			}
@@ -20,6 +24,7 @@ namespace NCL {
 		protected:
 			NetworkedGame* game;
 			int playerNum;
+			char btnState[4] = { 0,0,0,0 };
 		};
 	}
 }

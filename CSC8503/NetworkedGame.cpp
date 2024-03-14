@@ -127,16 +127,16 @@ void NetworkedGame::UpdateAsClient(float dt) {
 	ClientPacket newPacket;
 
 	
-	/*Vector3 PointerPos;
-	findOSpointerWorldPosition(PointerPos);
-	newPacket.PointerPos = PointerPos;*/
-	newPacket.buttonstates[0] = Window::GetKeyboard()->KeyHeld		(KeyCodes::W)		? 1 : 0;
-	newPacket.buttonstates[1] = Window::GetKeyboard()->KeyHeld		(KeyCodes::S)		? 1 : 0;
-	newPacket.buttonstates[2] = Window::GetKeyboard()->KeyHeld		(KeyCodes::D)		? 1 : 0;
-	newPacket.buttonstates[3] = Window::GetKeyboard()->KeyHeld		(KeyCodes::A)		? 1 : 0;
-	newPacket.buttonstates[4] = Window::GetKeyboard()->KeyPressed	(KeyCodes::SPACE)	? 1 : 0;
-	//newPacket.btnStates[5] = Window::GetMouse()->ButtonPressed(MouseButtons::Type::Left) ? 1 : 0;
-	//newPacket.lastID = GlobalStateID;
+	Vector3 PointerPos;
+	//findOSpointerWorldPosition(PointerPos);
+	newPacket.PointerPos = PointerPos;
+	newPacket.btnStates[0] = Window::GetKeyboard()->KeyHeld(KeyCodes::W) ? 1 : 0;
+	newPacket.btnStates[1] = Window::GetKeyboard()->KeyHeld(KeyCodes::S) ? 1 : 0;
+	newPacket.btnStates[2] = Window::GetKeyboard()->KeyHeld(KeyCodes::D) ? 1 : 0;
+	newPacket.btnStates[3] = Window::GetKeyboard()->KeyHeld(KeyCodes::A) ? 1 : 0;
+	newPacket.btnStates[4] = Window::GetKeyboard()->KeyPressed(KeyCodes::SHIFT) ? 1 : 0;
+	newPacket.btnStates[5] = Window::GetMouse()->ButtonPressed(MouseButtons::Type::Left) ? 1 : 0;
+	newPacket.lastID = GlobalStateID;
 
 	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
 	//	//fire button pressed!
@@ -236,7 +236,18 @@ void NetworkedGame::SpawnPlayer() {
 }
 
 void NetworkedGame::StartLevel() {
+	//InitWorld();
+	//AddWallToWorld(Vector3(-188, 4, -188), Vector3(4, 4, 4));
+	//physics->UseGravity(true);
 
+	//scoreTable.clear();
+	//for (int i = 0; i < 4; ++i) { scoreTable.push_back(0); }
+	//Change Round State
+	GlobalStateID = -1;
+	//RoundTime = 600.0f;
+	//roundDelayOver = false;
+	//delayTime = 0.6f;
+	//isRoundstart = true;
 }
 
 void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
@@ -254,17 +265,17 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 	}*/
 	case BasicNetworkMessages::Full_State: {
 		FullPacket* realPacket = (FullPacket*)payload;
-		//clientProcessFp(realPacket);
+		clientProcessFp(realPacket);
 		break;
 	}
 	case BasicNetworkMessages::Delta_State: {
 		DeltaPacket* realPacket = (DeltaPacket*)payload;
-		//clientProcessDp(realPacket);
+		clientProcessDp(realPacket);
 		break;
 	}
 	case BasicNetworkMessages::Received_State: {
 		ClientPacket* realPacket = (ClientPacket*)payload;
-		//serverProcessCP(realPacket, source);
+		serverProcessCP(realPacket, source);
 		break;
 	}
 	/*case BasicNetworkMessages::Player_State: {
@@ -396,3 +407,46 @@ GameObject* NetworkedGame::AddNetPlayerToWorld(const Vector3& position, int play
 	return character;
 }
 
+bool NetworkedGame::clientProcessFp(FullPacket* fp)
+{
+	auto itr = networkObjects.find(fp->objectID);
+	if (itr == networkObjects.end()) {
+		std::cout << "Client Num" << GetClientPlayerNum() << "can't find netObject" << std::endl;
+		return false;
+	}
+	itr->second->ReadPacket(*fp);
+	if (fp->fullState.stateID > GlobalStateID) { GlobalStateID = fp->fullState.stateID; }
+	return true;
+}
+bool NetworkedGame::clientProcessDp(DeltaPacket* dp)
+{
+	auto itr = networkObjects.find(dp->objectID);
+	if (itr == networkObjects.end()) {
+		std::cout << "Client Num" << GetClientPlayerNum() << "can't find netObject" << std::endl;
+		return false;
+	}
+	itr->second->ReadPacket(*dp);
+	return true;
+}
+
+bool NetworkedGame::serverProcessCP(ClientPacket* cp, int source)
+{
+	int playerID = GetClientPlayerNum(source);
+	if (playerID != -1)
+	{
+		NetworkPlayer* thePlayer = (NetworkPlayer*)(serverPlayers[playerID]);
+		thePlayer->SetPlayerYaw(cp->PointerPos);
+		//if (cp->btnStates[Sprint] == 1) { thePlayer->PlayerSprint(); }
+		//if (cp->btnStates[Fire] == 1) { thePlayer->PlayerFire(); }
+		thePlayer->SetBtnState(Up, cp->btnStates[Up]);
+		thePlayer->SetBtnState(Down, cp->btnStates[Down]);
+		thePlayer->SetBtnState(Right, cp->btnStates[Right]);
+		thePlayer->SetBtnState(Left, cp->btnStates[Left]);
+
+		auto i = stateIDs.find(playerID);
+		if (i == stateIDs.end()) { stateIDs.insert(std::pair<int, int>(playerID, cp->lastID)); }
+		else { i->second = cp->lastID; }
+		return true;
+	}
+	return false;
+}
