@@ -404,27 +404,29 @@ void GameTechRenderer::RenderShadowMap() {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, shadowTex);
 	Matrix4 mvpMatrix;
 	for (const auto& i : activeObjects) {
-		glUniform1i(isAnim, i->isAnimated);
+		if (i->hasShadow) {
+			glUniform1i(isAnim, i->isAnimated);
 
-		if (i->isAnimated == true) {
-			int j = glGetUniformLocation(shadowShader->GetProgramID(), "joints");
-			glUniformMatrix4fv(j, i->GetFrameMatrices().size(), false, (float*)i->GetFrameMatrices().data());
-		}
+			if (i->isAnimated == true) {
+				int j = glGetUniformLocation(shadowShader->GetProgramID(), "joints");
+				glUniformMatrix4fv(j, i->GetFrameMatrices().size(), false, (float*)i->GetFrameMatrices().data());
+			}
 
-		Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
-		mvpMatrix = modelMatrix;
-		glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
-		glActiveTexture(GL_TEXTURE1);
-		if (!(*i).isLight) {
-			/*Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
+			Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
 			mvpMatrix = modelMatrix;
 			glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
-			glActiveTexture(GL_TEXTURE1);*/
+			glActiveTexture(GL_TEXTURE1);
+			if (!(*i).isLight) {
+				/*Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
+				mvpMatrix = modelMatrix;
+				glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
+				glActiveTexture(GL_TEXTURE1);*/
 
-			BindMesh((OGLMesh&)*(*i).GetMesh());
-			size_t layerCount = (*i).GetMesh()->GetSubMeshCount();
-			for (size_t i = 0; i < layerCount; ++i) {
-				DrawBoundMesh((uint32_t)i);
+				BindMesh((OGLMesh&)*(*i).GetMesh());
+				size_t layerCount = (*i).GetMesh()->GetSubMeshCount();
+				for (size_t i = 0; i < layerCount; ++i) {
+					DrawBoundMesh((uint32_t)i);
+				}
 			}
 		}
 	}

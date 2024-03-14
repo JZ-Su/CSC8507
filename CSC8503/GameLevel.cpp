@@ -163,7 +163,7 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateHangLight(Vector3(0, 53, 0), Vector3(5, 5, 5), 0.0f));
 
 	//level1.AddObject(CreateLight(Vector3(0, 40, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 70.0f, false, true));
-	level1.AddObject(CreateLight(Vector3(0, 40, 0),  Vector4(1.0f, 0.8f, 0.3f, 1.0f), 90.0f, true, true));
+	level1.AddObject(CreateLight(Vector3(0, 40, 0),  Vector4(1.0f, 0.8f, 0.5f, 1.0f), 90.0f, true, true));
 	level1.AddObject(CreateLight(Vector3(38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 25.0f, true, false));	
 	level1.AddObject(CreateLight(Vector3(-38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 25.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(90, 30, -90), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 70.0f, true, false));
