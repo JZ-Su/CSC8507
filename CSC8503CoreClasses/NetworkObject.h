@@ -30,9 +30,11 @@ namespace NCL::CSC8503 {
 
 	struct ClientPacket : public GamePacket {
 		int		lastID;
-		char	buttonstates[8];
+		Vector3 PointerPos;
+		char	btnStates[6];
 
 		ClientPacket() {
+			type = Received_State;
 			size = sizeof(ClientPacket);
 		}
 	};

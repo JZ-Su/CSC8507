@@ -84,7 +84,7 @@ void Player::UseItem(int i) {
 	if (i > itemList.size() - 1)  return;
 
 	if (itemList.at(i) == "redbottle") {
-		addhealth(10);
+		addhealth(-10);
         itemList.erase(itemList.begin() + i);
 	}
 }

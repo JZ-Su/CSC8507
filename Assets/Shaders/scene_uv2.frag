@@ -92,6 +92,7 @@ void main(void)
 			normal = normalize(TBN * normal);
 		}
 	}
+
 	vec3  shadowDir = normalize ( shadowPos - IN.worldPos);
 	float l = max (0.01 , dot ( shadowDir , normal ));
 	float halL = (l + 1.0) * 0.5;

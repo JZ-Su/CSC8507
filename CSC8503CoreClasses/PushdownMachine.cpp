@@ -33,7 +33,7 @@ bool PushdownMachine::Update(float dt) {
 		case PushdownState::Push: {
 			activeState->OnSleep();
 			stateStack.push(newState);
-			activeState = newState;
+			activeState = newState;  
 			activeState->SetGame(game);
 			activeState->OnAwake();
 		}break;

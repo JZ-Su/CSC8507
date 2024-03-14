@@ -95,11 +95,30 @@ void NetworkedGame::UpdateGame(float dt) {
 		timeToNextPacket += 1.0f / 20.0f; //20hz server/client update
 	}
 
+	if (thisServer) {
+		thisServer->UpdateServer();
+	}
+	else if (thisClient) {
+		thisClient->UpdateClient();
+	}
+
 	if (!thisServer && Window::GetKeyboard()->KeyPressed(KeyCodes::F9)) {
 		StartAsServer();
 	}
 	if (!thisClient && Window::GetKeyboard()->KeyPressed(KeyCodes::F10)) {
 		StartAsClient(127,0,0,1);
+	}
+
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q))
+	{
+		if (lockedObject == nullptr) {
+			lockedObject = localPlayer;
+			Window::GetWindow()->ShowOSPointer(true);
+		}
+		else if (lockedObject == lockedObject) {
+			lockedObject = nullptr;
+			Window::GetWindow()->ShowOSPointer(false);
+		}
 	}
 
 	TutorialGame::UpdateGame(dt);
@@ -119,11 +138,23 @@ void NetworkedGame::UpdateAsServer(float dt) {
 void NetworkedGame::UpdateAsClient(float dt) {
 	ClientPacket newPacket;
 
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
-		//fire button pressed!
-		newPacket.buttonstates[0] = 1;
-		newPacket.lastID = 0; //You'll need to work this out somehow...
-	}
+	
+	Vector3 PointerPos;
+	//findOSpointerWorldPosition(PointerPos);
+	newPacket.PointerPos = PointerPos;
+	newPacket.btnStates[0] = Window::GetKeyboard()->KeyHeld(KeyCodes::W) ? 1 : 0;
+	newPacket.btnStates[1] = Window::GetKeyboard()->KeyHeld(KeyCodes::S) ? 1 : 0;
+	newPacket.btnStates[2] = Window::GetKeyboard()->KeyHeld(KeyCodes::D) ? 1 : 0;
+	newPacket.btnStates[3] = Window::GetKeyboard()->KeyHeld(KeyCodes::A) ? 1 : 0;
+	newPacket.btnStates[4] = Window::GetKeyboard()->KeyPressed(KeyCodes::SHIFT) ? 1 : 0;
+	newPacket.btnStates[5] = Window::GetMouse()->ButtonPressed(MouseButtons::Type::Left) ? 1 : 0;
+	newPacket.lastID = GlobalStateID;
+
+	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
+	//	//fire button pressed!
+	//	//newPacket.buttonstates[0] = 1;
+	//	newPacket.lastID = 0; //You'll need to work this out somehow...
+	//}
 	thisClient->SendPacket(newPacket);
 }
 
@@ -217,11 +248,59 @@ void NetworkedGame::SpawnPlayer() {
 }
 
 void NetworkedGame::StartLevel() {
+	//InitWorld();
+	//AddWallToWorld(Vector3(-188, 4, -188), Vector3(4, 4, 4));
+	//physics->UseGravity(true);
 
+	//scoreTable.clear();
+	//for (int i = 0; i < 4; ++i) { scoreTable.push_back(0); }
+	//Change Round State
+	GlobalStateID = -1;
+	//RoundTime = 600.0f;
+	//roundDelayOver = false;
+	//delayTime = 0.6f;
+	//isRoundstart = true;
 }
 
 void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
-	
+	switch (type)
+	{
+	/*case BasicNetworkMessages::Message: {
+		PLayerListPacket* realPacket = (PLayerListPacket*)payload;
+		realPacket->GetPlayerList(PlayersList);
+		break;
+	}
+	case BasicNetworkMessages::Round_State: {
+		RoundStatePacket* realPacket = (RoundStatePacket*)payload;
+		clientProcessRp(realPacket);
+		break;
+	}*/
+	case BasicNetworkMessages::Full_State: {
+		FullPacket* realPacket = (FullPacket*)payload;
+		clientProcessFp(realPacket);
+		break;
+	}
+	case BasicNetworkMessages::Delta_State: {
+		DeltaPacket* realPacket = (DeltaPacket*)payload;
+		clientProcessDp(realPacket);
+		break;
+	}
+	case BasicNetworkMessages::Received_State: {
+		ClientPacket* realPacket = (ClientPacket*)payload;
+		serverProcessCP(realPacket, source);
+		break;
+	}
+	/*case BasicNetworkMessages::Player_State: {
+		PlayerStatePacket* realPacket = (PlayerStatePacket*)payload;
+		clientProcessPp(realPacket);
+		break;
+	}
+	case BasicNetworkMessages::bullet_state: {
+		BulletStatePacket* realPacket = (BulletStatePacket*)payload;
+		clientProcessBp(realPacket);
+		break;
+	}*/
+	}
 }
 
 void NetworkedGame::OnPlayerCollision(NetworkPlayer* a, NetworkPlayer* b) {
@@ -340,3 +419,46 @@ GameObject* NetworkedGame::AddNetPlayerToWorld(const Vector3& position, int play
 	return character;
 }
 
+bool NetworkedGame::clientProcessFp(FullPacket* fp)
+{
+	auto itr = networkObjects.find(fp->objectID);
+	if (itr == networkObjects.end()) {
+		std::cout << "Client Num" << GetClientPlayerNum() << "can't find netObject" << std::endl;
+		return false;
+	}
+	itr->second->ReadPacket(*fp);
+	if (fp->fullState.stateID > GlobalStateID) { GlobalStateID = fp->fullState.stateID; }
+	return true;
+}
+bool NetworkedGame::clientProcessDp(DeltaPacket* dp)
+{
+	auto itr = networkObjects.find(dp->objectID);
+	if (itr == networkObjects.end()) {
+		std::cout << "Client Num" << GetClientPlayerNum() << "can't find netObject" << std::endl;
+		return false;
+	}
+	itr->second->ReadPacket(*dp);
+	return true;
+}
+
+bool NetworkedGame::serverProcessCP(ClientPacket* cp, int source)
+{
+	int playerID = GetClientPlayerNum(source);
+	if (playerID != -1)
+	{
+		NetworkPlayer* thePlayer = (NetworkPlayer*)(serverPlayers[playerID]);
+		thePlayer->SetPlayerYaw(cp->PointerPos);
+		//if (cp->btnStates[Sprint] == 1) { thePlayer->PlayerSprint(); }
+		//if (cp->btnStates[Fire] == 1) { thePlayer->PlayerFire(); }
+		thePlayer->SetBtnState(Up, cp->btnStates[Up]);
+		thePlayer->SetBtnState(Down, cp->btnStates[Down]);
+		thePlayer->SetBtnState(Right, cp->btnStates[Right]);
+		thePlayer->SetBtnState(Left, cp->btnStates[Left]);
+
+		auto i = stateIDs.find(playerID);
+		if (i == stateIDs.end()) { stateIDs.insert(std::pair<int, int>(playerID, cp->lastID)); }
+		else { i->second = cp->lastID; }
+		return true;
+	}
+	return false;
+}

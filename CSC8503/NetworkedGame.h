@@ -17,6 +17,17 @@ namespace NCL {
 		class PlayerStatePacket;
 		class BulletStatePacket;
 		class Item;
+
+		enum PlayInputBtns {
+			Up,
+			Down,
+			Right,
+			Left,
+			Sprint,
+			Fire
+		};
+
+
 		class NetworkedGame : public TutorialGame, public PacketReceiver {
 		public:
 			NetworkedGame();
@@ -42,6 +53,8 @@ namespace NCL {
 			int GetClientPlayerNum();
 			int GetClientPlayerNum(int peerID);
 			void ServerUpdatePlayerList();
+
+			
 		protected:
 
 			void InitialiseAssets() override;
@@ -51,7 +64,15 @@ namespace NCL {
 			void BroadcastSnapshot(bool deltaFrame);
 			void UpdateMinimumState();
 			GameObject* AddNetPlayerToWorld(const Vector3& position, int playerNum);
+
+			bool clientProcessFp(FullPacket* fp);
+			bool clientProcessDp(DeltaPacket* dp);
+
+			bool serverProcessCP(ClientPacket* cp, int source);
+
 			std::map<int, int> stateIDs;
+
+			int GlobalStateID;
 
 			GameServer* thisServer;
 			GameClient* thisClient;
@@ -217,20 +238,20 @@ namespace NCL {
 		{
 			PushdownResult OnUpdate(float dt, PushdownState** newState) override
 			{
-				Debug::Print("Press 1 : Start As Server", Vector2(5, 10), Debug::YELLOW);
-				Debug::Print("Press 2 : Start As Client", Vector2(5, 20), Debug::YELLOW);
+				Debug::Print("Press NUMPAD1 : Start As Server", Vector2(5, 10), Debug::YELLOW);
+				Debug::Print("Press NUMPAD2 : Start As Client", Vector2(5, 20), Debug::YELLOW);
 				Debug::Print("Press Esc : Main Menu", Vector2(5, 70), Debug::YELLOW);
 
 				if (game)
 				{
 					NetworkedGame* thisGame = (NetworkedGame*)game;
-					if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM1))
+					if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUMPAD1))
 					{
 						thisGame->StartAsServer();
 						*newState = new MultiplayerLobby();
 						return PushdownResult::Push;
 					}
-					if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM2))
+					if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUMPAD2))
 					{
 						if (thisGame->StartAsClient(127, 0, 0, 1))
 						{

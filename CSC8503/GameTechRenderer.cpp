@@ -201,27 +201,34 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	SetDebugStringBufferSizes(10000);
 	SetDebugLineBufferSizes(1000);
 
-	vector<char*> data(7, nullptr);
+	vector<char*> data(12, nullptr);
 	int width;
 	int height;
 	int channel;
 	int flag;
 
-	TextureLoader::LoadTexture("blood.png", data[0], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/blood.png", data[0], width, height, channel, flag);
 	UImap["blood"] = data[0];
-	TextureLoader::LoadTexture("greenbottle.png", data[1], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/greenbottle.png", data[1], width, height, channel, flag);
 	UImap["greenbottle"] = data[1];
-	TextureLoader::LoadTexture("redbottle.png", data[2], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/redbottle.png", data[2], width, height, channel, flag);
 	UImap["redbottle"] = data[2];
-	TextureLoader::LoadTexture("inventory1.png", data[3], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/inventory1.png", data[3], width, height, channel, flag);
 	UImap["inventory1"] = data[3];
-	TextureLoader::LoadTexture("inventory2.png", data[4], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/inventory2.png", data[4], width, height, channel, flag);
 	UImap["inventory2"] = data[4];
-	TextureLoader::LoadTexture("inventory3.png", data[5], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/inventory3.png", data[5], width, height, channel, flag);
 	UImap["inventory3"] = data[5];
-	TextureLoader::LoadTexture("inventory4.png", data[6], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/inventory4.png", data[6], width, height, channel, flag);
 	UImap["inventory4"] = data[6];
-	
+	TextureLoader::LoadTexture("/UI/balalalal.png", data[7], width, height, channel, flag);
+	UImap["frame"] = data[7];
+	TextureLoader::LoadTexture("/UI/boss.png", data[8], width, height, channel, flag);
+	UImap["bossframe"] = data[8];
+	TextureLoader::LoadTexture("/UI/back.png", data[9], width, height, channel, flag);
+	UImap["background"] = data[9];
+	TextureLoader::LoadTexture("/UI/movingblood.png", data[10], width, height, channel, flag);
+	UImap["changingblood"] = data[10];
 }
 
 GameTechRenderer::~GameTechRenderer() {
@@ -320,6 +327,7 @@ void GameTechRenderer::RenderFrame() {
 	RenderCombine();
 	RenderProcess();
 	RenderTone();
+
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
@@ -365,7 +373,7 @@ void GameTechRenderer::RenderShadowMap() {
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glViewport(0, 0, SHADOWSIZE, SHADOWSIZE);
 
-	glCullFace(GL_FRONT);
+	//glCullFace(GL_FRONT);
 	
 	BindShader(*shadowShader);
 	int mvpLocation = glGetUniformLocation(shadowShader->GetProgramID(), "mvpMatrix");
@@ -1044,6 +1052,8 @@ vector<Vector4> GameTechRenderer::LoadMap() {
 
 void GameTechRenderer::Loadhealth() {
 	//Matrix4 viewMatrix = gameWorld.GetMainCamera().BuildViewMatrix();
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
 	const std::vector<GameTechRenderer::UIen>& uii = GameTechRenderer::GetUIEntries();
 	if (uii.empty()) {
 		return;
@@ -1083,7 +1093,7 @@ void GameTechRenderer::Loadhealth() {
 
 		glDeleteTextures(1, &texture);
 	}
-
+	glDisable(GL_BLEND);
 }
 
 void GameTechRenderer::CreateGameUI(std::vector<Vector3> UIpos, const std::string& name, std::string tag) {
@@ -1112,4 +1122,3 @@ void GameTechRenderer::UpdateUI() {
 const std::vector<GameTechRenderer::UIen>& GameTechRenderer::GetUIEntries() {
 	return UIEntries;
 }
-
