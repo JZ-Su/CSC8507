@@ -11,6 +11,7 @@ uniform vec3	cameraPos;
 uniform float scale;
 uniform bool isWall = false;
 
+uniform vec3	shadowPos;
 uniform bool hasTexture;
 
 in Vertex
@@ -92,9 +93,15 @@ void main(void)
 		}
 	}
 
+	vec3  shadowDir = normalize ( shadowPos - IN.worldPos);
+	float l = max (0.01 , dot ( shadowDir , normal ));
+	float halL = (l + 1.0) * 0.5;
+	halL = clamp(halL, 0.01, 1.0);
+
 	fragColor[0] = vec4(albedo.rgb, 1.0);
 	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);
 	fragColor[2] = vec4(metal, roughness, 0.0, 1.0);
 	fragColor[3] = aoCol;
-	fragColor[4] = vec4(0.1, 0.0, 0.0, 1.0);
+	fragColor[4] = vec4(0.7, 0.0, halL, 1.0);
+
 }

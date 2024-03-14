@@ -71,13 +71,13 @@ StateGameObject::StateGameObject(Vector3 startPos, Vector3 endPos, GameObject* p
 		float GPdistance = (GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length();
 		float GAdistance = (GetTransform().GetPosition() - GhostStrat).Length();
 		float GBdistance = (GetTransform().GetPosition() - GhostEnd).Length();
-		return GPdistance >= 30 && GBdistance>GAdistance;
+		return GPdistance >= 40 && GBdistance>GAdistance;
 		},player));
 	stateMachine->AddTransition(new StateTransition(stateHunt, stateBackB, [&](GameObject* player)->bool {
 		float GPdistance = (GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length();
 		float GAdistance = (GetTransform().GetPosition() - GhostStrat).Length();
 		float GBdistance = (GetTransform().GetPosition() - GhostEnd).Length();
-		return GPdistance >= 30 && GBdistance < GAdistance;
+		return GPdistance >= 40 && GBdistance < GAdistance;
 		},player));
 	stateMachine->AddTransition(new StateTransition(stateBackA, stateHunt, [&](GameObject* player)->bool {
 		float GPdistance = (GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length();

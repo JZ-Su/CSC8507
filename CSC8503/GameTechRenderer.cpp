@@ -207,26 +207,28 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	int channel;
 	int flag;
 
-	TextureLoader::LoadTexture("blood.png", data[0], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/blood.png", data[0], width, height, channel, flag);
 	UImap["blood"] = data[0];
-	TextureLoader::LoadTexture("greenbottle.png", data[1], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/greenbottle.png", data[1], width, height, channel, flag);
 	UImap["greenbottle"] = data[1];
-	TextureLoader::LoadTexture("redbottle.png", data[2], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/redbottle.png", data[2], width, height, channel, flag);
 	UImap["redbottle"] = data[2];
-	TextureLoader::LoadTexture("inventory1.png", data[3], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/inventory1.png", data[3], width, height, channel, flag);
 	UImap["inventory1"] = data[3];
-	TextureLoader::LoadTexture("inventory2.png", data[4], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/inventory2.png", data[4], width, height, channel, flag);
 	UImap["inventory2"] = data[4];
-	TextureLoader::LoadTexture("inventory3.png", data[5], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/inventory3.png", data[5], width, height, channel, flag);
 	UImap["inventory3"] = data[5];
-	TextureLoader::LoadTexture("inventory4.png", data[6], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/inventory4.png", data[6], width, height, channel, flag);
 	UImap["inventory4"] = data[6];
-	TextureLoader::LoadTexture("balalalal.png", data[7], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/balalalal.png", data[7], width, height, channel, flag);
 	UImap["frame"] = data[7];
-	TextureLoader::LoadTexture("boss.png", data[8], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/boss.png", data[8], width, height, channel, flag);
 	UImap["bossframe"] = data[8];
-	TextureLoader::LoadTexture("back.png", data[9], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/back.png", data[9], width, height, channel, flag);
 	UImap["background"] = data[9];
+	TextureLoader::LoadTexture("/UI/movingblood.png", data[10], width, height, channel, flag);
+	UImap["changingblood"] = data[10];
 }
 
 GameTechRenderer::~GameTechRenderer() {

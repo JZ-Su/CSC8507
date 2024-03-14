@@ -146,6 +146,9 @@ namespace NCL {
 			float health;
 			float totalTime;
 			float bosshealth;
+			float PlayerPreHealth;
+			float currenthealth;
+			float healthLength;
 
 			GameState gameState;
 			MainMenuState mainMenuState;
@@ -200,6 +203,8 @@ namespace NCL {
 			Vector3 mainCameraPosition;
 			bool isWalking = false;
 			string currentBGM="";
+
+
 		};
 	}
 }

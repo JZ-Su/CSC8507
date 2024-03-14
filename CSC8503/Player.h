@@ -19,6 +19,8 @@ namespace NCL {
 			void SetHealth(float inHealth)
 			{
 				health = inHealth;
+				health = std::max(health, 0.0f);
+				health = std::min(health, 100.0f);
 			}
 			int  GetCollectibles()
 			{
@@ -90,6 +92,8 @@ namespace NCL {
 
 			void addhealth(float addhealth) {
 				health += addhealth;
+				health = std::max(health, 0.0f);
+				health = std::min(health, 100.0f);
 			}
 
 			void SetPreHealth(int inprehealth) { prehealth = inprehealth; }
@@ -101,7 +105,7 @@ namespace NCL {
 			static const std::vector<std::string>& GetItemList() { return itemList; }
 
 		protected:
-			int health;
+			float health;
 			int collectibles;
 			float timer;
 			float jumpTimer;
