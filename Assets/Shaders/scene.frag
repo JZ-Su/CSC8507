@@ -68,7 +68,7 @@ void main(void)
 	vec3  shadowDir = normalize ( shadowPos - IN.worldPos);
 	float l = max (0.01 , dot ( shadowDir , normal ));
 	float halL = (l + 1.0) * 0.5;
-	halL = clamp(halL, 0.01, 1.0);
+	halL = clamp(halL, 0.01, 1.0) * aoCol.r;
 
 	fragColor[0] = albedo;
 	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);

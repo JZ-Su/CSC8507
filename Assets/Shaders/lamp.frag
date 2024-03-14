@@ -42,7 +42,9 @@ void main(void)
 
 	vec4 albedo = texture(mainTex, uv);
 	vec3  shadowDir = normalize ( shadowPos - IN.worldPos);
-	float halL = (max (0.01 , dot ( shadowDir , normal ))+ 1.0) * 0.5;
+		float l = max (0.01 , dot ( shadowDir , normal ));
+	float halL = (l + 1.0) * 0.5;
+	halL = clamp(halL, 0.01, 1.0) * aoCol.r;
 
 	fragColor[0] = vec4(albedo.rgb, 1.0);
 	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);

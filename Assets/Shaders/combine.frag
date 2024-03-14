@@ -5,6 +5,7 @@ uniform sampler2D 	lightDiffTex;
 uniform sampler2D 	lightSpecTex;
 uniform sampler2D 	depthTex;
 uniform sampler2D 	indexTex;
+uniform sampler2D irradianceMap;
 
 in Vertex
 {
@@ -12,6 +13,11 @@ in Vertex
 } IN;
 
 out vec4 fragColor[2];
+
+vec3 fresnelSchlick(float a, vec3 f)
+{
+    return f + (1.0 - f) * pow(clamp(1.0 - a, 0.0, 1.0), 5.0);
+} 
 
 void main(void)
 {
@@ -25,6 +31,9 @@ void main(void)
 	vec4 lightDiff = texture(lightDiffTex, IN.texCoord);
 	vec4 lightSpec = texture(lightSpecTex, IN.texCoord);
 	float halfLambert = texture(indexTex, IN.texCoord).b;
+	vec3 ambient = texture(irradianceMap, IN.texCoord).rgb;
+	vec3 kS = fresnelSchlick(halfLambert, albedo.rgb);
+	vec3 kD = 1.0 - kS;
 	
 	fragColor[0].a = 1.0;
 	if(halfLambert > 1){
@@ -32,7 +41,7 @@ void main(void)
 		fragColor[0].a = albedo.a;
 	}
 	else{
-		fragColor[0].rgb = albedo.rgb * 0.08f * vec3(0.3,0.5,1.0) * halfLambert;//* 0.1f * vec3(0.1,0.3,1.0);
+		fragColor[0].rgb = halfLambert * ambient * albedo.rgb * 0.15f * vec3(0.5,0.6,1.0);//kD  * vec3(0.3,0.5,1.0);//* 0.1f * vec3(0.1,0.3,1.0);
 		fragColor[0].rgb += lightDiff.rgb;
 		fragColor[0].rgb += lightSpec.rgb;
 	}
