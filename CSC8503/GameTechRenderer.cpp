@@ -201,7 +201,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	SetDebugStringBufferSizes(10000);
 	SetDebugLineBufferSizes(1000);
 
-	vector<char*> data(7, nullptr);
+	vector<char*> data(12, nullptr);
 	int width;
 	int height;
 	int channel;
@@ -221,7 +221,12 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	UImap["inventory3"] = data[5];
 	TextureLoader::LoadTexture("inventory4.png", data[6], width, height, channel, flag);
 	UImap["inventory4"] = data[6];
-	
+	TextureLoader::LoadTexture("balalalal.png", data[7], width, height, channel, flag);
+	UImap["frame"] = data[7];
+	TextureLoader::LoadTexture("boss.png", data[8], width, height, channel, flag);
+	UImap["bossframe"] = data[8];
+	TextureLoader::LoadTexture("back.png", data[9], width, height, channel, flag);
+	UImap["background"] = data[9];
 }
 
 GameTechRenderer::~GameTechRenderer() {
@@ -320,6 +325,7 @@ void GameTechRenderer::RenderFrame() {
 	RenderCombine();
 	RenderProcess();
 	RenderTone();
+
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
@@ -1042,6 +1048,8 @@ vector<Vector4> GameTechRenderer::LoadMap() {
 
 void GameTechRenderer::Loadhealth() {
 	//Matrix4 viewMatrix = gameWorld.GetMainCamera().BuildViewMatrix();
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
 	const std::vector<GameTechRenderer::UIen>& uii = GameTechRenderer::GetUIEntries();
 	if (uii.empty()) {
 		return;
@@ -1081,7 +1089,7 @@ void GameTechRenderer::Loadhealth() {
 
 		glDeleteTextures(1, &texture);
 	}
-
+	glDisable(GL_BLEND);
 }
 
 void GameTechRenderer::CreateGameUI(std::vector<Vector3> UIpos, const std::string& name, std::string tag) {
@@ -1110,4 +1118,3 @@ void GameTechRenderer::UpdateUI() {
 const std::vector<GameTechRenderer::UIen>& GameTechRenderer::GetUIEntries() {
 	return UIEntries;
 }
-

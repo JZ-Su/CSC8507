@@ -92,6 +92,11 @@ namespace NCL {
 				health += addhealth;
 			}
 
+			void SetPreHealth(int inprehealth) { prehealth = inprehealth; }
+			int GetPreHealth() {
+				return prehealth;
+			}
+
 			void UseItem(int i);
 			static const std::vector<std::string>& GetItemList() { return itemList; }
 
@@ -105,7 +110,7 @@ namespace NCL {
 			bool isWalk = false;
 			bool isJumping = false;
 			//add timer
-
+			int prehealth;
 			static std::vector<std::string> itemList;
 		};
 	}
