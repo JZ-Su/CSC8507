@@ -14,6 +14,8 @@
 #include "BasicExamples.h"
 #include "Boss.h"
 
+#include"PushdownState.h"
+
 using namespace NCL;
 using namespace CSC8503;
 
@@ -72,6 +74,7 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
+
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
@@ -391,30 +394,30 @@ void TutorialGame::InitWorld() {
 	/*isDebug = false;*/
 	if (isDebug) {
 		//Level 1
-		currentLevel = 2;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-		ghost = gameLevel->GetGhost();
-		ghostai = gameLevel->GetGhostai();
-		ghostai2 = gameLevel->GetGhostai2();
-		ghostAnimation = gameLevel->getGhostAnimation();
+		//currentLevel = 2;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
+		//ghost = gameLevel->GetGhost();
+		//ghostai = gameLevel->GetGhostai();
+		//ghostai2 = gameLevel->GetGhostai2();
+		//ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
 		//currentLevel = 4;
 		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
-		//currentLevel = 6;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-		//boss = gameLevel->GetBoss();
-		//shield = gameLevel->GetShield();
-		//bossAnimation = gameLevel->getBossAnimation();
-		//bossCheersAnimation = gameLevel->getBossCheersAnimation();
-		//bossShootingAnimation = gameLevel->getBossShootingAnimation();
-		//bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
-		//bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
-		//bossChasingAnimation = gameLevel->getBossChasingAnimation();
-		//iceCubeBullet = gameLevel->getIceCubeBullet();
-		//fireBallBullet = gameLevel->getFireBallBullet();
+		currentLevel = 6;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+		boss = gameLevel->GetBoss();
+		shield = gameLevel->GetShield();
+		bossAnimation = gameLevel->getBossAnimation();
+		bossCheersAnimation = gameLevel->getBossCheersAnimation();
+		bossShootingAnimation = gameLevel->getBossShootingAnimation();
+		bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
+		bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
+		bossChasingAnimation = gameLevel->getBossChasingAnimation();
+		iceCubeBullet = gameLevel->getIceCubeBullet();
+		fireBallBullet = gameLevel->getFireBallBullet();
 
 		//Level 4 initial function
 		//currentLevel = 8;
@@ -1023,7 +1026,11 @@ void TutorialGame::UpdateLevel(float dt) {
 		if (player->GetHealth() < 0) {
 			player->SetHealth(0);
 		}
+		int prehealth = 0;
+		int healthnow = player->GetHealth();
+
 		health = (100 - (player->GetHealth())) * 0.01;
+
 		if (player->GetHealth() > 100) {
 			player->SetHealth(100);
 		}
@@ -1034,9 +1041,19 @@ void TutorialGame::UpdateLevel(float dt) {
 		if (gameLevel->GetBoss()->getBossHealth() < 0) {gameLevel->GetBoss()->setHealth(0);}
          bosshealth = (100 - (gameLevel->GetBoss()->getBossHealth())) * 0.01;
 		if (gameLevel->GetBoss()->getBossHealth() < 0) { gameLevel->GetBoss()->setHealth(0); }
+
 		//float aspect = Window::GetWindow()->GetScreenAspect();
-		//float delta = 0.1;
+		//float delta = 0.1;	
+
+		
+		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f, -0.8f, -1.0f), Vector3(0.4f, -0.75f, -1.0f) }, "background", "health");
+
+		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) }, "blood", "health"); 
+
 		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) }, "blood", "health");
+
+		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f, -0.8f, -1.0f), Vector3(0.4f, -0.75f, -1.0f) }, "frame", "health");
+
 		GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.8f, -1.0f), Vector3(-0.4, -1.0f, -1.0f), Vector3(-0.2, -1.0f, -1.0f), Vector3(-0.2f, -0.8f, -1.0f) }, "inventory1", "item");
 		GameTechRenderer::CreateGameUI({ Vector3(-0.2, -0.8f, -1.0f), Vector3(-0.2, -1.0f, -1.0f), Vector3(0.0f, -1.0f, -1.0f), Vector3(0.0f, -0.8f, -1.0f) }, "inventory2", "item");
 		GameTechRenderer::CreateGameUI({ Vector3(0.0, -0.8f, -1.0f), Vector3(0.0f, -1.0f, -1.0f), Vector3(0.2f, -1.0f, -1.0f), Vector3(0.2f, -0.8f, -1.0f) }, "inventory3", "item");
@@ -1050,8 +1067,14 @@ void TutorialGame::UpdateLevel(float dt) {
 			Vector3(-0.2f + (i * distance), -0.96f, -1.0f), Vector3(-0.2f + (i * distance), -0.83f, -1.0f) }, itemList.at(i), "item");
 		}
 		
-		GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f - bosshealth, 0.9f, -1.0f),
-			Vector3(0.5f - bosshealth, 0.95f, -1.0f) }, "blood", "health");
+		GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
+		Vector3(0.5f, 0.95f, -1.0f) }, "background", "health");
+	    GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f - bosshealth, 0.9f, -1.0f),
+			Vector3(0.5f - bosshealth, 0.95f, -1.0f) }, "blood", "health");	
+		GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
+			Vector3(0.5f, 0.95f, -1.0f) }, "bossframe", "health");
+
+	
 	}
 	// Level 4
 	else if (currentLevel == 8) {
@@ -1258,3 +1281,13 @@ void TutorialGame::PlayLevelBGM(const std::string& levelName) {
 	currentBGM = levelName;
 	soundManager.playSound(currentBGM);
 }
+
+
+//class maintume:public PushdownState {
+//	PushdownResult OnUpdate(float dt, PushdownState** newState)override {
+//	
+//	}
+//	void OnAwake() override {
+//	
+//	}
+//};
