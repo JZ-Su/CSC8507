@@ -83,7 +83,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
-	wallShader = render->LoadShader("scene.vert", "scene_uv2.frag");
+	//wallShader = render->LoadShader("scene.vert", "scene_uv.frag");
 	modelShader = render->LoadShader("model.vert", "model.frag");
 	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	playerShader = render->LoadShader("SkinningVertex.vert", "player.frag");
@@ -154,7 +154,6 @@ BasicExamples::~BasicExamples() {
 	delete bossShader;
 	delete playerShader;
 	delete lampShader;
-	delete wallShader;
 }
 
 // Todo: the indices is in wrong order
@@ -204,7 +203,7 @@ GameObject* BasicExamples::CreateBigWall(const Vector3& position, const Vector3&
 
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
 
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, wallTexture[0], wallShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, wallTexture[0], floorShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 	cube->GetRenderObject()->SetDefaultTexture(wallTexture[1], 1);
 	cube->GetRenderObject()->SetDefaultTexture(wallTexture[2], 2);
@@ -228,7 +227,7 @@ GameObject* BasicExamples::CreateGreenWall(const Vector3& position, const Vector
 
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
 
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, greenWallTexture[0], wallShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, greenWallTexture[0], floorShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 	cube->GetRenderObject()->SetDefaultTexture(greenWallTexture[1], 1);
 	cube->GetRenderObject()->SetDefaultTexture(greenWallTexture[2], 2);
