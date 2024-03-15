@@ -234,7 +234,13 @@ void PhysicsSystem::BasicCollisionDetection() {
 
 			CollisionDetection::CollisionInfo info;
 			if (CollisionDetection::ObjectIntersection(*i, *j, info)) {
-				ImpulseResolveCollision(*info.a, *info.b, info.point);
+				skipImpulseResolveCollision = false;
+
+				HandleFireballBulletCollisionLogic(*i, *j);
+				HandleIceCubeBulletCollisionLogic(*i, *j);
+				if (!skipImpulseResolveCollision) {
+					ImpulseResolveCollision(*info.a, *info.b, info.point);
+				}
 				info.framesLeft = numCollisionFrames;
 				allCollisions.insert(info);
 			}
@@ -455,3 +461,184 @@ void PhysicsSystem::UpdateConstraints(float dt) {
 		(*i)->UpdateConstraint(dt);
 	}
 }
+
+void PhysicsSystem::HandleFireballBulletCollisionLogic(GameObject* i, GameObject* j) {
+
+	if (i->GetTag() == "fireballbullet" && j->GetTag() == "player") {
+		Player* player = dynamic_cast<Player*>(j);
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		if (!gameWorld.GetObject("shield")->GetIsHiding()) {
+			ParryBackBullet(i, player, boss);
+			skipImpulseResolveCollision = true;
+		}
+		else {
+			i->SetIsHiding(true, Vector3(0, -98, 0));
+			boss->setHasFireBallBullet(true);
+			player->updateHealth(-5);
+
+			player->SetIsRencentlyHurt(true);
+			boss->setBulletTimer(0.0f);
+			boss->setIsShootingFireBall(false);
+			boss->setNextBullet(rand() % 2);
+			boss->SetShooting(false);
+			skipImpulseResolveCollision = true;
+		}
+
+	}
+	if (j->GetTag() == "fireballbullet" && i->GetTag() == "player") {
+		Player* player = dynamic_cast<Player*>(i);
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		if (!gameWorld.GetObject("shield")->GetIsHiding()) {
+			ParryBackBullet(j, player, boss);
+			skipImpulseResolveCollision = true;
+		}
+		else {
+			j->SetIsHiding(true, Vector3(0, -98, 0));
+			boss->setHasFireBallBullet(true);
+			player->updateHealth(-5);
+			player->SetIsRencentlyHurt(true);
+			boss->setBulletTimer(0.0f);
+			boss->setIsShootingFireBall(false);
+			boss->setNextBullet(rand() % 2);
+			boss->SetShooting(false);
+			skipImpulseResolveCollision = true;
+		}
+	}
+	if (i->GetTag() == "fireballbullet" && j->GetTag() == "boss") {
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		i->SetIsHiding(true, Vector3(0, -98, 0));
+		boss->setHasFireBallBullet(true);
+		boss->updateHealth(-50);
+		boss->SetIsRencentlyHurt(true);
+		boss->setBulletTimer(0.0f);
+		boss->setIsShootingFireBall(false);
+		boss->setNextBullet(rand() % 2);
+		boss->SetShooting(false);
+		skipImpulseResolveCollision = true;
+	}
+	if (j->GetTag() == "fireballbullet" && i->GetTag() == "boss") {
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		j->SetIsHiding(true, Vector3(0, -98, 0));
+		boss->setHasFireBallBullet(true);
+		boss->updateHealth(-50);
+		boss->SetIsRencentlyHurt(true);
+		boss->setBulletTimer(0.0f);
+		boss->setIsShootingFireBall(false);
+		boss->setNextBullet(rand() % 2);
+		boss->SetShooting(false);
+		skipImpulseResolveCollision = true;
+	}
+}
+
+void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject* j) {
+
+	if (i->GetTag() == "icecubebullet" && j->GetTag() == "player") {
+		Player* player = dynamic_cast<Player*>(j);
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		if (!gameWorld.GetObject("shield")->GetIsHiding()) {
+			ParryBackBullet(i, player, boss);
+		}
+		else {
+			i->SetIsHiding(true, Vector3(20, -98, 0));
+			i->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			boss->setHasIceCubeBullet(true);
+			player->updateHealth(-5);
+			player->SetIsRencentlyHurt(true);
+			boss->setBulletTimer(0.0f);
+			boss->setIsShootingIceCube(false);
+			boss->setNextBullet(rand() % 2);
+			boss->SetShooting(false);
+			skipImpulseResolveCollision = true;
+		}
+
+	}
+	if (j->GetTag() == "icecubebullet" && i->GetTag() == "player") {
+		Player* player = dynamic_cast<Player*>(i);
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		if (!gameWorld.GetObject("shield")->GetIsHiding()) {
+			ParryBackBullet(j, player, boss);
+		}
+		else {
+			j->SetIsHiding(true, Vector3(20, -98, 0));
+			j->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			boss->setHasIceCubeBullet(true);
+			player->updateHealth(-5);
+			player->SetIsRencentlyHurt(true);
+			boss->setBulletTimer(0.0f);
+			boss->setIsShootingIceCube(false);
+			boss->setNextBullet(rand() % 2);
+			boss->SetShooting(false);
+			skipImpulseResolveCollision = true;
+		}
+	}
+	if (i->GetTag() == "icecubebullet" && j->GetTag() == "boss") {
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		i->SetIsHiding(true, Vector3(20, -98, 0));
+		i->GetPhysicsObject()->SetLinearVelocity(Vector3());
+		boss->setHasIceCubeBullet(true);
+		boss->updateHealth(-50);
+		boss->SetIsRencentlyHurt(true);
+		if (gameWorld.GetObject("icecubebullet")->GetIsBlockBack()) {
+			gameWorld.GetObject("icecubebullet")->SetIsBolckBack(false);
+		}
+		boss->setBulletTimer(0.0f);
+		boss->setIsShootingIceCube(false);
+		boss->setNextBullet(rand() % 2);
+		boss->SetShooting(false);
+		skipImpulseResolveCollision = true;
+	}
+	if (j->GetTag() == "icecubebullet" && i->GetTag() == "boss") {
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		j->SetIsHiding(true, Vector3(20, -98, 0));
+		j->GetPhysicsObject()->SetLinearVelocity(Vector3());
+		boss->setHasIceCubeBullet(true);
+		boss->updateHealth(-50);
+		boss->SetIsRencentlyHurt(true);
+		if (gameWorld.GetObject("icecubebullet")->GetIsBlockBack()) {
+			gameWorld.GetObject("icecubebullet")->SetIsBolckBack(false);
+		}
+		boss->setBulletTimer(0.0f);
+		boss->setIsShootingIceCube(false);
+		boss->setNextBullet(rand() % 2);
+		boss->SetShooting(false);
+		skipImpulseResolveCollision = true;
+	}
+	if (i->GetTag() == "icecubebullet" && j->GetTag() != "boss" && j->GetTag() != "player") {
+		i->SetIsHiding(true, Vector3(20, -98, 0));
+		i->GetPhysicsObject()->SetLinearVelocity(Vector3());
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		boss->setHasIceCubeBullet(true);
+		if (gameWorld.GetObject("icecubebullet")->GetIsBlockBack()) {
+			gameWorld.GetObject("icecubebullet")->SetIsBolckBack(false);
+		}
+		boss->setBulletTimer(0.0f);
+		boss->setIsShootingIceCube(false);
+		boss->setNextBullet(rand() % 2);
+		boss->SetShooting(false);
+		skipImpulseResolveCollision = true;
+	}
+	if (j->GetTag() == "icecubebullet" && i->GetTag() != "boss" && i->GetTag() != "player") {
+		j->SetIsHiding(true, Vector3(20, -98, 0));
+		j->GetPhysicsObject()->SetLinearVelocity(Vector3());
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		boss->setHasIceCubeBullet(true);
+		if (gameWorld.GetObject("icecubebullet")->GetIsBlockBack()) {
+			gameWorld.GetObject("icecubebullet")->SetIsBolckBack(false);
+		}
+		boss->setBulletTimer(0.0f);
+		boss->setIsShootingIceCube(false);
+		boss->setNextBullet(rand() % 2);
+		boss->SetShooting(false);
+		skipImpulseResolveCollision = true;
+	}
+}
+
+void PhysicsSystem::ParryBackBullet(GameObject* bullet, Player* player, Boss* boss) {
+	Quaternion orientationQuaternion = player->GetTransform().GetOrientation();
+	Vector3 forwardVector = orientationQuaternion * Vector3(0, 0, -1);
+	Vector3 bulletOffset = forwardVector * 10;
+	bullet->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
+	bullet->GetTransform().SetPosition(player->GetTransform().GetPosition() + bulletOffset + Vector3(0, 5, 0));
+	bullet->SetIsBolckBack(true);
+}
+

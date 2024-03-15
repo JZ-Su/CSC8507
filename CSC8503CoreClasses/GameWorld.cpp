@@ -146,3 +146,12 @@ void GameWorld::GetConstraintIterators(
 void GameWorld::ClearConstraint() {
 	constraints.clear();
 }
+
+GameObject* GameWorld::GetObject(std::string tag) {
+	for (auto& obj : gameObjects) {
+		if (obj->GetTag() == tag) {
+			return obj;
+		}
+	}
+	return nullptr; 
+}
