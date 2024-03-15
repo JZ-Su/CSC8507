@@ -182,7 +182,7 @@ void GameLevel::CreateLevel2() {
 	//level2.AddObject(CreateCeiling(Vector3(160, 60, 160), Vector3(240, 1, 240), 0));
 	
 	level2.AddObject(CreateFloor(Vector3(150, -2, 150), Vector3(200, 2, 200), 0.0f));
-	level2.AddObject(CreateLight(Vector3(160, 100, 160), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 300.0f, true, true));
+	level2.AddObject(CreateLight(Vector3(160, 100, 160), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 300.0f, true, true));
 
 	vector<Vector4> pixelData = render->LoadMap();
 	const int size = 64;
@@ -293,7 +293,7 @@ void GameLevel::CreateLevel2() {
 
 void GameLevel::CreateLevel3() {
 	//level3.AddObject(CreateLight(Vector3(0, 40, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
-	level3.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 150.0f, true, true));
+	level3.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 150.0f, true, true));
 
 	level3.AddObject(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
 	level3.AddObject(CreateHangLight(Vector3(0, 53, 0), Vector3(5, 5, 5), 0.0f));
@@ -338,8 +338,8 @@ void GameLevel::CreateLevel4() {
 	CreateLevel4_Reverse();
 	CreateLevel4_Rotate();
 	CreateLevel4_RR();
-	level4.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
-	level4.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, true, false));
+	level4.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 130.0f, true, true));
+	//level4.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, true, false));
 }
 
 void GameLevel::CreateLevel4_Normal() {
