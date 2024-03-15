@@ -67,7 +67,7 @@ Boss::Boss(Player* player) {
 			lastAttackTime += dt;
 			return Ongoing;
 		}
-		else if (chaseBool || attackCooldown) {
+		else if ((chaseBool || attackCooldown)&& !this->player->getIsBeingHitBack()) {
 			Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(direction.x, -direction.z)));
 			this->GetTransform().SetOrientation(targetOrientation);
 			bossPosition += direction * chaseSpeed * dt;

@@ -111,6 +111,14 @@ namespace NCL::CSC8503 {
 			isBlockBack = IsBlockBack;
 		}
 
+		bool GetHurtBossAlready() const {
+			return hurtBossAlready;
+		}
+
+		void SetHurtBossAlready(bool HurtBossAlready) {
+			hurtBossAlready = HurtBossAlready;
+		}
+
 		bool GetIsBlockBack() const {
 			return isBlockBack;
 		}
@@ -150,6 +158,7 @@ namespace NCL::CSC8503 {
 		bool hasCollision;
 		bool isHiding;
 		bool isBlockBack;
+		bool hurtBossAlready=false;
 	};
 }
 

@@ -74,3 +74,15 @@ void PhysicsObject::UpdateInertiaTensor() {
 
 	inverseInteriaTensor = orientation * Matrix3::Scale(inverseInertia) *invOrientation;
 }
+
+void PhysicsObject::InitPlayerInertia() {
+	Vector3 dimensions = transform->GetScale();
+
+	Vector3 fullWidth = dimensions * 2;
+
+	Vector3 dimsSqr = fullWidth * fullWidth;
+
+	inverseInertia.x = (30.0f * inverseMass) / (dimsSqr.y + dimsSqr.z);
+	inverseInertia.y = (30.0f * inverseMass) / (dimsSqr.x + dimsSqr.z);
+	inverseInertia.z = (30.0f * inverseMass) / (dimsSqr.x + dimsSqr.y);
+}
