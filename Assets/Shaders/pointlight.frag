@@ -141,9 +141,6 @@ void main(void)
 	//float shadow = ShadowCalculation(worldPos);
 	float attenuation = atten * shadow;
 	attenuation = smoothstep(attenuation, 0.0, 1.0);
-	if ( attenuation == 0.0) {
-		discard;
-	}
 
 	fragColor[0].rgb = vec3(0.0, 0.0, 0.0);
 	fragColor[1].rgb = vec3(0.0, 0.0, 0.0);

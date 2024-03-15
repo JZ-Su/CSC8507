@@ -47,7 +47,6 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	glGenTextures(1, &depthTex);
 	glBindTexture(GL_TEXTURE_2D, depthTex);
@@ -177,14 +176,17 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	//Skybox!
 	skyboxShader = new OGLShader("skybox.vert", "skybox.frag");
-	//skyboxShader = new OGLShader("skybox.vert", "environment.frag");
+	envShader = new OGLShader("hdr.vert", "environment.frag");
+	hdrShader = new OGLShader("hdr.vert", "hdr.frag");
+	irradianceShader = new OGLShader("skybox.vert", "irradiance.frag");
 	skyboxMesh = new OGLMesh();
 	skyboxMesh->SetVertexPositions({ Vector3(-1, 1,-1), Vector3(-1,-1,-1) , Vector3(1,-1,-1) , Vector3(1,1,-1) });
 	skyboxMesh->SetVertexIndices({ 0,1,2,2,3,0 });
 	skyboxMesh->UploadToGPU();
 
 	LoadSkybox();
-	//Loadhdr();
+	Loadhdr();
+	Drawhdr();
 
 	glGenVertexArrays(1, &lineVAO);
 	glGenVertexArrays(1, &textVAO);
@@ -241,14 +243,22 @@ GameTechRenderer::~GameTechRenderer() {
 	glDeleteTextures(1, &indexTex);
 	glDeleteTextures(1, &lightDiffTex);
 	glDeleteTextures(1, &lightSpecTex);
-	glDeleteTextures(1, &processTex[0]);
-	glDeleteTextures(1, &processTex[1]);
-	glDeleteTextures(1, &processTex[2]);
+
+	for (int i = 0; i < 6; i++)
+		glDeleteTextures(1, &processTex[i]);
+
+	glDeleteTextures(1, &skyboxTex);
+	glDeleteTextures(1, &hdrTex);
+	glDeleteTextures(1, &envCubemap);
+	glDeleteTextures(1, &envTex);
+	glDeleteTextures(1, &irradianceTex);
+
 	glDeleteFramebuffers(1, &shadowFBO);
 	glDeleteFramebuffers(1, &bufferFBO);
 	glDeleteFramebuffers(1, &lightFBO);
 	glDeleteFramebuffers(1, &postFBO);
 	glDeleteFramebuffers(1, &processFBO);
+	glDeleteFramebuffers(1, &captureFBO);
 	textureCache.clear();
 }
 
@@ -293,26 +303,131 @@ void GameTechRenderer::LoadSkybox() {
 }
 
 void GameTechRenderer::Loadhdr() {
-	std::string filenames= "hall.hdr";
+	stbi_set_flip_vertically_on_load(true);
+	std::string filePath = ASSETROOTLOCATION;
+	filePath.append("Textures/snowy_park.hdr");
+	const char* cstr = filePath.c_str();
+	int width, height, nrComponents;
+	float* data = stbi_loadf(cstr, &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		glGenTextures(1, &hdrTex);
+		glBindTexture(GL_TEXTURE_2D, hdrTex);
 
-	int width = 0;
-	int height = 0;
-	int channels = 0;
-	int flags = 0;
-	char* texData = nullptr;
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, data);
 
-	TextureLoader::LoadTexture(filenames, texData, width, height, channels, flags);
-	glGenTextures(1, &hdrTex);
-	glBindTexture(GL_TEXTURE_2D, hdrTex);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, texData);
+		stbi_image_free(data);
+	}
+	else
+	{
+		std::cout << "Failed to load HDR image." << std::endl;
+	}
+	stbi_set_flip_vertically_on_load(false);
 
+	glGenTextures(1, &envCubemap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 512, 512, 0, GL_RGB, GL_FLOAT, NULL);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glGenTextures(1, &envTex);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, envTex);
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0, GL_RGB, GL_FLOAT, NULL);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	glGenTextures(1, &irradianceTex);
+	glBindTexture(GL_TEXTURE_2D, irradianceTex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 32, 32, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glGenFramebuffers(1, &captureFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void GameTechRenderer::Drawhdr() {
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	glViewport(0, 0, 512, 512);
+
+	Matrix4 captureProjection = Matrix4::Perspective(0.1f, 10.0f, 1, 90.0f);
+	vector<Matrix4> captureViews;
+	captureViews.push_back(Matrix4::lookAt(0, 90, Vector3(0.0, 0.0, 0.0)));
+	captureViews.push_back(Matrix4::lookAt(0, -90, Vector3(0.0, 0.0, 0.0)));
+	captureViews.push_back(Matrix4::lookAt(90, 0, Vector3(0.0, 0.0, 0.0)));
+	captureViews.push_back(Matrix4::lookAt(-90, 0, Vector3(0.0, 0.0, 0.0)));
+	captureViews.push_back(Matrix4::lookAt(0, 0, Vector3(0.0, 0.0, 0.0)));
+	captureViews.push_back(Matrix4::lookAt(0, 180, Vector3(0.0, 0.0, 0.0)));
+
+	BindShader(*hdrShader);
+	int viewLocation = glGetUniformLocation(hdrShader->GetProgramID(), "viewMatrix");
+	int mapLocation = glGetUniformLocation(hdrShader->GetProgramID(), "cubeTex");
+	int projLocation = glGetUniformLocation(hdrShader->GetProgramID(), "projMatrix");
+
+	glUniformMatrix4fv(projLocation, 1, false, (float*)&captureProjection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, hdrTex);
+	glUniform1i(mapLocation, 0);
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, envCubemap, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		glUniformMatrix4fv(viewLocation, 1, false, (float*)&captureViews[i]);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, envCubemap, 0);
+		BindMesh(*skyboxMesh);
+		DrawBoundMesh();
+	}
+
+	glViewport(0, 0, 32,32);
+	BindShader(*envShader);
+
+	viewLocation = glGetUniformLocation(envShader->GetProgramID(), "viewMatrix");
+	mapLocation = glGetUniformLocation(envShader->GetProgramID(), "hdrTex");
+	projLocation = glGetUniformLocation(envShader->GetProgramID(), "projMatrix");
+
+	glUniformMatrix4fv(projLocation, 1, false, (float*)&captureProjection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+	glUniform1i(mapLocation, 0);
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, envTex, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		glUniformMatrix4fv(viewLocation, 1, false, (float*)&captureViews[i]);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, envTex, 0);
+		BindMesh(*skyboxMesh);
+		DrawBoundMesh();
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void GameTechRenderer::RenderFrame() {
@@ -471,6 +586,26 @@ void GameTechRenderer::RenderSkybox() {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTex);
 
+	BindMesh(*skyboxMesh);
+	DrawBoundMesh();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+
+	BindShader(*irradianceShader);
+
+	projLocation = glGetUniformLocation(irradianceShader->GetProgramID(), "projMatrix");
+	viewLocation = glGetUniformLocation(irradianceShader->GetProgramID(), "viewMatrix");
+	texLocation = glGetUniformLocation(irradianceShader->GetProgramID(), "cubeTex");
+
+	glUniformMatrix4fv(projLocation, 1, false, (float*)&projMatrix);
+	glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);
+
+	glUniform1i(texLocation, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, envTex);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, irradianceTex, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, irradianceTex, 0);
 	BindMesh(*skyboxMesh);
 	DrawBoundMesh();
 
@@ -778,6 +913,11 @@ void GameTechRenderer::RenderCombine() {
 	glBindTexture(GL_TEXTURE_2D, indexTex);
 	int indexTexLocation = glGetUniformLocation(combineShader->GetProgramID(), "indexTex");
 	glUniform1i(indexTexLocation, 4);
+
+	glActiveTexture(GL_TEXTURE0 + 5);
+	glBindTexture(GL_TEXTURE_2D, irradianceTex);
+	int envTexLocation = glGetUniformLocation(combineShader->GetProgramID(), "irradianceMap");
+	glUniform1i(envTexLocation, 5);
 
 	BindMesh(*quadMesh);
 	DrawBoundMesh();
