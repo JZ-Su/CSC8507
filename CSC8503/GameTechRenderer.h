@@ -62,6 +62,7 @@ namespace NCL {
 
 			void LoadSkybox();
 			void Loadhdr();
+			void Drawhdr();
 
 			void SetDebugStringBufferSizes(size_t newVertCount);
 			void SetDebugLineBufferSizes(size_t newVertCount);
@@ -78,6 +79,13 @@ namespace NCL {
 			OGLMesh* quadMesh;
 			GLuint		skyboxTex;
 			GLuint		hdrTex;
+			OGLShader* hdrShader;
+			OGLShader* envShader;
+			OGLShader* irradianceShader;
+			GLuint		captureFBO;
+			GLuint		envCubemap;
+			GLuint		envTex;
+			GLuint		irradianceTex;
 
 			//shadow mapping things
 			OGLShader*	shadowShader;
