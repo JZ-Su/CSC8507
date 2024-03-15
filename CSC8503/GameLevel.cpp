@@ -232,13 +232,6 @@ void GameLevel::CreateLevel2() {
 				}
 				doorData.push_back(Vector3(i + 0.5, j + 2, -90));
 			}
-			//// rotate 270
-			//else if (pixelData[i * size + j] == Debug::CYAN && !isScaned[i][j]) {
-			//	for (int k = 0; k < 4; k++) {
-			//		isScaned[i][j + k] = true;
-			//	}
-			//	doorData.push_back(Vector3(i + 0.5, j + 2, 270));
-			//}
 			// rotate 270
 			else if (pixelData[i * size + j] == Debug::RED && !isScaned[i][j]) {
 				for (int k = 0; k < 4; k++) {

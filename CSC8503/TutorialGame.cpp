@@ -128,6 +128,7 @@ void TutorialGame::UpdateGame(float dt) {
 	if (PlayerPreHealth < player->GetHealth()) {
 		PlayerPreHealth = player->GetHealth();
 	}
+	std::cout << currentLevel << std::endl;
 }
 
 void TutorialGame::UpdateKeys(float dt) {
@@ -419,8 +420,8 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	isDebug = true;
-	//isDebug = false;
+	//isDebug = true;
+	isDebug = false;
 	int debugLevel = 1;
 
 	if (isDebug) {
@@ -474,6 +475,7 @@ void TutorialGame::InitWorld() {
 		portal = gameLevel->GetConnection()->portal;
 		lockedObject = player;
 		PlayLevelBGM("level0");
+
 	}
 
 	score = 0;
@@ -963,7 +965,7 @@ void TutorialGame::SwitchLevel() {
 	if (!physics->GetCollisionDetectionList(portal).empty() && physics->GetCollisionDetectionList(portal)[0] == player) {
 		switch (currentLevel)
 		{
-		case 1:
+		case 3:
 			GameLevel::RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
@@ -975,30 +977,34 @@ void TutorialGame::SwitchLevel() {
 			ghostai2 = gameLevel->GetGhostai2();
 			ghostAnimation = gameLevel->getGhostAnimation();
 			PlayLevelBGM("level1");
+			currentLevel++;
 			break;
-		case 2:
+		case 4:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel1(), true);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			PlayLevelBGM("level0");
+			currentLevel++;
 			break;
-		case 3:
+		case 1:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 			player->GetTransform().SetPosition(Vector3(235, 10, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel2()->portal;
 			PlayLevelBGM("level2");
+			currentLevel++;
 			break;
-		case 4:
+		case 2:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), true);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			PlayLevelBGM("level0");
+			currentLevel++;
 			break;
 		case 5:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
@@ -1017,9 +1023,12 @@ void TutorialGame::SwitchLevel() {
 			bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
 			bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
 			bossChasingAnimation = gameLevel->getBossChasingAnimation();
+			fireBallBullet = gameLevel->getFireBallBullet();	
 			bossAngryAnimation = gameLevel->getBossAngryAnimation();
-			fireBallBullet = gameLevel->getFireBallBullet();
+			PlayerPreHealth = player->GetHealth();
+			BossPrehHealth = gameLevel->GetBoss()->getBossHealth();
 			PlayLevelBGM("level3");
+			currentLevel++;
 			break;
 		case 6:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true);
@@ -1028,6 +1037,7 @@ void TutorialGame::SwitchLevel() {
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			PlayLevelBGM("level0");
+			currentLevel++;
 			break;
 		case 7:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), true);
@@ -1036,11 +1046,11 @@ void TutorialGame::SwitchLevel() {
 			player->GetTransform().SetPosition(Vector3(-70, 10, -50)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			PlayLevelBGM("level4");
+			currentLevel++;
 			break;
 		default:
 			break;
 		}
-		currentLevel++;
 	}
 }
 
@@ -1050,7 +1060,7 @@ void TutorialGame::UpdateLevel(float dt) {
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
 	// Level 1 stuff
-	if (currentLevel == 2) {
+	if (currentLevel == 4) {
 		ghostai->Update(dt);
 		ghostai2->Update(dt);
 		UpdateGhostAnim(ghostai, ghostAnimation, dt);
@@ -1064,7 +1074,7 @@ void TutorialGame::UpdateLevel(float dt) {
 
 	}
 	// Level 2
-	else if (currentLevel == 4) {
+	else if (currentLevel == 2) {
 		for (const auto& element : gameLevel->GetL2Doors()) {
 			element->Update(dt);
 			if (element->GetState() != "keepState" && element->GetTimer() - dt == 0) {
@@ -1192,6 +1202,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			}
 			score++;
 			mapIndex = static_cast<int>(RandomValue(-4, 5));
+			std::cout << mapIndex << std::endl;
 			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
 			hasRotation = !hasRotation;
 		}
