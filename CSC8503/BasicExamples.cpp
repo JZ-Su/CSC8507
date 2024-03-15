@@ -609,8 +609,8 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 	}
 }
 
-StateGameObject* BasicExamples::CreateAItest(const Vector3& position, const Vector3& dimensions, GameObject* player, float inverseMass, const Vector3& star, const Vector3& end) {
-	StateGameObject* ghost = new StateGameObject(star,end,player);
+GhostAI* BasicExamples::CreateGhostAI(const Vector3& position, const Vector3& dimensions, GameObject* player, float inverseMass, const Vector3& star, const Vector3& end) {
+	GhostAI* ghost = new GhostAI(star,end,player);
 	AABBVolume* volume = new AABBVolume(dimensions);
 	ghost->SetBoundingVolume((CollisionVolume*)volume);
 	ghost->GetTransform().SetScale(dimensions * 2).SetPosition(position);

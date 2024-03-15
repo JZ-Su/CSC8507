@@ -1,6 +1,7 @@
 #pragma once
 #include "CollisionVolume.h"
 #include "Matrix4.h"
+#include "Quaternion.h"
 
 namespace NCL {
 	class OBBVolume : CollisionVolume

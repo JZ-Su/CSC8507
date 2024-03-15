@@ -38,7 +38,7 @@ StateGameObject::StateGameObject() {
 }
 
 StateGameObject::StateGameObject(Vector3 startPos, Vector3 endPos, GameObject* player,const std::string& objectName) : GameObject(objectName) {
-	stateMachine = new StateMachine();
+	/*stateMachine = new StateMachine();
 	GhostStrat = startPos;
 	GhostEnd = endPos;
 
@@ -94,7 +94,7 @@ StateGameObject::StateGameObject(Vector3 startPos, Vector3 endPos, GameObject* p
 	stateMachine->AddTransition(new StateTransition(stateBackB, stateBackA, [&]()->bool {
 		float GBdistance = (GetTransform().GetPosition() - GhostEnd).Length();
 		return GBdistance < 1;
-		}));
+		}));*/
 
 }
 

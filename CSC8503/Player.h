@@ -96,12 +96,6 @@ namespace NCL {
 			virtual void OnCollisionEnd(GameObject* otherObject) override;
 			bool changeLevel = false;
 
-			void addhealth(float addhealth) {
-				health += addhealth;
-				health = std::max(health, 0.0f);
-				health = std::min(health, 100.0f);
-			}
-
 			void SetPreHealth(int inprehealth) { prehealth = inprehealth; }
 			int GetPreHealth() {
 				return prehealth;

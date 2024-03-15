@@ -23,6 +23,7 @@ namespace NCL {
 			float updateHealth(float inhealth)
 			{
 				bossHealth += inhealth;
+				bossHealth = std::max(bossHealth, 0.0f);
 				return bossHealth;
 			}
 			bool getShooting() {
@@ -97,9 +98,12 @@ namespace NCL {
 			}
 			void increaseBossHealth(float Health) {
 				bossHealth += Health;
+				bossHealth = std::min(bossHealth, 100.0f);
 			}
 			void setHealth(float Inhealth) {
 				bossHealth = Inhealth;
+				bossHealth = std::max(bossHealth, 0.0f);
+				bossHealth = std::min(bossHealth, 100.0f);
 			}
 			float attackRange;
 		private:
