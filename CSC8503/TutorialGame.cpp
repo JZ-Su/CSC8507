@@ -425,8 +425,8 @@ void TutorialGame::InitWorld() {
 		//ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
-		//currentLevel = 4;
-		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
+		/*currentLevel = 4;
+		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());*/
 
 		//Level 3
 		currentLevel = 6;
@@ -443,11 +443,12 @@ void TutorialGame::InitWorld() {
 		iceCubeBullet = gameLevel->getIceCubeBullet();
 		fireBallBullet = gameLevel->getFireBallBullet();
 		PlayerPreHealth = player->GetHealth();
+
 		//Level 4 initial function
 		//currentLevel = 8;
 		//player->GetTransform().SetPosition(Vector3(-70, 10, -50));
 		//gameLevel->AddLevelToWorld(world, 0, true, false);
-		//gameLevel->AddLevelToWorld(world, 0, false, false);
+		//gameLevel->AddLevelToWorld(world, 0, false, false);*/
 	}
 	else {
 		currentLevel = 1;

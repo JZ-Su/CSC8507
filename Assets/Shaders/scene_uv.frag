@@ -28,15 +28,6 @@ out vec4 fragColor[5];
 
 void main(void)
 {
-	//float shadow = 1.0; 
-	//shadow = ShadowCalculation(IN.worldPos);
-	//if( IN.shadowProj.w > 0.0) { 
-		//= texture(shadowTex, IN.shadowProj)*0.5f;
-	//}
-		//fragColor = vec4(shadow,shadow,shadow,1);
-	//return;
-	vec3 shadcolor = vec3(0.1,0.3,1);
-
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
 
 	vec3 viewDir = normalize ( cameraPos - IN . worldPos );
@@ -65,7 +56,7 @@ void main(void)
 	vec3  shadowDir = normalize ( shadowPos - IN.worldPos);
 	float l = max (0.01 , dot ( shadowDir , normal ));
 	float halL = (l + 1.0) * 0.5;
-	halL = clamp(halL, 0.01, 1.0);
+	halL = clamp(halL, 0.01, 1.0) * aoCol.r;
 
 	fragColor[0] = vec4(albedo.rgb, 1.0);
 	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);
