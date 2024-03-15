@@ -275,7 +275,7 @@ GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& d
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[3], 3);
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[4], 4);
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[5], 5);
-
+	cube->GetPhysicsObject()->Setelasticity(0);
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
 	cube->SetTag("Ground");
@@ -543,7 +543,8 @@ Player* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dime
 	LoadMaterialTextures(player, playerMesh, playerMat, render);
 
 	player->GetPhysicsObject()->SetInverseMass(inverseMass);
-	player->GetPhysicsObject()->InitCubeInertia();
+	player->GetPhysicsObject()->InitPlayerInertia();
+	player->GetPhysicsObject()->Setelasticity(0);
 	player->GetPhysicsObject()->SetApplyAngImp(false);
 	player->SetTag("player");
 	return player;
@@ -643,6 +644,7 @@ GameObject* BasicExamples::CreateCoin(const Vector3& position, const Vector3& di
 	coin->GetPhysicsObject()->SetInverseMass(inverseMass);
 	coin->GetPhysicsObject()->InitCubeInertia();
 	coin->GetRenderObject()->SetColour(Debug::YELLOW);
+	coin->SetTag("coin");
 	return coin;
 }
 

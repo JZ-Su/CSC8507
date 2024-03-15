@@ -30,6 +30,10 @@ namespace NCL {
 
 			void HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject* j);
 
+			void HandleRollingRockCollisionLogic(GameObject* i, GameObject* j);
+
+			void HandleCoinCollisionLogic(GameObject* i, GameObject* j);
+
 			void ParryBackBullet(GameObject* bullet, Player* player, Boss* boss);
 
 		protected:
