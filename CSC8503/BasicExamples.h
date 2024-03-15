@@ -17,6 +17,7 @@
 #include "Boss.h"
 #include "Coin.h"
 #include "Door.h"
+#include"GhostAI.h"
 
 namespace NCL {
 	class BasicExamples
@@ -82,7 +83,7 @@ namespace NCL {
 		GameObject* getIceCubeBullet() const { return iceCubeBullet; }
 		GameObject* getFireBallBullet() const { return fireBallBullet; }
 
-		StateGameObject* CreateAItest(const Vector3& position, const Vector3& dimensions, GameObject* player, float inverseMass, const Vector3& star, const Vector3& end);
+		GhostAI* CreateGhostAI(const Vector3& position, const Vector3& dimensions, GameObject* player, float inverseMass, const Vector3& star, const Vector3& end);
 
 		void LoadMaterialTextures(GameObject* character, Mesh* mesh,MeshMaterial* material, GameTechRenderer* renderer);
 
@@ -90,8 +91,9 @@ namespace NCL {
 		Player*		GetPlayer() const { return player; }
 		GameObject*	GetGhost() const { return ghostmodle; }
 		GameObject* GetShield() const{ return shield; }
-		StateGameObject* GetGhostai() const { return ghost; }
-		StateGameObject* GetGhostai2() const { return ghost2; }
+
+		GhostAI* GetGhostai() const { return ghost; }
+		GhostAI* GetGhostai2() const { return ghost2; }
 
 		void ExportToObj(const Mesh& mesh, const std::string& filename);
 
@@ -171,8 +173,8 @@ namespace NCL {
 		GameObject* iceCubeBullet;
 		GameObject* fireBallBullet;
 
-		StateGameObject* ghost;
-		StateGameObject* ghost2;
+		GhostAI* ghost;
+		GhostAI* ghost2;
 
 	};
 }

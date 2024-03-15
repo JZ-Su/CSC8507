@@ -16,6 +16,7 @@ set(Header_Files
     "Boss.h"
     "Coin.h"
     "SoundManager.h"
+    "GhostAI.h"
 )
 source_group("Header Files" FILES ${Header_Files})
 
@@ -33,6 +34,7 @@ set(Source_Files
     "Boss.cpp"
     "Coin.cpp"
     "SoundManager.cpp"
+    "GhostAI.cpp"
 )
 
 if(USE_VULKAN)

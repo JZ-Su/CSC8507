@@ -37,6 +37,8 @@ float Player::updateTimer(float dt)
 float Player::updateHealth(float inhealth)
 {
 	health += inhealth;
+	health = std::max(health, 0.0f);
+	health = std::min(health, 100.0f);
 	return health;
 }
 float Player::updateCollectibles(int collected)
@@ -84,7 +86,12 @@ void Player::UseItem(int i) {
 	if (i > itemList.size() - 1)  return;
 
 	if (itemList.at(i) == "redbottle") {
-		addhealth(-10);
+		float j = RandomValue(0, 3);
+		if(j<=1)
+			updateHealth(-10);
+		else
+			updateHealth(10);
+
         itemList.erase(itemList.begin() + i);
 	}
 }

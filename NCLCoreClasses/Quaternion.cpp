@@ -6,6 +6,7 @@ Use as you see fit!
 Comments and queries to: richard-gordon.davison AT ncl.ac.uk
 https://research.ncl.ac.uk/game/
 */
+
 #include "Quaternion.h"
 #include "Matrix4.h"
 #include "Matrix3.h"

@@ -148,9 +148,11 @@ namespace NCL {
 			float health;
 			float totalTime;
 			float bosshealth;
-			float PlayerPreHealth;
+			float PlayerPreHealth;		
+			float BossPrehHealth;
 			float currenthealth;
 			float healthLength;
+			float BossHealthLendth;
 
 			GameState gameState;
 			MainMenuState mainMenuState;
@@ -169,9 +171,10 @@ namespace NCL {
 			void UpdateTrackingBall(Vector3 ballPosition,const Vector3& playerPosition, float speed, float dt);
 			void IceCubeBulletLogic(float dt);
 			void FireBallBulletLogic(float dt);
+
 			void UpdateShieldPosition(float dt);
 			void RollStone(GameObject* stone, const Vector3& forceDirection, float forceMagnitude);
-			
+		
 
 			void AddSound();
 			void UpdateListenerPosition(float dt, const Vector3& playerPosition);
@@ -220,6 +223,8 @@ namespace NCL {
 			bool isWalking = false;
 			string currentBGM="";
 			std::vector<GameObject*> propList;
+
+			void UpdateLevel3UI();
 		};
 	}
 }

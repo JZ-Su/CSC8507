@@ -171,8 +171,8 @@ void GameLevel::CreateLevel1() {
 	//level1.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 70.0f, true, false));
 	CreateLevel1_Coins();
 
-	level1.AddObject(ghost = CreateAItest(Vector3(-85,10,-30), Vector3(5, 5, 5),player, 0.0f,Vector3(-85, 10, -20),Vector3(-85,10,-70)));
-	level1.AddObject(ghost2 = CreateAItest(Vector3(85, 10, -30), Vector3(5, 5, 5), player, 0.0f, Vector3(85, 10, -20), Vector3(85, 10, -70)));
+	level1.AddObject(ghost = CreateGhostAI(Vector3(-85,10,-30), Vector3(5, 5, 5),player, 0.0f,Vector3(-85, 10, -20),Vector3(-85,10,-70)));
+	level1.AddObject(ghost2 = CreateGhostAI(Vector3(85, 10, -30), Vector3(5, 5, 5), player, 0.0f, Vector3(85, 10, -20), Vector3(85, 10, -70)));
 	vector<GameObject*> port = CreatePortal(Vector3(0, 35, 100));
 	level1.AddObject(port);
 	level1.portal = level1.objectList.back();
@@ -232,13 +232,6 @@ void GameLevel::CreateLevel2() {
 				}
 				doorData.push_back(Vector3(i + 0.5, j + 2, -90));
 			}
-			//// rotate 270
-			//else if (pixelData[i * size + j] == Debug::CYAN && !isScaned[i][j]) {
-			//	for (int k = 0; k < 4; k++) {
-			//		isScaned[i][j + k] = true;
-			//	}
-			//	doorData.push_back(Vector3(i + 0.5, j + 2, 270));
-			//}
 			// rotate 270
 			else if (pixelData[i * size + j] == Debug::RED && !isScaned[i][j]) {
 				for (int k = 0; k < 4; k++) {
