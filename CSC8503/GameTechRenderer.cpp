@@ -47,7 +47,6 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	glGenTextures(1, &depthTex);
 	glBindTexture(GL_TEXTURE_2D, depthTex);
@@ -237,14 +236,22 @@ GameTechRenderer::~GameTechRenderer() {
 	glDeleteTextures(1, &indexTex);
 	glDeleteTextures(1, &lightDiffTex);
 	glDeleteTextures(1, &lightSpecTex);
-	glDeleteTextures(1, &processTex[0]);
-	glDeleteTextures(1, &processTex[1]);
-	glDeleteTextures(1, &processTex[2]);
+
+	for (int i = 0; i < 6; i++)
+		glDeleteTextures(1, &processTex[i]);
+
+	glDeleteTextures(1, &skyboxTex);
+	glDeleteTextures(1, &hdrTex);
+	glDeleteTextures(1, &envCubemap);
+	glDeleteTextures(1, &envTex);
+	glDeleteTextures(1, &irradianceTex);
+
 	glDeleteFramebuffers(1, &shadowFBO);
 	glDeleteFramebuffers(1, &bufferFBO);
 	glDeleteFramebuffers(1, &lightFBO);
 	glDeleteFramebuffers(1, &postFBO);
 	glDeleteFramebuffers(1, &processFBO);
+	glDeleteFramebuffers(1, &captureFBO);
 	textureCache.clear();
 }
 
