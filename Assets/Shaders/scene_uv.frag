@@ -7,6 +7,8 @@ uniform sampler2D 	metalTex;
 uniform sampler2D 	roughTex;
 uniform sampler2D 	aoTex;
 uniform sampler2D 	heightTex;
+uniform float scale;
+uniform bool isWall = false;
 
 uniform vec3	shadowPos;
 uniform vec3	cameraPos;
@@ -26,6 +28,22 @@ in Vertex
 
 out vec4 fragColor[5];
 
+vec4 MyTriplanarSurfaceFunction(sampler2D tex, vec3 worldPos, float scale){
+
+	vec3 blend = abs(IN.normal);
+	blend = normalize(max(blend, 0.00001));
+	float b = (blend.x + blend.y + blend.z);
+	blend/= vec3(b,b,b);
+
+	vec4 uvX = texture(tex, IN.worldPos.zy * scale);
+	vec4 uvY = texture(tex, IN.worldPos.xz * scale);
+	vec4 uvZ = texture(tex, IN.worldPos.xy * scale);
+
+	vec4 uv = uvX * blend.x + uvY * blend.y + uvZ * blend.z;
+
+	return uv;
+}
+
 void main(void)
 {
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
@@ -41,16 +59,42 @@ void main(void)
     uv = uv - (0.5 - height) * viewTangent.xy * 0.01f;
 	
 	vec3 normal = texture(normalTex, uv).rgb;
-	normal = normalize(normal * 2.0 - 1.0);
-	normal.xy = normal.xy * 0.5;
-	normal = normalize(TBN * normal);
+	//normal = normalize(normal * 2.0 - 1.0);
+	//normal.xy = normal.xy * 0.5;
+	//normal = normalize(TBN * normal);
 
 	float metal = texture(metalTex, uv).r;
 	float roughness = texture(roughTex, uv).r;
 	vec4 aoCol = texture(aoTex,uv);
 
 	if(hasTexture) {
-	 albedo *= texture(mainTex, uv);
+		if(isWall){
+
+			vec4 uv = MyTriplanarSurfaceFunction(mainTex, IN.worldPos, scale);
+			albedo *= uv;
+
+			vec4 uvNormal = MyTriplanarSurfaceFunction(normalTex, IN.worldPos, scale);
+
+			normal = uvNormal.xyz;
+			normal = normalize(normal * 2.0 - 1.0);
+			normal.xy = normal.xy * 0.5;
+			normal = normalize(TBN * normal);
+
+			vec4 uvR = MyTriplanarSurfaceFunction(roughTex, IN.worldPos, scale);
+			roughness = uvR.x;
+
+			vec4 uvAO = MyTriplanarSurfaceFunction(aoTex, IN.worldPos, scale);
+			aoCol = uvAO;
+
+			vec4 uvmetal = MyTriplanarSurfaceFunction(metalTex, IN.worldPos, scale);
+			metal = uvmetal.x;
+		}
+		else{
+			albedo *= texture(mainTex,uv);
+			normal = normalize(normal * 2.0 - 1.0);
+			normal.xy = normal.xy * 0.5;
+			normal = normalize(TBN * normal);
+		}
 	}
 
 	vec3  shadowDir = normalize ( shadowPos - IN.worldPos);

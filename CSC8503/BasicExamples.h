@@ -128,7 +128,6 @@ namespace NCL {
 		Texture* greenWallTexture[6] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 		Shader* basicShader = nullptr;
 		Shader* floorShader = nullptr;
-		Shader* wallShader = nullptr;
 		Shader* modelShader = nullptr;
 		Shader* ghostShader = nullptr;
 		Shader* bossShader = nullptr;
