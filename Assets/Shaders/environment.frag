@@ -6,7 +6,7 @@ in Vertex {
 	vec3 viewDir;
 } IN;
 
-out vec4 fragColour[2];
+out vec4 fragColour;
 const float PI = 3.14159265359;
 
 void main(void)	{
@@ -33,9 +33,5 @@ void main(void)	{
         }
     }
     irradiance = PI * irradiance * (1.0 / float(nrSamples));
-	fragColour[0] = vec4(irradiance, 1.0);
-
-	//vec4 samp = texture(cubeTex,normalize(IN.viewDir));
-	//fragColour[0] = pow(samp, vec4(2.2f));
-	fragColour[1] = vec4(0, 0, 0, 0);
+	fragColour = vec4(irradiance, 1.0);
 }

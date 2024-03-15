@@ -163,12 +163,12 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateHangLight(Vector3(0, 53, 0), Vector3(5, 5, 5), 0.0f));
 
 	//level1.AddObject(CreateLight(Vector3(0, 40, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 70.0f, false, true));
-	level1.AddObject(CreateLight(Vector3(0, 40, 0),  Vector4(1.0f, 0.8f, 0.3f, 1.0f), 90.0f, true, true));
+	level1.AddObject(CreateLight(Vector3(0, 40, 0),  Vector4(1.0f, 0.8f, 0.5f, 1.0f), 90.0f, true, true));
 	level1.AddObject(CreateLight(Vector3(38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 25.0f, true, false));	
 	level1.AddObject(CreateLight(Vector3(-38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 25.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(90, 30, -90), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 70.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(-90, 30, -90), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 70.0f, true, false));
-	level1.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 70.0f, true, false));
+	level1.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 70.0f, true, false));
 	CreateLevel1_Coins();
 
 	level1.AddObject(ghost = CreateGhostAI(Vector3(-85,10,-30), Vector3(5, 5, 5),player, 0.0f,Vector3(-85, 10, -20),Vector3(-85,10,-70)));
@@ -210,6 +210,9 @@ void GameLevel::CreateLevel2() {
 				}
 				// Vertical
 				else if (pixelData[(i + 1) * size + j] == Debug::WHITE && !isScaned[i + 1][j]) {
+					if (i == 56) {
+						std::cout << std::endl;
+					}
 					int length = 1;
 					while (pixelData[(i + length) * size + j] == Debug::WHITE && !isScaned[i + length][j]) {
 						isScaned[i + length][j] = true;

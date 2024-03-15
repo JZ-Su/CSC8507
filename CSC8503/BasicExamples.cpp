@@ -143,7 +143,9 @@ BasicExamples::~BasicExamples() {
 	for (int i = 0; i < 6; i++)
 		delete ceilingTexture[i];
 	for (int i = 0; i < 6; i++)
-		delete wallTexture[i];
+		delete wallTexture[i];	
+	for (int i = 0; i < 6; i++)
+		delete greenWallTexture[i];
 
 	delete basicShader;
 	delete floorShader;
@@ -152,6 +154,7 @@ BasicExamples::~BasicExamples() {
 	delete bossShader;
 	delete playerShader;
 	delete lampShader;
+	delete wallShader;
 }
 
 // Todo: the indices is in wrong order
@@ -756,6 +759,7 @@ GameObject* BasicExamples::CreateHangLight(const Vector3& position, const Vector
 	lightmodel->SetPhysicsObject(new PhysicsObject(&lightmodel->GetTransform(), lightmodel->GetBoundingVolume()));
 
 	lightmodel->GetRenderObject()->isAnimation = true;
+	lightmodel->GetRenderObject()->hasShadow = false;
 	LoadMaterialTextures(lightmodel, hangLightMesh, hangLightMat, render);
 	lightmodel->GetPhysicsObject()->SetInverseMass(inverseMass);
 	lightmodel->GetPhysicsObject()->InitCubeInertia();

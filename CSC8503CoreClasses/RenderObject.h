@@ -64,6 +64,7 @@ namespace NCL {
 			bool onLight = false;
 			bool isLight = false;
 			bool isShadow = false;
+			bool hasShadow = true;
 			float radius = 0.0f;
 
 			int			currentFrame;
