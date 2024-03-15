@@ -531,6 +531,34 @@ void PhysicsSystem::HandleFireballBulletCollisionLogic(GameObject* i, GameObject
 		boss->SetShooting(false);
 		skipImpulseResolveCollision = true;
 	}
+	if (i->GetTag() == "fireballbullet" && j->GetTag() != "boss" && j->GetTag() != "player") {
+		i->SetIsHiding(true, Vector3(20, -98, 0));
+		i->GetPhysicsObject()->SetLinearVelocity(Vector3());
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		boss->setHasFireBallBullet(true);
+		if (gameWorld.GetObject("fireballbullet")->GetIsBlockBack()) {
+			gameWorld.GetObject("fireballbullet")->SetIsBolckBack(false);
+		}
+		boss->setBulletTimer(0.0f);
+		boss->setIsShootingIceCube(false);
+		boss->setNextBullet(rand() % 2);
+		boss->SetShooting(false);
+		skipImpulseResolveCollision = true;
+	}
+	if (j->GetTag() == "fireballbullet" && i->GetTag() != "boss" && i->GetTag() != "player") {
+		j->SetIsHiding(true, Vector3(20, -98, 0));
+		j->GetPhysicsObject()->SetLinearVelocity(Vector3());
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		boss->setHasFireBallBullet(true);
+		if (gameWorld.GetObject("fireballbullet")->GetIsBlockBack()) {
+			gameWorld.GetObject("fireballbullet")->SetIsBolckBack(false);
+		}
+		boss->setBulletTimer(0.0f);
+		boss->setIsShootingIceCube(false);
+		boss->setNextBullet(rand() % 2);
+		boss->SetShooting(false);
+		skipImpulseResolveCollision = true;
+	}
 }
 
 void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject* j) {
@@ -641,16 +669,16 @@ void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject*
 void PhysicsSystem::HandleRollingRockCollisionLogic(GameObject* i, GameObject* j) {
 	if (i->GetTag() == "rollingrock" && j->GetTag() == "boss"&&!i->GetHurtBossAlready()) {
 		Boss* boss = dynamic_cast<Boss*>(j);
-		boss->setHasIceCubeBullet(true);
+		boss->SetIsRencentlyHurt(true);
 		boss->updateHealth(-20);
 		i->SetHurtBossAlready(true);
 
 	}
 	else if(j->GetTag() == "rollingrock" && i->GetTag() == "boss"&&!j->GetHurtBossAlready()) {
 		Boss* boss = dynamic_cast<Boss*>(i);
-		boss->setHasIceCubeBullet(true);
+		boss->SetIsRencentlyHurt(true);
 		boss->updateHealth(-20);
-		i->SetHurtBossAlready(true);
+		j->SetHurtBossAlready(true);
 	}
 	
 }

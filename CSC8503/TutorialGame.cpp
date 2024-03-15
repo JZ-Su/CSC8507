@@ -276,25 +276,23 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		if (gameLevel == nullptr) {
 			return;
 		}
+		Quaternion playerQuaternion = player->GetTransform().GetOrientation();
+		Vector3 defaultForward = Vector3(0, 0, -1);
+		Vector3 currentDirection = playerQuaternion * defaultForward;
+		rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised()*10, 4);
+		world->AddGameObject(rollingRock);
+		if (rollingRock) {	
+			RollStone(rollingRock, currentDirection, 42000);
+		}
+	}
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM4)) {
 		speedProp = gameLevel->CreateSpeedProp(Vector3(0, 5, 65), Vector3(16, 16, 16));
-		
+
 		world->AddGameObject(speedProp);
 
 		propList.push_back(speedProp);
 
 		player->SetIsAccelerated(true);
-
-		//rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + Vector3(0, 5, -10), 3);
-		//world->AddGameObject(rollingRock);
-		//if (rollingRock) {
-		//	Quaternion playerQuaternion = player->GetTransform().GetOrientation();
-		//	Vector3 defaultForward = Vector3(0, 0, -1);
-		//	Vector3 currentDirection = playerQuaternion * defaultForward;
-		//	RollStone(rollingRock, currentDirection, 12000);
-		//}
-	}
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM4)) {
-		player->UseItem(3);
 	}
 
 
@@ -425,8 +423,8 @@ void TutorialGame::InitWorld() {
 		//ghostAnimation = gameLevel->getGhostAnimation();
 
 		//Level 2
-		/*currentLevel = 4;
-		gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());*/
+		//currentLevel = 4;
+		//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 
 		//Level 3
 		currentLevel = 6;
@@ -443,12 +441,11 @@ void TutorialGame::InitWorld() {
 		iceCubeBullet = gameLevel->getIceCubeBullet();
 		fireBallBullet = gameLevel->getFireBallBullet();
 		PlayerPreHealth = player->GetHealth();
-
 		//Level 4 initial function
 		//currentLevel = 8;
 		//player->GetTransform().SetPosition(Vector3(-70, 10, -50));
 		//gameLevel->AddLevelToWorld(world, 0, true, false);
-		//gameLevel->AddLevelToWorld(world, 0, false, false);*/
+		//gameLevel->AddLevelToWorld(world, 0, false, false);
 	}
 	else {
 		currentLevel = 1;
@@ -1059,7 +1056,6 @@ void TutorialGame::UpdateLevel(float dt) {
 
 		gameLevel->GetBoss()->Update(dt);
 		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
-		std::cout << player->getIsBeingHitBack() << std::endl;
 		if (player->getIsAccelerated()) {
 			speedPropTimer += dt;
 			if (speedPropTimer > speedPropDuration) {
@@ -1278,7 +1274,7 @@ void TutorialGame::IceCubeBulletLogic(float dt) {
 		std::cout << "Icecube bullet is coming!" << std::endl;
 	}
 	if (!iceCubeBullet->GetIsHiding()) {
-		iceCubeBullet->GetPhysicsObject()->AddForce(Vector3(0, 2.0f, 0));
+		iceCubeBullet->GetPhysicsObject()->AddForce(Vector3(0, 12.0f, 0));
 		iceCubeBullet->UpdateExistenceTime(dt);
 		Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 		Vector3 ballPosition = iceCubeBullet->GetTransform().GetPosition();

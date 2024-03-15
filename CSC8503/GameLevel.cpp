@@ -318,7 +318,7 @@ void GameLevel::CreateLevel3() {
 	//level3.AddObject(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
 	//BossBehaviourTree(boss,player);
 	//
-	boss = CreateBoss(Vector3(0, 1, -40), Vector3(6, 6, 6), player, 0.0f);
+	boss = CreateBoss(Vector3(0, 1, -40), Vector3(6, 6, 6), player, 0.01f);
 	iceCubeBullet = CreateIceCubeBullet(Vector3(20, -98, 0), Vector3(3, 3, 3), 5.0f);
 	fireBallBullet = CreateFireBallBullet(Vector3(0, -98, 0), 2, 5.0f);
 

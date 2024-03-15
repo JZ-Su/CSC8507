@@ -474,7 +474,7 @@ Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensio
 	Boss* character = new Boss(player);
 	//character->BossBehaviourTree(player);
 	Vector3 collisionDimensions = Vector3(1, 2.0, 1) * dimensions;
-	AABBVolume* volume = new AABBVolume(dimensions);
+	AABBVolume* volume = new AABBVolume(collisionDimensions);
 	character->GetTransform().SetCollisionDimensions(collisionDimensions);
 	character->SetBoundingVolume((CollisionVolume*)volume);
 

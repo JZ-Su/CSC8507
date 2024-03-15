@@ -54,7 +54,7 @@ namespace NCL {
 		GameObject* CreateLight(const Vector3& position, const Vector4& color, float radius, bool islight, bool isshadow);
 		
 		GameObject* CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		GameObject* CreateRollingRock(const Vector3& position, float radius, float inverseMass = 2.0f);
+		GameObject* CreateRollingRock(const Vector3& position, float radius, float inverseMass = 0.5f);
 		GameObject* CreateShield(const Vector3& position, const Vector3& dimensions, float inverseMass);
 		GameObject* CreateShieldProp(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
 		GameObject* CreateSpeedProp(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
