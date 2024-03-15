@@ -437,8 +437,8 @@ void TutorialGame::InitWorld() {
 		bossAngryAnimation = gameLevel->getBossAngryAnimation();
 		iceCubeBullet = gameLevel->getIceCubeBullet();
 		fireBallBullet = gameLevel->getFireBallBullet();
+		PlayerPreHealth = player->GetHealth();*/
 
-		PlayerPreHealth = player->GetHealth();
 		//Level 4 initial function
 		//currentLevel = 8;
 		//player->GetTransform().SetPosition(Vector3(-70, 10, -50));
