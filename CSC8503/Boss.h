@@ -107,7 +107,7 @@ namespace NCL {
 			}
 			float attackRange;
 		private:
-			int nextBullet = 1;
+			int nextBullet = 0;
 			float bulletTimer = 4.0f;
 			bool isShooting;
 			bool firstBelow50 = true;

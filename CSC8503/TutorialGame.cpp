@@ -233,27 +233,27 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
-		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis);
+		player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*3): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
-		lockedObject->GetPhysicsObject()->AddForce(fwdAxis);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
-		lockedObject->GetPhysicsObject()->AddForce(-rightAxis);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis* 1.5);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
-		lockedObject->GetPhysicsObject()->AddForce(rightAxis);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(rightAxis* 1.5);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
 		{
 			Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
-			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 4, velocity.z));
+			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 24, velocity.z));
 			player->SetCanJump(false);
 			player->setJumpTimer(1.1f);
 			player->SetIsJumping(true);
@@ -266,6 +266,8 @@ void TutorialGame::LockedObjectMovement(float dt) {
 			}
 		}
 		player->SetIsWalk(false);
+		if (!player->getIsBeingHitBack()){ player->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0)); }
+
 	}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM1)) {
@@ -281,22 +283,23 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		if (gameLevel == nullptr) {
 			return;
 		}
-		//speedProp = gameLevel->CreateSpeedProp(Vector3(0, 5, 65), Vector3(16, 16, 16));
-		//
-		//world->AddGameObject(speedProp);
-
-		//propList.push_back(speedProp);
-		rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + Vector3(0, 5, -10), 3);
+		Quaternion playerQuaternion = player->GetTransform().GetOrientation();
+		Vector3 defaultForward = Vector3(0, 0, -1);
+		Vector3 currentDirection = playerQuaternion * defaultForward;
+		rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised()*10, 4);
 		world->AddGameObject(rollingRock);
-		if (rollingRock) {
-			Quaternion playerQuaternion = player->GetTransform().GetOrientation();
-			Vector3 defaultForward = Vector3(0, 0, -1);
-			Vector3 currentDirection = playerQuaternion * defaultForward;
-			RollStone(rollingRock, currentDirection, 12000);
+		if (rollingRock) {	
+			RollStone(rollingRock, currentDirection, 42000);
 		}
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM4)) {
-		player->UseItem(3);
+		speedProp = gameLevel->CreateSpeedProp(Vector3(0, 5, 65), Vector3(16, 16, 16));
+
+		world->AddGameObject(speedProp);
+
+		propList.push_back(speedProp);
+
+		player->SetIsAccelerated(true);
 	}
 
 
@@ -1014,6 +1017,7 @@ void TutorialGame::SwitchLevel() {
 			bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
 			bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
 			bossChasingAnimation = gameLevel->getBossChasingAnimation();
+			bossAngryAnimation = gameLevel->getBossAngryAnimation();
 			fireBallBullet = gameLevel->getFireBallBullet();
 			PlayLevelBGM("level3");
 			break;
@@ -1073,6 +1077,13 @@ void TutorialGame::UpdateLevel(float dt) {
 
 		gameLevel->GetBoss()->Update(dt);
 		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
+		if (player->getIsAccelerated()) {
+			speedPropTimer += dt;
+			if (speedPropTimer > speedPropDuration) {
+				player->SetIsAccelerated(false);
+				speedPropTimer = 0.0f;
+			}
+		}
 		if (fireBallBullet->GetIsHiding() && iceCubeBullet->GetIsHiding()) {
 			boss->updateBulletTimer(dt);
 		}
@@ -1104,12 +1115,19 @@ void TutorialGame::UpdateLevel(float dt) {
 				shieldPropTimer = 0.0f;
 			}
 		}
-		if (player->getIsRencentlyHurt()) {
+		if (player->getIsRencentlyHurt()&& player->getIsBeingHitBack()) {
 			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 			Vector3 bossPosition = boss->GetTransform().GetPosition();
 			Vector3 hurtDirection = (playerPosition - bossPosition).Normalised();
 			player->GetPhysicsObject()->AddForce(hurtDirection * 50);
 			player->SetIsRencentlyHurt(false);
+		}
+		if (player->getIsBeingHitBack()) {
+			hitBackTimer += dt;
+			if (hitBackTimer > hitBackDuration) {
+				player->SetIsBeingHitBack(false);
+				hitBackTimer = 0.0f;
+			}
 		}
 		if (fireBallBullet->GetIsBlockBack()) {
 			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
@@ -1243,7 +1261,7 @@ void TutorialGame::IceCubeBulletLogic(float dt) {
 		std::cout << "Icecube bullet is coming!" << std::endl;
 	}
 	if (!iceCubeBullet->GetIsHiding()) {
-		iceCubeBullet->GetPhysicsObject()->AddForce(Vector3(0, 2.0f, 0));
+		iceCubeBullet->GetPhysicsObject()->AddForce(Vector3(0, 12.0f, 0));
 		iceCubeBullet->UpdateExistenceTime(dt);
 		Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 		Vector3 ballPosition = iceCubeBullet->GetTransform().GetPosition();
@@ -1276,7 +1294,8 @@ void TutorialGame::ExecuteAttack(float dt) {
 			if (playerIsHit) {
 				player->updateHealth(-4);
 				std::cout << "now player health is " << player->GetHealth() << std::endl;
-				player->GetPhysicsObject()->AddForce(-direction * 200);
+				player->SetIsRencentlyHurt(true);
+				player->SetIsBeingHitBack(true);
 				playerIsHit = false;
 			}
 		}

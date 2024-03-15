@@ -204,9 +204,13 @@ namespace NCL {
 			const float shieldPropDuration = 18.6f;
 			float bossAngryTimer = 0.0f;
 			const float bossAngryDuration = 1.6f;
+			float speedPropTimer = 0.0f;
+			const float speedPropDuration = 10.0f;
 			const float attackingDuration = 0.4f;
 			const float shootingDuration = 0.65f;
 			bool playShootingAnimation = false;
+			float hitBackTimer = 0.0f;
+			const float hitBackDuration = 1.0f;
 			static std::vector<std::string> itemList;
 
 			SoundManager soundManager;

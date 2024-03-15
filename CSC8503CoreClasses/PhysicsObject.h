@@ -55,9 +55,12 @@ namespace NCL {
 			void SetAngularVelocity(const Vector3& v) {
 				angularVelocity = v;
 			}
-
+			void Setelasticity(const float& f) {
+				elasticity = f;
+			}
 			void InitCubeInertia();
 			void InitSphereInertia();
+			void InitPlayerInertia();
 
 			void UpdateInertiaTensor();
 

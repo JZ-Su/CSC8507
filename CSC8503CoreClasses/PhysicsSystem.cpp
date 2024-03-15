@@ -18,7 +18,7 @@ PhysicsSystem::PhysicsSystem(GameWorld& g) : gameWorld(g)	{
 	dTOffset		= 0.0f;
 	globalDamping	= 0.995f;
 	lineardamping = 2.9f;
-	SetGravity(Vector3(0.0f, -9.8f, 0.0f));
+	SetGravity(Vector3(0.0f, -29.8f, 0.0f));
 }
 
 PhysicsSystem::~PhysicsSystem()	{
@@ -238,6 +238,8 @@ void PhysicsSystem::BasicCollisionDetection() {
 
 				HandleFireballBulletCollisionLogic(*i, *j);
 				HandleIceCubeBulletCollisionLogic(*i, *j);
+				HandleRollingRockCollisionLogic(*i, *j);
+				HandleCoinCollisionLogic(*i, *j);
 				if (!skipImpulseResolveCollision) {
 					ImpulseResolveCollision(*info.a, *info.b, info.point);
 				}
@@ -475,7 +477,7 @@ void PhysicsSystem::HandleFireballBulletCollisionLogic(GameObject* i, GameObject
 			i->SetIsHiding(true, Vector3(0, -98, 0));
 			boss->setHasFireBallBullet(true);
 			player->updateHealth(-5);
-
+			player->SetIsBeingHitBack(true);
 			player->SetIsRencentlyHurt(true);
 			boss->setBulletTimer(0.0f);
 			boss->setIsShootingFireBall(false);
@@ -496,6 +498,7 @@ void PhysicsSystem::HandleFireballBulletCollisionLogic(GameObject* i, GameObject
 			j->SetIsHiding(true, Vector3(0, -98, 0));
 			boss->setHasFireBallBullet(true);
 			player->updateHealth(-5);
+			player->SetIsBeingHitBack(true);
 			player->SetIsRencentlyHurt(true);
 			boss->setBulletTimer(0.0f);
 			boss->setIsShootingFireBall(false);
@@ -528,6 +531,34 @@ void PhysicsSystem::HandleFireballBulletCollisionLogic(GameObject* i, GameObject
 		boss->SetShooting(false);
 		skipImpulseResolveCollision = true;
 	}
+	if (i->GetTag() == "fireballbullet" && j->GetTag() != "boss" && j->GetTag() != "player") {
+		i->SetIsHiding(true, Vector3(20, -98, 0));
+		i->GetPhysicsObject()->SetLinearVelocity(Vector3());
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		boss->setHasFireBallBullet(true);
+		if (gameWorld.GetObject("fireballbullet")->GetIsBlockBack()) {
+			gameWorld.GetObject("fireballbullet")->SetIsBolckBack(false);
+		}
+		boss->setBulletTimer(0.0f);
+		boss->setIsShootingIceCube(false);
+		boss->setNextBullet(rand() % 2);
+		boss->SetShooting(false);
+		skipImpulseResolveCollision = true;
+	}
+	if (j->GetTag() == "fireballbullet" && i->GetTag() != "boss" && i->GetTag() != "player") {
+		j->SetIsHiding(true, Vector3(20, -98, 0));
+		j->GetPhysicsObject()->SetLinearVelocity(Vector3());
+		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
+		boss->setHasFireBallBullet(true);
+		if (gameWorld.GetObject("fireballbullet")->GetIsBlockBack()) {
+			gameWorld.GetObject("fireballbullet")->SetIsBolckBack(false);
+		}
+		boss->setBulletTimer(0.0f);
+		boss->setIsShootingIceCube(false);
+		boss->setNextBullet(rand() % 2);
+		boss->SetShooting(false);
+		skipImpulseResolveCollision = true;
+	}
 }
 
 void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject* j) {
@@ -543,6 +574,7 @@ void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject*
 			i->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			boss->setHasIceCubeBullet(true);
 			player->updateHealth(-5);
+			player->SetIsBeingHitBack(true);
 			player->SetIsRencentlyHurt(true);
 			boss->setBulletTimer(0.0f);
 			boss->setIsShootingIceCube(false);
@@ -563,6 +595,7 @@ void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject*
 			j->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			boss->setHasIceCubeBullet(true);
 			player->updateHealth(-5);
+			player->SetIsBeingHitBack(true);
 			player->SetIsRencentlyHurt(true);
 			boss->setBulletTimer(0.0f);
 			boss->setIsShootingIceCube(false);
@@ -629,6 +662,32 @@ void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject*
 		boss->setIsShootingIceCube(false);
 		boss->setNextBullet(rand() % 2);
 		boss->SetShooting(false);
+		skipImpulseResolveCollision = true;
+	}
+}
+
+void PhysicsSystem::HandleRollingRockCollisionLogic(GameObject* i, GameObject* j) {
+	if (i->GetTag() == "rollingrock" && j->GetTag() == "boss"&&!i->GetHurtBossAlready()) {
+		Boss* boss = dynamic_cast<Boss*>(j);
+		boss->SetIsRencentlyHurt(true);
+		boss->updateHealth(-20);
+		i->SetHurtBossAlready(true);
+
+	}
+	else if(j->GetTag() == "rollingrock" && i->GetTag() == "boss"&&!j->GetHurtBossAlready()) {
+		Boss* boss = dynamic_cast<Boss*>(i);
+		boss->SetIsRencentlyHurt(true);
+		boss->updateHealth(-20);
+		j->SetHurtBossAlready(true);
+	}
+	
+}
+
+void PhysicsSystem::HandleCoinCollisionLogic(GameObject* i, GameObject* j) {
+	if (i->GetTag() == "coin" && j->GetTag() == "player" ) {
+		skipImpulseResolveCollision = true;
+	}
+	if (j->GetTag() == "coin" && i->GetTag() == "player") {
 		skipImpulseResolveCollision = true;
 	}
 }

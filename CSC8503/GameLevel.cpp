@@ -16,7 +16,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {
-	player = CreatePlayer(Vector3(0, 10, 30), Vector3(2, 2, 2), 65.0f);
+	player = CreatePlayer(Vector3(0, 10, 30), Vector3(2, 2, 2), 45.0f);
 	Generic.AddObject(player);
 	//Level 4 player: 
 	//Generic.AddObject(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
@@ -168,7 +168,7 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateLight(Vector3(-38, 40, 80), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 25.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(90, 30, -90), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 70.0f, true, false));
 	level1.AddObject(CreateLight(Vector3(-90, 30, -90), Vector4(0.1f, 0.05f, 0.0f, 1.0f), 70.0f, true, false));
-	level1.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 70.0f, true, false));
+	//level1.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 70.0f, true, false));
 	CreateLevel1_Coins();
 
 	level1.AddObject(ghost = CreateGhostAI(Vector3(-85,10,-30), Vector3(5, 5, 5),player, 0.0f,Vector3(-85, 10, -20),Vector3(-85,10,-70)));
@@ -182,7 +182,7 @@ void GameLevel::CreateLevel2() {
 	//level2.AddObject(CreateCeiling(Vector3(160, 60, 160), Vector3(240, 1, 240), 0));
 	
 	level2.AddObject(CreateFloor(Vector3(150, -2, 150), Vector3(200, 2, 200), 0.0f));
-	level2.AddObject(CreateLight(Vector3(160, 100, 160), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 300.0f, true, true));
+	level2.AddObject(CreateLight(Vector3(160, 100, 160), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 300.0f, true, true));
 
 	vector<Vector4> pixelData = render->LoadMap();
 	const int size = 64;
@@ -296,7 +296,7 @@ void GameLevel::CreateLevel2() {
 
 void GameLevel::CreateLevel3() {
 	//level3.AddObject(CreateLight(Vector3(0, 40, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
-	level3.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 150.0f, true, true));
+	level3.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 90.0f, true, true));
 
 	level3.AddObject(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
 	level3.AddObject(CreateHangLight(Vector3(0, 53, 0), Vector3(5, 5, 5), 0.0f));
@@ -318,7 +318,7 @@ void GameLevel::CreateLevel3() {
 	//level3.AddObject(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
 	//BossBehaviourTree(boss,player);
 	//
-	boss = CreateBoss(Vector3(0, 1, -40), Vector3(6, 6, 6), player, 0.0f);
+	boss = CreateBoss(Vector3(0, 1, -40), Vector3(6, 6, 6), player, 0.01f);
 	iceCubeBullet = CreateIceCubeBullet(Vector3(20, -98, 0), Vector3(3, 3, 3), 5.0f);
 	fireBallBullet = CreateFireBallBullet(Vector3(0, -98, 0), 2, 5.0f);
 
@@ -341,8 +341,8 @@ void GameLevel::CreateLevel4() {
 	CreateLevel4_Reverse();
 	CreateLevel4_Rotate();
 	CreateLevel4_RR();
-	level4.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
-	level4.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, true, false));
+	level4.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 130.0f, true, true));
+	//level4.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, true, false));
 }
 
 void GameLevel::CreateLevel4_Normal() {
@@ -1379,31 +1379,31 @@ void GameLevel::CreateLevel1_Coins() {
 	Vector3 dimensions = Vector3(0.5, 0.5, 0.5);
 
 	coinList.push_back(CreateCoin(Vector3( 95, 5,  -5), dimensions));
-	coinList.push_back(CreateCoin(Vector3( 80, 5,  35), dimensions));
-	coinList.push_back(CreateCoin(Vector3( 55, 5, -90), dimensions));
-	coinList.push_back(CreateCoin(Vector3( 50, 5,   0), dimensions));
-	coinList.push_back(CreateCoin(Vector3( 37, 5, -90), dimensions));
-	coinList.push_back(CreateCoin(Vector3( 32, 5, -58), dimensions));
-	coinList.push_back(CreateCoin(Vector3( 20, 5, -35), dimensions));
-	coinList.push_back(CreateCoin(Vector3(  0, 5, -70), dimensions));
-	coinList.push_back(CreateCoin(Vector3(-40, 5, -90), dimensions));
-	coinList.push_back(CreateCoin(Vector3(-43, 5, -50), dimensions));
-	coinList.push_back(CreateCoin(Vector3(-90, 5,  40), dimensions));
+	//coinList.push_back(CreateCoin(Vector3( 80, 5,  35), dimensions));
+	//coinList.push_back(CreateCoin(Vector3( 55, 5, -90), dimensions));
+	//coinList.push_back(CreateCoin(Vector3( 50, 5,   0), dimensions));
+	//coinList.push_back(CreateCoin(Vector3( 37, 5, -90), dimensions));
+	//coinList.push_back(CreateCoin(Vector3( 32, 5, -58), dimensions));
+	//coinList.push_back(CreateCoin(Vector3( 20, 5, -35), dimensions));
+	//coinList.push_back(CreateCoin(Vector3(  0, 5, -70), dimensions));
+	//coinList.push_back(CreateCoin(Vector3(-40, 5, -90), dimensions));
+	//coinList.push_back(CreateCoin(Vector3(-43, 5, -50), dimensions));
+	//coinList.push_back(CreateCoin(Vector3(-90, 5,  40), dimensions));
 
-	coinList.push_back(CreateCoin(Vector3( 20, 15,  20), dimensions));
-	coinList.push_back(CreateCoin(Vector3(  0, 15,  70), dimensions));
-	coinList.push_back(CreateCoin(Vector3(  0, 15,  35), dimensions));
-	coinList.push_back(CreateCoin(Vector3(  0, 15,  -5), dimensions));
-	coinList.push_back(CreateCoin(Vector3(-30, 15,   5), dimensions));
+	//coinList.push_back(CreateCoin(Vector3( 20, 15,  20), dimensions));
+	//coinList.push_back(CreateCoin(Vector3(  0, 15,  70), dimensions));
+	//coinList.push_back(CreateCoin(Vector3(  0, 15,  35), dimensions));
+	//coinList.push_back(CreateCoin(Vector3(  0, 15,  -5), dimensions));
+	//coinList.push_back(CreateCoin(Vector3(-30, 15,   5), dimensions));
 
-	coinList.push_back(CreateCoin(Vector3(-67, 15, -35), dimensions));
-	coinList.push_back(CreateCoin(Vector3(-67, 15, -90), dimensions));
-	coinList.push_back(CreateCoin(Vector3(-90, 15, -55), dimensions));
-	coinList.push_back(CreateCoin(Vector3(-95, 15, -35), dimensions));
+	//coinList.push_back(CreateCoin(Vector3(-67, 15, -35), dimensions));
+	//coinList.push_back(CreateCoin(Vector3(-67, 15, -90), dimensions));
+	//coinList.push_back(CreateCoin(Vector3(-90, 15, -55), dimensions));
+	//coinList.push_back(CreateCoin(Vector3(-95, 15, -35), dimensions));
 
-	coinList.push_back(CreateCoin(Vector3( 68, 15, -35), dimensions));
-	coinList.push_back(CreateCoin(Vector3( 68, 15, -75), dimensions));
-	coinList.push_back(CreateCoin(Vector3( 95, 15, -35), dimensions));
+	//coinList.push_back(CreateCoin(Vector3( 68, 15, -35), dimensions));
+	//coinList.push_back(CreateCoin(Vector3( 68, 15, -75), dimensions));
+	//coinList.push_back(CreateCoin(Vector3( 95, 15, -35), dimensions));
 
 	level1.AddObject(coinList);
 }

@@ -83,7 +83,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
-	wallShader = render->LoadShader("scene.vert", "scene_uv2.frag");
+	//wallShader = render->LoadShader("scene.vert", "scene_uv.frag");
 	modelShader = render->LoadShader("model.vert", "model.frag");
 	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	playerShader = render->LoadShader("SkinningVertex.vert", "player.frag");
@@ -154,7 +154,6 @@ BasicExamples::~BasicExamples() {
 	delete bossShader;
 	delete playerShader;
 	delete lampShader;
-	delete wallShader;
 }
 
 // Todo: the indices is in wrong order
@@ -204,7 +203,7 @@ GameObject* BasicExamples::CreateBigWall(const Vector3& position, const Vector3&
 
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
 
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, wallTexture[0], wallShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, wallTexture[0], floorShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 	cube->GetRenderObject()->SetDefaultTexture(wallTexture[1], 1);
 	cube->GetRenderObject()->SetDefaultTexture(wallTexture[2], 2);
@@ -228,7 +227,7 @@ GameObject* BasicExamples::CreateGreenWall(const Vector3& position, const Vector
 
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
 
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, greenWallTexture[0], wallShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, greenWallTexture[0], floorShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 	cube->GetRenderObject()->SetDefaultTexture(greenWallTexture[1], 1);
 	cube->GetRenderObject()->SetDefaultTexture(greenWallTexture[2], 2);
@@ -276,7 +275,7 @@ GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& d
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[3], 3);
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[4], 4);
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[5], 5);
-
+	cube->GetPhysicsObject()->Setelasticity(0);
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
 	cube->SetTag("Ground");
@@ -473,7 +472,9 @@ GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& d
 Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player, float inverseMass) {
 	Boss* character = new Boss(player);
 	//character->BossBehaviourTree(player);
-	AABBVolume* volume = new AABBVolume(dimensions);
+	Vector3 collisionDimensions = Vector3(1, 2.0, 1) * dimensions;
+	AABBVolume* volume = new AABBVolume(collisionDimensions);
+	character->GetTransform().SetCollisionDimensions(collisionDimensions);
 	character->SetBoundingVolume((CollisionVolume*)volume);
 
 	character->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOrientation(Matrix4::Rotation(180, Vector3(0, 1, 0)));
@@ -541,7 +542,8 @@ Player* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dime
 	LoadMaterialTextures(player, playerMesh, playerMat, render);
 
 	player->GetPhysicsObject()->SetInverseMass(inverseMass);
-	player->GetPhysicsObject()->InitCubeInertia();
+	player->GetPhysicsObject()->InitPlayerInertia();
+	player->GetPhysicsObject()->Setelasticity(0);
 	player->GetPhysicsObject()->SetApplyAngImp(false);
 	player->SetTag("player");
 	return player;
@@ -641,6 +643,7 @@ GameObject* BasicExamples::CreateCoin(const Vector3& position, const Vector3& di
 	coin->GetPhysicsObject()->SetInverseMass(inverseMass);
 	coin->GetPhysicsObject()->InitCubeInertia();
 	coin->GetRenderObject()->SetColour(Debug::YELLOW);
+	coin->SetTag("coin");
 	return coin;
 }
 

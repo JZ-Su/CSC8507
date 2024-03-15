@@ -88,6 +88,18 @@ namespace NCL {
 			bool getIsRencentlyHurt() {
 				return isRencentlyHurt;
 			}
+			void SetIsAccelerated(bool IsAccelerated) {
+				isAccelerated = IsAccelerated;
+			}
+			bool getIsAccelerated() {
+				return isAccelerated;
+			}
+			void SetIsBeingHitBack(bool IsBeingHitBack) {
+				isBeingHitBack = IsBeingHitBack;
+			}
+			bool getIsBeingHitBack() {
+				return isBeingHitBack;
+			}
 			//bool updateJumpTimer(float dt);
 			float updateTimer(float dt);
 			float updateHealth(float inhealth);
@@ -114,6 +126,8 @@ namespace NCL {
 			bool canJump = false;
 			bool isWalk = false;
 			bool isJumping = false;
+			bool isAccelerated = false;
+			bool isBeingHitBack = false;
 			//add timer
 			int prehealth;
 			static std::vector<std::string> itemList;
