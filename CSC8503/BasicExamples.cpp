@@ -97,7 +97,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	bossChasingAnimation = new MeshAnimation("StepForwardTwoHand.anm");
 	bossAttackingAnimation = new MeshAnimation("Stow.anm");
 	bossAngryAnimation = new MeshAnimation("Cheer1.anm");
-	//bossAnimation = new MeshAnimation("Male_Jump.anm");
+	bossDeathAnimation = new MeshAnimation("Death1.anm");
 	playerIdleAnimation = new MeshAnimation("Female_Stand.anm");
 	playerWalkAnimation = new MeshAnimation("Female_Run.anm");
 	playerJumpAnimation = new MeshAnimation("Female_Jump.anm");

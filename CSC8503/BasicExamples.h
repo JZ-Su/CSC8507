@@ -69,6 +69,7 @@ namespace NCL {
 		MeshAnimation* getBossAnimation() const { return bossAnimation; }
 		MeshAnimation* getBossCheersAnimation() const { return bossCheersAnimation; }
 		MeshAnimation* getBossAngryAnimation() const { return bossAngryAnimation; }
+		MeshAnimation* getBossDeathAnimation() const { return bossDeathAnimation; }
 		MeshAnimation* getBossShootingAnimation() const { return bossShootingAnimation; }
 		MeshAnimation* getBossFlinchAnimation() const { return bossFlinchAnimation; }
 		MeshAnimation* getGhostAnimation() const { return ghostAnimation; }
@@ -151,6 +152,7 @@ namespace NCL {
 		MeshAnimation* bossAnimation = nullptr;
 		MeshAnimation* bossCheersAnimation = nullptr;
 		MeshAnimation* bossAngryAnimation = nullptr;
+		MeshAnimation* bossDeathAnimation = nullptr;
 		MeshAnimation* bossShootingAnimation = nullptr;
 		MeshAnimation* bossFlinchAnimation = nullptr;
 		MeshAnimation* bossChasingAnimation = nullptr;

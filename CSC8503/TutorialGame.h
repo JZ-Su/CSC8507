@@ -141,6 +141,7 @@ namespace NCL {
 			MeshAnimation* bossAttackingAnimation;
 			MeshAnimation* bossChasingAnimation;
 			MeshAnimation* bossAngryAnimation;
+			MeshAnimation* bossDeathAnimation;
 			StateGameObject* ghostai;
 			StateGameObject* ghostai2;
 
@@ -162,7 +163,7 @@ namespace NCL {
 
 			void DrawAnim(GameObject* g, MeshAnimation* anim);
 			void UpdateAnim(GameObject* g, MeshAnimation* anim);
-			void UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation, float dt);
+			void UpdateBossAnim(Boss* boss, MeshAnimation* bossAnimation, float dt);
 			void UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAnimation, MeshAnimation* playerWalkAnimation, float dt);
 			void UpdateGhostAnim(GameObject* ghost, MeshAnimation* ghostAnimation, float dt);
 			void UpdateTrackingBall(Vector3 ballPosition,const Vector3& playerPosition, float speed, float dt);
@@ -205,6 +206,8 @@ namespace NCL {
 			const float speedPropDuration = 10.0f;
 			const float attackingDuration = 0.4f;
 			const float shootingDuration = 0.65f;
+			float bossDeathTimer = 0.0f;
+			const float bossDeathDuration = 0.39f;
 			bool playShootingAnimation = false;
 			float hitBackTimer = 0.0f;
 			const float hitBackDuration = 1.0f;

@@ -61,6 +61,12 @@ namespace NCL {
 			void setIsChasing(bool IsChasing) {
 				isChasing = IsChasing;
 			}
+			bool getIsDead() {
+				return isDead;
+			}
+			void setIsDead(bool IsDead) {
+				isDead = IsDead;
+			}
 			bool getIsShootingFireBall() {
 				return isShootingFireBall;
 			}
@@ -105,6 +111,7 @@ namespace NCL {
 		private:
 			int nextBullet = 0;
 			float bulletTimer = 4.0f;
+			bool isDead=false;
 			bool isShooting;
 			bool firstBelow50 = true;
 			bool isAttack;

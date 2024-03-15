@@ -279,7 +279,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		Quaternion playerQuaternion = player->GetTransform().GetOrientation();
 		Vector3 defaultForward = Vector3(0, 0, -1);
 		Vector3 currentDirection = playerQuaternion * defaultForward;
-		rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised()*10, 4);
+		rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised()*10+Vector3(0,5,0), 4);
 		world->AddGameObject(rollingRock);
 		if (rollingRock) {	
 			RollStone(rollingRock, currentDirection, 42000);
@@ -438,6 +438,7 @@ void TutorialGame::InitWorld() {
 		bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
 		bossChasingAnimation = gameLevel->getBossChasingAnimation(); 
 		bossAngryAnimation = gameLevel->getBossAngryAnimation();
+		bossDeathAnimation = gameLevel->getBossDeathAnimation();
 		iceCubeBullet = gameLevel->getIceCubeBullet();
 		fireBallBullet = gameLevel->getFireBallBullet();
 		PlayerPreHealth = player->GetHealth();
@@ -821,8 +822,8 @@ void TutorialGame::UpdateAnim(GameObject* g, MeshAnimation* anim) {
 	DrawAnim(g, anim);
 }
 
-void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation, float dt) {
-	if (boss != nullptr) {
+void TutorialGame::UpdateBossAnim(Boss* boss, MeshAnimation* bossAnimation, float dt) {
+	if (boss != nullptr&&!boss->getIsDead()) {
 		if (gameLevel->GetBoss()->getIsRencentlyHurt()) {
 			boss->GetRenderObject()->frameTime -= dt / 2.0;
 			UpdateAnim(boss, bossFlinchAnimation);
@@ -905,6 +906,13 @@ void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation
 
 				}
 			}
+		}
+	}
+	else {
+		bossDeathTimer += dt;
+		if (bossDeathTimer < bossDeathDuration) {
+			boss->GetRenderObject()->frameTime -= dt ;
+			UpdateAnim(boss, bossDeathAnimation);
 		}
 	}
 }
@@ -998,6 +1006,7 @@ void TutorialGame::SwitchLevel() {
 			bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
 			bossChasingAnimation = gameLevel->getBossChasingAnimation();
 			bossAngryAnimation = gameLevel->getBossAngryAnimation();
+			bossDeathAnimation = gameLevel->getBossDeathAnimation();
 			fireBallBullet = gameLevel->getFireBallBullet();
 			PlayLevelBGM("level3");
 			break;
@@ -1265,7 +1274,7 @@ void TutorialGame::IceCubeBulletLogic(float dt) {
 		Quaternion orientationQuaternion = boss->GetTransform().GetOrientation();
 		Vector3 forwardVector = orientationQuaternion * Vector3(0, 0, -1);
 		Vector3 bulletOffset = forwardVector * 20;
-		Vector3 bulletStartPosition = gameLevel->GetBoss()->GetTransform().GetPosition() + bulletOffset + Vector3(0, 20, 0);
+		Vector3 bulletStartPosition = gameLevel->GetBoss()->GetTransform().GetPosition() + bulletOffset + Vector3(0, 10, 0);
 		iceCubeBullet->GetTransform().SetPosition(bulletStartPosition);
 		iceCubeBullet->SetIsNotHiding();
 		gameLevel->GetBoss()->setHasIceCubeBullet(false);
