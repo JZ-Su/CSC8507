@@ -128,7 +128,6 @@ void TutorialGame::UpdateGame(float dt) {
 	if (PlayerPreHealth < player->GetHealth()) {
 		PlayerPreHealth = player->GetHealth();
 	}
-	std::cout << currentLevel << std::endl;
 }
 
 void TutorialGame::UpdateKeys(float dt) {
@@ -420,9 +419,9 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	//isDebug = true;
-	isDebug = false;
-	int debugLevel = 1;
+	isDebug = true;
+	//isDebug = false;
+	int debugLevel = 4;
 
 	if (isDebug) {
 		switch (debugLevel)
@@ -1194,15 +1193,16 @@ void TutorialGame::UpdateLevel(float dt) {
 			beginDet->isEnable = false;
 			trueEndDet->isEnable = true;
 			falseEndDet->isEnable = true;
+		}
+
+		vector<GameObject*> trueEndCD = physics->GetCollisionDetectionList(trueEndDet);
+		if (std::count(trueEndCD.begin(), trueEndCD.end(), player) && trueEndDet->isEnable) {
 			if (!hasRotation) {
 				GameLevel::RemoveLevel(world, gameLevel->GetLevel4(), false);
 			}
 			else {
 				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r(), false);
 			}
-		}
-		vector<GameObject*> trueEndCD = physics->GetCollisionDetectionList(trueEndDet);
-		if (std::count(trueEndCD.begin(), trueEndCD.end(), player) && trueEndDet->isEnable) {
 			trueEndDet->isEnable = false;
 			falseEndDet->isEnable = false;
 			gameLevel->GetL4Door()->Deactivation();
@@ -1211,12 +1211,18 @@ void TutorialGame::UpdateLevel(float dt) {
 			}
 			score++;
 			mapIndex = static_cast<int>(RandomValue(-4, 5));
-			std::cout << mapIndex << std::endl;
 			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
 			hasRotation = !hasRotation;
 		}
+
 		vector<GameObject*> falseEndCD = physics->GetCollisionDetectionList(falseEndDet);
 		if (std::count(falseEndCD.begin(), falseEndCD.end(), player) && falseEndDet->isEnable) {
+			if (!hasRotation) {
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4(), false);
+			}
+			else {
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r(), false);
+			}
 			trueEndDet->isEnable = false;
 			falseEndDet->isEnable = false;
 			gameLevel->GetL4Door()->Deactivation();
