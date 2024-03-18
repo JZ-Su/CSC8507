@@ -1198,10 +1198,12 @@ void TutorialGame::UpdateLevel(float dt) {
 		vector<GameObject*> trueEndCD = physics->GetCollisionDetectionList(trueEndDet);
 		if (std::count(trueEndCD.begin(), trueEndCD.end(), player) && trueEndDet->isEnable) {
 			if (!hasRotation) {
-				GameLevel::RemoveLevel(world, gameLevel->GetLevel4(), false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4()[0], false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4()[1], false);
 			}
 			else {
-				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r(), false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r()[0], false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r()[1], false);
 			}
 			trueEndDet->isEnable = false;
 			falseEndDet->isEnable = false;
@@ -1210,7 +1212,7 @@ void TutorialGame::UpdateLevel(float dt) {
 				hasReverse = !hasReverse;
 			}
 			score++;
-			mapIndex = static_cast<int>(RandomValue(-4, 5));
+			mapIndex = static_cast<int>(RandomValue(-3, 5));
 			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
 			hasRotation = !hasRotation;
 		}
@@ -1218,10 +1220,12 @@ void TutorialGame::UpdateLevel(float dt) {
 		vector<GameObject*> falseEndCD = physics->GetCollisionDetectionList(falseEndDet);
 		if (std::count(falseEndCD.begin(), falseEndCD.end(), player) && falseEndDet->isEnable) {
 			if (!hasRotation) {
-				GameLevel::RemoveLevel(world, gameLevel->GetLevel4(), false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4()[0], false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4()[1], false);
 			}
 			else {
-				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r(), false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r()[0], false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r()[1], false);
 			}
 			trueEndDet->isEnable = false;
 			falseEndDet->isEnable = false;
