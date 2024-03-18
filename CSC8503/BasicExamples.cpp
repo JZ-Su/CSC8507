@@ -156,29 +156,6 @@ BasicExamples::~BasicExamples() {
 	delete lampShader;
 }
 
-// Todo: the indices is in wrong order
-void BasicExamples::ExportToObj(const Mesh& mesh, const std::string& filename) {
-	std::ofstream file(filename);
-	if (!file.is_open()) {
-		std::cerr << "Error opening file: " << filename << std::endl;
-		return;
-	}
-	for (const auto& vertex : mesh.GetPositionData()) {
-		file << "v " << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
-	}
-	for (const auto& normal : mesh.GetNormalData()) {
-		file << "vn " << normal.x << " " << normal.y << " " << normal.z << std::endl;
-	}
-	Vector3 nor;
-	for (int i = 0; mesh.GetNormalForTri(i, nor); i++) {
-		int j = i;
-		file << "f " << mesh.GetIndexData()[j++] << "//" << nor.x << " "
-			<< mesh.GetIndexData()[j++] << "//" << nor.y << " "
-			<< mesh.GetIndexData()[j] << "//" << nor.z << std::endl;
-	}
-	file.close();
-}
-
 GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	GameObject* cube = new GameObject("cube");
 

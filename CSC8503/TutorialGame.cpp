@@ -464,6 +464,8 @@ void TutorialGame::InitWorld() {
 			player->GetTransform().SetPosition(Vector3(-70, 10, -50));
 			gameLevel->AddLevelToWorld(world, 0, true, false);
 			gameLevel->AddLevelToWorld(world, 0, false, false);
+			hasRotation = true;
+			hasReverse = false;
 			break;
 		default:
 			break;
@@ -1208,7 +1210,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			trueEndDet->isEnable = false;
 			falseEndDet->isEnable = false;
 			gameLevel->GetL4Door()->Deactivation();
-			if (mapIndex >= 1) {
+			if (mapIndex >= 2) {
 				hasReverse = !hasReverse;
 			}
 			score++;
@@ -1230,7 +1232,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			trueEndDet->isEnable = false;
 			falseEndDet->isEnable = false;
 			gameLevel->GetL4Door()->Deactivation();
-			if (mapIndex < 1) {
+			if (mapIndex < 2) {
 				hasReverse = !hasReverse;
 			}
 			score = 0;

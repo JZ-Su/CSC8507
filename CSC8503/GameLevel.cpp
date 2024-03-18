@@ -44,7 +44,7 @@ void GameLevel::AddLevelToWorld(GameWorld* world, int i, bool isRotate, bool isR
 
 		beginArea = level4_basic.objectList[7];
 		beginArea->isEnable = true;
-		if (i == 0) {
+		if (i == 1) {
 			trueEndArea = level4_basic.objectList[12];
 			trueEndArea->isEnable = false;
 			falseEndArea = level4_basic.objectList[2];
@@ -73,7 +73,7 @@ void GameLevel::AddLevelToWorld(GameWorld* world, int i, bool isRotate, bool isR
 
 		beginArea = level4r_basic.objectList[7];
 		beginArea->isEnable = true;
-		if (i == 0) {
+		if (i == 1) {
 			trueEndArea = level4r_basic.objectList[12];
 			trueEndArea->isEnable = false;
 			falseEndArea = level4r_basic.objectList[2];
@@ -345,8 +345,6 @@ void GameLevel::CreateLevel4() {
 	CreateLevel4_Reverse();
 	CreateLevel4_Rotate();
 	CreateLevel4_RR();
-	//level4.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 130.0f, true, true));
-	//level4.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, true, false));
 }
 
 void GameLevel::CreateLevel4_Normal() {

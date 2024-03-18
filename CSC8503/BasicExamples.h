@@ -17,7 +17,7 @@
 #include "Boss.h"
 #include "Coin.h"
 #include "Door.h"
-#include"GhostAI.h"
+#include "GhostAI.h"
 
 namespace NCL {
 	class BasicExamples
@@ -94,8 +94,6 @@ namespace NCL {
 
 		GhostAI* GetGhostai() const { return ghost; }
 		GhostAI* GetGhostai2() const { return ghost2; }
-
-		void ExportToObj(const Mesh& mesh, const std::string& filename);
 
 	protected:
 		Mesh* cubeMesh = nullptr;
