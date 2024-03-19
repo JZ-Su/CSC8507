@@ -268,12 +268,15 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		}
 		player->SetIsWalk(false);
 		if (!player->getIsBeingHitBack()){ player->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0)); }
-
+		 
 	}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM1)) {
 		player->UseItem(0);
-		gameLevel->GetBoss()->decreaseBossHealth(20);
+		//gameLevel->GetBoss()->decreaseBossHealth(20);
+		if (progress < 0) {
+		    progress+=0.5;
+		}
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM2)) {
 		//player->UseItem(1);
@@ -420,9 +423,9 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	//isDebug = true;
-	isDebug = false;
-	int debugLevel = 1;
+	isDebug = true;
+	//isDebug = false;
+	int debugLevel = 3;
 
 	if (isDebug) {
 		switch (debugLevel)
@@ -1465,7 +1468,17 @@ void TutorialGame::UpdateLevel3UI() {
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
 		Vector3(0.5f, 0.95f, -1.0f) }, "bossframe", "health");
+	
+	float x = Window::GetWindow()->GetScreenSize().x;
+	float y = Window::GetWindow()->GetScreenSize().y;
+	float b =y/x   ;
 
+	GameTechRenderer::CreateGameUI({ Vector3(0.6, -0.5f, -1.0f),  Vector3(0.6, -0.5f-(0.3), -1.0f),  Vector3(0.6+(0.3*b), -0.5f-(0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f, -1.0f)}, "skill", "skill");
+	//if (progress = 1) {
+		GameTechRenderer::CreateGameUI({ Vector3(0.65, -0.45f, -1.0f),  Vector3(0.65, -0.48, -1.0f),  Vector3(0.665f, -0.48f, -1.0f),  Vector3(0.665f, -0.45f, -1.0f) }, "power", "power");
+		GameTechRenderer::CreateGameUI({ Vector3(0.6725, -0.45f, -1.0f),  Vector3(0.6725, -0.48f, -1.0f),  Vector3(0.6875f, -0.48f, -1.0f),  Vector3(0.6875f, -0.45f, -1.0f) }, "power", "power");
+		GameTechRenderer::CreateGameUI({ Vector3(0.695, -0.45f, -1.0f),  Vector3(0.695, -0.48f, -1.0f),  Vector3(0.710f, -0.48f, -1.0f),  Vector3(0.710f, -0.45f, -1.0f) }, "power", "power");
+		GameTechRenderer::CreateGameUI({ Vector3(0.715, -0.45f, -1.0f),  Vector3(0.715, -0.48f, -1.0f),  Vector3(0.730f, -0.48f, -1.0f),  Vector3(0.730f, -0.45f, -1.0f) }, "power", "power",0.5);
 
-
+	//}
 }

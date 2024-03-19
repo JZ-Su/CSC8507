@@ -220,7 +220,7 @@ namespace NCL {
 			bool isWalking = false;
 			string currentBGM="";
 			std::vector<GameObject*> propList;
-
+			float progress=0;
 			void UpdateLevel3UI();
 		};
 	}

@@ -203,7 +203,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	SetDebugStringBufferSizes(10000);
 	SetDebugLineBufferSizes(1000);
 
-	vector<char*> data(12, nullptr);
+	vector<char*> data(13, nullptr);
 	int width;
 	int height;
 	int channel;
@@ -231,6 +231,10 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	UImap["background"] = data[9];
 	TextureLoader::LoadTexture("/UI/movingblood.png", data[10], width, height, channel, flag);
 	UImap["changingblood"] = data[10];
+	TextureLoader::LoadTexture("/UI/skillCYCAL.png", data[11], width, height, channel, flag);
+	UImap["skill"] = data[11];
+	TextureLoader::LoadTexture("/UI/power.png", data[11], width, height, channel, flag);
+	UImap["power"] = data[11];
 }
 
 GameTechRenderer::~GameTechRenderer() {
@@ -1224,6 +1228,17 @@ void GameTechRenderer::Loadhealth() {
 		GLuint mainTexLocation = glGetUniformLocation(healthShader->GetProgramID(), "mainTex");
 		glUniform1i(mainTexLocation, 0);
 
+		GLuint useAlpha = glGetUniformLocation(healthShader->GetProgramID(), "useAlpha");
+		if (element.useAlpha) {
+			glUniform1i(useAlpha, 1);
+		}
+		else {
+			glUniform1i(useAlpha, 0);
+		}
+
+		GLuint alpha= glGetUniformLocation(healthShader->GetProgramID(), "alpha");
+		glUniform1f(alpha, element.alpha);
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -1236,7 +1251,7 @@ void GameTechRenderer::Loadhealth() {
 	glDisable(GL_BLEND);
 }
 
-void GameTechRenderer::CreateGameUI(std::vector<Vector3> UIpos, const std::string& name, std::string tag) {
+void GameTechRenderer::CreateGameUI(std::vector<Vector3> UIpos, const std::string& name, std::string tag, float alpha) {
 
 	UIen newentry;
 	newentry.mesh = new OGLMesh();
@@ -1246,7 +1261,9 @@ void GameTechRenderer::CreateGameUI(std::vector<Vector3> UIpos, const std::strin
 	newentry.mesh->SetVertexTextureCoords({ Vector2(0.0f,1.0f), Vector2(0.0f,0.0f), Vector2(1.0f,0.0f), Vector2(1.0f,1.0f) });
 	newentry.mesh->SetVertexIndices({ 0,1,2,2,3,0 });
 	newentry.mesh->UploadToGPU();
-
+	newentry.alpha = alpha;
+	if (alpha != 1) newentry.useAlpha = true;
+	else newentry.useAlpha = false;
 	UIEntries.push_back(newentry);
 
 }

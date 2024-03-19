@@ -98,7 +98,7 @@ vector<GameObject*> GameLevel::CreatePortal(const Vector3& position) {
 	vec.push_back(CreateCube(position, Vector3(4, 7, 0.1), 0.0f));
 	vec.back()->SetCollisionResponse(false);
 	vec.back()->GetRenderObject()->SetColour(Debug::GREEN);
-	return vec;
+	return vec; 
 }
 
 void GameLevel::CreateConnectionLevel() {
@@ -1407,3 +1407,4 @@ bool GameLevel::CheckCoinList() {
 	}
 	return true;
 }
+

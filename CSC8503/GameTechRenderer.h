@@ -22,6 +22,9 @@ namespace NCL {
 				int flags = 0;
 				char* texture;
 				std::string tag;
+
+				bool useAlpha;
+				float alpha;
 			};
 
 			GameTechRenderer(GameWorld& world);
@@ -32,12 +35,11 @@ namespace NCL {
 
 			vector<Vector4> LoadMap();
 
-			static void CreateGameUI(std::vector<NCL::Maths::Vector3> UIpox, const std::string& name, std::string type);
+			static void CreateGameUI(std::vector<NCL::Maths::Vector3> UIpox, const std::string& name, std::string type, float alpha = 1);
 
 			static const std::vector<UIen>& GetUIEntries();
 
 			static void UpdateUI();
-			static void deletUI(int i);
 		protected:
 			std::unordered_map<std::string, SharedOGLTexture> textureCache;
 
