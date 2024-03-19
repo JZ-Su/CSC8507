@@ -274,9 +274,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM1)) {
 		player->UseItem(0);
 		//gameLevel->GetBoss()->decreaseBossHealth(20);
-		if (progress < 0) {
-		    progress+=0.5;
-		}
+	
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM2)) {
 		//player->UseItem(1);
@@ -305,7 +303,17 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 		player->SetIsAccelerated(true);
 	}
-
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::Q)) {
+		if (progress <4) {
+			progress += 0.03;
+		}
+		if (progress > 4) {
+			progress = 4;
+		}
+	}
+	else {
+		progress = 0;
+	}
 
 	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
 	Quaternion q(viewMat);
@@ -1474,11 +1482,16 @@ void TutorialGame::UpdateLevel3UI() {
 	GameTechRenderer::CreateGameUI({ Vector3(0.2, -0.8f, -1.0f), Vector3(0.2, -1.0f, -1.0f), Vector3(0.4f, -1.0f, -1.0f), Vector3(0.4f, -0.8f, -1.0f) }, "inventory4", "item");
 
 	itemList = Player::GetItemList();
+	
+	float x = Window::GetWindow()->GetScreenSize().x;
+	float y = Window::GetWindow()->GetScreenSize().y;
+	float b =y/x   ;
 
 	float distance = 0.2;
+
 	for (int i = 0; i < itemList.size(); i++) {
-		GameTechRenderer::CreateGameUI({ Vector3(-0.4f + (i * distance), -0.83f, -1.0f), Vector3(-0.4f + (i * distance), -0.96f, -1.0f),
-		Vector3(-0.2f + (i * distance), -0.96f, -1.0f), Vector3(-0.2f + (i * distance), -0.83f, -1.0f) }, itemList.at(i), "item");
+		GameTechRenderer::CreateGameUI({ Vector3(-0.35f + (i * distance), -0.83f, -1.0f), Vector3(-0.35f + (i * distance), -0.96f, -1.0f),
+		Vector3(-0.35f + (i * distance)+(0.2 * b), -0.96f, -1.0f), Vector3(-0.35f + (i * distance)+(0.2*b), -0.83f, -1.0f)}, itemList.at(i), "item");
 	}
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
@@ -1492,17 +1505,26 @@ void TutorialGame::UpdateLevel3UI() {
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
 		Vector3(0.5f, 0.95f, -1.0f) }, "bossframe", "health");
-	
-	float x = Window::GetWindow()->GetScreenSize().x;
-	float y = Window::GetWindow()->GetScreenSize().y;
-	float b =y/x   ;
 
-	GameTechRenderer::CreateGameUI({ Vector3(0.6, -0.5f, -1.0f),  Vector3(0.6, -0.5f-(0.3), -1.0f),  Vector3(0.6+(0.3*b), -0.5f-(0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f, -1.0f)}, "skill", "skill");
-	//if (progress = 1) {
-		GameTechRenderer::CreateGameUI({ Vector3(0.65, -0.45f, -1.0f),  Vector3(0.65, -0.48, -1.0f),  Vector3(0.665f, -0.48f, -1.0f),  Vector3(0.665f, -0.45f, -1.0f) }, "power", "power");
-		GameTechRenderer::CreateGameUI({ Vector3(0.6725, -0.45f, -1.0f),  Vector3(0.6725, -0.48f, -1.0f),  Vector3(0.6875f, -0.48f, -1.0f),  Vector3(0.6875f, -0.45f, -1.0f) }, "power", "power");
-		GameTechRenderer::CreateGameUI({ Vector3(0.695, -0.45f, -1.0f),  Vector3(0.695, -0.48f, -1.0f),  Vector3(0.710f, -0.48f, -1.0f),  Vector3(0.710f, -0.45f, -1.0f) }, "power", "power");
-		GameTechRenderer::CreateGameUI({ Vector3(0.715, -0.45f, -1.0f),  Vector3(0.715, -0.48f, -1.0f),  Vector3(0.730f, -0.48f, -1.0f),  Vector3(0.730f, -0.45f, -1.0f) }, "power", "power",0.5);
+	GameTechRenderer::CreateGameUI({ Vector3(0.6, -0.5f, -1.0f),  Vector3(0.6, -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f, -1.0f) }, "skill", "skill");
 
-	//}
+	if (progress <= 1) {
+		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power",progress);
+	}
+	if (progress <= 2&&progress>1) {
+		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power",1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.6625, -0.45f, -1.0f),  Vector3(0.6625, -0.48f, -1.0f),  Vector3(0.6775f, -0.48f, -1.0f),  Vector3(0.6775f, -0.45f, -1.0f) }, "power", "power",progress-1);
+	}
+	if (progress <= 3 && progress > 2) {
+		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power",1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.6625, -0.45f, -1.0f),  Vector3(0.6625, -0.48f, -1.0f),  Vector3(0.6775f, -0.48f, -1.0f),  Vector3(0.6775f, -0.45f, -1.0f) }, "power", "power",1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.685, -0.45f, -1.0f),  Vector3(0.685, -0.48f, -1.0f),  Vector3(0.70f, -0.48f, -1.0f),  Vector3(0.70f, -0.45f, -1.0f) }, "power", "power", progress - 2);
+	}
+	if (progress <= 4 && progress > 3) {
+		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power",1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.6625, -0.45f, -1.0f),  Vector3(0.6625, -0.48f, -1.0f),  Vector3(0.6775f, -0.48f, -1.0f),  Vector3(0.6775f, -0.45f, -1.0f) }, "power", "power",1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.685, -0.45f, -1.0f),  Vector3(0.685, -0.48f, -1.0f),  Vector3(0.70f, -0.48f, -1.0f),  Vector3(0.70f, -0.45f, -1.0f) }, "power", "power",1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.705, -0.45f, -1.0f),  Vector3(0.705, -0.48f, -1.0f),  Vector3(0.720f, -0.48f, -1.0f),  Vector3(0.720f, -0.45f, -1.0f) }, "power", "power",progress - 3);
+	}
+
 }
