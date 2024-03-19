@@ -117,7 +117,7 @@ void NetworkedGame::UpdateGame(float dt) {
 	if (!thisClient && Window::GetKeyboard()->KeyPressed(KeyCodes::F10)) {
 		StartAsClient(127,0,0,1);
 	}
-1	if (isRoundstart)
+	if (isRoundstart)
 	{
 		//updateRoundTime(dt);
 		UpdateGamePlayerInput(dt);
