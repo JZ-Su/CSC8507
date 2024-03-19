@@ -30,7 +30,8 @@ namespace NCL::CSC8503 {
 
 	struct ClientPacket : public GamePacket {
 		int		lastID;
-		Vector3 PointerPos;
+		Vector3 forceToBeAdded;
+		Quaternion orientationNetPlayer;
 		char	btnStates[6];
 
 		ClientPacket() {
@@ -61,6 +62,19 @@ namespace NCL::CSC8503 {
 			}
 		}
 	};
+
+	struct RoundStatePacket : public GamePacket
+	{
+		bool isRoundStart;
+		bool isTreasureExist;
+		int scoretable[4];
+		RoundStatePacket()
+		{
+			type = Round_State;
+			size = sizeof(RoundStatePacket);
+		}
+	};
+
 	struct PlayerStatePacket : public GamePacket
 	{
 		char playerNum;

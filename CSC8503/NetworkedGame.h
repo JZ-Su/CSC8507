@@ -42,6 +42,8 @@ namespace NCL {
 
 			void StartLevel();
 
+			void LevelOver();
+
 			void ReceivePacket(int type, GamePacket* payload, int source) override;
 
 			void OnPlayerCollision(NetworkPlayer* a, NetworkPlayer* b);
@@ -53,6 +55,9 @@ namespace NCL {
 			int GetClientPlayerNum();
 			int GetClientPlayerNum(int peerID);
 			void ServerUpdatePlayerList();
+
+			bool isRoundStart() { return isRoundstart; }
+			bool isGameOver() { return isGameover; }
 
 			
 		protected:
@@ -70,9 +75,18 @@ namespace NCL {
 
 			bool serverProcessCP(ClientPacket* cp, int source);
 
+			void UpdateGamePlayerInput(float dt);
+
+			void ServerSendRoundState();
+
+			void ServerSendPlayerState();
+
 			std::map<int, int> stateIDs;
 
 			int GlobalStateID;
+
+			bool isRoundstart;
+			bool isGameover;
 
 			GameServer* thisServer;
 			GameClient* thisClient;
@@ -94,8 +108,8 @@ namespace NCL {
 				if (game)
 				{
 					NetworkedGame* thisGame = (NetworkedGame*)game;
-					//if (thisGame->isRoundStart()) { return RoundOnGoing(dt, thisGame); }
-					//else { return RoundOver(dt, newState, thisGame); }
+					if (thisGame->isRoundStart()) { return RoundOnGoing(dt, thisGame); }
+					else { return RoundOver(dt, newState, thisGame); }
 					return RoundOnGoing(dt, thisGame);
 				}
 			}
@@ -136,18 +150,18 @@ namespace NCL {
 				//Debug::Print(thisGame->getLocalPlayerFireCDToString(), Vector2(70, 80), Debug::YELLOW);
 				//if (displayTreasureSign) { Debug::Print(thisGame->getLocalPlayerHasTreasure(), Vector2(30, 17), Debug::RED); }
 
-				if (Window::GetKeyboard()->KeyHeld(KeyCodes::TAB))
-				{
-					Debug::Print("====================================", Vector2(15, 22), Debug::YELLOW);
-					//Debug::Print(thisGame->getPlayersScore(0), Vector2(18, 30), Debug::RED);
-					//Debug::Print(thisGame->getPlayersScore(1), Vector2(18, 40), Debug::BLUE);
-					//Debug::Print(thisGame->getPlayersScore(2), Vector2(18, 50), Debug::YELLOW);
-					//Debug::Print(thisGame->getPlayersScore(3), Vector2(18, 60), Debug::CYAN);
-					Debug::Print("====================================", Vector2(15, 70), Debug::YELLOW);
-				}
-				else {
-					Debug::Print("Hold TAB to show score table", Vector2(25, 95), Debug::YELLOW);
-				}
+				//if (Window::GetKeyboard()->KeyHeld(KeyCodes::TAB))
+				//{
+				//	Debug::Print("====================================", Vector2(15, 22), Debug::YELLOW);
+				//	//Debug::Print(thisGame->getPlayersScore(0), Vector2(18, 30), Debug::RED);
+				//	//Debug::Print(thisGame->getPlayersScore(1), Vector2(18, 40), Debug::BLUE);
+				//	//Debug::Print(thisGame->getPlayersScore(2), Vector2(18, 50), Debug::YELLOW);
+				//	//Debug::Print(thisGame->getPlayersScore(3), Vector2(18, 60), Debug::CYAN);
+				//	Debug::Print("====================================", Vector2(15, 70), Debug::YELLOW);
+				//}
+				//else {
+				//	Debug::Print("Hold TAB to show score table", Vector2(25, 95), Debug::YELLOW);
+				//}
 
 				if (thisGame->isServer())
 				{
@@ -189,12 +203,12 @@ namespace NCL {
 				if (game)
 				{
 					NetworkedGame* thisGame = (NetworkedGame*)game;
-					//if (thisGame->isRoundStart())
+					if (thisGame->isRoundStart())
 					{
 						*newState = new InGame();
 						return PushdownResult::Push;
 					}
-					//if (thisGame->isServer())
+					if (thisGame->isServer())
 					{
 						Debug::Print("is You", Vector2(40, 30), Debug::RED);
 						Debug::Print("Press S : Game Start!", Vector2(5, 80), Debug::YELLOW);
@@ -203,13 +217,13 @@ namespace NCL {
 							thisGame->StartLevel();
 						}
 					}
-					//if (thisGame->isClient())
+					if (thisGame->isClient())
 					{
-						//int num = thisGame->GetClientPlayerNum();
-						//Debug::Print("is You", Vector2(40, 30 + num * 10), Debug::RED);
+						int num = thisGame->GetClientPlayerNum();
+						Debug::Print("is You", Vector2(40, 30 + num * 10), Debug::RED);
 						Debug::Print("Wait for Server to start game....", Vector2(5, 80), Debug::YELLOW);
 					}
-					/*if (thisGame->GetPlayerPeerID(0) != -1)
+					if (thisGame->GetPlayerPeerID(0) != -1)
 					{
 						Debug::Print("Player 1", Vector2(5, 30), Debug::RED);
 					}
@@ -224,7 +238,7 @@ namespace NCL {
 					if (thisGame->GetPlayerPeerID(3) != -1)
 					{
 						Debug::Print("Player 4", Vector2(5, 60), Debug::CYAN);
-					}*/
+					}
 				}
 				if (Window::GetKeyboard()->KeyPressed(KeyCodes::ESCAPE))
 				{
@@ -292,7 +306,7 @@ namespace NCL {
 
 		};
 
-		class MainMenu : public PushdownState
+		/*class MainMenu : public PushdownState
 		{
 			PushdownResult OnUpdate(float dt, PushdownState** newState) override
 			{
@@ -339,7 +353,7 @@ namespace NCL {
 				return Vector4(r, g, b, 1.0);
 			}
 			float time = 0.0f;
-		};
+		};*/
 	}
 }
 
