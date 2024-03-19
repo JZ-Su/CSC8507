@@ -116,8 +116,14 @@ void TutorialGame::UpdateGame(float dt) {
 		FMOD_VECTOR pos11 = { pos1.x,pos1.y, pos1.z };
 		Vector3 pos2 = gameLevel->GetGhostai2()->GetTransform().GetPosition();
 		FMOD_VECTOR pos22 = { pos2.x,pos2.y, pos2.z };
-		soundManager.play3DSound("ghost", pos11);
-		soundManager.play3DSound("ghost", pos22);
+		if (!soundManager.isSoundPlaying("ghost")) {
+			soundManager.play3DSound("ghost", pos11);
+			soundManager.play3DSound("ghost", pos22);
+		}
+		else {
+			soundManager.update3DSoundPosition("ghost", pos11);
+			soundManager.update3DSoundPosition("ghost", pos22);
+		}
 	}
 	if (currentLevel == 6) {
 		soundManager.stopSound("ghost");
@@ -1131,6 +1137,8 @@ void TutorialGame::UpdateLevel(float dt) {
 			if (std::count(ExitCD.begin(), ExitCD.end(), player)) {
 				totalTime = 0;
 				gameState = End;
+				soundManager.stopSound("level4");
+				soundManager.playSound("end");
 			}
 		}
 	}
@@ -1244,8 +1252,10 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 
 void TutorialGame::AddSound() {
 	soundManager.loadSound("walking", "../externals/media/walk.mp3", true, false);
-	soundManager.loadSound("ghost", "../externals/media/ghost.mp3", false, false);
+	/*soundManager.loadSound("ghost", "../externals/media/ghost.mp3", false, false);*/
+	soundManager.loadSound("ghost", "../externals/media/ghost.mp3", true, false);
 	soundManager.loadSound("door", "../externals/media/door.mp3", false, false);
+	soundManager.loadSound("end", "../externals/media/bgm/end.mp3", true, true);
 	std::map<std::string, std::string> bgmPaths = {
 	   {"level1", "../externals/media/bgm/ophelia.mp3"},
 	   {"level2", "../externals/media/bgm/TownTheme.mp3"},
@@ -1275,7 +1285,8 @@ void TutorialGame::InitAudio() {
 	AddSound();
 	soundManager.setSoundVolume("walking", 0.4f);
 	soundManager.setSoundVolume("door", 1.0f);
-	soundManager.setSoundVolume("ghost", 0.7f);
+	soundManager.setSoundVolume("ghost", 0.2f);
+	soundManager.setSoundVolume("end", 1.0f);
 	/*previousPlayerPosition = player->GetTransform().GetPosition();*/
 	previousMainCameraPosition = world->GetMainCamera().GetPosition();
 }
