@@ -20,7 +20,9 @@ Player::Player( const std::string& objectname)
 	}
 
 }
-void Player::UpdatePlayer(float dt){	//updateJumpTimer(dt);
+void Player::UpdatePlayer(float dt)
+{
+	//updateJumpTimer(dt);
 }
 float Player::updateTimer(float dt)
 {
@@ -69,6 +71,7 @@ void Player::OnCollisionBegin(GameObject* otherObject) {
 	if (otherObject->GetTag() == "ghost") {
 		this->GetTransform().SetPosition(Vector3(0, 10, 30));
 	}
+
 }
 
 void Player::OnCollisionEnd(GameObject* otherObject) {
@@ -92,5 +95,4 @@ void Player::UseItem(int i) {
 
         itemList.erase(itemList.begin() + i);
 	}
-
 }

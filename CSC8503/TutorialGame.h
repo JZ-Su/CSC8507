@@ -16,26 +16,16 @@
 namespace NCL {
 	namespace CSC8503 {
 		enum GameState {
-			MainMenu,   Ranking, Start,
-			ModeSelect, OnGoing, Pause,
-			Win,        Lose,    Exit,
+			MainMenu,	ModeSelect,	Start,
+			OnGoing,	Pause,		End,
+			Exit
 		};
 		enum MainMenuState {
 			MainMenu_Start,
-			MainMenu_Ranking,
-			MainMenu_Exit,
+			MainMenu_Exit
 		};
 		enum GameMode {
-			TimeLimited,
-			ScoreRequired,
-		};
-		enum RankingPage {
-			TimeLimitedModePage,
-			ScoreRequiredModePage,
-		};
-		struct RankScore {
-			std::string playerName;
-			float score;
+			Single, Multi
 		};
 
 		class TutorialGame		{
@@ -50,12 +40,10 @@ namespace NCL {
 			//void UpdateState();
 
 			void ShowMainMenu(float dt);
-			void ShowRanking(float dt);
 			void SelectGameMode(float dt);
 			void InitGame();
 			void ShowPause(float dt);
-			void ShowWin(float dt);
-			void ShowLose(float dt);
+			void ShowEnd(float dt);
 			void ExecuteAttack(float dt);
 			
 		protected:
@@ -160,11 +148,6 @@ namespace NCL {
 			MainMenuState mainMenuState;
 			GameMode gameMode;
 
-			RankingPage rankingPage;
-			std::string nameString;
-			std::vector<RankScore> TimeTable, ScoreTable;
-			void LoadRankingFile();
-
 			void DrawAnim(GameObject* g, MeshAnimation* anim);
 			void UpdateAnim(GameObject* g, MeshAnimation* anim);
 			void UpdateBossAnim(Boss* boss, MeshAnimation* bossAnimation, float dt);
@@ -223,7 +206,7 @@ namespace NCL {
 			bool lastWalkingState = false;
 			Vector3 mainCameraPosition;
 			bool isWalking = false;
-			string currentBGM="";
+			string currentBGM = "";
 			std::vector<GameObject*> propList;
 			float progress=0;
 			void UpdateLevel3UI();
