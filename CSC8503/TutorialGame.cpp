@@ -49,7 +49,7 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 
 	//LoadRankingFile();
 	//gameState = MainMenu;
-	gameState = Start;
+	gameState = MainMenu;
 	mainMenuState = MainMenu_Start;
 	gameMode = TimeLimited;
 }
@@ -74,10 +74,15 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-
-	if (PlayerPreHealth > player->GetHealth()) {
-		PlayerPreHealth -= 0.5f;
-	}	
+	if (player) {
+		if (PlayerPreHealth > player->GetHealth()) {
+			PlayerPreHealth -= 0.5f;
+		}
+		isWalking = player->GetIsWalk();
+		if (PlayerPreHealth < player->GetHealth()) {
+			PlayerPreHealth = player->GetHealth();
+		}
+	}
 	if (BossPrehHealth!= gameLevel->GetBoss()->getBossHealth()) {
 			BossPrehHealth -= 0.5f;
 	}
@@ -93,7 +98,6 @@ void TutorialGame::UpdateGame(float dt) {
 	if (lockedObject != nullptr) LockedObjectMovement(dt);
 	if (lockedObject == nullptr) Debug::Print("Press F to lock camera", Vector2(5, 80));
 	else Debug::Print("Press F to free camera", Vector2(5, 80));
-	isWalking = player->GetIsWalk();
 	/*playerPosition = player->GetTransform().GetPosition();*/
 	mainCameraPosition = world->GetMainCamera().GetPosition();
 	if (isWalking) {
@@ -125,10 +129,6 @@ void TutorialGame::UpdateGame(float dt) {
 	GameTechRenderer::UpdateUI();
 
 	if (!isDebug) SwitchLevel();
-	if (PlayerPreHealth < player->GetHealth()) {
-		PlayerPreHealth = player->GetHealth();
-	}
-	std::cout << currentLevel << std::endl;
 }
 
 void TutorialGame::UpdateKeys(float dt) {
@@ -290,7 +290,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		Quaternion playerQuaternion = player->GetTransform().GetOrientation();
 		Vector3 defaultForward = Vector3(0, 0, -1);
 		Vector3 currentDirection = playerQuaternion * defaultForward;
-		rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised()*10, 4);
+		rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised()*10+Vector3(0,5,0), 4);
 		world->AddGameObject(rollingRock);
 		if (rollingRock) {	
 			RollStone(rollingRock, currentDirection, 42000);
@@ -416,7 +416,9 @@ void TutorialGame::InitWorld() {
 	physics->Clear();
 	gameLevel = new GameLevel(renderer);
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
-	player = gameLevel->GetPlayer();
+	//player = gameLevel->GetPlayer();
+	playerlist = gameLevel->GetPlayerList();
+	//localplayer = gameLevel->GetPlayer();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
@@ -456,6 +458,7 @@ void TutorialGame::InitWorld() {
 			bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
 			bossChasingAnimation = gameLevel->getBossChasingAnimation();
 			bossAngryAnimation = gameLevel->getBossAngryAnimation();
+			bossDeathAnimation = gameLevel->getBossDeathAnimation();
 			iceCubeBullet = gameLevel->getIceCubeBullet();
 			fireBallBullet = gameLevel->getFireBallBullet();
 			PlayerPreHealth = player->GetHealth();
@@ -467,6 +470,8 @@ void TutorialGame::InitWorld() {
 			player->GetTransform().SetPosition(Vector3(-70, 10, -50));
 			gameLevel->AddLevelToWorld(world, 0, true, false);
 			gameLevel->AddLevelToWorld(world, 0, false, false);
+			hasRotation = true;
+			hasReverse = false;
 			break;
 		default:
 			break;
@@ -846,8 +851,8 @@ void TutorialGame::UpdateAnim(GameObject* g, MeshAnimation* anim) {
 	DrawAnim(g, anim);
 }
 
-void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation, float dt) {
-	if (boss != nullptr) {
+void TutorialGame::UpdateBossAnim(Boss* boss, MeshAnimation* bossAnimation, float dt) {
+	if (boss != nullptr&&!boss->getIsDead()) {
 		if (gameLevel->GetBoss()->getIsRencentlyHurt()) {
 			boss->GetRenderObject()->frameTime -= dt / 2.0;
 			UpdateAnim(boss, bossFlinchAnimation);
@@ -930,6 +935,13 @@ void TutorialGame::UpdateBossAnim(GameObject* boss, MeshAnimation* bossAnimation
 
 				}
 			}
+		}
+	}
+	else {
+		bossDeathTimer += dt;
+		if (bossDeathTimer < bossDeathDuration) {
+			boss->GetRenderObject()->frameTime -= dt ;
+			UpdateAnim(boss, bossDeathAnimation);
 		}
 	}
 }
@@ -1028,6 +1040,7 @@ void TutorialGame::SwitchLevel() {
 			bossChasingAnimation = gameLevel->getBossChasingAnimation();
 			fireBallBullet = gameLevel->getFireBallBullet();	
 			bossAngryAnimation = gameLevel->getBossAngryAnimation();
+			bossDeathAnimation = gameLevel->getBossDeathAnimation();
 			PlayerPreHealth = player->GetHealth();
 			BossPrehHealth = gameLevel->GetBoss()->getBossHealth();
 			PlayLevelBGM("level3");
@@ -1188,33 +1201,44 @@ void TutorialGame::UpdateLevel(float dt) {
 			beginDet->isEnable = false;
 			trueEndDet->isEnable = true;
 			falseEndDet->isEnable = true;
-			if (!hasRotation) {
-				GameLevel::RemoveLevel(world, gameLevel->GetLevel4(), false);
-			}
-			else {
-				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r(), false);
-			}
 		}
+
 		vector<GameObject*> trueEndCD = physics->GetCollisionDetectionList(trueEndDet);
 		if (std::count(trueEndCD.begin(), trueEndCD.end(), player) && trueEndDet->isEnable) {
+			if (!hasRotation) {
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4()[0], false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4()[1], false);
+			}
+			else {
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r()[0], false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r()[1], false);
+			}
 			trueEndDet->isEnable = false;
 			falseEndDet->isEnable = false;
 			gameLevel->GetL4Door()->Deactivation();
-			if (mapIndex >= 1) {
+			if (mapIndex >= 2) {
 				hasReverse = !hasReverse;
 			}
 			score++;
-			mapIndex = static_cast<int>(RandomValue(-4, 5));
-			std::cout << mapIndex << std::endl;
+			mapIndex = static_cast<int>(RandomValue(-3, 5));
 			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
 			hasRotation = !hasRotation;
 		}
+
 		vector<GameObject*> falseEndCD = physics->GetCollisionDetectionList(falseEndDet);
 		if (std::count(falseEndCD.begin(), falseEndCD.end(), player) && falseEndDet->isEnable) {
+			if (!hasRotation) {
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4()[0], false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4()[1], false);
+			}
+			else {
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r()[0], false);
+				GameLevel::RemoveLevel(world, gameLevel->GetLevel4r()[1], false);
+			}
 			trueEndDet->isEnable = false;
 			falseEndDet->isEnable = false;
 			gameLevel->GetL4Door()->Deactivation();
-			if (mapIndex < 1) {
+			if (mapIndex < 2) {
 				hasReverse = !hasReverse;
 			}
 			score = 0;
@@ -1265,7 +1289,7 @@ void TutorialGame::IceCubeBulletLogic(float dt) {
 		Quaternion orientationQuaternion = boss->GetTransform().GetOrientation();
 		Vector3 forwardVector = orientationQuaternion * Vector3(0, 0, -1);
 		Vector3 bulletOffset = forwardVector * 20;
-		Vector3 bulletStartPosition = gameLevel->GetBoss()->GetTransform().GetPosition() + bulletOffset + Vector3(0, 20, 0);
+		Vector3 bulletStartPosition = gameLevel->GetBoss()->GetTransform().GetPosition() + bulletOffset + Vector3(0, 10, 0);
 		iceCubeBullet->GetTransform().SetPosition(bulletStartPosition);
 		iceCubeBullet->SetIsNotHiding();
 		gameLevel->GetBoss()->setHasIceCubeBullet(false);

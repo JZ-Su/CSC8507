@@ -46,8 +46,16 @@ namespace NCL {
 		Level* GetLevel1() { return &level1; }
 		Level* GetLevel2() { return &level2; }
 		Level* GetLevel3() { return &level3; }
-		Level* GetLevel4() { return &level4; }
-		Level* GetLevel4r() { return &level4r; }
+
+		Level** GetLevel4() {
+			Level* l[2] = { &level4_basic, &level4_diff };
+			return l;
+		}
+		Level** GetLevel4r() {
+			Level* l[2] = { &level4r_basic, &level4r_diff };
+			return l;
+		}
+
 		Level GetGeneric() { return Generic; }
 		Level* GetConnection() { return &connection; }
 
@@ -81,8 +89,10 @@ namespace NCL {
 		Level level1;
 		Level level2;
 		Level level3;
-		Level level4;
-		Level level4r;
+		Level level4_basic;
+		Level level4_diff;
+		Level level4r_basic;
+		Level level4r_diff;
 		Level Generic;
 		Level connection;
 

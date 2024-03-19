@@ -8,6 +8,7 @@
 using namespace NCL;
 using namespace CSC8503;
 
+
 BasicExamples::BasicExamples(GameTechRenderer* render) {
 
 	this->render = render; 
@@ -97,7 +98,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	bossChasingAnimation = new MeshAnimation("StepForwardTwoHand.anm");
 	bossAttackingAnimation = new MeshAnimation("Stow.anm");
 	bossAngryAnimation = new MeshAnimation("Cheer1.anm");
-	//bossAnimation = new MeshAnimation("Male_Jump.anm");
+	bossDeathAnimation = new MeshAnimation("Death1.anm");
 	playerIdleAnimation = new MeshAnimation("Female_Stand.anm");
 	playerWalkAnimation = new MeshAnimation("Female_Run.anm");
 	playerJumpAnimation = new MeshAnimation("Female_Jump.anm");
@@ -156,29 +157,6 @@ BasicExamples::~BasicExamples() {
 	delete lampShader;
 }
 
-// Todo: the indices is in wrong order
-void BasicExamples::ExportToObj(const Mesh& mesh, const std::string& filename) {
-	std::ofstream file(filename);
-	if (!file.is_open()) {
-		std::cerr << "Error opening file: " << filename << std::endl;
-		return;
-	}
-	for (const auto& vertex : mesh.GetPositionData()) {
-		file << "v " << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
-	}
-	for (const auto& normal : mesh.GetNormalData()) {
-		file << "vn " << normal.x << " " << normal.y << " " << normal.z << std::endl;
-	}
-	Vector3 nor;
-	for (int i = 0; mesh.GetNormalForTri(i, nor); i++) {
-		int j = i;
-		file << "f " << mesh.GetIndexData()[j++] << "//" << nor.x << " "
-			<< mesh.GetIndexData()[j++] << "//" << nor.y << " "
-			<< mesh.GetIndexData()[j] << "//" << nor.z << std::endl;
-	}
-	file.close();
-}
-
 GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	GameObject* cube = new GameObject("cube");
 
@@ -191,7 +169,7 @@ GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& di
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
-	cube->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 1.0));
+	cube->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 0.01));
 	return cube;
 }
 

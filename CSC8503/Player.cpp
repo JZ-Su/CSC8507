@@ -20,9 +20,7 @@ Player::Player( const std::string& objectname)
 	}
 
 }
-void Player::UpdatePlayer(float dt)
-{
-	//updateJumpTimer(dt);
+void Player::UpdatePlayer(float dt){	//updateJumpTimer(dt);
 }
 float Player::updateTimer(float dt)
 {

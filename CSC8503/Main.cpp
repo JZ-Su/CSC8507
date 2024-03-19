@@ -160,7 +160,7 @@ int main() {
 			g->InitGame();
 			break;
 		case NCL::CSC8503::OnGoing:
-			if(!networkDebug) g->UpdateGame(dt);
+			/*if(!networkDebug)*/ g->UpdateGame(dt);
 			break;
 		case NCL::CSC8503::Pause:
 			g->ShowPause(dt);
@@ -177,10 +177,10 @@ int main() {
 
 		if (g->GetState() == Exit) break;
 
-		if (networkDebug)
+		/*if (networkDebug)
 		{
 			g->UpdateGame(dt);
-		}
+		}*/
 		
 	}
 	Window::DestroyGameWindow();

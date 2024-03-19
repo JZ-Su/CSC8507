@@ -46,7 +46,7 @@ Boss::Boss(Player* player) {
 		bossPosition = this->GetTransform().GetPosition();
 		float distanceToPlayer = calculateDistance(targetPosition, bossPosition);
 		Vector3 direction = (targetPosition - bossPosition).Normalised();
-		if (distanceToPlayer > chaseRange || this->getIsRencentlyHurt()) {
+		if (distanceToPlayer > chaseRange || this->getIsRencentlyHurt()||bossHealth <= 0) {
 			return Failure;
 		}
 		if (bossHealth <= 50 && firstBelow50) {
@@ -96,7 +96,7 @@ Boss::Boss(Player* player) {
 		}
 		else if (state == Ongoing) {
 			this->distanceToTarget = calculateDistance(this->GetTransform().GetPosition(), this->player->GetTransform().GetPosition());
-			if (this->distanceToTarget > this->remoteAttackRange || this->distanceToTarget < this->chaseRange || this->getIsRencentlyHurt()) {
+			if (this->distanceToTarget > this->remoteAttackRange || this->distanceToTarget < this->chaseRange || this->getIsRencentlyHurt()||bossHealth<=0) {
 				isShooting = false;
 				//std::cout << "stop remote attacking" << std::endl;
 				return Failure;
@@ -136,6 +136,9 @@ Boss::Boss(Player* player) {
 			flinchAnimationTimer = 0.0f;
 		}
 		else if (state == Ongoing) {
+			if (bossHealth <= 0) {
+				return Failure;
+			}
 			if (this->getIsRencentlyHurt()) {
 				flinchAnimationTimer += dt;
 				if (flinchAnimationTimer >= 0.28f) {
@@ -155,7 +158,7 @@ Boss::Boss(Player* player) {
 		static float stunTimer = 0.0f;
 		const float stunDuration = 4.0f;
 		const float healthThreshold = 50.0f;
-		if (bossHealth > healthThreshold || !firstBelow50) {
+		if (bossHealth > healthThreshold || !firstBelow50||bossHealth<=0) {
 			return Failure;
 		}
 		if (state == Initialise) {
@@ -175,31 +178,21 @@ Boss::Boss(Player* player) {
 		return state;
 		}
 	);
-	//Inverter* antidizziness = new Inverter("antidizziness", dizziness);
-	//Death = new BehaviourAction("Death", [&](float dt, BehaviourState state) -> BehaviourState {
-	//    if (state == Initialise) {
-	//          std::cout << "Death init\n";
-	//          state = Ongoing;
-	//    }
-	//    else if (state == Ongoing) {
-	//          if (bossHealth <= 0) {
-	//                std::cout << "Death.\n";
-	//                // handleDeath();
-	//                /*PlayDeathAnimation();*/
-	//                //RemoveBossObject();
-	//                return Success;
-	//          }
-	//          else if (bossHealth > 0) {
-	//                std::cout << "boss live.\n";
-	//                return Failure;
-	//          }
-	//    }
-	//    return state;
-	//    }
-	//);
+	Death = new BehaviourAction("Death", [&](float dt, BehaviourState state) -> BehaviourState {
+		if (bossHealth != 0) {
+			return Failure;
+		}
+		if (bossHealth<=0) {
+			this->setIsDead(true);
+			return Success;
+		}
+		return state;
+		}
+	);
 	BehaviourSelector* selection = new BehaviourSelector("Boss attack state");
 	BehaviourSequence* squence = new BehaviourSequence("Boss dizzy state");
 
+	selection->AddChild(Death);
 	selection->AddChild(Flinches);
 	selection->AddChild(RemoteAttack);
 	selection->AddChild(ChaseAndAttack);
