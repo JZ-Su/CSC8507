@@ -416,7 +416,7 @@ void TutorialGame::InitWorld() {
 	physics->Clear();
 	gameLevel = new GameLevel(renderer);
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
-	//player = gameLevel->GetPlayer();
+	player = gameLevel->GetPlayer();
 	playerlist = gameLevel->GetPlayerList();
 	//localplayer = gameLevel->GetPlayer();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
