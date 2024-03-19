@@ -150,9 +150,6 @@ int main() {
 		case NCL::CSC8503::MainMenu:
 			g->ShowMainMenu(dt);
 			break;
-		case NCL::CSC8503::Ranking:
-			g->ShowRanking(dt);
-			break;
 		case NCL::CSC8503::ModeSelect:
 			g->SelectGameMode(dt);
 			break;
@@ -160,27 +157,24 @@ int main() {
 			g->InitGame();
 			break;
 		case NCL::CSC8503::OnGoing:
-			if(!networkDebug) g->UpdateGame(dt);
+			g->UpdateGame(dt);
 			break;
 		case NCL::CSC8503::Pause:
 			g->ShowPause(dt);
 			break;
-		case NCL::CSC8503::Win:
-			g->ShowWin(dt);
-			break;
-		case NCL::CSC8503::Lose:
-			g->ShowLose(dt);
+		case NCL::CSC8503::End:
+			g->ShowEnd(dt);
 			break;
 		default:
 			break;
 		}
 
-		if (g->GetState() == Exit) break;
+		//if (g->GetState() == Exit) break;
 
-		if (networkDebug)
-		{
-			g->UpdateGame(dt);
-		}
+		//if (networkDebug)
+		//{
+		//	g->UpdateGame(dt);
+		//}
 		
 	}
 	Window::DestroyGameWindow();

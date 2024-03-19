@@ -14,7 +14,7 @@
 #include "BasicExamples.h"
 #include "Boss.h"
 
-#include"PushdownState.h"
+#include "PushdownState.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -47,11 +47,8 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	controller.MapAxis(3, "XLook");
 	controller.MapAxis(4, "YLook");
 
-	//LoadRankingFile();
-	//gameState = MainMenu;
-	gameState = Start;
+	gameState = MainMenu;
 	mainMenuState = MainMenu_Start;
-	gameMode = TimeLimited;
 }
 /*
 
@@ -74,12 +71,17 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-
-	if (PlayerPreHealth > player->GetHealth()) {
-		PlayerPreHealth -= 0.5f;
-	}	
-	if (BossPrehHealth!= gameLevel->GetBoss()->getBossHealth()) {
-			BossPrehHealth -= 0.5f;
+	if (player) {
+		if (PlayerPreHealth > player->GetHealth()) {
+			PlayerPreHealth -= 0.5f;
+		}
+		isWalking = player->GetIsWalk();
+		if (PlayerPreHealth < player->GetHealth()) {
+			PlayerPreHealth = player->GetHealth();
+		}
+	}
+	if (BossPrehHealth != gameLevel->GetBoss()->getBossHealth()) {
+		BossPrehHealth -= 0.5f;
 	}
 
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
@@ -93,7 +95,6 @@ void TutorialGame::UpdateGame(float dt) {
 	if (lockedObject != nullptr) LockedObjectMovement(dt);
 	if (lockedObject == nullptr) Debug::Print("Press F to lock camera", Vector2(5, 80));
 	else Debug::Print("Press F to free camera", Vector2(5, 80));
-	isWalking = player->GetIsWalk();
 	/*playerPosition = player->GetTransform().GetPosition();*/
 	mainCameraPosition = world->GetMainCamera().GetPosition();
 	if (isWalking) {
@@ -244,21 +245,21 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*3): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*1.5);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 1.5);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis* 1.5);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 1.5);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(rightAxis* 1.5);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(rightAxis * 1.5);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
@@ -277,7 +278,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 			}
 		}
 		player->SetIsWalk(false);
-		if (!player->getIsBeingHitBack()){ player->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0)); }
+		if (!player->getIsBeingHitBack()) { player->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0)); }
 
 	}
 
@@ -297,9 +298,9 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		Quaternion playerQuaternion = player->GetTransform().GetOrientation();
 		Vector3 defaultForward = Vector3(0, 0, -1);
 		Vector3 currentDirection = playerQuaternion * defaultForward;
-		rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised()*10+Vector3(0,5,0), 4);
+		rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised() * 10 + Vector3(0, 5, 0), 4);
 		world->AddGameObject(rollingRock);
-		if (rollingRock) {	
+		if (rollingRock) {
 			RollStone(rollingRock, currentDirection, 42000);
 		}
 	}
@@ -424,6 +425,8 @@ void TutorialGame::InitWorld() {
 	gameLevel = new GameLevel(renderer);
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 	player = gameLevel->GetPlayer();
+	playerlist = gameLevel->GetPlayerList();
+	//localplayer = gameLevel->GetPlayer();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
@@ -475,6 +478,8 @@ void TutorialGame::InitWorld() {
 			player->GetTransform().SetPosition(Vector3(-70, 10, -50));
 			gameLevel->AddLevelToWorld(world, 0, true, false);
 			gameLevel->AddLevelToWorld(world, 0, false, false);
+			hasRotation = true;
+			hasReverse = false;
 			break;
 		default:
 			break;
@@ -583,7 +588,6 @@ void TutorialGame::MoveSelectedObject() {
 */
 void TutorialGame::ShowMainMenu(float dt) {
 	//clear the world
-	nameString = "";
 	lockedObject = nullptr;
 	world->ClearAndErase();
 	world->GetMainCamera().SetPitch(0.0f);
@@ -599,11 +603,8 @@ void TutorialGame::ShowMainMenu(float dt) {
 	case NCL::CSC8503::MainMenu_Start:
 		Debug::Print("Start Game", Vector2(30, 40), Debug::RED);
 		break;
-	case NCL::CSC8503::MainMenu_Ranking:
-		Debug::Print("Show Ranking", Vector2(30, 50), Debug::RED);
-		break;
 	case NCL::CSC8503::MainMenu_Exit:
-		Debug::Print("Exit", Vector2(30, 60), Debug::RED);
+		Debug::Print("Exit", Vector2(30, 50), Debug::RED);
 		break;
 	default:
 		break;
@@ -622,10 +623,6 @@ void TutorialGame::ShowMainMenu(float dt) {
 		case NCL::CSC8503::MainMenu_Start:
 			gameState = ModeSelect;
 			break;
-		case NCL::CSC8503::MainMenu_Ranking:
-			rankingPage = TimeLimitedModePage;
-			gameState = Ranking;
-			break;
 		case NCL::CSC8503::MainMenu_Exit:
 			gameState = Exit;
 			break;
@@ -637,59 +634,18 @@ void TutorialGame::ShowMainMenu(float dt) {
 	Debug::UpdateRenderables(dt);
 }
 
-void TutorialGame::ShowRanking(float dt) {
-	Debug::Print("Ranking", Vector2(5, 10), Debug::RED);
-	Debug::Print("Player Name:", Vector2(5, 20), Debug::RED);
-	if (rankingPage == TimeLimitedModePage) {
-		Debug::Print("Score:", Vector2(60, 20), Debug::RED);
-		for (int i = 0; i < 5; i++) {
-			if (i >= ScoreTable.size()) {
-				break;
-			}
-			else {
-				Debug::Print(ScoreTable[i].playerName, Vector2(5, 30 + 10 * i));
-				Debug::Print(std::to_string(static_cast<int>(ScoreTable[i].score)), Vector2(60, 30 + 10 * i));
-			}
-		}
-		Debug::Print("Press -> to switch page.", Vector2(5, 80));
-		Debug::Print("1 / 2  ->", Vector2(45, 90));
-	}
-	else {
-		Debug::Print("Time Cost:", Vector2(60, 20), Debug::RED);
-		for (int i = 0; i < 5; i++) {
-			if (i >= TimeTable.size()) {
-				break;
-			}
-			else {
-				Debug::Print(TimeTable[i].playerName, Vector2(5, 30 + 10 * i));
-				Debug::Print(std::to_string(TimeTable[i].score), Vector2(60, 30 + 10 * i));
-			}
-		}
-		Debug::Print("Press <- to switch page.", Vector2(5, 80));
-		Debug::Print("<-  2 / 2", Vector2(37.5, 90));
-	}
-	Debug::Print("Press Enter to back to main menu", Vector2(5, 85));
-
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RIGHT)) rankingPage = ScoreRequiredModePage;
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::LEFT))  rankingPage = TimeLimitedModePage;
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) gameState = MainMenu;
-
-	renderer->Render();
-	Debug::UpdateRenderables(dt);
-}
-
 void TutorialGame::SelectGameMode(float dt) {
 	Debug::Print("Mode Select: ", Vector2(30, 30), Debug::BLUE);
-	if (gameMode == TimeLimited) {
-		Debug::Print("Time Limited: 150s", Vector2(30, 50), Debug::RED);
-		Debug::Print("Score Required: 20", Vector2(30, 60), Debug::BLACK);
+	if (gameMode == Multi) {
+		Debug::Print("Multi Player", Vector2(30, 50), Debug::RED);
+		Debug::Print("Single player", Vector2(30, 60), Debug::BLACK);
 	}
-	else if (gameMode == ScoreRequired) {
-		Debug::Print("Time Limited: 150s", Vector2(30, 50), Debug::BLACK);
-		Debug::Print("Score Required: 20", Vector2(30, 60), Debug::RED);
+	else if (gameMode == Single) {
+		Debug::Print("Multi Player", Vector2(30, 50), Debug::BLACK);
+		Debug::Print("Single player", Vector2(30, 60), Debug::RED);
 	}
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::UP))   gameMode = TimeLimited;
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::DOWN)) gameMode = ScoreRequired;
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::UP))   gameMode = Multi;
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::DOWN)) gameMode = Single;
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) gameState = Start;
 
@@ -712,127 +668,25 @@ void TutorialGame::ShowPause(float dt) {
 	Debug::UpdateRenderables(dt);
 }
 
-void TutorialGame::ShowWin(float dt) {
-	Debug::Print("You win!", Vector2(20, 30), Debug::RED);
-	Debug::Print("Press Enter to continue", Vector2(20, 60), Debug::BLACK);
-
-	if (gameMode == TimeLimited) {
-		Debug::Print("Your score:", Vector2(20, 35), Debug::BLACK);
-		Debug::Print(std::to_string(score), Vector2(35, 40), Debug::BLACK);
-		int lowestScore;
-		ScoreTable.size() > 4 ? lowestScore = ScoreTable[4].score : lowestScore = ScoreTable[ScoreTable.size() - 1].score;
-		if (score > lowestScore) {
-			Debug::Print("New Record!", Vector2(20, 45), Debug::RED);
-			Debug::Print("Please input your name:________", Vector2(20, 50), Debug::RED);
-			Debug::Print(nameString, Vector2(63, 50));
-			char r = Window::GetKeyboard()->GetKey();
-			if (r != '0') {
-				if (r == 8 && !nameString.empty()) {
-					nameString.pop_back();
-				}
-				else {
-					nameString += r;
-				}
-			}
-		}
-		if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) {
-			if (score > lowestScore) {
-				for (int i = 0; i < ScoreTable.size(); i++) {
-					if (score > ScoreTable[i].score) {
-						RankScore rk;
-						rk.score = score;
-						rk.playerName = nameString;
-						ScoreTable.insert(ScoreTable.begin() + i, rk);
-						break;
-					}
-				}
-				std::ofstream file;
-				file.open(Assets::SCOREDIR + "timeMode.txt", std::ios::out | std::ios::trunc);
-				if (!ScoreTable.empty()) {
-					for (int i = 0; i < ScoreTable.size() && i < 5; i++) {
-						file << ScoreTable[i].playerName << std::endl;
-						file << ScoreTable[i].score << std::endl;
-					}
-				}
-			}
-			gameState = MainMenu;
-		}
+void TutorialGame::ShowEnd(float dt) {
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) {
+		gameState = MainMenu;
+		return;
 	}
-	else {
-		Debug::Print("Cost Time:", Vector2(20, 35), Debug::BLACK);
-		Debug::Print(std::to_string(totalTime), Vector2(35, 40), Debug::BLACK);
-		float mostTimeCost;
-		TimeTable.size() > 4 ? mostTimeCost = TimeTable[4].score : mostTimeCost = TimeTable[TimeTable.size() - 1].score;
-		if (totalTime < mostTimeCost) {
-			Debug::Print("New Record!", Vector2(20, 45), Debug::RED);
-			Debug::Print("Please input your name:________", Vector2(20, 50), Debug::RED);
-			Debug::Print(nameString, Vector2(63, 50));
-			char r = Window::GetKeyboard()->GetKey();
-			if (r != '0') {
-				if (r == 8 && !nameString.empty()) {
-					nameString.pop_back();
-				}
-				else {
-					nameString += r;
-				}
-			}
-		}
-		if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) {
-			if (totalTime < mostTimeCost) {
-				for (int i = 0; i < TimeTable.size(); i++) {
-					if (score < TimeTable[i].score) {
-						RankScore rk;
-						rk.score = score;
-						rk.playerName = nameString;
-						TimeTable.insert(TimeTable.begin() + i, rk);
-						break;
-					}
-				}
-				std::ofstream file;
-				file.open(Assets::SCOREDIR + "scoreMode.txt", std::ios::out | std::ios::trunc);
-				if (!TimeTable.empty()) {
-					for (int i = 0; i < TimeTable.size() && i < 5; i++) {
-						file << TimeTable[i].playerName << std::endl;
-						file << TimeTable[i].score << std::endl;
-					}
-				}
-			}
-			gameState = MainMenu;
-		}
+
+	totalTime += dt;
+	float sceneAlpha, fontAlpha;
+	totalTime < 3 ? sceneAlpha = totalTime / 3 : sceneAlpha = 1;
+	GameTechRenderer::CreateGameUI({ Vector3(-1,1,-1),Vector3(-1,-1,-1),Vector3(1,-1,-1),Vector3(1,1,-1) }, "changingblood", "blank", sceneAlpha);
+
+	if (totalTime > 3.5) {
+		Debug::Print("Thanks For Playing!", Vector2(30, 30));
+		Debug::Print("Press Enter to Mainmenu", Vector2(30, 40));
 	}
 
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
-}
-
-void TutorialGame::ShowLose(float dt) {
-	Debug::Print("You lose!", Vector2(30, 40), Debug::BLUE);
-	Debug::Print("Press Enter to continue", Vector2(30, 70), Debug::BLACK);
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) gameState = MainMenu;
-	renderer->Render();
-	Debug::UpdateRenderables(dt);
-}
-
-void TutorialGame::LoadRankingFile() {
-	std::ifstream timeFile(Assets::SCOREDIR + "timeMode.txt");
-	std::ifstream scoreFile(Assets::SCOREDIR + "scoreMode.txt");
-	while (!scoreFile.eof()) {
-		std::string name;
-		scoreFile >> name;
-		float s;
-		scoreFile >> s;
-		TimeTable.emplace_back(name, s);
-	}
-	while (!timeFile.eof())
-	{
-		std::string name;
-		timeFile >> name;
-		float s;
-		timeFile >> s;
-		ScoreTable.emplace_back(name, s);
-	}
-	scoreFile.close();
-	timeFile.close();
+	GameTechRenderer::UpdateUI();
 }
 
 void TutorialGame::DrawAnim(GameObject* g, MeshAnimation* anim) {
@@ -855,7 +709,7 @@ void TutorialGame::UpdateAnim(GameObject* g, MeshAnimation* anim) {
 }
 
 void TutorialGame::UpdateBossAnim(Boss* boss, MeshAnimation* bossAnimation, float dt) {
-	if (boss != nullptr&&!boss->getIsDead()) {
+	if (boss != nullptr && !boss->getIsDead()) {
 		if (gameLevel->GetBoss()->getIsRencentlyHurt()) {
 			boss->GetRenderObject()->frameTime -= dt / 2.0;
 			UpdateAnim(boss, bossFlinchAnimation);
@@ -943,7 +797,7 @@ void TutorialGame::UpdateBossAnim(Boss* boss, MeshAnimation* bossAnimation, floa
 	else {
 		bossDeathTimer += dt;
 		if (bossDeathTimer < bossDeathDuration) {
-			boss->GetRenderObject()->frameTime -= dt ;
+			boss->GetRenderObject()->frameTime -= dt;
 			UpdateAnim(boss, bossDeathAnimation);
 		}
 	}
@@ -1041,7 +895,7 @@ void TutorialGame::SwitchLevel() {
 			bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
 			bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
 			bossChasingAnimation = gameLevel->getBossChasingAnimation();
-			fireBallBullet = gameLevel->getFireBallBullet();	
+			fireBallBullet = gameLevel->getFireBallBullet();
 			bossAngryAnimation = gameLevel->getBossAngryAnimation();
 			bossDeathAnimation = gameLevel->getBossDeathAnimation();
 			PlayerPreHealth = player->GetHealth();
@@ -1065,6 +919,10 @@ void TutorialGame::SwitchLevel() {
 			player->GetTransform().SetPosition(Vector3(-70, 10, -50)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			PlayLevelBGM("level4");
+			if (exit != nullptr) {
+				delete exit;
+				exit = nullptr;
+			}
 			currentLevel++;
 			break;
 		default:
@@ -1103,7 +961,6 @@ void TutorialGame::UpdateLevel(float dt) {
 	}
 	// Level 3
 	else if (currentLevel == 6) {
-
 		gameLevel->GetBoss()->Update(dt);
 		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
 		if (player->getIsAccelerated()) {
@@ -1144,7 +1001,7 @@ void TutorialGame::UpdateLevel(float dt) {
 				shieldPropTimer = 0.0f;
 			}
 		}
-		if (player->getIsRencentlyHurt()&& player->getIsBeingHitBack()) {
+		if (player->getIsRencentlyHurt() && player->getIsBeingHitBack()) {
 			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 			Vector3 bossPosition = boss->GetTransform().GetPosition();
 			Vector3 hurtDirection = (playerPosition - bossPosition).Normalised();
@@ -1219,7 +1076,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			trueEndDet->isEnable = false;
 			falseEndDet->isEnable = false;
 			gameLevel->GetL4Door()->Deactivation();
-			if (mapIndex >= 1) {
+			if (mapIndex >= 2) {
 				hasReverse = !hasReverse;
 			}
 			score++;
@@ -1241,7 +1098,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			trueEndDet->isEnable = false;
 			falseEndDet->isEnable = false;
 			gameLevel->GetL4Door()->Deactivation();
-			if (mapIndex < 1) {
+			if (mapIndex < 2) {
 				hasReverse = !hasReverse;
 			}
 			score = 0;
@@ -1250,7 +1107,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			hasRotation = !hasRotation;
 		}
 
-		if (score == 6 && exit == nullptr) {
+		if (score == 5 && exit == nullptr) {
 			if (!hasReverse && !hasRotation) {
 				exit = gameLevel->CreateCube(Vector3(-30, 10, -70), Vector3(15, 15, 15), 0.0f);
 			}
@@ -1263,8 +1120,18 @@ void TutorialGame::UpdateLevel(float dt) {
 			else if (hasReverse && hasRotation) {
 				exit = gameLevel->CreateCube(Vector3(-70, 10, -30), Vector3(15, 15, 15), 0.0f);
 			}
-			exit->GetRenderObject()->SetColour(Debug::WHITE);
+			exit->GetRenderObject()->SetColour(Debug::WHITE * 2);
+			exit->GetRenderObject()->SetDefaultTexture(nullptr, 0);
+			exit->SetTag("Exit");
 			world->AddGameObject(exit);
+		}
+
+		if (exit != nullptr) {
+			vector<GameObject*> ExitCD = physics->GetCollisionDetectionList(exit);
+			if (std::count(ExitCD.begin(), ExitCD.end(), player)) {
+				totalTime = 0;
+				gameState = End;
+			}
 		}
 	}
 }
@@ -1422,11 +1289,11 @@ void TutorialGame::PlayLevelBGM(const std::string& levelName) {
 	soundManager.playSound(currentBGM);
 }
 
-void TutorialGame::RollStone(GameObject * stone, const Vector3 & forceDirection, float forceMagnitude) {
+void TutorialGame::RollStone(GameObject* stone, const Vector3& forceDirection, float forceMagnitude) {
 	PhysicsObject* stonePhysics = stone->GetPhysicsObject();
 
 	if (stonePhysics) {
-		Vector3 stoneCenter = stone->GetTransform().GetPosition()+Vector3(0,2,0);
+		Vector3 stoneCenter = stone->GetTransform().GetPosition() + Vector3(0, 2, 0);
 
 		Vector3 force = forceDirection * forceMagnitude;
 
@@ -1464,11 +1331,11 @@ void TutorialGame::UpdateLevel3UI() {
 
 	std::cout << "boss:" << bosshealth << std::endl;
 	std::cout << "player:" << health << std::endl;
-	BossHealthLendth = (100 - BossPrehHealth) * 0.01; 
+	BossHealthLendth = (100 - BossPrehHealth) * 0.01;
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f, -0.8f, -1.0f), Vector3(0.4f, -0.75f, -1.0f) }, "background", "health");
 
-	GameTechRenderer::CreateGameUI({ Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) , 
+	GameTechRenderer::CreateGameUI({ Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) ,
 		Vector3(0.4 - healthLength , -0.75f, -1.0f), Vector3(0.4 - healthLength, -0.8f, -1.0f) }, "changingblood", "health");
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) }, "blood", "health");
@@ -1500,6 +1367,15 @@ void TutorialGame::UpdateLevel3UI() {
 	GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
 		Vector3(0.5f, 0.95f, -1.0f) }, "bossframe", "health");
 
+	float x = Window::GetWindow()->GetScreenSize().x;
+	float y = Window::GetWindow()->GetScreenSize().y;
+	float b = y / x;
 
+	GameTechRenderer::CreateGameUI({ Vector3(0.6, -0.5f, -1.0f),  Vector3(0.6, -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f, -1.0f) }, "skill", "skill");
+	//if (progress = 1) {
+	GameTechRenderer::CreateGameUI({ Vector3(0.65, -0.45f, -1.0f),  Vector3(0.65, -0.48, -1.0f),  Vector3(0.665f, -0.48f, -1.0f),  Vector3(0.665f, -0.45f, -1.0f) }, "power", "power");
+	GameTechRenderer::CreateGameUI({ Vector3(0.6725, -0.45f, -1.0f),  Vector3(0.6725, -0.48f, -1.0f),  Vector3(0.6875f, -0.48f, -1.0f),  Vector3(0.6875f, -0.45f, -1.0f) }, "power", "power");
+	GameTechRenderer::CreateGameUI({ Vector3(0.695, -0.45f, -1.0f),  Vector3(0.695, -0.48f, -1.0f),  Vector3(0.710f, -0.48f, -1.0f),  Vector3(0.710f, -0.45f, -1.0f) }, "power", "power");
+	GameTechRenderer::CreateGameUI({ Vector3(0.715, -0.45f, -1.0f),  Vector3(0.715, -0.48f, -1.0f),  Vector3(0.730f, -0.48f, -1.0f),  Vector3(0.730f, -0.45f, -1.0f) }, "power", "power", 0.5);
 
 }

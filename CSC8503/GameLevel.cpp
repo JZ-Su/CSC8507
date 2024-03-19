@@ -16,7 +16,13 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {
-	player = CreatePlayer(Vector3(0, 10, 30), Vector3(2, 2, 2), 45.0f);
+	/*player = CreatePlayer(Vector3(0, 10, 30), Vector3(2, 2, 2), 45.0f);
+	playerList.push_back(player);*/
+	for (int i = 0; i < 4; i++) {
+		Player* playertemp = CreatePlayer(Vector3((0 + i) * 2, 10, 30), Vector3(2, 2, 2), 45.0f);
+		playerList.push_back(playertemp);
+	}
+	player = playerList[0];
 	Generic.AddObject(player);
 	//Level 4 player: 
 	//Generic.AddObject(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
@@ -44,7 +50,7 @@ void GameLevel::AddLevelToWorld(GameWorld* world, int i, bool isRotate, bool isR
 
 		beginArea = level4_basic.objectList[7];
 		beginArea->isEnable = true;
-		if (i == 0) {
+		if (i == 1) {
 			trueEndArea = level4_basic.objectList[12];
 			trueEndArea->isEnable = false;
 			falseEndArea = level4_basic.objectList[2];
@@ -73,7 +79,7 @@ void GameLevel::AddLevelToWorld(GameWorld* world, int i, bool isRotate, bool isR
 
 		beginArea = level4r_basic.objectList[7];
 		beginArea->isEnable = true;
-		if (i == 0) {
+		if (i == 1) {
 			trueEndArea = level4r_basic.objectList[12];
 			trueEndArea->isEnable = false;
 			falseEndArea = level4r_basic.objectList[2];
@@ -109,7 +115,7 @@ vector<GameObject*> GameLevel::CreatePortal(const Vector3& position) {
 	vec.push_back(CreateCube(position, Vector3(4, 7, 0.1), 0.0f));
 	vec.back()->SetCollisionResponse(false);
 	vec.back()->GetRenderObject()->SetColour(Debug::GREEN);
-	return vec;
+	return vec; 
 }
 
 void GameLevel::CreateConnectionLevel() {
@@ -345,8 +351,6 @@ void GameLevel::CreateLevel4() {
 	CreateLevel4_Reverse();
 	CreateLevel4_Rotate();
 	CreateLevel4_RR();
-	//level4.AddObject(CreateLight(Vector3(0, 50, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 130.0f, true, true));
-	//level4.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, true, false));
 }
 
 void GameLevel::CreateLevel4_Normal() {
@@ -360,33 +364,37 @@ void GameLevel::CreateLevel4_Normal() {
 	Vector3 floorDimensions = Vector3(10, 1, 10);
 	Level l0;
 	//floor
-	l0.AddObject(CreateCube(Vector3(-50, 0, -50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 0, -50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 0, -30), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 0, -10), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 0, 10), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 0, 30), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 0, 50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-50, 0, 50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-50, 0, 70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-30, 0, 70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-10, 0, 70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(10, 0, 70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(30, 0, 70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(50, 0, 70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-50, -0.02, -50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-70, -0.02, -50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-70, -0.02, -30), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-70, -0.02, -10), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-70, -0.02, 10), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-70, -0.02, 30), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-70, -0.02, 50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-50, -0.02, 50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-50, -0.02, 70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-30, -0.02, 70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-10, -0.02, 70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(10,  -0.02, 70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(30,  -0.02, 70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(50,  -0.02, 70), floorDimensions, 0.0f));
 	//door
 	l0.AddObject(CreateDoor(Vector3(-60, 5, 50), Vector3(10, 10, 1), 0.0f, -90, 20));
 	//wall
-	l0.AddObject(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-90, 10, -50), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-90, 10,   0), Vector3(10, 10, 40), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-90, 10,  50), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-50, 10,   0), Vector3(10, 10, 40), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 10,  70), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-50, 10,  90), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(  0, 10,  50), Vector3(40, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(  0, 10,  90), Vector3(40, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3( 50, 10,  90), Vector3(10, 10, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-70, 10, -70), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-90, 10, -50), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-90, 10,   0), Vector3(10, 20, 40), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-90, 10,  50), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-50, 10,   0), Vector3(10, 20, 40), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-70, 10,  70), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-50, 10,  90), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(  0, 10,  50), Vector3(40, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(  0, 10,  90), Vector3(40, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3( 50, 10,  90), Vector3(10, 20, 10), 0.0f));
+
+	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
+	l0.AddObject(CreateLight(Vector3(0, 19, 65), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
+	l0.AddObject(CreateLight(Vector3(-65, 19, 0), Vector4(0.2f, 0.1f, 0.1f, 1.0f), 50.0f, true, false));
 	level4_normal.emplace_back(l0);
 	
 	Level l1;
@@ -424,33 +432,37 @@ void GameLevel::CreateLevel4_Rotate() {
 	Vector3 floorDimensions = Vector3(10, 1, 10);
 	Level l0;
 	//floor
-	l0.AddObject(CreateCube(Vector3(50, 0, 50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 0, 50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 0, 30), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 0, 10), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 0, -10), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 0, -30), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 0, -50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(50, 0, -50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(50, 0, -70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(30, 0, -70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(10, 0, -70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-10, 0, -70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-30, 0, -70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(50, -0.02, 50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(70, -0.02, 50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(70, -0.02, 30), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(70, -0.02, 10), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(70, -0.02, -10), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(70, -0.02, -30), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(70, -0.02, -50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(50, -0.02, -50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(50, -0.02, -70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(30, -0.02, -70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(10, -0.02, -70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-10,-0.02, -70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-30,-0.02, -70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-50,-0.02, -70), floorDimensions, 0.0f));
 	//door
 	l0.AddObject(CreateDoor(Vector3(60, 5, -50), Vector3(10, 10, 1), 0.0f, -270, 20));
 	//wall
-	l0.AddObject(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(90, 10, 50), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(90, 10, 0), Vector3(10, 10, 40), 0.0f));
-	l0.AddObject(CreateCube(Vector3(90, 10, -50), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 10, -70), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(50, 10, 0), Vector3(10, 10, 40), 0.0f));
-	l0.AddObject(CreateCube(Vector3(0, 10, -50), Vector3(40, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(50, 10, -90), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(0, 10, -90), Vector3(40, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-50, 10, -90), Vector3(10, 10, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(70, 10, 70),  Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(90, 10, 50),  Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(90, 10, 0),   Vector3(10, 20, 40), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(90, 10, -50), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(70, 10, -70), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(50, 10, 0),	 Vector3(10, 20, 40), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(0,  10, -50), Vector3(40, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(50, 10, -90), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(0,  10, -90), Vector3(40, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-50,10, -90), Vector3(10, 20, 10), 0.0f));
+
+	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
+	l0.AddObject(CreateLight(Vector3(0, 19, -65), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
+	l0.AddObject(CreateLight(Vector3(65, 19, 0), Vector4(0.2f, 0.1f, 0.1f, 1.0f), 50.0f, true, false));
 	level4_rotate.emplace_back(l0);
 
 	Level l1;
@@ -488,33 +500,38 @@ void GameLevel::CreateLevel4_Reverse() {
 	Vector3 floorDimensions = Vector3(10, 1, 10);
 	Level l0;
 	//floor
-	l0.AddObject(CreateCube(Vector3(-50, 0, -50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(50, 0, 70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(30, 0, 70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(10, 0, 70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-10, 0, 70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-30, 0, 70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-50, 0, 70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-50, 0, 50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 0, 50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 0, 30), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 0, 10), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 0, -10), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 0, -30), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 0, -50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-50, -0.02, -50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(50,  -0.02, 70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(30,  -0.02, 70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(10,  -0.02, 70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-10, -0.02, 70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-30, -0.02, 70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-50, -0.02, 70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-50, -0.02, 50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-70, -0.02, 50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-70, -0.02, 30), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-70, -0.02, 10), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-70, -0.02, -10), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-70, -0.02, -30), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-70, -0.02, -50), floorDimensions, 0.0f));
 	//door
 	l0.AddObject(CreateDoor(Vector3(-50, 5, 60), Vector3(10, 10, 1), 0, 180, 20));
 	//wall
-	l0.AddObject(CreateCube(Vector3(-70, 10, -70), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-90, 10, -50), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-90, 10, 0), Vector3(10, 10, 40), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-90, 10, 50), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-50, 10, 0), Vector3(10, 10, 40), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-70, 10, 70), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-50, 10, 90), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(0, 10, 50), Vector3(40, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(0, 10, 90), Vector3(40, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(50, 10, 90), Vector3(10, 10, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-70, 10, -70), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-90, 10, -50), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-90, 10, 0),  Vector3(10, 20, 40), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-90, 10, 50), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-50, 10, 0),  Vector3(10, 20, 40), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-70, 10, 70), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-50, 10, 90), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(0,   10, 50), Vector3(40, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(0,   10, 90), Vector3(40, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(50,  10, 90), Vector3(10, 20, 10), 0.0f));
+
+	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
+	l0.AddObject(CreateLight(Vector3(-65, 19, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
+	l0.AddObject(CreateLight(Vector3(0, 19, 65), Vector4(0.2f, 0.1f, 0.1f, 1.0f), 50.0f, true, false));
+
 	level4_reverse.emplace_back(l0);
 
 	Level l1;
@@ -554,33 +571,38 @@ void GameLevel::CreateLevel4_RR() {
 
 	Level l0;
 	//floor
-	l0.AddObject(CreateCube(Vector3(50, 0, 50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-50, 0, -70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-30, 0, -70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(-10, 0, -70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(10, 0, -70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(30, 0, -70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(50, 0, -70), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(50, 0, -50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 0, -50), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 0, -30), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 0, -10), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 0, 10), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 0, 30), floorDimensions, 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 0, 50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(50, -0.02, 50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-50,-0.02, -70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-30,-0.02, -70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(-10,-0.02, -70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(10, -0.02, -70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(30, -0.02, -70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(50, -0.02, -70), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(50, -0.02, -50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(70, -0.02, -50), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(70, -0.02, -30), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(70, -0.02, -10), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(70, -0.02, 10), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(70, -0.02, 30), floorDimensions, 0.0f));
+	l0.AddObject(CreateCube(Vector3(70, -0.02, 50), floorDimensions, 0.0f));
 	//door
 	l0.AddObject(CreateDoor(Vector3(50, 5, -60), Vector3(10, 10, 1), 0, 0, 20));
 	//wall
-	l0.AddObject(CreateCube(Vector3(70, 10, 70), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(90, 10, 50), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(90, 10, 0), Vector3(10, 10, 40), 0.0f));
-	l0.AddObject(CreateCube(Vector3(90, 10, -50), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(70, 10, -70), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(50, 10, 0), Vector3(10, 10, 40), 0.0f));
-	l0.AddObject(CreateCube(Vector3(50, 10, -90), Vector3(10, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(0, 10, -50), Vector3(40, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(0, 10, -90), Vector3(40, 10, 10), 0.0f));
-	l0.AddObject(CreateCube(Vector3(-50, 10, -90), Vector3(10, 10, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(70, 10, 70), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(90, 10, 50), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(90, 10, 0),  Vector3(10, 20, 40), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(90, 10, -50), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(70, 10, -70), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(50, 10, 0),   Vector3(10, 20, 40), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(50, 10, -90), Vector3(10, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(0,  10, -50), Vector3(40, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(0,  10, -90), Vector3(40, 20, 10), 0.0f));
+	l0.AddObject(CreateBigWall(Vector3(-50,10, -90), Vector3(10, 20, 10), 0.0f));
+
+	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
+	l0.AddObject(CreateLight(Vector3(0, 19, -65),  Vector4(0.2f, 0.1f, 0.1f, 1.0f), 50.0f, true, false));
+	l0.AddObject(CreateLight(Vector3(65, 19, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
+
 	level4_reverse_rotate.emplace_back(l0);
 
 	Level l1;
@@ -861,3 +883,4 @@ bool GameLevel::CheckCoinList() {
 	}
 	return true;
 }
+

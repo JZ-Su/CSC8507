@@ -64,8 +64,12 @@ bool NetworkObject::ReadFullPacket(FullPacket &p) {
 
 	if (p.fullState.stateID < lastFullState.stateID)
 	{
+		std::cout << "returning??";
 		return false; //received an "old" packet, ignore!!
 	}
+
+	std::cout << "processing??";
+
 	lastFullState = p.fullState;
 
 	object.GetTransform().SetPosition(lastFullState.position);

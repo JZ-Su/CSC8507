@@ -11,3 +11,91 @@ x...xx...x
 x........x
 x........x
 xxxxxxxxxx
+
+stateMachine = new StateMachine();
+	patrolPath = new NavigationPath();
+	chasingPath = new NavigationPath();
+	counter = 0.0f;
+	nodeIndex = 0;
+	isChasing = false;	
+	ghoststrat = startPos;
+	grid = new NavigationGrid("TestGrid3.txt", Vector3(-100, 2, -100));
+	bool found = (*grid).FindPath(startPos, endPos, *patrolPath);
+	if (found) {
+	
+		//Forward patrol
+		State* stateA = new State([&](float dt)->void {
+			counter = 0.0f;
+			isChasing = false;
+			state = forward;
+			FollowPath(dt, *patrolPath, false);
+			}
+		);
+		//Reverse patrol
+		State* stateB = new State([&](float dt)->void {
+			counter = 0.0f;
+			isChasing = false;
+			state = reverse;
+			FollowPath(dt, *patrolPath, true);
+			}
+		);
+
+		//Chasing
+		State* stateChasing = new State([&](float dt, GameObject* player)->void {
+	        Vector3 playerposition = player->GetRenderObject()->GetTransform()->GetPosition();
+	        Vector3 ghostPosition = GetRenderObject()->GetTransform()->GetPosition();
+			Vector3 ghostgo = (playerposition-ghostPosition).Normalised()*0.05;
+			GetTransform().SetPosition(ghostPosition +ghostgo); 
+			Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(-ghostgo.x, ghostgo.z)));
+			this->GetTransform().SetOrientation(targetOrientation);
+
+			}, player
+		);
+		State* returnstra = new State([&](float dt)->void {
+			Vector3 ghostPosition = GetRenderObject()->GetTransform()->GetPosition();
+   		    Vector3 ghostback = (ghoststrat-ghostPosition).Normalised() * 0.05;
+
+			GetTransform().SetPosition(ghostPosition + ghostback);
+
+			Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(-ghostback.x, ghostback.z)));
+		    this->GetTransform().SetOrientation(targetOrientation);
+			}
+		);
+
+		stateMachine->AddState(stateA);
+		stateMachine->AddState(stateB);
+		stateMachine->AddState(stateChasing);
+		stateMachine->AddState(returnstra);
+
+		stateMachine->AddTransition(new StateTransition(stateA, stateB,
+			[&](Vector3 endPos)->bool {
+				Vector3 position = this->GetRenderObject()->GetTransform()->GetPosition();
+				return (position - endPos).Length() <= position.y;
+			}, endPos)
+		);
+		stateMachine->AddTransition(new StateTransition(stateB, stateA,
+			[&](Vector3 startPos)->bool {
+				Vector3 position = this->GetRenderObject()->GetTransform()->GetPosition();
+				return (position - startPos).Length() <= position.y;
+			}, startPos)
+		);
+		stateMachine->AddTransition(new StateTransition(stateA, stateChasing,
+			[&](GameObject* player)->bool {
+				if (this->isChasing) return false;
+				return FindPlayer(player);
+			}, player)
+		);
+		stateMachine->AddTransition(new StateTransition(stateB, stateChasing,
+			[&](GameObject* player)->bool {
+				if (this->isChasing) return false;
+				return FindPlayer(player);
+			}, player)
+		);
+		stateMachine->AddTransition(new StateTransition(stateChasing, returnstra,[&](GameObject* player)->bool {
+			return leavePlayer(player);
+			},player)
+           );
+
+	}
+	
+	

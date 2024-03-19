@@ -71,6 +71,7 @@ void Player::OnCollisionBegin(GameObject* otherObject) {
 	if (otherObject->GetTag() == "ghost") {
 		this->GetTransform().SetPosition(Vector3(0, 10, 30));
 	}
+
 }
 
 void Player::OnCollisionEnd(GameObject* otherObject) {
