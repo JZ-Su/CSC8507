@@ -125,7 +125,7 @@ void TutorialGame::UpdateGame(float dt) {
 			soundManager.update3DSoundPosition("ghost", pos22);
 		}
 	}
-	if (currentLevel == 6) {
+	if (currentLevel == 5) {
 		soundManager.stopSound("ghost");
 	}
 	soundManager.update();
@@ -973,7 +973,9 @@ void TutorialGame::UpdateLevel(float dt) {
 		for (const auto& element : gameLevel->GetL2Doors()) {
 			element->Update(dt);
 			if (element->GetState() != "keepState" && element->GetTimer() - dt == 0) {
-				soundManager.playSound("door");
+				Vector3 pos = element->GetTransform().GetPosition();
+				FMOD_VECTOR poss = { pos.x,pos.y, pos.z };
+				soundManager.play3DSound("door",poss);
 			}
 		}
 	}
@@ -1065,7 +1067,9 @@ void TutorialGame::UpdateLevel(float dt) {
 	else if (currentLevel == 8) {
 		gameLevel->GetL4Door()->Update(dt);
 		if (gameLevel->GetL4Door()->GetState() != "keepState" && gameLevel->GetL4Door()->GetTimer() - dt == 0) {
-			soundManager.playSound("door");
+			Vector3 pos = gameLevel->GetL4Door()->GetTransform().GetPosition();
+			FMOD_VECTOR poss = { pos.x,pos.y, pos.z };
+			soundManager.play3DSound("door",poss);
 		}
 		GameObject* beginDet = gameLevel->GetBeginArea();
 		GameObject* trueEndDet = gameLevel->GetTrueEndArea();
@@ -1296,9 +1300,9 @@ void TutorialGame::InitAudio() {
 	}
 	AddSound();
 	soundManager.setSoundVolume("walking", 0.4f);
-	soundManager.setSoundVolume("door", 1.0f);
-	soundManager.setSoundVolume("ghost", 0.2f);
-	soundManager.setSoundVolume("end", 1.0f);
+	soundManager.setSoundVolume("door", 2.0f);
+	soundManager.setSoundVolume("ghost", 0.1f);
+	soundManager.setSoundVolume("end", 2.0f);
 	/*previousPlayerPosition = player->GetTransform().GetPosition();*/
 	previousMainCameraPosition = world->GetMainCamera().GetPosition();
 }
