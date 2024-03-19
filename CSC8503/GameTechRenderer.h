@@ -143,8 +143,8 @@ namespace NCL {
 
 			static std::vector<UIen>	UIEntries;
 			GLuint texture;
-			OGLShader* healthShader;
-			void Loadhealth();
+			OGLShader* UIShader;
+			void LoadUI();
 		};
 	}
 }

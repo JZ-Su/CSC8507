@@ -19,14 +19,14 @@ std::map<std::string, char*> UImap;
 GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetWindow()), gameWorld(world) {
 	glEnable(GL_DEPTH_TEST);
 
-	debugShader = new OGLShader("debug.vert", "debug.frag");
-	shadowShader = new OGLShader("shadow.vert", "shadow.frag", "shadow.geom");
-	lightShader = new OGLShader("pointlight.vert", "pointlight.frag");
-	combineShader = new OGLShader("combine.vert", "combine.frag");
-	healthShader = new OGLShader("health.vert", "health.frag");
-	upSampleShader = new OGLShader("combine.vert", "upSample.frag");
+	debugShader		= new OGLShader("debug.vert", "debug.frag");
+	shadowShader	= new OGLShader("shadow.vert", "shadow.frag", "shadow.geom");
+	lightShader		= new OGLShader("pointlight.vert", "pointlight.frag");
+	combineShader	= new OGLShader("combine.vert", "combine.frag");
+	UIShader		= new OGLShader("health.vert", "health.frag");
+	upSampleShader	= new OGLShader("combine.vert", "upSample.frag");
 	downSampleShader = new OGLShader("combine.vert", "downSample.frag");
-	toneShader = new OGLShader("combine.vert", "tonemapping.frag");
+	toneShader		= new OGLShader("combine.vert", "tonemapping.frag");
 
 	glGenTextures(1, &shadowTex);
 
@@ -451,9 +451,9 @@ void GameTechRenderer::RenderFrame() {
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	LoadUI();
 	NewRenderLines();
 	NewRenderText();
-	Loadhealth();
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1194,7 +1194,7 @@ vector<Vector4> GameTechRenderer::LoadMap() {
 	return pixelData;
 }
 
-void GameTechRenderer::Loadhealth() {
+void GameTechRenderer::LoadUI() {
 	//Matrix4 viewMatrix = gameWorld.GetMainCamera().BuildViewMatrix();
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
@@ -1204,7 +1204,7 @@ void GameTechRenderer::Loadhealth() {
 	}
 	Matrix4 proj = Matrix4::Orthographic(0.0, 100.0f, 100, 0, -1.0f, 1.0f);
 
-	BindShader(*healthShader);
+	BindShader(*UIShader);
 
 	for (const auto& element : uii) {
 
@@ -1218,17 +1218,17 @@ void GameTechRenderer::Loadhealth() {
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 
-		int matSlot = glGetUniformLocation(healthShader->GetProgramID(), "viewProjMatrix");
+		int matSlot = glGetUniformLocation(UIShader->GetProgramID(), "viewProjMatrix");
 		glUniformMatrix4fv(matSlot, 1, false, (float*)proj.array);
 		
-		GLuint texSlot = glGetUniformLocation(healthShader->GetProgramID(), "useTexture");
+		GLuint texSlot = glGetUniformLocation(UIShader->GetProgramID(), "useTexture");
 		glUniform1i(texSlot, 1);
 
 
-		GLuint mainTexLocation = glGetUniformLocation(healthShader->GetProgramID(), "mainTex");
+		GLuint mainTexLocation = glGetUniformLocation(UIShader->GetProgramID(), "mainTex");
 		glUniform1i(mainTexLocation, 0);
 
-		GLuint useAlpha = glGetUniformLocation(healthShader->GetProgramID(), "useAlpha");
+		GLuint useAlpha = glGetUniformLocation(UIShader->GetProgramID(), "useAlpha");
 		if (element.useAlpha) {
 			glUniform1i(useAlpha, 1);
 		}
@@ -1236,7 +1236,7 @@ void GameTechRenderer::Loadhealth() {
 			glUniform1i(useAlpha, 0);
 		}
 
-		GLuint alpha= glGetUniformLocation(healthShader->GetProgramID(), "alpha");
+		GLuint alpha= glGetUniformLocation(UIShader->GetProgramID(), "alpha");
 		glUniform1f(alpha, element.alpha);
 
 		glActiveTexture(GL_TEXTURE0);
