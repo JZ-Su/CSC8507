@@ -115,6 +115,9 @@ vector<GameObject*> GameLevel::CreatePortal(const Vector3& position) {
 	vec.push_back(CreateCube(position, Vector3(4, 7, 0.1), 0.0f));
 	vec.back()->SetCollisionResponse(false);
 	vec.back()->GetRenderObject()->SetColour(Debug::GREEN);
+	for (const auto& ele : vec) {
+		ele->GetRenderObject()->SetDefaultTexture(nullptr, 0);
+	}
 	return vec; 
 }
 
