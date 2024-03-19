@@ -110,6 +110,17 @@ void TutorialGame::UpdateGame(float dt) {
 		soundManager.stopSound("walking");
 	}
 	lastWalkingState = isWalking;
+	if (currentLevel == 4) {
+		Vector3 pos1 = gameLevel->GetGhostai()->GetTransform().GetPosition();
+		FMOD_VECTOR pos11 = { pos1.x,pos1.y, pos1.z };
+		Vector3 pos2 = gameLevel->GetGhostai2()->GetTransform().GetPosition();
+		FMOD_VECTOR pos22 = { pos2.x,pos2.y, pos2.z };
+		soundManager.play3DSound("ghost", pos11);
+		soundManager.play3DSound("ghost", pos22);
+	}
+	if (currentLevel == 6) {
+		soundManager.stopSound("ghost");
+	}
 	soundManager.update();
 	totalTime += dt;
 	SelectObject();
@@ -419,8 +430,8 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	isDebug = true;
-	//isDebug = false;
+	//isDebug = true;
+	isDebug = false;
 	int debugLevel = 4;
 
 	if (isDebug) {
@@ -1366,12 +1377,14 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 
 void TutorialGame::AddSound() {
 	soundManager.loadSound("walking", "../externals/media/walk.mp3", true, false);
+	soundManager.loadSound("ghost", "../externals/media/ghost.mp3", false, false);
 	soundManager.loadSound("door", "../externals/media/door.mp3", false, false);
 	std::map<std::string, std::string> bgmPaths = {
 	   {"level1", "../externals/media/bgm/ophelia.mp3"},
 	   {"level2", "../externals/media/bgm/TownTheme.mp3"},
 	   {"level3", "../externals/media/bgm/BattleInTheWinter.mp3"},
-	   {"level4", "../externals/media/bgm/jntm.mp3"},
+	   /*{"level4", "../externals/media/bgm/jntm.mp3"},*/
+		{"level4", "../externals/media/bgm/David.mp3"},
 	   {"level0","../externals/media/bgm/safezone.mp3"},
 	};
 	soundManager.loadAllBGM(bgmPaths);
@@ -1393,8 +1406,9 @@ void TutorialGame::InitAudio() {
 		std::cout << "Failed to initialize SoundManager" << std::endl;
 	}
 	AddSound();
-	soundManager.setSoundVolume("walking", 0.7f);
+	soundManager.setSoundVolume("walking", 0.4f);
 	soundManager.setSoundVolume("door", 1.0f);
+	soundManager.setSoundVolume("ghost", 0.7f);
 	/*previousPlayerPosition = player->GetTransform().GetPosition();*/
 	previousMainCameraPosition = world->GetMainCamera().GetPosition();
 }
@@ -1404,6 +1418,7 @@ void TutorialGame::PlayLevelBGM(const std::string& levelName) {
 		soundManager.stopSound(currentBGM);
 	}
 	currentBGM = levelName;
+	soundManager.setSoundVolume(currentBGM, 0.1f);
 	soundManager.playSound(currentBGM);
 }
 

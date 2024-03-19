@@ -33,7 +33,7 @@ void SoundManager::update() {
     }
 }
 
-bool SoundManager::loadSound(const std::string& name, const std::string& path, bool loop, bool isBGM) {
+bool SoundManager::loadSound(const std::string& name, const std::string& path, bool loop, bool isBGM, float minDistance, float maxDistance) {
     if (!isInitialized) return false;
 
     FMOD_MODE mode = loop ? FMOD_LOOP_NORMAL : FMOD_DEFAULT;
@@ -41,7 +41,11 @@ bool SoundManager::loadSound(const std::string& name, const std::string& path, b
     FMOD::Sound* sound;
     FMOD_RESULT result = audioSystem->createSound(path.c_str(), mode, nullptr, &sound);
     if (result != FMOD_OK) return false;
-
+    if (!isBGM) { 
+        FMOD_MODE decayMode = FMOD_3D_LINEARROLLOFF; 
+        sound->setMode(decayMode);
+        sound->set3DMinMaxDistance(minDistance, maxDistance);
+    }
     sounds[name] = sound;
     return true;
 }
