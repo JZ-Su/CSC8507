@@ -101,6 +101,8 @@ void TutorialGame::UpdateGame(float dt) {
 		FMOD_VECTOR position = { mainCameraPosition.x, mainCameraPosition.y, mainCameraPosition.z };
 		if (!lastWalkingState) {
 			soundManager.play3DSound("walking", position);
+			soundManager.setSoundVolume("walking", 0.8f);
+			soundManager.setSoundSpeed("walking", 0.8f);
 		}
 		else {
 			soundManager.update3DSoundPosition("walking", position);
@@ -118,7 +120,9 @@ void TutorialGame::UpdateGame(float dt) {
 		FMOD_VECTOR pos22 = { pos2.x,pos2.y, pos2.z };
 		if (!soundManager.isSoundPlaying("ghost")) {
 			soundManager.play3DSound("ghost", pos11);
+			soundManager.setSoundVolume("ghost", 0.4f);
 			soundManager.play3DSound("ghost", pos22);
+			soundManager.setSoundVolume("ghost", 0.4f);
 		}
 		else {
 			soundManager.update3DSoundPosition("ghost", pos11);
@@ -976,6 +980,7 @@ void TutorialGame::UpdateLevel(float dt) {
 				Vector3 pos = element->GetTransform().GetPosition();
 				FMOD_VECTOR poss = { pos.x,pos.y, pos.z };
 				soundManager.play3DSound("door",poss);
+				soundManager.setSoundVolume("door", 2.0f);
 			}
 		}
 	}
@@ -1070,6 +1075,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			Vector3 pos = gameLevel->GetL4Door()->GetTransform().GetPosition();
 			FMOD_VECTOR poss = { pos.x,pos.y, pos.z };
 			soundManager.play3DSound("door",poss);
+			soundManager.setSoundVolume("door", 2.0f);
 		}
 		GameObject* beginDet = gameLevel->GetBeginArea();
 		GameObject* trueEndDet = gameLevel->GetTrueEndArea();
@@ -1155,6 +1161,7 @@ void TutorialGame::UpdateLevel(float dt) {
 				gameState = End;
 				soundManager.stopSound("level4");
 				soundManager.playSound("end");
+				soundManager.setSoundVolume("end", 2.0f);
 			}
 		}
 	}
@@ -1299,10 +1306,6 @@ void TutorialGame::InitAudio() {
 		std::cout << "Failed to initialize SoundManager" << std::endl;
 	}
 	AddSound();
-	soundManager.setSoundVolume("walking", 0.4f);
-	soundManager.setSoundVolume("door", 2.0f);
-	soundManager.setSoundVolume("ghost", 0.1f);
-	soundManager.setSoundVolume("end", 2.0f);
 	/*previousPlayerPosition = player->GetTransform().GetPosition();*/
 	previousMainCameraPosition = world->GetMainCamera().GetPosition();
 }
@@ -1312,8 +1315,14 @@ void TutorialGame::PlayLevelBGM(const std::string& levelName) {
 		soundManager.stopSound(currentBGM);
 	}
 	currentBGM = levelName;
-	soundManager.setSoundVolume(currentBGM, 0.1f);
 	soundManager.playSound(currentBGM);
+	if (currentBGM == "level3") {
+		soundManager.setSoundVolume(currentBGM, 1.0f);
+	}
+	else {
+		soundManager.setSoundVolume(currentBGM, 0.4f);
+	}
+	
 }
 
 void TutorialGame::RollStone(GameObject* stone, const Vector3& forceDirection, float forceMagnitude) {

@@ -131,3 +131,18 @@ bool SoundManager::isSoundPlaying(const std::string& name) {
     }
     return false; 
 }
+
+void SoundManager::setSoundSpeed(const std::string& name, float speedFactor) {
+    if (!isInitialized) return;
+
+    auto it = channelLists.find(name);
+    if (it != channelLists.end()) {
+        for (FMOD::Channel* channel : it->second) {
+            if (channel) {
+                float originalFrequency;
+                channel->getFrequency(&originalFrequency); 
+                channel->setFrequency(originalFrequency * speedFactor); 
+            }
+        }
+    }
+}
