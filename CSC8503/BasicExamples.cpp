@@ -8,6 +8,7 @@
 using namespace NCL;
 using namespace CSC8503;
 
+
 BasicExamples::BasicExamples(GameTechRenderer* render) {
 
 	this->render = render; 

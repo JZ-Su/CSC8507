@@ -49,7 +49,7 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 
 	//LoadRankingFile();
 	//gameState = MainMenu;
-	gameState = Start;
+	gameState = MainMenu;
 	mainMenuState = MainMenu_Start;
 	gameMode = TimeLimited;
 }
@@ -74,10 +74,15 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-
-	if (PlayerPreHealth > player->GetHealth()) {
-		PlayerPreHealth -= 0.5f;
-	}	
+	if (player) {
+		if (PlayerPreHealth > player->GetHealth()) {
+			PlayerPreHealth -= 0.5f;
+		}
+		isWalking = player->GetIsWalk();
+		if (PlayerPreHealth < player->GetHealth()) {
+			PlayerPreHealth = player->GetHealth();
+		}
+	}
 	if (BossPrehHealth!= gameLevel->GetBoss()->getBossHealth()) {
 			BossPrehHealth -= 0.5f;
 	}
@@ -93,7 +98,6 @@ void TutorialGame::UpdateGame(float dt) {
 	if (lockedObject != nullptr) LockedObjectMovement(dt);
 	if (lockedObject == nullptr) Debug::Print("Press F to lock camera", Vector2(5, 80));
 	else Debug::Print("Press F to free camera", Vector2(5, 80));
-	isWalking = player->GetIsWalk();
 	/*playerPosition = player->GetTransform().GetPosition();*/
 	mainCameraPosition = world->GetMainCamera().GetPosition();
 	if (isWalking) {
@@ -125,9 +129,6 @@ void TutorialGame::UpdateGame(float dt) {
 	GameTechRenderer::UpdateUI();
 
 	if (!isDebug) SwitchLevel();
-	if (PlayerPreHealth < player->GetHealth()) {
-		PlayerPreHealth = player->GetHealth();
-	}
 }
 
 void TutorialGame::UpdateKeys(float dt) {
@@ -412,7 +413,9 @@ void TutorialGame::InitWorld() {
 	physics->Clear();
 	gameLevel = new GameLevel(renderer);
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
-	player = gameLevel->GetPlayer();
+	//player = gameLevel->GetPlayer();
+	playerlist = gameLevel->GetPlayerList();
+	//localplayer = gameLevel->GetPlayer();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
@@ -421,7 +424,7 @@ void TutorialGame::InitWorld() {
 	*/
 	isDebug = true;
 	//isDebug = false;
-	int debugLevel = 4;
+	int debugLevel = 1;
 
 	if (isDebug) {
 		switch (debugLevel)

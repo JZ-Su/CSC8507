@@ -23,6 +23,7 @@ struct MessagePacket : public GamePacket {
 };
 
 NetworkedGame::NetworkedGame()	{
+
 	thisServer = nullptr;
 	thisClient = nullptr;
 
@@ -34,12 +35,14 @@ NetworkedGame::NetworkedGame()	{
 	MenuSystem = new PushdownMachine(new MultiplayerMenu());
 	MenuSystem->SetGame(this);
 
-	InitialiseAssets();
+	serverPlayers.clear();
 	PlayersList.clear();
 	for (int i = 0; i < 4; ++i)
 	{
 		PlayersList.push_back(-1);
+		serverPlayers.push_back(nullptr);
 	}
+	InitialiseAssets();
 }
 
 NetworkedGame::~NetworkedGame()	{
@@ -97,9 +100,12 @@ void NetworkedGame::UpdateGame(float dt) {
 
 	if (thisServer) {
 		thisServer->UpdateServer();
+		ServerUpdatePlayerList();
+		SpawnPlayer();
 	}
 	else if (thisClient) {
 		thisClient->UpdateClient();
+		SpawnPlayer();
 	}
 
 	if (!thisServer && Window::GetKeyboard()->KeyPressed(KeyCodes::F9)) {
@@ -109,7 +115,7 @@ void NetworkedGame::UpdateGame(float dt) {
 		StartAsClient(127,0,0,1);
 	}
 
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q))
+	/*if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q))
 	{
 		if (lockedObject == nullptr) {
 			lockedObject = localPlayer;
@@ -119,7 +125,7 @@ void NetworkedGame::UpdateGame(float dt) {
 			lockedObject = nullptr;
 			Window::GetWindow()->ShowOSPointer(false);
 		}
-	}
+	}*/
 
 	TutorialGame::UpdateGame(dt);
 }
@@ -208,43 +214,43 @@ void NetworkedGame::UpdateMinimumState() {
 }
 
 void NetworkedGame::SpawnPlayer() {
-	serverPlayers.clear();
+	//serverPlayers.clear();
 	for (int i = 0; i < 4; ++i)
 	{
 		if (GetPlayerPeerID(i) != -1)
 		{
-			Vector3 pos;
-			switch (i)
-			{
-			case 0:
-				pos = Vector3(-188, 3, -188);
-				break;
-			case 1:
-				pos = Vector3(188, 3, -188);
-				break;
-			case 2:
-				pos = Vector3(-188, 3, 188);
-				break;
-			case 3:
-				pos = Vector3(188, 3, 188);
-				break;
+			if (serverPlayers[i] == nullptr) {
+				Vector3 pos;
+				switch (i)
+				{
+				case 0:
+					pos = Vector3(0, 10, 30);
+					break;
+				case 1:
+					pos = Vector3(2, 10, 30);
+					break;
+				case 2:
+					pos = Vector3(0, 10, 32);
+					break;
+				case 3:
+					pos = Vector3(2, 10, 32);
+					break;
+				}
+				serverPlayers[i] = AddNetPlayerToWorld(pos, i);
 			}
-			serverPlayers.push_back(AddNetPlayerToWorld(pos, i));
-		}
-		else
-		{
-			serverPlayers.push_back(nullptr);
 		}
 	}
 	if (isServer())
 	{
-		localPlayer = serverPlayers[0];
+		if(player != serverPlayers[0])
+			player = dynamic_cast<Player*>( serverPlayers[0]);
 	}
 	else if (isClient())
 	{
-		localPlayer = serverPlayers[GetClientPlayerNum()];
+		if (player != serverPlayers[GetClientPlayerNum()])
+			player = dynamic_cast<Player*>(serverPlayers[GetClientPlayerNum()]);
 	}
-	LockCameraToObject(localPlayer);
+	LockCameraToObject(player);
 }
 
 void NetworkedGame::StartLevel() {
@@ -256,6 +262,7 @@ void NetworkedGame::StartLevel() {
 	//for (int i = 0; i < 4; ++i) { scoreTable.push_back(0); }
 	//Change Round State
 	GlobalStateID = -1;
+	SpawnPlayer();
 	//RoundTime = 600.0f;
 	//roundDelayOver = false;
 	//delayTime = 0.6f;
@@ -370,53 +377,55 @@ void NetworkedGame::InitialiseAssets()
 	InitCamera();
 	InitAudio();
 	InitWorld();
-
-	//SpawnPlayer();
+	SpawnPlayer();
 }
 
 GameObject* NetworkedGame::AddNetPlayerToWorld(const Vector3& position, int playerNum)
 {
-	float meshSize = 2.0f;
-	Vector3 volumeSize = Vector3(1.0, 1.6, 1.0);
-	float inverseMass = 1.0f / 60.0f;
+	GameObject* thisplayer = playerlist[playerNum];
+	//float meshSize = 2.0f;
+	//Vector3 volumeSize = Vector3(1.0, 1.6, 1.0);
+	//float inverseMass = 1.0f / 60.0f;
 
-	NetworkPlayer* character = new NetworkPlayer(this, playerNum);
-	AABBVolume* volume = new AABBVolume(volumeSize);
+	//NetworkPlayer* character = new NetworkPlayer(this, playerNum);
+	//AABBVolume* volume = new AABBVolume(volumeSize);
 
-	character->SetBoundingVolume((CollisionVolume*)volume);
-	character->GetTransform()
-		.SetScale(Vector3(meshSize, meshSize, meshSize))
-		.SetPosition(position);
+	//character->SetBoundingVolume((CollisionVolume*)volume);
+	//character->GetTransform()
+	//	.SetScale(Vector3(meshSize, meshSize, meshSize))
+	//	.SetPosition(position);
 
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), charMesh, nullptr, basicShader));
-	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
-	character->SetNetworkObject(new NetworkObject(*character, playerNum));
+	//character->SetRenderObject(new RenderObject(&character->GetTransform(), charMesh, nullptr, basicShader));
+	//character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
+	thisplayer->SetNetworkObject(new NetworkObject(*thisplayer, playerNum));
 
-	character->GetPhysicsObject()->SetInverseMass(inverseMass);
-	character->GetPhysicsObject()->InitCubeInertia();
+	//character->GetPhysicsObject()->SetInverseMass(inverseMass);
+	//character->GetPhysicsObject()->InitCubeInertia();
 
-	world->AddGameObject(character);
-	networkObjects.insert(std::pair<int, NetworkObject*>(playerNum, character->GetNetworkObject()));
 
-	Vector4 colour;
-	switch (playerNum)
-	{
-	case 0:
-		colour = Debug::RED;
-		break;
-	case 1:
-		colour = Debug::BLUE;
-		break;
-	case 2:
-		colour = Debug::YELLOW;
-		break;
-	case 3:
-		colour = Debug::CYAN;
-		break;
-	}
-	character->GetRenderObject()->SetColour(colour);
+	world->AddGameObject(thisplayer);
+	return thisplayer;
+	//networkObjects.insert(std::pair<int, NetworkObject*>(playerNum, character->GetNetworkObject()));
 
-	return character;
+	//Vector4 colour;
+	//switch (playerNum)
+	//{
+	//case 0:
+	//	colour = Debug::RED;
+	//	break;
+	//case 1:
+	//	colour = Debug::BLUE;
+	//	break;
+	//case 2:
+	//	colour = Debug::YELLOW;
+	//	break;
+	//case 3:
+	//	colour = Debug::CYAN;
+	//	break;
+	//}
+	//character->GetRenderObject()->SetColour(colour);
+
+	//return character;
 }
 
 bool NetworkedGame::clientProcessFp(FullPacket* fp)

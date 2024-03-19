@@ -124,6 +124,8 @@ namespace NCL {
 
 			int score;
 			Player* player;
+			//Player* localplayer;
+			std::vector<Player*> playerlist;
 
 			Boss* boss;
 			GameObject* ghost;
