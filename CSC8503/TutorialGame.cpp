@@ -959,7 +959,6 @@ void TutorialGame::UpdateLevel(float dt) {
 			float distance = playerPosition.y - blocker->GetTransform().GetPosition().y - blocker->GetTransform().GetScale().y / 2;
 			if (distance < 2) {
 				player->GetPhysicsObject()->AddForce(-physics->GetGravity() * 0.2);
-				std::cout << "no gravity" << std::endl;
 			}
 		}
 	}
@@ -1005,7 +1004,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised() * 10 + Vector3(0, 5, 0), 4);
 			world->AddGameObject(rollingRock);
 			if (rollingRock) {
-				RollStone(rollingRock, currentDirection, 42000);
+				RollStone(rollingRock, currentDirection, 72000);
 				player->SetIsRollingRock(false);
 			}
 		}
@@ -1029,6 +1028,25 @@ void TutorialGame::UpdateLevel(float dt) {
 				FireBallBulletLogic(dt);
 			}
 
+		}
+		if (!iceCubeBullet->GetIsHiding()&& !gameLevel->GetBoss()->getShooting()) {
+			iceCubeBullet->GetPhysicsObject()->AddForce(Vector3(0, 15.0f, 0));
+			iceCubeBullet->UpdateExistenceTime(dt);
+			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
+			Vector3 ballPosition = iceCubeBullet->GetTransform().GetPosition();
+			//UpdateTrackingBall(ballPosition, playerPosition, 2, dt);
+			//if (iceCubeBullet->GetExistenceTime() >= 6.0f) {
+			if (!iceCubeBullet->GetIsBlockBack()) {
+				UpdateTrackingBall(ballPosition, playerPosition, 15, dt);
+				std::cout << "tracking" << std::endl;
+			}
+			if (iceCubeBullet->GetExistenceTime() >= 10.0f) {
+
+				gameLevel->GetBoss()->setHasIceCubeBullet(true);
+				iceCubeBullet->SetIsHiding(true, Vector3(20, -98, 0));
+				iceCubeBullet->GetPhysicsObject()->SetLinearVelocity(Vector3());
+				iceCubeBullet->SetIsBolckBack(false);
+			}
 		}
 		if (fireBallBullet->GetIsHiding() && iceCubeBullet->GetIsHiding()) {
 			boss->updateBulletTimer(dt);
@@ -1237,7 +1255,7 @@ void TutorialGame::IceCubeBulletLogic(float dt) {
 		std::cout << "Icecube bullet is coming!" << std::endl;
 	}
 	if (!iceCubeBullet->GetIsHiding()) {
-		iceCubeBullet->GetPhysicsObject()->AddForce(Vector3(0, 12.0f, 0));
+		iceCubeBullet->GetPhysicsObject()->AddForce(Vector3(0, 10.0f, 0));
 		iceCubeBullet->UpdateExistenceTime(dt);
 		Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 		Vector3 ballPosition = iceCubeBullet->GetTransform().GetPosition();
@@ -1245,6 +1263,7 @@ void TutorialGame::IceCubeBulletLogic(float dt) {
 		//if (iceCubeBullet->GetExistenceTime() >= 6.0f) {
 		if (!iceCubeBullet->GetIsBlockBack()) {
 			UpdateTrackingBall(ballPosition, playerPosition, 15, dt);
+			std::cout << "tracking" << std::endl;
 		}
 		if (iceCubeBullet->GetExistenceTime() >= 10.0f) {
 
@@ -1477,27 +1496,28 @@ void TutorialGame::UpdateLevel3UI() {
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
 		Vector3(0.5f, 0.95f, -1.0f) }, "bossframe", "health");
-}
-
 	GameTechRenderer::CreateGameUI({ Vector3(0.6, -0.5f, -1.0f),  Vector3(0.6, -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f, -1.0f) }, "skill", "skill");
 
 	if (progress <= 1) {
-		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power",progress);
+		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power", progress);
 	}
-	if (progress <= 2&&progress>1) {
-		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power",1);
-		GameTechRenderer::CreateGameUI({ Vector3(0.6625, -0.45f, -1.0f),  Vector3(0.6625, -0.48f, -1.0f),  Vector3(0.6775f, -0.48f, -1.0f),  Vector3(0.6775f, -0.45f, -1.0f) }, "power", "power",progress-1);
+	if (progress <= 2 && progress > 1) {
+		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power", 1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.6625, -0.45f, -1.0f),  Vector3(0.6625, -0.48f, -1.0f),  Vector3(0.6775f, -0.48f, -1.0f),  Vector3(0.6775f, -0.45f, -1.0f) }, "power", "power", progress - 1);
 	}
 	if (progress <= 3 && progress > 2) {
-		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power",1);
-		GameTechRenderer::CreateGameUI({ Vector3(0.6625, -0.45f, -1.0f),  Vector3(0.6625, -0.48f, -1.0f),  Vector3(0.6775f, -0.48f, -1.0f),  Vector3(0.6775f, -0.45f, -1.0f) }, "power", "power",1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power", 1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.6625, -0.45f, -1.0f),  Vector3(0.6625, -0.48f, -1.0f),  Vector3(0.6775f, -0.48f, -1.0f),  Vector3(0.6775f, -0.45f, -1.0f) }, "power", "power", 1);
 		GameTechRenderer::CreateGameUI({ Vector3(0.685, -0.45f, -1.0f),  Vector3(0.685, -0.48f, -1.0f),  Vector3(0.70f, -0.48f, -1.0f),  Vector3(0.70f, -0.45f, -1.0f) }, "power", "power", progress - 2);
 	}
 	if (progress <= 4 && progress > 3) {
-		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power",1);
-		GameTechRenderer::CreateGameUI({ Vector3(0.6625, -0.45f, -1.0f),  Vector3(0.6625, -0.48f, -1.0f),  Vector3(0.6775f, -0.48f, -1.0f),  Vector3(0.6775f, -0.45f, -1.0f) }, "power", "power",1);
-		GameTechRenderer::CreateGameUI({ Vector3(0.685, -0.45f, -1.0f),  Vector3(0.685, -0.48f, -1.0f),  Vector3(0.70f, -0.48f, -1.0f),  Vector3(0.70f, -0.45f, -1.0f) }, "power", "power",1);
-		GameTechRenderer::CreateGameUI({ Vector3(0.705, -0.45f, -1.0f),  Vector3(0.705, -0.48f, -1.0f),  Vector3(0.720f, -0.48f, -1.0f),  Vector3(0.720f, -0.45f, -1.0f) }, "power", "power",progress - 3);
+		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power", 1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.6625, -0.45f, -1.0f),  Vector3(0.6625, -0.48f, -1.0f),  Vector3(0.6775f, -0.48f, -1.0f),  Vector3(0.6775f, -0.45f, -1.0f) }, "power", "power", 1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.685, -0.45f, -1.0f),  Vector3(0.685, -0.48f, -1.0f),  Vector3(0.70f, -0.48f, -1.0f),  Vector3(0.70f, -0.45f, -1.0f) }, "power", "power", 1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.705, -0.45f, -1.0f),  Vector3(0.705, -0.48f, -1.0f),  Vector3(0.720f, -0.48f, -1.0f),  Vector3(0.720f, -0.45f, -1.0f) }, "power", "power", progress - 3);
 	}
 
 }
+
+
+	
