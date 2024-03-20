@@ -198,7 +198,7 @@ GameObject* BasicExamples::CreateBigWall(const Vector3& position, const Vector3&
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
-
+	cube->SetTag("wall");
 	return cube;
 }
 
@@ -223,7 +223,7 @@ GameObject* BasicExamples::CreateGreenWall(const Vector3& position, const Vector
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
-
+	cube->SetTag("wall");
 	return cube;
 }
 
