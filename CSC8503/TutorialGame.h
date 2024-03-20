@@ -109,9 +109,11 @@ namespace NCL {
 			GameObject* objClosest = nullptr;
 
 			GameLevel* gameLevel = nullptr;
+			GameObject* cameraCollision = nullptr;
 
 			int score;
 			Player* player;
+
 			//Player* localplayer;
 			std::vector<Player*> playerlist;
 
@@ -210,6 +212,8 @@ namespace NCL {
 			std::vector<GameObject*> propList;
 			float progress=0;
 			void UpdateLevel3UI();
+		
+
 		};
 	}
 }

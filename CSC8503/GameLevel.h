@@ -99,6 +99,7 @@ namespace NCL {
 		GameObject* beginArea;
 		GameObject* trueEndArea;
 		GameObject* falseEndArea;
+		
 		Door*		door;
 
 		vector<Level> level4_normal;

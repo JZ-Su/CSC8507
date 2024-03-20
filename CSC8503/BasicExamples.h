@@ -95,6 +95,7 @@ namespace NCL {
 
 		GhostAI* GetGhostai() const { return ghost; }
 		GhostAI* GetGhostai2() const { return ghost2; }
+		GameObject* getCamreaCollision() const { return cameraCollision; }
 
 	protected:
 		Mesh* cubeMesh = nullptr;
@@ -175,6 +176,7 @@ namespace NCL {
 
 		GhostAI* ghost;
 		GhostAI* ghost2;
-
+	
+		GameObject* cameraCollision;
 	};
 }

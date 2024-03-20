@@ -47,7 +47,7 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	controller.MapAxis(3, "XLook");
 	controller.MapAxis(4, "YLook");
 
-	gameState = MainMenu;
+	gameState = Start;
 	mainMenuState = MainMenu_Start;
 }
 /*
@@ -71,6 +71,9 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
+	Debug::DrawCollisionBox(player);
+	Debug::DrawCollisionBox(cameraCollision);
+
 	if (player) {
 		if (PlayerPreHealth > player->GetHealth()) {
 			PlayerPreHealth -= 0.5f;
@@ -83,7 +86,7 @@ void TutorialGame::UpdateGame(float dt) {
 	if (BossPrehHealth != gameLevel->GetBoss()->getBossHealth()) {
 		BossPrehHealth -= 0.5f;
 	}
-
+	
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
@@ -120,7 +123,7 @@ void TutorialGame::UpdateGame(float dt) {
 	UpdateKeys(dt);
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
-	physics->Update(dt);
+	//physics->Update(dt);
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
 	GameTechRenderer::UpdateUI();
@@ -198,6 +201,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	//forward is more tricky -  camera forward is 'into' the screen...
 	//so we can take a guess, and use the cross of straight up, and
 	//the right axis, to hopefully get a vector that's good enough!
+
 	Vector3 pos = lockedObject->GetTransform().GetPosition();
 	Quaternion ObjOrientation = lockedObject->GetTransform().GetOrientation();
 
@@ -224,6 +228,11 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Vector3 camdir = Mrot * Vector3(0, 0, -1);
 	Vector3 campos = targetpos - camdir * 20.0f;
 
+
+	cameraCollision->GetTransform().SetPosition(campos + Vector3(0,7,3));
+
+	physics->Update(dt);
+
 	/*Ray collisionRay = Ray(targetpos, -camdir);
 	RayCollision collisionRayData;
 	if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
@@ -231,11 +240,11 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		if (collisionRayData.rayDistance < 6)
 			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
 	}*/
-
+	
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
 		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 1.5);
-		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
+		player->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
@@ -316,7 +325,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		progress = 0;
 	}
 
-	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
+	Matrix4 viewMat = Matrix4::BuildViewMatrix(cameraCollision->GetTransform().GetPosition(), targetpos, Vector3(0, 1, 0)).Inverse();
 	Quaternion q(viewMat);
 	float pitch = q.ToEuler().x;
 	float yaw = q.ToEuler().y;
@@ -324,7 +333,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
 	lockedObject->GetTransform().SetOrientation(lookat);
 
-	world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));
+	world->GetMainCamera().SetPosition(cameraCollision->GetTransform().GetPosition()+Vector3(0,5,0));
 	world->GetMainCamera().SetPitch(pitch);
 	world->GetMainCamera().SetYaw(yaw);
 	//renderer.UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
@@ -431,12 +440,14 @@ void TutorialGame::InitWorld() {
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
+	cameraCollision = gameLevel->getCamreaCollision();
+
 	/*
 		Please switch the debug mode here
 	*/
 	isDebug = true;
 	//isDebug = false;
-	int debugLevel = 4;
+	int debugLevel = 1;
 
 	if (isDebug) {
 		switch (debugLevel)
@@ -507,53 +518,53 @@ letting you move the camera around.
 
 */
 bool TutorialGame::SelectObject() {
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
-		inSelectionMode = !inSelectionMode;
-		if (inSelectionMode) {
-			Window::GetWindow()->ShowOSPointer(true);
-			Window::GetWindow()->LockMouseToWindow(false);
-		}
-		else {
-			Window::GetWindow()->ShowOSPointer(false);
-			Window::GetWindow()->LockMouseToWindow(true);
-		}
-	}
-	if (inSelectionMode) {
-		Debug::Print("Press Q to change to camera mode!", Vector2(5, 85));
+	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
+	//	inSelectionMode = !inSelectionMode;
+	//	if (inSelectionMode) {
+	//		Window::GetWindow()->ShowOSPointer(true);
+	//		Window::GetWindow()->LockMouseToWindow(false);
+	//	}
+	//	else {
+	//		Window::GetWindow()->ShowOSPointer(false);
+	//		Window::GetWindow()->LockMouseToWindow(true);
+	//	}
+	//}
+	//if (inSelectionMode) {
+	//	Debug::Print("Press Q to change to camera mode!", Vector2(5, 85));
 
-		if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::Left)) {
-			if (selectionObject) {	//set colour to deselected;
-				selectionObject->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
-				selectionObject = nullptr;
-			}
+	//	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::Left)) {
+	//		if (selectionObject) {	//set colour to deselected;
+	//			selectionObject->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
+	//			selectionObject = nullptr;
+	//		}
 
-			Ray ray = CollisionDetection::BuildRayFromMouse(world->GetMainCamera());
+	//		Ray ray = CollisionDetection::BuildRayFromMouse(world->GetMainCamera());
 
-			RayCollision closestCollision;
-			if (world->Raycast(ray, closestCollision, true)) {
-				selectionObject = (GameObject*)closestCollision.node;
+	//		RayCollision closestCollision;
+	//		if (world->Raycast(ray, closestCollision, true)) {
+	//			selectionObject = (GameObject*)closestCollision.node;
 
-				selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		//if (Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::L)) {
-		//	if (selectionObject) {
-		//		if (lockedObject == selectionObject) {
-		//			lockedObject = nullptr;
-		//		}
-		//		else {
-		//			lockedObject = selectionObject;
-		//		}
-		//	}
-		//}
-	}
-	else {
-		Debug::Print("Press Q to change to select mode!", Vector2(5, 85));
-	}
+	//			selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
+	//			return true;
+	//		}
+	//		else {
+	//			return false;
+	//		}
+	//	}
+	//	//if (Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::L)) {
+	//	//	if (selectionObject) {
+	//	//		if (lockedObject == selectionObject) {
+	//	//			lockedObject = nullptr;
+	//	//		}
+	//	//		else {
+	//	//			lockedObject = selectionObject;
+	//	//		}
+	//	//	}
+	//	//}
+	//}
+	//else {
+	//	Debug::Print("Press Q to change to select mode!", Vector2(5, 85));
+	//}
 	return false;
 }
 
@@ -1353,8 +1364,8 @@ void TutorialGame::UpdateLevel3UI() {
 	float distance = 0.2;
 
 	for (int i = 0; i < itemList.size(); i++) {
-		GameTechRenderer::CreateGameUI({ Vector3(-0.35f + (i * distance), -0.83f, -1.0f), Vector3(-0.35f + (i * distance), -0.96f, -1.0f),
-		Vector3(-0.35f + (i * distance)+(0.2 * b), -0.96f, -1.0f), Vector3(-0.35f + (i * distance)+(0.2*b), -0.83f, -1.0f)}, itemList.at(i), "item");
+		GameTechRenderer::CreateGameUI({ Vector3(-0.36f + (i * distance), -0.83f, -1.0f), Vector3(-0.36f + (i * distance), -0.96f, -1.0f),
+		Vector3(-0.36f + (i * distance)+(0.2 * b), -0.96f, -1.0f), Vector3(-0.36f + (i * distance)+(0.2*b), -0.83f, -1.0f)}, itemList.at(i), "item");
 	}
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
