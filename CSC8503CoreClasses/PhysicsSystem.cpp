@@ -720,6 +720,13 @@ void PhysicsSystem::HandleItemCollisionLogic(GameObject* i, GameObject* j) {
 	if (j->GetTag() == "item" && i->GetTag() == "player") {
 		skipImpulseResolveCollision = true;
 	}
+	if (i->GetTag() != "wall" && j->GetTag() == "cameraCollision") {
+		skipImpulseResolveCollision = true;
+	}
+	if (j->GetTag() != "wall" && i->GetTag() == "cameraCollision") {
+		skipImpulseResolveCollision = true;
+	}
+
 }
 
 void PhysicsSystem::ParryBackBullet(GameObject* bullet, Player* player, Boss* boss) {
