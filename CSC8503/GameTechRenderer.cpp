@@ -203,7 +203,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	SetDebugStringBufferSizes(10000);
 	SetDebugLineBufferSizes(1000);
 
-	vector<char*> data(13, nullptr);
+	vector<char*> data(15, nullptr);
 	int width;
 	int height;
 	int channel;
@@ -211,8 +211,8 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	TextureLoader::LoadTexture("/UI/blood.png", data[0], width, height, channel, flag);
 	UImap["blood"] = data[0];
-	TextureLoader::LoadTexture("/UI/greenbottle.png", data[1], width, height, channel, flag);
-	UImap["greenbottle"] = data[1];
+	TextureLoader::LoadTexture("/UI/stone.png", data[1], width, height, channel, flag);
+	UImap["rollingrockprop"] = data[1];
 	TextureLoader::LoadTexture("/UI/redbottle.png", data[2], width, height, channel, flag);
 	UImap["redbottle"] = data[2];
 	TextureLoader::LoadTexture("/UI/inventory1.png", data[3], width, height, channel, flag);
@@ -231,10 +231,14 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	UImap["background"] = data[9];
 	TextureLoader::LoadTexture("/UI/movingblood.png", data[10], width, height, channel, flag);
 	UImap["changingblood"] = data[10];
-	TextureLoader::LoadTexture("/UI/skillCYCAL.png", data[11], width, height, channel, flag);
-	UImap["skill"] = data[11];
-	TextureLoader::LoadTexture("/UI/power.png", data[11], width, height, channel, flag);
-	UImap["power"] = data[11];
+	TextureLoader::LoadTexture("/UI/shield.png", data[11], width, height, channel, flag);
+	UImap["shieldprop"] = data[11];
+	TextureLoader::LoadTexture("/UI/speed.png", data[12], width, height, channel, flag);
+	UImap["speedprop"] = data[12];
+	TextureLoader::LoadTexture("/UI/skillCYCAL.png", data[13], width, height, channel, flag);
+	UImap["skill"] = data[13];
+	TextureLoader::LoadTexture("/UI/power.png", data[14], width, height, channel, flag);
+	UImap["power"] = data[14];
 }
 
 GameTechRenderer::~GameTechRenderer() {

@@ -46,6 +46,9 @@ namespace NCL {
 			void ShowEnd(float dt);
 			void ExecuteAttack(float dt);
 			
+			GameWorld* GetWorld() {
+				return world;
+			}
 		protected:
 			bool isDebug;
 
@@ -156,6 +159,7 @@ namespace NCL {
 			void UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAnimation, MeshAnimation* playerWalkAnimation, float dt);
 			void UpdateGhostAnim(GameObject* ghost, MeshAnimation* ghostAnimation, float dt);
 			void UpdateTrackingBall(Vector3 ballPosition,const Vector3& playerPosition, float speed, float dt);
+			Vector3 GenerateRandomPropPositionInBounds(const Vector3& minBound, const Vector3& maxBound);
 			void IceCubeBulletLogic(float dt);
 			void FireBallBulletLogic(float dt);
 
@@ -201,6 +205,10 @@ namespace NCL {
 			bool playShootingAnimation = false;
 			float hitBackTimer = 0.0f;
 			const float hitBackDuration = 1.0f;
+			float meleeAttackedTimer = 0.0f;
+			const float meleeAttackedDuration = 1.0f;
+			float propSpawnTimer = 0.0f;
+			float propSpawnCooldown = 3.5f;
 			static std::vector<std::string> itemList;
 
 			SoundManager soundManager;
