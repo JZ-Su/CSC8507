@@ -71,8 +71,8 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-	Debug::DrawCollisionBox(player);
-	Debug::DrawCollisionBox(cameraCollision);
+	//Debug::DrawCollisionBox(player);
+	//Debug::DrawCollisionBox(cameraCollision);
 
 	if (player) {
 		if (PlayerPreHealth > player->GetHealth()) {
@@ -144,7 +144,7 @@ void TutorialGame::UpdateGame(float dt) {
 	UpdateKeys(dt);
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
-	//physics->Update(dt);
+	physics->Update(dt);
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
 	GameTechRenderer::UpdateUI();
@@ -250,9 +250,9 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Vector3 campos = targetpos - camdir * 20.0f;
 
 
-	cameraCollision->GetTransform().SetPosition(campos + Vector3(0, 7, 3));
+	//cameraCollision->GetTransform().SetPosition(campos + Vector3(0, 7, 3));
 
-	physics->Update(dt);
+	//physics->Update(dt);
 
 	/*Ray collisionRay = Ray(targetpos, -camdir);
 	RayCollision collisionRayData;
@@ -335,7 +335,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		progress = 0;
 	}
 
-	Matrix4 viewMat = Matrix4::BuildViewMatrix(cameraCollision->GetTransform().GetPosition(), targetpos, Vector3(0, 1, 0)).Inverse();
+	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();/*cameraCollision->GetTransform().GetPosition()*/
 	Quaternion q(viewMat);
 	float pitch = q.ToEuler().x;
 	float yaw = q.ToEuler().y;
@@ -343,7 +343,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
 	lockedObject->GetTransform().SetOrientation(lookat);
 
-	world->GetMainCamera().SetPosition(cameraCollision->GetTransform().GetPosition()+Vector3(0,5,0));
+	world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));/*cameraCollision->GetTransform().GetPosition()+Vector3(0,5,0)*/
 	world->GetMainCamera().SetPitch(pitch);
 	world->GetMainCamera().SetYaw(yaw);
 	//renderer.UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
@@ -450,7 +450,7 @@ void TutorialGame::InitWorld() {
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
-	cameraCollision = gameLevel->getCamreaCollision();
+	//cameraCollision = gameLevel->getCamreaCollision();
 
 	/*
 		Please switch the debug mode here

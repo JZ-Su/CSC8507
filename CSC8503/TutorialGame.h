@@ -112,7 +112,7 @@ namespace NCL {
 			GameObject* objClosest = nullptr;
 
 			GameLevel* gameLevel = nullptr;
-			GameObject* cameraCollision = nullptr;
+			//GameObject* cameraCollision = nullptr;
 
 			int score;
 			Player* player;

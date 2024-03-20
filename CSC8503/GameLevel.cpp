@@ -17,20 +17,15 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 
 void GameLevel::CreateGeneric() {
 	player = CreatePlayer(Vector3(0, 4, 0), Vector3(2, 2, 2), 5.0f);
-	/*player = CreatePlayer(Vector3(0, 10, 30), Vector3(2, 2, 2), 45.0f);
-	playerList.push_back(player);*/
 	/*for (int i = 0; i < 4; i++) {
 		Player* playertemp = CreatePlayer(Vector3((0 + i) * 2, 10, 30), Vector3(2, 2, 2), 45.0f);
 		playerList.push_back(playertemp);
 	}
-	
 	player = playerList[0];*/
 	Generic.AddObject(player);
-	cameraCollision = CreateAABB(Vector3(), Vector3(1, 1, 1), 10.0f);
-	cameraCollision->SetTag("cameraCollision");
-	Generic.AddObject(cameraCollision);
-	//Level 4 player: 
-	//Generic.AddObject(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
+	//cameraCollision = CreateAABB(Vector3(0, 50, 0), Vector3(1, 1, 1), 10.0f);
+	//cameraCollision->SetTag("cameraCollision");
+	//Generic.AddObject(cameraCollision);
 }
 
 void GameLevel::AddLevelToWorld(GameWorld* world, Level l) {
@@ -119,7 +114,7 @@ vector<GameObject*> GameLevel::CreatePortal(const Vector3& position) {
 	vec.push_back(CreateCube(position + Vector3(0, 7, 0),     Vector3(5, 1, 1),   0.0f));
 	vec.push_back(CreateCube(position, Vector3(4, 7, 0.1), 0.0f));
 	vec.back()->SetCollisionResponse(false);
-	vec.back()->GetRenderObject()->SetColour(Debug::GREEN);
+	vec.back()->GetRenderObject()->SetColour(Vector4(0.3, 0.8, 1.0, 1.0));
 	for (const auto& ele : vec) {
 		ele->GetRenderObject()->SetDefaultTexture(nullptr, 0);
 	}
@@ -148,10 +143,10 @@ void GameLevel::CreateLevel1() {
 	level1.AddObject(CreateAABB(Vector3(80, 5, -56), Vector3(20, 5, 44), 0));
 	level1.AddObject(CreateAABB(Vector3(0, 5, 45), Vector3(40, 5, 55), 0.0f));
 	level1.AddObject(CreateAABB(Vector3(0, 15, 90), Vector3(40, 5, 10), 0.0f));
-	level1.AddObject(CreateAABB(Vector3(0, 25, 95), Vector3(20, 5, 5.1), 0.0f));
+	//level1.AddObject(CreateAABB(Vector3(0, 25, 95), Vector3(20, 5, 5.1), 0.0f));
 	level1.AddObject(CreateLayer(Vector3(0, 0, 41), Vector3(40, 10, 45), 0.0f));
-	level1.AddObject(CreateLayer(Vector3(0, 10, 125), Vector3(40, 10, 40), 0.0f));
-	level1.AddObject(CreateLayer(Vector3(0, 20, 112), Vector3(20, 10, 20), 0.0f));
+	level1.AddObject(CreateLayer(Vector3(0, 0, 125), Vector3(40, 20, 40), 0.0f));
+	//level1.AddObject(CreateLayer(Vector3(0, 20, 112), Vector3(20, 10, 20), 0.0f));
 	level1.AddObject(CreateLayer(Vector3(-100, 0, -51), Vector3(40, 10, 45), 0.0f));
 	level1.AddObject(CreateLayer(Vector3(100, 0, -51), Vector3(40, 10, 45), 0.0f));
 	
@@ -199,7 +194,7 @@ void GameLevel::CreateLevel1() {
 
 	level1.AddObject(ghost = CreateGhostAI(Vector3(-85,10,-30), Vector3(5, 5, 5),player, 0.0f,Vector3(-85, 10, -20),Vector3(-85,10,-70)));
 	level1.AddObject(ghost2 = CreateGhostAI(Vector3(85, 10, -30), Vector3(5, 5, 5), player, 0.0f, Vector3(85, 10, -20), Vector3(85, 10, -70)));
-	vector<GameObject*> port = CreatePortal(Vector3(0, 35, 100));
+	vector<GameObject*> port = CreatePortal(Vector3(0, 25, 100));
 	level1.AddObject(port);
 	level1.portal = level1.objectList.back();
 }
@@ -1351,10 +1346,10 @@ void GameLevel::CreateLevel1_Columns() {
 }
 
 void GameLevel::CreateLevel1_Stairs() {
-	level1.AddObject(CreateStairs(Vector3(30, 20, 95), Vector3(1.25, 2, 1.25), 0.0f, Vector3(0, 1, 0), 90));
-	level1.AddObject(CreateCubeOBB(Vector3(20, 15.9, 95), Vector3(10, 10, 5), 0.0f, Vector3(0, 0, 1), -45));
-	level1.AddObject(CreateStairs(Vector3(-30, 20, 95), Vector3(1.25, 2, 1.25), 0.0f, Vector3(0, 1, 0), -90));
-	level1.AddObject(CreateCubeOBB(Vector3(-20, 15.9, 95), Vector3(10, 10, 5), 0.0f, Vector3(0, 0, 1), 45));
+	//level1.AddObject(CreateStairs(Vector3(30, 20, 95), Vector3(1.25, 2, 1.25), 0.0f, Vector3(0, 1, 0), 90));
+	//level1.AddObject(CreateCubeOBB(Vector3(20, 15.9, 95), Vector3(10, 10, 5), 0.0f, Vector3(0, 0, 1), -45));
+	//level1.AddObject(CreateStairs(Vector3(-30, 20, 95), Vector3(1.25, 2, 1.25), 0.0f, Vector3(0, 1, 0), -90));
+	//level1.AddObject(CreateCubeOBB(Vector3(-20, 15.9, 95), Vector3(10, 10, 5), 0.0f, Vector3(0, 0, 1), 45));
 
 	level1.AddObject(CreateStairs(Vector3(35, 10, 64), Vector3(1.25, 2, 2), 0.0f, Vector3(0, 1, 0), 180));
 	level1.AddObject(CreateCubeOBB(Vector3(35, 6.35, 76.4), Vector3(5, 10, 10), 0.0f, Vector3(1, 0, 0), -30));
@@ -1372,8 +1367,8 @@ void GameLevel::CreateLevel1_Stairs() {
 }
 
 void GameLevel::CreateLevel1_Handrail() {
-	level1.AddObject(CreateHandrail(Vector3(8.2, 33.5, 91), 0.0f, Vector3(0, 1, 0), 0));
-	level1.AddObject(CreateHandrail(Vector3(-8.2, 33.5, 91), 0.0f, Vector3(0, 1, 0), 180));
+	//level1.AddObject(CreateHandrail(Vector3(8.2, 33.5, 91), 0.0f, Vector3(0, 1, 0), 0));
+	//level1.AddObject(CreateHandrail(Vector3(-8.2, 33.5, 91), 0.0f, Vector3(0, 1, 0), 180));
 	level1.AddObject(CreateHandrail(Vector3(8, 23.5, 81), 0.0f, Vector3(0, 1, 0), 0));
 	level1.AddObject(CreateHandrail(Vector3(24, 23.5, 81), 0.0f, Vector3(0, 1, 0), 0));
 	level1.AddObject(CreateHandrail(Vector3(-8, 23.5, 81), 0.0f, Vector3(0, 1, 0), 180));

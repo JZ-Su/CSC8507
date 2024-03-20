@@ -96,7 +96,7 @@ namespace NCL {
 
 		GhostAI* GetGhostai() const { return ghost; }
 		GhostAI* GetGhostai2() const { return ghost2; }
-		GameObject* getCamreaCollision() const { return cameraCollision; }
+		//GameObject* getCamreaCollision() const { return cameraCollision; }
 
 		void ExportToObj(const Mesh& mesh, const std::string& filename);
 
@@ -185,6 +185,6 @@ namespace NCL {
 		GhostAI* ghost;
 		GhostAI* ghost2;
 	
-		GameObject* cameraCollision;
+		//GameObject* cameraCollision;
 	};
 }
