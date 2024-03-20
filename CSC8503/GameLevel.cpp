@@ -26,7 +26,8 @@ void GameLevel::CreateGeneric() {
 	
 	player = playerList[0];*/
 	Generic.AddObject(player);
-	cameraCollision = CreateCube(Vector3(), Vector3(1, 1, 1), 10.0f);
+	cameraCollision = CreateAABB(Vector3(), Vector3(1, 1, 1), 10.0f);
+	cameraCollision->SetTag("cameraCollision");
 	Generic.AddObject(cameraCollision);
 	//Level 4 player: 
 	//Generic.AddObject(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
