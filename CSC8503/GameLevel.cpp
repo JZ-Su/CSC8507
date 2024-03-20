@@ -16,7 +16,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {
-	player = CreatePlayer(Vector3(0, 10, 30), Vector3(2, 2, 2), 45.0f);
+	player = CreatePlayer(Vector3(0, 4, 135), Vector3(2, 2, 2), 5.0f);
 	Generic.AddObject(player);
 	//Level 4 player: 
 	//Generic.AddObject(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
@@ -300,7 +300,13 @@ void GameLevel::CreateLevel3() {
 	level3.AddObject(CreateBigWall(Vector3(100, 30, 0), Vector3(2, 30, 100), 0.0f));
 	level3.AddObject(CreateBigWall(Vector3(-100, 30, 0), Vector3(2, 30, 100), 0.0f));
 	level3.AddObject(CreateBigWall(Vector3(0, 30, -100), Vector3(100, 30, 2), 0.0f));
-	level3.AddObject(CreateBigWall(Vector3(0, 30, 100), Vector3(100, 30, 2), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(60, 30, 100), Vector3(40, 30, 2), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(-60, 30, 100), Vector3(40, 30, 2), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(-22, 30, 138), Vector3(2, 30, 40), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(22, 30, 138), Vector3(2, 30, 40), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(0, 30, 178), Vector3(20, 30, 2), 0.0f));
+	vector<GameObject*> port = CreatePortal(Vector3(0, 7, 170));
+	//level3.AddObject(CreateBigWall(Vector3(0, 30, 100), Vector3(100, 30, 2), 0.0f));
 	//level3.AddObject(CreateCube(Vector3(0, 0, 0), Vector3(5, 5, 5), 0.0f));
 
 	//player = CreateSphere(Vector3(20, 5, 20), 5, 0.0f);
@@ -308,6 +314,7 @@ void GameLevel::CreateLevel3() {
 	//testAI = CreateAItest(Vector3(0, 0, 0), Vector3(5, 5, 5), player, 0.0f);
 	//level3.AddObject(testAI);
 	level3.AddObject(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
+	level3.AddObject(CreateFloor(Vector3(0, -2,140), Vector3(20, 2, 40), 0.0f));
 	//level3.AddObject(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
 	//BossBehaviourTree(boss,player);
 	//
@@ -319,12 +326,15 @@ void GameLevel::CreateLevel3() {
 	level3.AddObject(iceCubeBullet);
 	level3.AddObject(fireBallBullet);
 	level3.AddObject(shield = CreateShield(Vector3(0, -30, 20), Vector3(1, 1, 1), 5.0f));
+
+	level3.AddObject(CreateRollingRockProp(Vector3(4, 3, 110), 0.5));
+	level3.AddObject(CreateShieldProp(Vector3(8, 3, 110), Vector3(1, 1, 1)));
+	level3.AddObject(CreateShieldProp(Vector3(-8, 3, 110), Vector3(1, 1, 1)));
+	level3.AddObject(CreateSpeedProp(Vector3(-4, 3, 110), Vector3(8, 8, 8)));
+
 	// level3.AddObject(boss);
 	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/
 
-	level3.AddObject(CreatRedbottle(Vector3(10, -2, 10), Vector3(3, 3, 3), 0.0f));
-
-	vector<GameObject*> port = CreatePortal(Vector3(90, 7, 90));
 	level3.AddObject(port);
 	level3.portal = level3.objectList.back();
 }

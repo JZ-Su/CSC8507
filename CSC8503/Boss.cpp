@@ -117,7 +117,7 @@ Boss::Boss(Player* player) {
 				Debug::DrawLine(GetTransform().GetPosition(), this->player->GetTransform().GetPosition(), Debug::RED);
 				Debug::DrawCollisionBox(this);
 				Debug::DrawCollisionBox(this->player);
-				if (bulletTimer > 7.0F) {
+				if (bulletTimer > 12.0F) {
 					isShooting = true;
 				}
 				//std::cout << "remote attacking" << std::endl;

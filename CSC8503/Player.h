@@ -9,7 +9,7 @@ namespace NCL {
 		public:
 			
 
-			Player( const std::string& objectname = "");
+			Player(const std::string& objectname = "");
 			~Player();
 			void UpdatePlayer(float dt);
 			float  GetHealth()
@@ -100,6 +100,24 @@ namespace NCL {
 			bool getIsBeingHitBack() {
 				return isBeingHitBack;
 			}
+			bool getIsProtected() {
+				return isProtected;
+			}
+			void SetIsProtected(bool IsProtected) {
+				isProtected = IsProtected;
+			}
+			bool getIsRollingRock() {
+				return isRollingRock;
+			}
+			void SetIsRollingRock(bool IsRollingRock) {
+				isRollingRock = IsRollingRock;
+			}
+			bool getIsMeleeAttacked() {
+				return isMeleeAttacked;
+			}
+			void SetIsMeleeAttacked(bool IsMeleeAttacked) {
+				isMeleeAttacked = IsMeleeAttacked;
+			}
 			//bool updateJumpTimer(float dt);
 			float updateTimer(float dt);
 			float updateHealth(float inhealth);
@@ -115,7 +133,8 @@ namespace NCL {
 
 			void UseItem(int i);
 			static const std::vector<std::string>& GetItemList() { return itemList; }
-
+			static int GetItemListSize() { return itemList.size(); }
+			static std::vector<std::string> itemList;
 		protected:
 			bool isRencentlyHurt;
 			float health;
@@ -128,9 +147,12 @@ namespace NCL {
 			bool isJumping = false;
 			bool isAccelerated = false;
 			bool isBeingHitBack = false;
+			bool isProtected = false;
+			bool isRollingRock = false;
+			bool isMeleeAttacked = false;
 			//add timer
 			int prehealth;
-			static std::vector<std::string> itemList;
+
 		};
 	}
 }

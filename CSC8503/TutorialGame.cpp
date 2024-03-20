@@ -128,7 +128,6 @@ void TutorialGame::UpdateGame(float dt) {
 	if (PlayerPreHealth < player->GetHealth()) {
 		PlayerPreHealth = player->GetHealth();
 	}
-	std::cout << currentLevel << std::endl;
 }
 
 void TutorialGame::UpdateKeys(float dt) {
@@ -234,21 +233,21 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*3): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*1.5);
+		player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*30): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*15);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 1.5);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 15);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis* 1.5);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis* 15);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(rightAxis* 1.5);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(rightAxis* 15);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
@@ -267,40 +266,31 @@ void TutorialGame::LockedObjectMovement(float dt) {
 			}
 		}
 		player->SetIsWalk(false);
-		if (!player->getIsBeingHitBack()){ player->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0)); }
+		if (!player->getIsBeingHitBack()&& !player->getIsMeleeAttacked()) {
+			float velocityY = player->GetPhysicsObject()->GetLinearVelocity().y;
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3(0, velocityY, 0));
+		}
 
 	}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM1)) {
 		player->UseItem(0);
-		gameLevel->GetBoss()->decreaseBossHealth(20);
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM2)) {
-		//player->UseItem(1);
-		gameLevel->GetShield()->SetIsNotHiding();
+		player->UseItem(1);
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM3)) {
-		//player->UseItem(2);
-		if (gameLevel == nullptr) {
-			return;
-		}
-		Quaternion playerQuaternion = player->GetTransform().GetOrientation();
-		Vector3 defaultForward = Vector3(0, 0, -1);
-		Vector3 currentDirection = playerQuaternion * defaultForward;
-		rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised()*10+Vector3(0,5,0), 4);
-		world->AddGameObject(rollingRock);
-		if (rollingRock) {	
-			RollStone(rollingRock, currentDirection, 42000);
-		}
+		player->UseItem(2);
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM4)) {
-		speedProp = gameLevel->CreateSpeedProp(Vector3(0, 5, 65), Vector3(16, 16, 16));
+		player->UseItem(3);
+		//speedProp = gameLevel->CreateSpeedProp(Vector3(0, 5, 65), Vector3(16, 16, 16));
 
-		world->AddGameObject(speedProp);
+		//world->AddGameObject(speedProp);
 
-		propList.push_back(speedProp);
+		//propList.push_back(speedProp);
 
-		player->SetIsAccelerated(true);
+		//player->SetIsAccelerated(true);
 	}
 
 
@@ -420,16 +410,16 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	//isDebug = true;
-	isDebug = false;
-	int debugLevel = 1;
+	isDebug = true;
+	//isDebug = false;
+	int debugLevel =3;
 
 	if (isDebug) {
 		switch (debugLevel)
 		{
 		case 1:
 			//Level 1
-			currentLevel = 2;
+			currentLevel = 4;
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 			ghostai = gameLevel->GetGhostai();
 			ghostai2 = gameLevel->GetGhostai2();
@@ -437,7 +427,7 @@ void TutorialGame::InitWorld() {
 			break;
 		case 2:
 			//Level 2
-			currentLevel = 4;
+			currentLevel = 2;
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 			break;
 		case 3:
@@ -458,6 +448,7 @@ void TutorialGame::InitWorld() {
 			fireBallBullet = gameLevel->getFireBallBullet();
 			PlayerPreHealth = player->GetHealth();
 			BossPrehHealth = gameLevel->GetBoss()->getBossHealth();
+
 			break;
 		case 4:
 			//Level 4 initial function
@@ -1024,7 +1015,6 @@ void TutorialGame::SwitchLevel() {
 			boss = gameLevel->GetBoss();
 			shield = gameLevel->GetShield();
 			bossAnimation = gameLevel->getBossAnimation();
-			shield = gameLevel->GetShield();
 			iceCubeBullet = gameLevel->getIceCubeBullet();
 			bossCheersAnimation = gameLevel->getBossCheersAnimation();
 			bossShootingAnimation = gameLevel->getBossShootingAnimation();
@@ -1068,6 +1058,22 @@ void TutorialGame::UpdateLevel(float dt) {
 	player->UpdatePlayer(dt);
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
+	Vector3 playerPosition;
+	playerPosition = player->GetTransform().GetPosition() + Vector3(0,1,0);
+	Vector3 direction = Vector3(0, -1, 0);
+	Ray ray = Ray(playerPosition, direction);
+	RayCollision closestCollision;
+	//closestCollision.rayDistance = gameLevel->GetBoss()->attackRange;
+	if (world->Raycast(ray, closestCollision, true)) {
+		GameObject* blocker = (GameObject*)closestCollision.node;
+		if (blocker->GetName() == "floor"|| blocker->GetName() == "aabb") {
+			float distance = playerPosition.y - blocker->GetTransform().GetPosition().y - blocker->GetTransform().GetScale().y / 2;
+			if (distance < 2) {
+				player->GetPhysicsObject()->AddForce(-physics->GetGravity() * 0.2);
+				std::cout << "no gravity" << std::endl;
+			}
+		}
+	}
 	// Level 1 stuff
 	if (currentLevel == 4) {
 		ghostai->Update(dt);
@@ -1093,9 +1099,24 @@ void TutorialGame::UpdateLevel(float dt) {
 	}
 	// Level 3
 	else if (currentLevel == 6) {
-
 		gameLevel->GetBoss()->Update(dt);
 		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
+		propSpawnTimer += dt;
+		if (propSpawnTimer > propSpawnCooldown) {
+			GenerateRandomPropPositionInBounds(Vector3(-80, 1, -80), Vector3(80, 1, 80));
+			propSpawnTimer = 0.0f;
+		}
+		if (player->getIsRollingRock()) {
+			Quaternion playerQuaternion = player->GetTransform().GetOrientation();
+			Vector3 defaultForward = Vector3(0, 0, -1);
+			Vector3 currentDirection = playerQuaternion * defaultForward;
+			rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised() * 10 + Vector3(0, 5, 0), 4);
+			world->AddGameObject(rollingRock);
+			if (rollingRock) {
+				RollStone(rollingRock, currentDirection, 42000);
+				player->SetIsRollingRock(false);
+			}
+		}
 		if (player->getIsAccelerated()) {
 			speedPropTimer += dt;
 			if (speedPropTimer > speedPropDuration) {
@@ -1108,12 +1129,10 @@ void TutorialGame::UpdateLevel(float dt) {
 		}
 		if (gameLevel->GetBoss()->getShooting()) {
 			if (boss->getNextBullet() == 0) {
-				// 发射冰块子弹
 				gameLevel->GetBoss()->setIsShootingIceCube(true);
 				IceCubeBulletLogic(dt);
 			}
 			else {
-				// 发射火球子弹
 				gameLevel->GetBoss()->setIsShootingFireBall(true);
 				FireBallBulletLogic(dt);
 			}
@@ -1125,12 +1144,16 @@ void TutorialGame::UpdateLevel(float dt) {
 		if (gameLevel->GetBoss()->getIsAttack()) {
 			ExecuteAttack(dt);
 		}
+		if (player->getIsProtected()) {
+			gameLevel->GetShield()->SetIsNotHiding();
+		}
 		if (!gameLevel->GetShield()->GetIsHiding()) {
 			Debug::DrawCollisionBox(shield);
 			UpdateShieldPosition(dt);
 			shieldPropTimer += dt;
 			if (shieldPropTimer > shieldPropDuration) {
 				gameLevel->GetShield()->SetIsHiding(true, Vector3(0, -65, 30));
+				player->SetIsProtected(false);
 				shieldPropTimer = 0.0f;
 			}
 		}
@@ -1138,7 +1161,14 @@ void TutorialGame::UpdateLevel(float dt) {
 			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 			Vector3 bossPosition = boss->GetTransform().GetPosition();
 			Vector3 hurtDirection = (playerPosition - bossPosition).Normalised();
-			player->GetPhysicsObject()->AddForce(hurtDirection * 50);
+			player->GetPhysicsObject()->AddForce(hurtDirection * 500);
+			player->SetIsRencentlyHurt(false);
+		}
+		else if (player->getIsRencentlyHurt() && player->getIsMeleeAttacked()) {
+			Vector3 playerPosition = player->GetTransform().GetPosition();
+			Vector3 bossPosition = boss->GetTransform().GetPosition();
+			Vector3 hurtDirection = (playerPosition - bossPosition).Normalised();
+			player->GetPhysicsObject()->AddForce(hurtDirection * 2000);
 			player->SetIsRencentlyHurt(false);
 		}
 		if (player->getIsBeingHitBack()) {
@@ -1146,6 +1176,13 @@ void TutorialGame::UpdateLevel(float dt) {
 			if (hitBackTimer > hitBackDuration) {
 				player->SetIsBeingHitBack(false);
 				hitBackTimer = 0.0f;
+			}
+		}
+		else if (player->getIsMeleeAttacked()) {
+			meleeAttackedTimer += dt;
+			if (meleeAttackedTimer > meleeAttackedDuration) {
+				player->SetIsMeleeAttacked(false);
+				meleeAttackedTimer = 0.0f;
 			}
 		}
 		if (fireBallBullet->GetIsBlockBack()) {
@@ -1211,7 +1248,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			}
 			score++;
 			mapIndex = static_cast<int>(RandomValue(-4, 5));
-			std::cout << mapIndex << std::endl;
+			//std::cout << mapIndex << std::endl;
 			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
 			hasRotation = !hasRotation;
 		}
@@ -1313,9 +1350,9 @@ void TutorialGame::ExecuteAttack(float dt) {
 		if (closestCollision.node == player) {
 			if (playerIsHit) {
 				player->updateHealth(-4);
-				std::cout << "now player health is " << player->GetHealth() << std::endl;
 				player->SetIsRencentlyHurt(true);
-				player->SetIsBeingHitBack(true);
+				//player->SetIsBeingHitBack(true);
+				player->SetIsMeleeAttacked(true);
 				playerIsHit = false;
 			}
 		}
@@ -1431,14 +1468,47 @@ void TutorialGame::UpdateShieldPosition(float dt) {
 	shield->GetTransform().SetPosition(Vector3(x, y, z));
 }
 
+Vector3 TutorialGame::GenerateRandomPropPositionInBounds(const Vector3& minBound, const Vector3& maxBound) {
+
+	srand(static_cast<unsigned int>(time(nullptr)));
+
+	int randomNumber = rand() % 4;
+
+	float x = std::rand() % 181 - 90; 
+	float y = 3;  
+	float z = std::rand() % 181 - 90;  
+	GameObject* speedProp = nullptr;
+	GameObject* shieldProp = nullptr;
+	GameObject* rollingRockProp = nullptr;
+	GameObject* redBottleProp = nullptr; 
+	switch (randomNumber) {
+	case 0:
+		speedProp = gameLevel->CreateSpeedProp(Vector3(x, y, z), Vector3(8, 8, 8));
+		world->AddGameObject(speedProp);
+		break;
+	case 1:
+		shieldProp = gameLevel->CreateShieldProp(Vector3(x, y, z), Vector3(1, 1, 1));
+		world->AddGameObject(shieldProp);
+		break;
+	case 2:
+		rollingRockProp = gameLevel->CreateRollingRockProp(Vector3(x, y, z), 0.5);
+	    world->AddGameObject(rollingRockProp);
+		break;
+	case 3:
+		redBottleProp = gameLevel->CreateRedBottleProp(Vector3(x, y, z), Vector3(2, 2, 2));
+		world->AddGameObject(redBottleProp);
+		break;
+	}
+	
+	return Vector3(x, y, z);
+}
+
 void TutorialGame::UpdateLevel3UI() {
 	health = (100.0f - (player->GetHealth())) * 0.008f;
 	healthLength = (100 - PlayerPreHealth) * 0.008f;
 
 	bosshealth = (100.0f - (gameLevel->GetBoss()->getBossHealth())) * 0.01f;
 
-	std::cout << "boss:" << bosshealth << std::endl;
-	std::cout << "player:" << health << std::endl;
 	BossHealthLendth = (100 - BossPrehHealth) * 0.01; 
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f, -0.8f, -1.0f), Vector3(0.4f, -0.75f, -1.0f) }, "background", "health");
@@ -1474,7 +1544,5 @@ void TutorialGame::UpdateLevel3UI() {
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
 		Vector3(0.5f, 0.95f, -1.0f) }, "bossframe", "health");
-
-
-
 }
+
