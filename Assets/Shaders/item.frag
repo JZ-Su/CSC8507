@@ -35,32 +35,9 @@ void main(void)
 	vec4 albedo = IN.colour;
 
 	vec2 uv = IN.texCoord;
-	float height = 0.0;
-//	if(hasTexture) {
-//		height = texture(heightTex, uv).r;
-//		uv = uv - (0.5 - height) * viewTangent.xy * 0.01f;
-//	}
 
 	vec3 normal = IN.normal;
-//	if(hasTexture) {
-//		normal = texture(normalTex, uv).rgb;
-//		normal = normalize(normal * 2.0 - 1.0);
-//		normal.xy = normal.xy * 1;
-//		normal = normalize(TBN * normal);
-//	}
 
-	float metal = 0.0;
-	//if(hasTexture) {
-		//metal = texture(metalTex, uv).r;
-	//}
-	float roughness = 1.0;
-	//if(hasTexture) {
-		//roughness = texture(roughTex, uv).r;
-	//}
-	vec4 aoCol = vec4(1.0, 1.0, 1.0, 1.0);
-//	if(hasTexture) {
-//		vec4 aoCol = texture(aoTex,uv);
-//	}
 	if(hasTexture) {
 	 albedo *= texture(mainTex, uv);
 	}
@@ -70,17 +47,10 @@ void main(void)
 	fresnel = pow(fresnel, 2) * 3;
 
 	fragColor[0] = vec4(albedo.rgb, 1.0);
-	if(fresnel > 0.9){
-		fragColor[0].rgb += vec3(0.2, 0.2, 0.2);
-	}
-
-	vec3  shadowDir = normalize ( shadowPos - IN.worldPos);
-	float l = max (0.01 , dot ( shadowDir , normal ));
-	float halL = (l + 1.0) * 0.5;
-	halL = clamp(halL, 0.01, 1.0) * aoCol.r;
+	fragColor[0].rgb += vec3(0.5, 0.5, 0.5) * fresnel;
 
 	fragColor[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);
-	fragColor[2] = vec4(metal, roughness, 0.0, 1.0);
-	fragColor[3] = aoCol;
+	fragColor[2] = vec4(0.0, 1.0, 0.0, 1.0);
+	fragColor[3] = vec4(0.0, 0.0, 0.0, 1.0);
 	fragColor[4] = vec4(0.5, 0.0, 2.0, 1.0);
 }

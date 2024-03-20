@@ -778,7 +778,7 @@ GameObject* BasicExamples::CreateRedBottleProp(const Vector3& position, const Ve
 	AABBVolume* volume = new AABBVolume(dimensions);
 	redbottle->SetBoundingVolume((CollisionVolume*)volume);
 	redbottle->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Matrix4::Rotation(260, Vector3(1, 0, 0)));
-	redbottle->SetRenderObject(new RenderObject(&redbottle->GetTransform(), redBottleMesh, redBottleTexture, basicShader));
+	redbottle->SetRenderObject(new RenderObject(&redbottle->GetTransform(), redBottleMesh, redBottleTexture, itemShader));
 	redbottle->SetPhysicsObject(new PhysicsObject(&redbottle->GetTransform(), redbottle->GetBoundingVolume()));
 
 	redbottle->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -796,7 +796,7 @@ GameObject* BasicExamples::CreateSpeedProp(const Vector3& position, const Vector
 	coffeecup->SetBoundingVolume((CollisionVolume*)volume);
 
 	coffeecup->GetTransform().SetScale(dimensions * 2).SetPosition(position);
-	coffeecup->SetRenderObject(new RenderObject(&coffeecup->GetTransform(), speedPropMesh, nullptr, itemShader));
+	coffeecup->SetRenderObject(new RenderObject(&coffeecup->GetTransform(), speedPropMesh, speedPropTexture, itemShader));
 	coffeecup->SetPhysicsObject(new PhysicsObject(&coffeecup->GetTransform(), coffeecup->GetBoundingVolume()));
 	//shield->GetRenderObject()->isAnimation = true;
 	//LoadMaterialTextures(shield, shieldMesh, shieldMat, render);
@@ -816,7 +816,7 @@ GameObject* BasicExamples::CreateShieldProp(const Vector3& position, const Vecto
 	shield->SetBoundingVolume((CollisionVolume*)volume);
 
 	shield->GetTransform().SetScale(dimensions * 2).SetPosition(position);
-	shield->SetRenderObject(new RenderObject(&shield->GetTransform(), shieldMesh, shieldTexture, modelShader));
+	shield->SetRenderObject(new RenderObject(&shield->GetTransform(), shieldMesh, shieldTexture, itemShader));
 	shield->SetPhysicsObject(new PhysicsObject(&shield->GetTransform(), shield->GetBoundingVolume()));
 	//shield->GetRenderObject()->isAnimation = true;
 	//LoadMaterialTextures(shield, shieldMesh, shieldMat, render);
@@ -836,7 +836,7 @@ GameObject* BasicExamples::CreateRollingRockProp(const Vector3& position, float 
 
 	sphere->GetTransform().SetScale(sphereSize).SetPosition(position);
 
-	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), rockMesh, nullptr, basicShader));
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), rockMesh, nullptr, itemShader));
 	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
 	sphere->GetRenderObject()->SetColour(Vector4(0.3f, 0.3f, 0.3f, 1.0f));
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);

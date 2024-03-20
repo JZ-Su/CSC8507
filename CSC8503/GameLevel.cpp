@@ -16,7 +16,7 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {
-	player = CreatePlayer(Vector3(0, 4, 135), Vector3(2, 2, 2), 5.0f);
+	player = CreatePlayer(Vector3(0, 4, 0), Vector3(2, 2, 2), 5.0f);
 	/*player = CreatePlayer(Vector3(0, 10, 30), Vector3(2, 2, 2), 45.0f);
 	playerList.push_back(player);*/
 	/*for (int i = 0; i < 4; i++) {
