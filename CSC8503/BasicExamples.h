@@ -17,14 +17,14 @@
 #include "Boss.h"
 #include "Coin.h"
 #include "Door.h"
-#include"GhostAI.h"
+#include "GhostAI.h"
 
 namespace NCL {
 	class BasicExamples
 	{
 	public:
 		BasicExamples(GameTechRenderer* render);
-		BasicExamples();
+		BasicExamples() {};
 		~BasicExamples();
 		GameObject* CreateCube(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateBigWall(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float scale = 0.05);
@@ -90,6 +90,7 @@ namespace NCL {
 
 		Boss*		GetBoss() const { return boss; }
 		Player*		GetPlayer() const { return player; }
+		std::vector<Player*> GetPlayerList() const{ return playerList; }
 		GameObject*	GetGhost() const { return ghostmodle; }
 		GameObject* GetShield() const{ return shield; }
 
@@ -173,6 +174,7 @@ namespace NCL {
 		GameTechRenderer* render;  // new render variable
 		
 		Player* player = nullptr;
+		std::vector<Player*> playerList;
 		Boss* boss = nullptr;
 		GameObject* ghostmodle;
 		GameObject* shield;
