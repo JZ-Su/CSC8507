@@ -19,12 +19,16 @@ void GameLevel::CreateGeneric() {
 	player = CreatePlayer(Vector3(0, 4, 135), Vector3(2, 2, 2), 5.0f);
 	/*player = CreatePlayer(Vector3(0, 10, 30), Vector3(2, 2, 2), 45.0f);
 	playerList.push_back(player);*/
-	for (int i = 0; i < 4; i++) {
+	/*for (int i = 0; i < 4; i++) {
 		Player* playertemp = CreatePlayer(Vector3((0 + i) * 2, 10, 30), Vector3(2, 2, 2), 45.0f);
 		playerList.push_back(playertemp);
 	}
-	player = playerList[0];
+	
+	player = playerList[0];*/
 	Generic.AddObject(player);
+	cameraCollision = CreateAABB(Vector3(), Vector3(1, 1, 1), 10.0f);
+	cameraCollision->SetTag("cameraCollision");
+	Generic.AddObject(cameraCollision);
 	//Level 4 player: 
 	//Generic.AddObject(CreatePlayer(Vector3(-70, 10, -50), Vector3(1, 1, 1)));
 }
@@ -137,7 +141,7 @@ void GameLevel::CreateConnectionLevel() {
 }
 
 void GameLevel::CreateLevel1() {
-	level1.AddObject(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
+	level1.AddObject(CreateFloor(Vector3(0, -50, 0), Vector3(200, 50, 200), 0.0f));
 	level1.AddObject(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
 	//layers
 	level1.AddObject(CreateAABB(Vector3(-80, 5, -56), Vector3(20, 5, 44), 0.0f));
@@ -154,12 +158,13 @@ void GameLevel::CreateLevel1() {
 	CreateLevel1_Handrail();
 
 	//wall
-	level1.AddObject(CreateBigWall(Vector3(0, 30, 101), Vector3(100, 30, 1), 0.0f));
-	level1.AddObject(CreateBigWall(Vector3(0, 30, -101), Vector3(100, 30, 1), 0.0f));
-	level1.AddObject(CreateBigWall(Vector3(101, 30, 0), Vector3(1, 30, 100), 0.0f));
-	level1.AddObject(CreateBigWall(Vector3(-101, 30, 0), Vector3(1, 30, 100), 0.0f));
-	level1.AddObject(CreateBigWall(Vector3(70, 30, 77), Vector3(30, 30, 23), 0.0f));
-	level1.AddObject(CreateBigWall(Vector3(-70, 30, 77), Vector3(30, 30, 23), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(0, 30, 150), Vector3(200, 30, 50), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(0, 30, -150), Vector3(200, 30, 50), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(150, 30, 0), Vector3(50, 30, 200), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(-150, 30, 0), Vector3(50, 30, 200), 0.0f));
+
+	level1.AddObject(CreateBigWall(Vector3(90, 30, 97), Vector3(50, 30, 43), 0.0f));
+	level1.AddObject(CreateBigWall(Vector3(-90, 30, 97), Vector3(50, 30, 43), 0.0f));
 	//room
 	level1.AddObject(CreateBigWall(Vector3(-20, 5, -20), Vector3(1, 5, 10), 0.0f));
 	level1.AddObject(CreateBigWall(Vector3(-20, 5, -50), Vector3(1, 5, 10), 0.0f));
@@ -312,20 +317,20 @@ void GameLevel::CreateLevel3() {
 	//level3.AddObject(CreateLight(Vector3(0, 40, 0), Vector4(1.0f, 0.8f, 0.3f, 1.0f), 130.0f, false, true));
 	level3.AddObject(CreateLight(Vector3(0, 30, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 90.0f, true, true));
 
-	level3.AddObject(CreateCeiling(Vector3(0, 62, 0), Vector3(150, 2, 150), 0.0f));
+	level3.AddObject(CreateCeiling(Vector3(0, 82, 0), Vector3(150, 20, 150), 0.0f));
 	level3.AddObject(CreateHangLight(Vector3(0, 53, 0), Vector3(5, 5, 5), 0.0f));
 
 	// boss = CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), player, 0.0f);
 	// level3.AddObject(CreateCube(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
 	//level3.AddObject(CreateCube(Vector3(70, 0, 77), Vector3(10, 10,5 ), 0.0f));
-	level3.AddObject(CreateBigWall(Vector3(100, 30, 0), Vector3(2, 30, 100), 0.0f));
-	level3.AddObject(CreateBigWall(Vector3(-100, 30, 0), Vector3(2, 30, 100), 0.0f));
-	level3.AddObject(CreateBigWall(Vector3(0, 30, -100), Vector3(100, 30, 2), 0.0f));
-	level3.AddObject(CreateBigWall(Vector3(60, 30, 100), Vector3(40, 30, 2), 0.0f));
-	level3.AddObject(CreateBigWall(Vector3(-60, 30, 100), Vector3(40, 30, 2), 0.0f));
-	level3.AddObject(CreateBigWall(Vector3(-22, 30, 138), Vector3(2, 30, 40), 0.0f));
-	level3.AddObject(CreateBigWall(Vector3(22, 30, 138), Vector3(2, 30, 40), 0.0f));
-	level3.AddObject(CreateBigWall(Vector3(0, 30, 178), Vector3(20, 30, 2), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(150, 30, 0), Vector3(50, 30, 200), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(-150, 30, 0), Vector3(50, 30, 200), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(0, 30, -150), Vector3(100, 30, 50), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(80, 30, 150), Vector3(60, 30, 50), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(-80, 30, 150), Vector3(60, 30, 50), 0.0f));
+	//level3.AddObject(CreateBigWall(Vector3(-22, 30, 138), Vector3(2, 30, 40), 0.0f));
+	//level3.AddObject(CreateBigWall(Vector3(22, 30, 138), Vector3(2, 30, 40), 0.0f));
+	level3.AddObject(CreateBigWall(Vector3(0, 30, 198), Vector3(60, 30, 22), 0.0f));
 	vector<GameObject*> port = CreatePortal(Vector3(0, 7, 170));
 	//level3.AddObject(CreateBigWall(Vector3(0, 30, 100), Vector3(100, 30, 2), 0.0f));
 	//level3.AddObject(CreateCube(Vector3(0, 0, 0), Vector3(5, 5, 5), 0.0f));
@@ -334,8 +339,7 @@ void GameLevel::CreateLevel3() {
 	//level3.AddObject(player);
 	//testAI = CreateAItest(Vector3(0, 0, 0), Vector3(5, 5, 5), player, 0.0f);
 	//level3.AddObject(testAI);
-	level3.AddObject(CreateFloor(Vector3(0, -2, 0), Vector3(100, 2, 100), 0.0f));
-	level3.AddObject(CreateFloor(Vector3(0, -2,140), Vector3(20, 2, 40), 0.0f));
+	level3.AddObject(CreateFloor(Vector3(0, -40, 0), Vector3(200, 40, 200), 0.0f));
 	//level3.AddObject(boss=CreateBoss(Vector3(0, -2, -60), Vector3(10, 10, 10), 0.0f));
 	//BossBehaviourTree(boss,player);
 	//
