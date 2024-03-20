@@ -698,6 +698,7 @@ GameObject* BasicExamples::CreateRollingRock(const Vector3& position, float radi
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
 	sphere->GetPhysicsObject()->InitSphereInertia();
 	sphere->SetTag("rollingrock");
+	propList.push_back(sphere);
 	return sphere;
 }
 

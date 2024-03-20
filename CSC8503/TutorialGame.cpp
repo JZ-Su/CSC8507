@@ -455,6 +455,7 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
+	
 	//isDebug = true;
 	isDebug = false;
 	int debugLevel =3;
@@ -493,7 +494,6 @@ void TutorialGame::InitWorld() {
 			fireBallBullet = gameLevel->getFireBallBullet();
 			PlayerPreHealth = player->GetHealth();
 			BossPrehHealth = gameLevel->GetBoss()->getBossHealth();
-
 			break;
 		case 4:
 			//Level 4 initial function
@@ -860,6 +860,24 @@ void TutorialGame::SwitchLevel() {
 	if (!physics->GetCollisionDetectionList(portal).empty() && physics->GetCollisionDetectionList(portal)[0] == player) {
 		switch (currentLevel)
 		{
+		case 1:
+			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
+			player->GetTransform().SetPosition(Vector3(235, 10, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			portal = gameLevel->GetLevel2()->portal;
+			PlayLevelBGM("level2");
+			currentLevel++;
+			break;
+		case 2:
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), true);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
+			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			portal = gameLevel->GetConnection()->portal;
+			PlayLevelBGM("level0");
+			currentLevel++;
+			break;
 		case 3:
 			GameLevel::RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
@@ -883,31 +901,14 @@ void TutorialGame::SwitchLevel() {
 			PlayLevelBGM("level0");
 			currentLevel++;
 			break;
-		case 1:
-			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
-			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
-			player->GetTransform().SetPosition(Vector3(235, 10, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
-			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
-			portal = gameLevel->GetLevel2()->portal;
-			PlayLevelBGM("level2");
-			currentLevel++;
-			break;
-		case 2:
-			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), true);
-			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
-			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
-			portal = gameLevel->GetConnection()->portal;
-			PlayLevelBGM("level0");
-			currentLevel++;
-			break;
 		case 5:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(0, 4, 135)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel3()->portal;
-
+			portal->isEnable = false;
+			portal->GetRenderObject()->SetColour(Debug::RED);
 			boss = gameLevel->GetBoss();
 			shield = gameLevel->GetShield();
 			bossAnimation = gameLevel->getBossAnimation();
@@ -927,6 +928,9 @@ void TutorialGame::SwitchLevel() {
 			break;
 		case 6:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true);
+			for (const auto& element : BasicExamples::propList) {
+				world->RemoveGameObject(element);
+			}
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
@@ -1004,15 +1008,29 @@ void TutorialGame::UpdateLevel(float dt) {
 		gameLevel->GetBoss()->Update(dt);
 		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
 		propSpawnTimer += dt;
+		if (boss->getIsDead()) {
+			portal->isEnable = true;
+			portal->GetRenderObject()->SetColour(Debug::GREEN);
+			portal->GetTransform().SetPosition(Vector3(0, 3, 100));
+		}
 		if (propSpawnTimer > propSpawnCooldown) {
 			GenerateRandomPropPositionInBounds(Vector3(-80, 1, -80), Vector3(80, 1, 80));
 			propSpawnTimer = 0.0f;
+		}
+		if (boss->GetStunTimer() >= 0.5f && std::fmod(boss->GetStunTimer(), 0.5f) < dt&& boss->GetStunTimer()!=0.0f) {
+			DropItems();
+		}
+		if (gameLevel->GetBoss()->getIsDroppingMassiveItems()) {
+			DropMassiveItems();
+			DropMassiveItems();
+			gameLevel->GetBoss()->setIsDroppingMassiveItems(false);
 		}
 		if (player->getIsRollingRock()) {
 			Quaternion playerQuaternion = player->GetTransform().GetOrientation();
 			Vector3 defaultForward = Vector3(0, 0, -1);
 			Vector3 currentDirection = playerQuaternion * defaultForward;
 			rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised() * 10 + Vector3(0, 5, 0), 4);
+
 			world->AddGameObject(rollingRock);
 			if (rollingRock) {
 				RollStone(rollingRock, currentDirection, 72000);
@@ -1530,4 +1548,65 @@ void TutorialGame::UpdateLevel3UI() {
 
 }
 
-	
+void TutorialGame::DropMassiveItems() {
+		GameObject* dropSpeedProp = nullptr;
+		GameObject* dropShieldProp = nullptr;
+		GameObject* dropRollingRockProp = nullptr;
+		GameObject* dropRedBottleProp = nullptr;
+		Vector3 bossPos = boss->GetTransform().GetPosition() + (Vector3(0, 15, 0));
+		dropSpeedProp = gameLevel->CreateSpeedProp(bossPos, Vector3(8, 8, 8),2.0f);
+		world->AddGameObject(dropSpeedProp);
+
+		dropShieldProp = gameLevel->CreateShieldProp(bossPos, Vector3(1, 1, 1),2.0f);
+		world->AddGameObject(dropShieldProp);
+
+		dropRollingRockProp = gameLevel->CreateRollingRockProp(bossPos, 0.5, 2.0f);
+		world->AddGameObject(dropRollingRockProp);
+
+		dropRedBottleProp = gameLevel->CreateRedBottleProp(bossPos, Vector3(2, 2, 2), 2.0f);
+		world->AddGameObject(dropRedBottleProp);
+
+		Vector3 randomDirection1 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+		Vector3 randomDirection2 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+		Vector3 randomDirection3 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+		Vector3 randomDirection4 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+		dropSpeedProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised()*6000);
+		dropShieldProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
+		dropRollingRockProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
+		dropRedBottleProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
+}
+
+void TutorialGame::DropItems() {
+	GameObject* dropSpeedProp = nullptr;
+	GameObject* dropShieldProp = nullptr;
+	GameObject* dropRollingRockProp = nullptr;
+	GameObject* dropRedBottleProp = nullptr;
+	Vector3 bossPos = boss->GetTransform().GetPosition() + (Vector3(0, 15, 0));
+
+
+	int randomNumber = rand() % 4;
+	Vector3 randomDirection = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+	switch (randomNumber) {
+	case 0:
+		dropSpeedProp = gameLevel->CreateSpeedProp(bossPos, Vector3(8, 8, 8),2.0f);
+		world->AddGameObject(dropSpeedProp);
+		dropSpeedProp->GetPhysicsObject()->AddForce(randomDirection.Normalised() * 8000);
+		break;
+	case 1:
+		dropShieldProp = gameLevel->CreateShieldProp(bossPos, Vector3(1, 1, 1), 2.0f);
+		world->AddGameObject(dropShieldProp);
+		dropShieldProp->GetPhysicsObject()->AddForce(randomDirection.Normalised() * 8000);
+		break;
+	case 2:
+		dropRollingRockProp = gameLevel->CreateRollingRockProp(bossPos, 0.5, 2.0f);
+		world->AddGameObject(dropRollingRockProp);
+		dropRollingRockProp->GetPhysicsObject()->AddForce(randomDirection.Normalised() * 8000);
+		break;
+	case 3:
+		dropRedBottleProp = gameLevel->CreateRedBottleProp(bossPos, Vector3(2, 2, 2), 2.0f);
+		world->AddGameObject(dropRedBottleProp);
+		dropRedBottleProp->GetPhysicsObject()->AddForce(randomDirection.Normalised() * 8000);
+		break;
+	}
+
+}
