@@ -49,6 +49,9 @@ namespace NCL {
 			GameWorld* GetWorld() {
 				return world;
 			}
+
+			void DropMassiveItems();
+			void DropItems();
 		protected:
 			bool isDebug;
 
@@ -112,7 +115,7 @@ namespace NCL {
 			GameObject* objClosest = nullptr;
 
 			GameLevel* gameLevel = nullptr;
-			GameObject* cameraCollision = nullptr;
+			//GameObject* cameraCollision = nullptr;
 
 			int score;
 			Player* player;
@@ -220,7 +223,7 @@ namespace NCL {
 			Vector3 mainCameraPosition;
 			bool isWalking = false;
 			string currentBGM = "";
-			std::vector<GameObject*> propList;
+			//std::vector<GameObject*> propList;
 			float progress=0;
 			void UpdateLevel3UI();
 		

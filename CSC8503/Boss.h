@@ -12,6 +12,7 @@
 #include "BehaviourNodeWithChildren.h"
 #include"BehaviourParallel.h"
 #include"Inverter.h"
+
 namespace NCL {
 	namespace CSC8503 {
 		class Boss : public GameObject {
@@ -20,6 +21,7 @@ namespace NCL {
 			~Boss();
 			BehaviourState state;
 			void Update(float dt);
+
 			float updateHealth(float inhealth)
 			{
 				bossHealth += inhealth;
@@ -53,7 +55,7 @@ namespace NCL {
 			bool getHasFireBallBullet() {
 				return hasFireBallBullet;
 			}
-		void setHasFireBallBullet(bool HasFireBallBullet) {
+			void setHasFireBallBullet(bool HasFireBallBullet) {
 				hasFireBallBullet = HasFireBallBullet;
 			}
 			bool getIsChasing() {
@@ -79,6 +81,12 @@ namespace NCL {
 			}
 			void setIsShootingIceCube(bool IsShootingIceCube) {
 				isShootingIceCube = IsShootingIceCube;
+			}
+			bool getIsDroppingMassiveItems() {
+				return isDroppingMassiveItems;
+			}
+			void setIsDroppingMassiveItems(bool IsDroppingMassiveItems) {
+				isDroppingMassiveItems = IsDroppingMassiveItems;
 			}
 			float getBulletTimer() {
 				return bulletTimer;
@@ -111,6 +119,12 @@ namespace NCL {
 				bossHealth = std::max(bossHealth, 0.0f);
 				bossHealth = std::min(bossHealth, 100.0f);
 			}
+			float GetStunTimer() {
+				return stunTimer;
+			}
+			float GetStunDuration() {
+				return stunDuration;
+			}
 			float attackRange;
 		private:
 			int nextBullet = 0;
@@ -128,6 +142,7 @@ namespace NCL {
 			bool attackCooldownBool;
 			bool chaseBool;
 			bool isChasing;
+			bool isDroppingMassiveItems = false;
 			float calculateDistance(Vector3 pos1, Vector3 pos2);
 			float distanceToTarget;
 			float remoteAttackRange;
@@ -135,6 +150,8 @@ namespace NCL {
 			float chaseSpeed;
 			float bossHealth;
 			float flinchAnimationTimer;
+			float stunTimer = 0.0f;
+			const float stunDuration = 4.0f;
 			BehaviourAction* Idle;
 			BehaviourAction* ChaseAndAttack;
 			BehaviourAction* RemoteAttack;
