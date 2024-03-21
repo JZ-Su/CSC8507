@@ -259,7 +259,7 @@ void TutorialGame::UpdateKeys(float dt) {
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			PlayLevelBGM("level4");
 			if (exit != nullptr) {
-				delete exit;
+				world->RemoveGameObject(exit);
 				exit = nullptr;
 			}
 
@@ -1104,7 +1104,7 @@ void TutorialGame::UpdateLevel(float dt) {
 	//closestCollision.rayDistance = gameLevel->GetBoss()->attackRange;
 	if (world->Raycast(ray, closestCollision, true)) {
 		GameObject* blocker = (GameObject*)closestCollision.node;
-		if (blocker->GetName() == "floor"|| blocker->GetName() == "aabb") {
+		if (blocker->GetName() == "floor"|| blocker->GetName() == "aabb"|| blocker->GetName() == "cube") {
 			float distance = playerPosition.y - blocker->GetTransform().GetPosition().y - blocker->GetTransform().GetScale().y / 2;
 			if (currentLevel != 6) {
 				player->GetPhysicsObject()->AddForce(-physics->GetGravity() * 0.021);
