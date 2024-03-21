@@ -271,24 +271,24 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		if (collisionRayData.rayDistance < 6)
 			campos = targetpos - camdir * (collisionRayData.rayDistance - 1.0f);
 	}*/
-	
+
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*30): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*15);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 15);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 15);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 15);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis* 15);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 15);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(rightAxis* 15);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(rightAxis * 15);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
@@ -307,7 +307,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 			}
 		}
 		player->SetIsWalk(false);
-		if (!player->getIsBeingHitBack()&& !player->getIsMeleeAttacked()) {
+		if (!player->getIsBeingHitBack() && !player->getIsMeleeAttacked()) {
 			float velocityY = player->GetPhysicsObject()->GetLinearVelocity().y;
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3(0, velocityY, 0));
 		}
@@ -334,37 +334,37 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		//player->SetIsAccelerated(true);
 	}
 
- if (useskill) {
+	if (useskill) {
 
-    if (Window::GetKeyboard()->KeyDown(KeyCodes::Q)) {
-		if (progress <4) {
-			progress += 0.03;
+		if (Window::GetKeyboard()->KeyDown(KeyCodes::Q)) {
+			if (progress < 4) {
+				progress += 0.03;
+			}
+			if (progress > 4) {
+				progress = 4;
+			}
+			skilltime = 0;
 		}
-		if (progress > 4) {
-			progress = 4;
+		else {
+			progress = 0;
 		}
-		skilltime = 0;
+
+		Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();/*cameraCollision->GetTransform().GetPosition()*/
+		Quaternion q(viewMat);
+		float pitch = q.ToEuler().x;
+		float yaw = q.ToEuler().y;
+
+		Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
+		lockedObject->GetTransform().SetOrientation(lookat);
+
+		world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));/*cameraCollision->GetTransform().GetPosition()+Vector3(0,5,0)*/
+		world->GetMainCamera().SetPitch(pitch);
+		world->GetMainCamera().SetYaw(yaw);
+		//renderer.UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
+		UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
+
 	}
-	else {
-		progress = 0;
-	}
-
-	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();/*cameraCollision->GetTransform().GetPosition()*/
-	Quaternion q(viewMat);
-	float pitch = q.ToEuler().x;
-	float yaw = q.ToEuler().y;
-
-	Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
-	lockedObject->GetTransform().SetOrientation(lookat);
-
-	world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));/*cameraCollision->GetTransform().GetPosition()+Vector3(0,5,0)*/
-	world->GetMainCamera().SetPitch(pitch);
-	world->GetMainCamera().SetYaw(yaw);
-	//renderer.UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
-	UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
-
 }
-
 void TutorialGame::DebugObjectMovement() {
 	//If we've selected an object, we can manipulate it with some key presses
 	if (inSelectionMode && selectionObject) {
