@@ -235,7 +235,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	UImap["shieldprop"] = data[11];
 	TextureLoader::LoadTexture("/UI/speed.png", data[12], width, height, channel, flag);
 	UImap["speedprop"] = data[12];
-	TextureLoader::LoadTexture("/UI/skillCYCAL.png", data[13], width, height, channel, flag);
+	TextureLoader::LoadTexture("/UI/Q.png", data[13], width, height, channel, flag);
 	UImap["skill"] = data[13];
 	TextureLoader::LoadTexture("/UI/power.png", data[14], width, height, channel, flag);
 	UImap["power"] = data[14];

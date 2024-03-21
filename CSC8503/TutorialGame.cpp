@@ -137,6 +137,7 @@ void TutorialGame::UpdateGame(float dt) {
 	}
 	soundManager.update();
 	totalTime += dt;
+	skilltime += dt;
 	SelectObject();
 	MoveSelectedObject();
 
@@ -153,6 +154,15 @@ void TutorialGame::UpdateGame(float dt) {
 	if (PlayerPreHealth < player->GetHealth()) {
 		PlayerPreHealth = player->GetHealth();
 	}
+	
+	if (skilltime > 5) {
+		skilltime = 5;
+	}
+
+	if (skilltime == 5) {
+		useskill = true;
+	}
+
 }
 
 void TutorialGame::UpdateKeys(float dt) {
@@ -323,18 +333,24 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 		//player->SetIsAccelerated(true);
 	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::Q)) {
+
+ if (useskill) {
+
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::Q)) {
 		if (progress <4) {
 			progress += 0.03;
 		}
 		if (progress > 4) {
 			progress = 4;
 		}
+		skilltime = 0;
 	}
 	else {
 		progress = 0;
 	}
-
+	
+}
+	
 	Matrix4 viewMat = Matrix4::BuildViewMatrix(cameraCollision->GetTransform().GetPosition(), targetpos, Vector3(0, 1, 0)).Inverse();
 	Quaternion q(viewMat);
 	float pitch = q.ToEuler().x;
@@ -519,6 +535,7 @@ void TutorialGame::InitWorld() {
 
 	score = 0;
 	totalTime = 0.0f;
+	skilltime = 0.0f;
 }
 
 /*
@@ -1471,6 +1488,7 @@ void TutorialGame::UpdateLevel3UI() {
 	float b =y/x   ;
 
 	float distance = 0.2;
+	cd = skilltime / 6.0f;
 
 	for (int i = 0; i < itemList.size(); i++) {
 		GameTechRenderer::CreateGameUI({ Vector3(-0.36f + (i * distance), -0.83f, -1.0f), Vector3(-0.36f + (i * distance), -0.96f, -1.0f),
@@ -1489,7 +1507,10 @@ void TutorialGame::UpdateLevel3UI() {
 	GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
 		Vector3(0.5f, 0.95f, -1.0f) }, "bossframe", "health");
 	
+
 	GameTechRenderer::CreateGameUI({ Vector3(0.6, -0.5f, -1.0f),  Vector3(0.6, -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f, -1.0f) }, "skill", "skill");
+
+	GameTechRenderer::CreateGameUI({ Vector3(0.625, -0.55f, -1.0f),  Vector3(0.625, -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f, -1.0f) }, "redbottle", "skill",cd+0.155);
 
 	if (progress <= 1) {
 		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power",progress);

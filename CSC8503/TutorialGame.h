@@ -148,6 +148,9 @@ namespace NCL {
 			float currenthealth;
 			float healthLength;
 			float BossHealthLendth;
+			float skilltime;
+			float cd;
+			bool useskill=false;
 
 			GameState gameState;
 			MainMenuState mainMenuState;
