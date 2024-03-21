@@ -146,7 +146,6 @@ void TutorialGame::UpdateGame(float dt) {
 	UpdateKeys(dt);
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
-	physics->Update(dt);
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
 	GameTechRenderer::UpdateUI();
