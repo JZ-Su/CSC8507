@@ -581,8 +581,8 @@ void TutorialGame::InitWorld() {
 		Please switch the debug mode here
 	*/
 	
-	//isDebug = true;
-	isDebug = false;
+	isDebug = true;
+	//isDebug = false;
 	int debugLevel =4;
 
 	if (isDebug) {

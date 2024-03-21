@@ -435,7 +435,7 @@ void GameLevel::CreateLevel4_Normal() {
 	l0.AddObject(CreateSignStart(Vector3(-59.65, 15, -35), Vector3(0.5, 2, 4), 0.0f, 1.0));
 	l0.AddObject(CreateSignContinue(Vector3(-59.65, 10, -35), Vector3(0.5, 2, 4), 0.0f, 1.0));
 	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
-	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
+	l0.AddObject(CreateFloor(Vector3(0, 0, 0), Vector3(100, 1, 100)));
 	l0.objectList.back()->SetBoundingVolume(nullptr);
 	level4_normal.emplace_back(l0); 
 	
@@ -520,7 +520,7 @@ void GameLevel::CreateLevel4_Rotate() {
 	l0.AddObject(CreateSignContinue(Vector3(60.65, 10, 35), Vector3(0.5, 2, 4), 0.0f, 1.0));
 
 	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
-	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
+	l0.AddObject(CreateFloor(Vector3(0, 0.0, 0), Vector3(100, 1, 100)));
 	l0.objectList.back()->SetBoundingVolume(nullptr);
 	level4_rotate.emplace_back(l0);
 
@@ -605,7 +605,7 @@ void GameLevel::CreateLevel4_Reverse() {
 	l0.AddObject(CreateSignContinue(Vector3(35, 10, 61), Vector3(0.5, 2, 4), 90.0f, 1.0));
 
 	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
-	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
+	l0.AddObject(CreateFloor(Vector3(0, 0, 0), Vector3(100, 1, 100)));
 	l0.objectList.back()->SetBoundingVolume(nullptr);
 	level4_reverse.emplace_back(l0);
 
@@ -691,7 +691,7 @@ void GameLevel::CreateLevel4_RR() {
 	l0.AddObject(CreateSignStart(Vector3(-35, 15,-61 ), Vector3(0.5, 2, 4), 90.0f, 1.0));
 	l0.AddObject(CreateSignContinue(Vector3(-35, 10,-61 ), Vector3(0.5, 2, 4), 90.0f, 1.0));
 	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
-	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
+	l0.AddObject(CreateFloor(Vector3(0, 0, 0), Vector3(100, 1, 100)));
 	l0.objectList.back()->SetBoundingVolume(nullptr);
 	level4_reverse_rotate.emplace_back(l0);
 
