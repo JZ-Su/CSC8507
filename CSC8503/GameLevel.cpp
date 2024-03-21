@@ -17,12 +17,12 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 
 void GameLevel::CreateGeneric() {
 	player = CreatePlayer(Vector3(0, 4, 0), Vector3(2, 2, 2), 35.0f);
-	/*for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 4; i++) {
 		Player* playertemp = CreatePlayer(Vector3((0 + i) * 2, 10, 30), Vector3(2, 2, 2), 45.0f);
 		playerList.push_back(playertemp);
 	}
-	player = playerList[0];*/
-	Generic.AddObject(player);
+	player = playerList[0];
+	//Generic.AddObject(player);
 	//cameraCollision = CreateAABB(Vector3(0, 50, 0), Vector3(1, 1, 1), 10.0f);
 	//cameraCollision->SetTag("cameraCollision");
 	//Generic.AddObject(cameraCollision);

@@ -362,6 +362,9 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		float pitch = q.ToEuler().x;
 		float yaw = q.ToEuler().y;
 
+		Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
+		lockedObject->GetTransform().SetOrientation(lookat);
+
 	player->orientationNetPlayer = lookat;
 
 	world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));
