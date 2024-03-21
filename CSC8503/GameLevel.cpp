@@ -16,8 +16,8 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 }
 
 void GameLevel::CreateGeneric() {
-	player = CreatePlayer(Vector3(0, 4, 0), Vector3(2, 2, 2), 35.0f);
-	/*for (int i = 0; i < 4; i++) {
+	/*player = CreatePlayer(Vector3(0, 4, 0), Vector3(2, 2, 2), 35.0f);*/
+	for (int i = 0; i < 4; i++) {
 		Player* playertemp = CreatePlayer(Vector3((0 + i) * 2, 10, 30), Vector3(2, 2, 2), 45.0f);
 		playerList.push_back(playertemp);
 	}
@@ -141,6 +141,7 @@ void GameLevel::RemoveLevel(GameWorld* world, Level* l, bool andClear, bool andD
 	for (auto element : (*l).objectList) {
 		world->RemoveGameObject(element, andDelete);
 	}
+
 	if (andClear) {
 		(*l).objectList.clear();
 	}
@@ -271,9 +272,6 @@ void GameLevel::CreateLevel2() {
 				}
 				// Vertical
 				else if (pixelData[(i + 1) * size + j] == Debug::WHITE && !isScaned[i + 1][j]) {
-					if (i == 56) {
-						std::cout << std::endl;
-					}
 					int length = 1;
 					while (pixelData[(i + length) * size + j] == Debug::WHITE && !isScaned[i + length][j]) {
 						isScaned[i + length][j] = true;
@@ -387,7 +385,7 @@ void GameLevel::CreateLevel3() {
 	level3.AddObject(fireBallBullet);
 	level3.AddObject(shield = CreateShield(Vector3(0, -30, 20), Vector3(1, 1, 1), 5.0f));
 
-	level3.AddObject(CreateRollingRockProp(Vector3(4, 3, 110), 0.5));
+	//level3.AddObject(CreateRollingRockProp(Vector3(4, 3, 110), 0.5));
 	level3.AddObject(CreateShieldProp(Vector3(12, 3, 110), Vector3(1, 1, 1)));
 	level3.AddObject(CreateShieldProp(Vector3(-12, 3, 110), Vector3(1, 1, 1)));
 	level3.AddObject(CreateSpeedProp(Vector3(-4, 3, 110), Vector3(8, 8, 8)));

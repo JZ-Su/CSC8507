@@ -203,7 +203,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	SetDebugStringBufferSizes(10000);
 	SetDebugLineBufferSizes(1000);
 
-	vector<char*> data(15, nullptr);
+	vector<char*> data(18, nullptr);
 	int width;
 	int height;
 	int channel;
@@ -239,6 +239,10 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	UImap["skill"] = data[13];
 	TextureLoader::LoadTexture("/UI/power.png", data[14], width, height, channel, flag);
 	UImap["power"] = data[14];
+	TextureLoader::LoadTexture("/UI/A.png", data[15], width, height, channel, flag);
+	UImap["ghostcd"] = data[15];
+	TextureLoader::LoadTexture("/UI/GHOTS.png", data[16], width, height, channel, flag);
+	UImap["ghostc"] = data[16];
 }
 
 GameTechRenderer::~GameTechRenderer() {
@@ -290,7 +294,7 @@ void GameTechRenderer::LoadSkybox() {
 	for (int i = 0; i < 6; ++i) {
 		TextureLoader::LoadTexture(filenames[i], texData[i], width[i], height[i], channels[i], flags[i]);
 		if (i > 0 && (width[i] != width[0] || height[0] != height[0])) {
-			std::cout << __FUNCTION__ << " cubemap input textures don't match in size?\n";
+			//std::cout << __FUNCTION__ << " cubemap input textures don't match in size?\n";
 			return;
 		}
 	}
@@ -333,7 +337,7 @@ void GameTechRenderer::Loadhdr() {
 	}
 	else
 	{
-		std::cout << "Failed to load HDR image." << std::endl;
+		//std::cout << "Failed to load HDR image." << std::endl;
 	}
 	stbi_set_flip_vertically_on_load(false);
 
@@ -1095,11 +1099,11 @@ void GameTechRenderer::NewRenderText() {
 Texture* GameTechRenderer::LoadTexture(const std::string& name) {
 	auto it = textureCache.find(name);
 	if (it != textureCache.end()) {
-		std::cout << "Texture '" << name << "' found in cache!" << std::endl;
+		//std::cout << "Texture '" << name << "' found in cache!" << std::endl;
 		return it->second.get(); // Return the texture in cache
 	}
 	else {
-		std::cout << "Loading texture '" << name << "'..." << std::endl;
+		//std::cout << "Loading texture '" << name << "'..." << std::endl;
 		// If the texture can't be found in cache, load it
 		UniqueOGLTexture texture = OGLTexture::TextureFromFile(name);
 		if (texture) {
