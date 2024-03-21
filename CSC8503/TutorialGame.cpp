@@ -86,7 +86,7 @@ void TutorialGame::UpdateGame(float dt) {
 	if (BossPrehHealth != gameLevel->GetBoss()->getBossHealth()) {
 		BossPrehHealth -= 0.5f;
 	}
-	
+
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
@@ -154,7 +154,7 @@ void TutorialGame::UpdateGame(float dt) {
 	if (PlayerPreHealth < player->GetHealth()) {
 		PlayerPreHealth = player->GetHealth();
 	}
-	
+
 	if (skilltime > 5) {
 		skilltime = 5;
 	}
@@ -276,13 +276,13 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
 		//player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*3): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*1.5);
-		player->getIsAccelerated() ? player->forceToBeAdded+=(-fwdAxis * 3) : player->forceToBeAdded += (-fwdAxis * 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (-fwdAxis * 3) : player->forceToBeAdded += (-fwdAxis * 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
 		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? player->forceToBeAdded += (fwdAxis * 3) : player->forceToBeAdded += (fwdAxis* 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (fwdAxis * 3) : player->forceToBeAdded += (fwdAxis * 1.5);
 		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
@@ -290,14 +290,14 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? player->forceToBeAdded += (-rightAxis * 3) : player->forceToBeAdded += (-rightAxis* 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (-rightAxis * 3) : player->forceToBeAdded += (-rightAxis * 1.5);
 		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis* 1.5);
 		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? player->forceToBeAdded += (rightAxis * 3) : player->forceToBeAdded += (rightAxis* 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (rightAxis * 3) : player->forceToBeAdded += (rightAxis * 1.5);
 		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(rightAxis* 1.5);
 		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 
@@ -484,10 +484,10 @@ void TutorialGame::InitWorld() {
 	/*
 		Please switch the debug mode here
 	*/
-	
+
 	isDebug = true;
 	//isDebug = false;
-	int debugLevel =4;
+	int debugLevel = 4;
 
 	if (isDebug) {
 		switch (debugLevel)
@@ -992,14 +992,14 @@ void TutorialGame::UpdateLevel(float dt) {
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
 	Vector3 playerPosition;
-	playerPosition = player->GetTransform().GetPosition() + Vector3(0,1,0);
+	playerPosition = player->GetTransform().GetPosition() + Vector3(0, 1, 0);
 	Vector3 direction = Vector3(0, -1, 0);
 	Ray ray = Ray(playerPosition, direction);
 	RayCollision closestCollision;
 	//closestCollision.rayDistance = gameLevel->GetBoss()->attackRange;
 	if (world->Raycast(ray, closestCollision, true)) {
 		GameObject* blocker = (GameObject*)closestCollision.node;
-		if (blocker->GetName() == "floor"|| blocker->GetName() == "aabb") {
+		if (blocker->GetName() == "floor" || blocker->GetName() == "aabb") {
 			float distance = playerPosition.y - blocker->GetTransform().GetPosition().y - blocker->GetTransform().GetScale().y / 2;
 			if (distance < 2) {
 				player->GetPhysicsObject()->AddForce(-physics->GetGravity() * 0.2);
@@ -1027,7 +1027,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			if (element->GetState() != "keepState" && element->GetTimer() - dt == 0) {
 				Vector3 pos = element->GetTransform().GetPosition();
 				FMOD_VECTOR poss = { pos.x,pos.y, pos.z };
-				soundManager.play3DSound("door",poss);
+				soundManager.play3DSound("door", poss);
 				soundManager.setSoundVolume("door", 2.0f);
 			}
 		}
@@ -1046,7 +1046,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			GenerateRandomPropPositionInBounds(Vector3(-80, 1, -80), Vector3(80, 1, 80));
 			propSpawnTimer = 0.0f;
 		}
-		if (boss->GetStunTimer() >= 0.5f && std::fmod(boss->GetStunTimer(), 0.5f) < dt&& boss->GetStunTimer()!=0.0f) {
+		if (boss->GetStunTimer() >= 0.5f && std::fmod(boss->GetStunTimer(), 0.5f) < dt && boss->GetStunTimer() != 0.0f) {
 			DropItems();
 		}
 		if (gameLevel->GetBoss()->getIsDroppingMassiveItems()) {
@@ -1087,7 +1087,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			}
 
 		}
-		if (!iceCubeBullet->GetIsHiding()&& !gameLevel->GetBoss()->getShooting()) {
+		if (!iceCubeBullet->GetIsHiding() && !gameLevel->GetBoss()->getShooting()) {
 			iceCubeBullet->GetPhysicsObject()->AddForce(Vector3(0, 15.0f, 0));
 			iceCubeBullet->UpdateExistenceTime(dt);
 			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
@@ -1184,10 +1184,11 @@ void TutorialGame::UpdateLevel(float dt) {
 	// Level 4
 	else if (currentLevel == 8) {
 		gameLevel->GetL4Door()->Update(dt);
+		world;
 		if (gameLevel->GetL4Door()->GetState() != "keepState" && gameLevel->GetL4Door()->GetTimer() - dt == 0) {
 			Vector3 pos = gameLevel->GetL4Door()->GetTransform().GetPosition();
 			FMOD_VECTOR poss = { pos.x,pos.y, pos.z };
-			soundManager.play3DSound("door",poss);
+			soundManager.play3DSound("door", poss);
 			soundManager.setSoundVolume("door", 2.0f);
 		}
 		GameObject* beginDet = gameLevel->GetBeginArea();
@@ -1436,7 +1437,7 @@ void TutorialGame::PlayLevelBGM(const std::string& levelName) {
 	else {
 		soundManager.setSoundVolume(currentBGM, 0.4f);
 	}
-	
+
 }
 
 void TutorialGame::RollStone(GameObject* stone, const Vector3& forceDirection, float forceMagnitude) {
@@ -1479,13 +1480,13 @@ Vector3 TutorialGame::GenerateRandomPropPositionInBounds(const Vector3& minBound
 
 	int randomNumber = rand() % 4;
 
-	float x = std::rand() % 181 - 90; 
-	float y = 3;  
-	float z = std::rand() % 181 - 90;  
+	float x = std::rand() % 181 - 90;
+	float y = 3;
+	float z = std::rand() % 181 - 90;
 	GameObject* speedProp = nullptr;
 	GameObject* shieldProp = nullptr;
 	GameObject* rollingRockProp = nullptr;
-	GameObject* redBottleProp = nullptr; 
+	GameObject* redBottleProp = nullptr;
 	switch (randomNumber) {
 	case 0:
 		speedProp = gameLevel->CreateSpeedProp(Vector3(x, y, z), Vector3(8, 8, 8));
@@ -1497,14 +1498,14 @@ Vector3 TutorialGame::GenerateRandomPropPositionInBounds(const Vector3& minBound
 		break;
 	case 2:
 		rollingRockProp = gameLevel->CreateRollingRockProp(Vector3(x, y, z), 0.5);
-	    world->AddGameObject(rollingRockProp);
+		world->AddGameObject(rollingRockProp);
 		break;
 	case 3:
 		redBottleProp = gameLevel->CreateRedBottleProp(Vector3(x, y, z), Vector3(2, 2, 2));
 		world->AddGameObject(redBottleProp);
 		break;
 	}
-	
+
 	return Vector3(x, y, z);
 }
 
@@ -1514,7 +1515,7 @@ void TutorialGame::UpdateLevel3UI() {
 
 	bosshealth = (100.0f - (gameLevel->GetBoss()->getBossHealth())) * 0.01f;
 
-	BossHealthLendth = (100 - BossPrehHealth) * 0.01; 
+	BossHealthLendth = (100 - BossPrehHealth) * 0.01;
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f, -0.8f, -1.0f), Vector3(0.4f, -0.75f, -1.0f) }, "background", "health");
 
@@ -1531,17 +1532,17 @@ void TutorialGame::UpdateLevel3UI() {
 	GameTechRenderer::CreateGameUI({ Vector3(0.2, -0.8f, -1.0f), Vector3(0.2, -1.0f, -1.0f), Vector3(0.4f, -1.0f, -1.0f), Vector3(0.4f, -0.8f, -1.0f) }, "inventory4", "item");
 
 	itemList = Player::GetItemList();
-	
+
 	float x = Window::GetWindow()->GetScreenSize().x;
 	float y = Window::GetWindow()->GetScreenSize().y;
-	float b =y/x   ;
+	float b = y / x;
 
 	float distance = 0.2;
 	cd = skilltime / 6.0f;
 
 	for (int i = 0; i < itemList.size(); i++) {
 		GameTechRenderer::CreateGameUI({ Vector3(-0.36f + (i * distance), -0.83f, -1.0f), Vector3(-0.36f + (i * distance), -0.96f, -1.0f),
-		Vector3(-0.36f + (i * distance)+(0.2 * b), -0.96f, -1.0f), Vector3(-0.36f + (i * distance)+(0.2*b), -0.83f, -1.0f)}, itemList.at(i), "item");
+		Vector3(-0.36f + (i * distance) + (0.2 * b), -0.96f, -1.0f), Vector3(-0.36f + (i * distance) + (0.2 * b), -0.83f, -1.0f) }, itemList.at(i), "item");
 	}
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
@@ -1557,7 +1558,7 @@ void TutorialGame::UpdateLevel3UI() {
 		Vector3(0.5f, 0.95f, -1.0f) }, "bossframe", "health");
 	GameTechRenderer::CreateGameUI({ Vector3(0.6, -0.5f, -1.0f),  Vector3(0.6, -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f, -1.0f) }, "skill", "skill");
 
-	GameTechRenderer::CreateGameUI({ Vector3(0.625, -0.55f, -1.0f),  Vector3(0.625, -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f, -1.0f) }, "redbottle", "skill",cd+0.155);
+	GameTechRenderer::CreateGameUI({ Vector3(0.625, -0.55f, -1.0f),  Vector3(0.625, -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f, -1.0f) }, "redbottle", "skill", cd + 0.155);
 
 	if (progress <= 1) {
 		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power", progress);
@@ -1581,31 +1582,31 @@ void TutorialGame::UpdateLevel3UI() {
 }
 
 void TutorialGame::DropMassiveItems() {
-		GameObject* dropSpeedProp = nullptr;
-		GameObject* dropShieldProp = nullptr;
-		GameObject* dropRollingRockProp = nullptr;
-		GameObject* dropRedBottleProp = nullptr;
-		Vector3 bossPos = boss->GetTransform().GetPosition() + (Vector3(0, 15, 0));
-		dropSpeedProp = gameLevel->CreateSpeedProp(bossPos, Vector3(8, 8, 8),2.0f);
-		world->AddGameObject(dropSpeedProp);
+	GameObject* dropSpeedProp = nullptr;
+	GameObject* dropShieldProp = nullptr;
+	GameObject* dropRollingRockProp = nullptr;
+	GameObject* dropRedBottleProp = nullptr;
+	Vector3 bossPos = boss->GetTransform().GetPosition() + (Vector3(0, 15, 0));
+	dropSpeedProp = gameLevel->CreateSpeedProp(bossPos, Vector3(8, 8, 8), 2.0f);
+	world->AddGameObject(dropSpeedProp);
 
-		dropShieldProp = gameLevel->CreateShieldProp(bossPos, Vector3(1, 1, 1),2.0f);
-		world->AddGameObject(dropShieldProp);
+	dropShieldProp = gameLevel->CreateShieldProp(bossPos, Vector3(1, 1, 1), 2.0f);
+	world->AddGameObject(dropShieldProp);
 
-		dropRollingRockProp = gameLevel->CreateRollingRockProp(bossPos, 0.5, 2.0f);
-		world->AddGameObject(dropRollingRockProp);
+	dropRollingRockProp = gameLevel->CreateRollingRockProp(bossPos, 0.5, 2.0f);
+	world->AddGameObject(dropRollingRockProp);
 
-		dropRedBottleProp = gameLevel->CreateRedBottleProp(bossPos, Vector3(2, 2, 2), 2.0f);
-		world->AddGameObject(dropRedBottleProp);
+	dropRedBottleProp = gameLevel->CreateRedBottleProp(bossPos, Vector3(2, 2, 2), 2.0f);
+	world->AddGameObject(dropRedBottleProp);
 
-		Vector3 randomDirection1 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
-		Vector3 randomDirection2 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
-		Vector3 randomDirection3 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
-		Vector3 randomDirection4 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
-		dropSpeedProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised()*6000);
-		dropShieldProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
-		dropRollingRockProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
-		dropRedBottleProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
+	Vector3 randomDirection1 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+	Vector3 randomDirection2 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+	Vector3 randomDirection3 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+	Vector3 randomDirection4 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+	dropSpeedProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
+	dropShieldProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
+	dropRollingRockProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
+	dropRedBottleProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
 }
 
 void TutorialGame::DropItems() {
@@ -1620,7 +1621,7 @@ void TutorialGame::DropItems() {
 	Vector3 randomDirection = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
 	switch (randomNumber) {
 	case 0:
-		dropSpeedProp = gameLevel->CreateSpeedProp(bossPos, Vector3(8, 8, 8),2.0f);
+		dropSpeedProp = gameLevel->CreateSpeedProp(bossPos, Vector3(8, 8, 8), 2.0f);
 		world->AddGameObject(dropSpeedProp);
 		dropSpeedProp->GetPhysicsObject()->AddForce(randomDirection.Normalised() * 8000);
 		break;
