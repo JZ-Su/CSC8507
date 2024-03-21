@@ -36,7 +36,7 @@ namespace NCL {
 			bool StartAsServer();
 			bool StartAsClient(char a, char b, char c, char d);
 
-			void UpdateGame(float dt) override;
+			void UpdateGame(float dt);
 
 			void SpawnPlayer();
 
@@ -62,7 +62,7 @@ namespace NCL {
 			
 		protected:
 
-			void InitialiseAssets() override;
+			//void InitialiseAssets() override;
 			void UpdateAsServer(float dt);
 			void UpdateAsClient(float dt);
 
@@ -256,7 +256,7 @@ namespace NCL {
 			{
 				Debug::Print("Press NUMPAD1 : Start As Server", Vector2(5, 10), Debug::YELLOW);
 				Debug::Print("Press NUMPAD2 : Start As Client", Vector2(5, 20), Debug::YELLOW);
-				Debug::Print("Press Esc : Main Menu", Vector2(5, 70), Debug::YELLOW);
+				Debug::Print("Press P : Pause Game", Vector2(5, 70), Debug::YELLOW);
 
 				if (game)
 				{

@@ -92,6 +92,7 @@ void TutorialGame::UpdateGame(float dt) {
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
+		soundManager.PauseAllSounds();
 		return;
 	}
 	if (!inSelectionMode) world->GetMainCamera().UpdateCamera(dt);
@@ -145,7 +146,6 @@ void TutorialGame::UpdateGame(float dt) {
 	UpdateKeys(dt);
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
-	physics->Update(dt);
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
 	GameTechRenderer::UpdateUI();
@@ -274,24 +274,32 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 15);
+		//player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*3): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (-fwdAxis * 3) : player->forceToBeAdded += (-fwdAxis * 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
 		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 15);
+		player->getIsAccelerated() ? player->forceToBeAdded += (fwdAxis * 3) : player->forceToBeAdded += (fwdAxis * 1.5);
+		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 15);
+		player->getIsAccelerated() ? player->forceToBeAdded += (-rightAxis * 3) : player->forceToBeAdded += (-rightAxis * 1.5);
+		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis* 1.5);
+		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
+
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(rightAxis * 15);
+		player->getIsAccelerated() ? player->forceToBeAdded += (rightAxis * 3) : player->forceToBeAdded += (rightAxis * 1.5);
+		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(rightAxis* 1.5);
+		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
+
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
@@ -703,10 +711,14 @@ void TutorialGame::InitGame() {
 }
 
 void TutorialGame::ShowPause(float dt) {
-	Debug::Print("Pause!", Vector2(30, 30), Debug::RED);
-	Debug::Print("Press P to continue", Vector2(30, 50), Debug::BLACK);
-	Debug::Print("Press M back to main menu", Vector2(30, 70), Debug::BLACK);
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) gameState = OnGoing;
+	Debug::Print("Pause!", Vector2(30, 20), Debug::RED);
+	Debug::Print("Press P to continue", Vector2(30, 40), Debug::BLACK);
+	Debug::Print("Press M back to main menu", Vector2(30, 60), Debug::BLACK);
+	Debug::Print("Press ESC exit game", Vector2(30, 80), Debug::GREEN);
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
+		gameState = OnGoing;
+		soundManager.ResumeAllSounds();
+	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::M)) gameState = MainMenu;
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
@@ -1176,6 +1188,7 @@ void TutorialGame::UpdateLevel(float dt) {
 	// Level 4
 	else if (currentLevel == 8) {
 		gameLevel->GetL4Door()->Update(dt);
+		world;
 		if (gameLevel->GetL4Door()->GetState() != "keepState" && gameLevel->GetL4Door()->GetTimer() - dt == 0) {
 			Vector3 pos = gameLevel->GetL4Door()->GetTransform().GetPosition();
 			FMOD_VECTOR poss = { pos.x,pos.y, pos.z };
