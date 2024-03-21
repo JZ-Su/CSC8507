@@ -68,6 +68,8 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	greenWallTexture[3] = render->LoadTexture("Wall/Texture_131_roughness.png");
 	greenWallTexture[4] = render->LoadTexture("Wall/Texture_13_ao.png");
 	greenWallTexture[5] = DefualtTexture[5];
+	signTexture[0] = render->LoadTexture("Wall/PicturesOnTheWall/start.png");
+	signTexture[1] = render->LoadTexture("Wall/PicturesOnTheWall/continue.png");
 
 	bossMat = new MeshMaterial("Male_Guard.mat");
 	playerMat = new MeshMaterial("FemaleA.mat");
@@ -84,7 +86,6 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
-	//wallShader = render->LoadShader("scene.vert", "scene_uv.frag");
 	modelShader = render->LoadShader("model.vert", "model.frag");
 	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	playerShader = render->LoadShader("SkinningVertex.vert", "player.frag");
@@ -253,6 +254,7 @@ GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& d
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[3], 3);
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[4], 4);
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[5], 5);
+	cube->GetRenderObject()->scale = 3.0;
 	cube->GetPhysicsObject()->Setelasticity(0);
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
@@ -290,7 +292,7 @@ GameObject* BasicExamples::CreateCeiling(const Vector3& position, const Vector3&
 	cube->GetRenderObject()->SetDefaultTexture(ceilingTexture[3], 3);
 	cube->GetRenderObject()->SetDefaultTexture(ceilingTexture[4], 4);
 	cube->GetRenderObject()->SetDefaultTexture(ceilingTexture[5], 5);
-
+	cube->GetRenderObject()->scale = 3.0;
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
 	cube->SetTag("Ground");
@@ -310,7 +312,7 @@ GameObject* BasicExamples::CreateCubeOBB(const Vector3& position, const Vector3&
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
 
-	cube->GetRenderObject()->SetColour(Vector4(0, 1, 0.5, 0.0));
+	cube->GetRenderObject()->SetColour(Vector4(0, 1, 0.5, 0.5));
 	cube->Deactivate();
 	return cube;
 }
@@ -501,6 +503,62 @@ GameObject* BasicExamples::CreateLight(const Vector3& position, const Vector4& c
 	light->GetPhysicsObject()->InitCubeInertia();
 
 	return light;
+}
+
+GameObject* BasicExamples::CreateLight(const Transform* transform, const Vector4& color, float radius, bool islight, bool isshadow) {
+	GameObject* light = new GameObject("sphere");
+
+	light->GetTransform().SetScale(Vector3(radius, radius, radius)).SetPosition(transform->GetPosition());
+	light->SetRenderObject(new RenderObject(&light->GetTransform(), sphereMesh, nullptr, basicShader));
+	light->GetRenderObject()->isLight = true;
+	light->GetRenderObject()->onLight = islight;
+	light->GetRenderObject()->isShadow = isshadow;
+	light->GetRenderObject()->SetColour(color);
+
+	light->SetPhysicsObject(new PhysicsObject(&light->GetTransform(), light->GetBoundingVolume()));
+	light->GetPhysicsObject()->SetInverseMass(0.0f);
+	light->GetPhysicsObject()->InitCubeInertia();
+
+	return light;
+}
+
+GameObject* BasicExamples::CreateSignStart(const Vector3& position, const Vector3& dimensions, float rotation, float scale, bool enable) {
+	GameObject* cube = new GameObject("cube");
+
+	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Matrix4::Rotation(rotation, Vector3(0, 1, 0)));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, signTexture[0], floorShader));
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[1], 1);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[2], 2);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[3], 3);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[4], 4);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[5], 5);
+	cube->GetRenderObject()->hasShadow = false;
+	cube->GetRenderObject()->scale = scale;
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+	cube->GetPhysicsObject()->SetInverseMass(0.0f);
+	cube->GetPhysicsObject()->InitCubeInertia();
+	
+	return cube;
+}
+
+GameObject* BasicExamples::CreateSignContinue(const Vector3& position, const Vector3& dimensions, float rotation, float scale, bool enable) {
+	GameObject* cube = new GameObject("cube");
+
+	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Matrix4::Rotation(rotation, Vector3(0, 1, 0)));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, signTexture[1], floorShader));
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[1], 1);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[2], 2);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[3], 3);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[4], 4);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[5], 5);
+	cube->GetRenderObject()->hasShadow = false;
+	cube->GetRenderObject()->scale = scale;
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+	cube->GetPhysicsObject()->SetInverseMass(0.0f);
+	cube->GetPhysicsObject()->InitCubeInertia();
+	
+	return cube;
 }
 
 Player* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {

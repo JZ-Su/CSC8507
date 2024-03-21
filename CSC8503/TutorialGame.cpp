@@ -49,7 +49,7 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 
 	//LoadRankingFile();
 	//gameState = MainMenu;
-	gameState = MainMenu;
+	gameState = Start;
 	mainMenuState = MainMenu_Start;
 	gameMode = TimeLimited;
 }
@@ -113,6 +113,7 @@ void TutorialGame::UpdateGame(float dt) {
 	else if (lastWalkingState) {
 		soundManager.stopSound("walking");
 	}
+	
 	lastWalkingState = isWalking;
 	soundManager.update();
 	totalTime += dt;
@@ -413,7 +414,7 @@ void TutorialGame::InitWorld() {
 	physics->Clear();
 	gameLevel = new GameLevel(renderer);
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
-	//player = gameLevel->GetPlayer();
+	player = gameLevel->GetPlayer();
 	playerlist = gameLevel->GetPlayerList();
 	//localplayer = gameLevel->GetPlayer();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
@@ -424,7 +425,7 @@ void TutorialGame::InitWorld() {
 	*/
 	isDebug = true;
 	//isDebug = false;
-	int debugLevel = 1;
+	int debugLevel = 4;
 
 	if (isDebug) {
 		switch (debugLevel)
@@ -1183,12 +1184,17 @@ void TutorialGame::UpdateLevel(float dt) {
 	// Level 4
 	else if (currentLevel == 8) {
 		gameLevel->GetL4Door()->Update(dt);
+		gameLevel->UpdateLight();
+		
 		if (gameLevel->GetL4Door()->GetState() != "keepState" && gameLevel->GetL4Door()->GetTimer() - dt == 0) {
 			soundManager.playSound("door");
 		}
 		GameObject* beginDet = gameLevel->GetBeginArea();
 		GameObject* trueEndDet = gameLevel->GetTrueEndArea();
 		GameObject* falseEndDet = gameLevel->GetFalseEndArea();
+		GameObject* signS = gameLevel->GetSignStart();
+		GameObject* signC = gameLevel->GetSignContinue();
+
 		trueEndDet->GetRenderObject()->SetColour(Debug::RED);
 		falseEndDet->GetRenderObject()->SetColour(Debug::GREEN);
 		beginDet->GetRenderObject()->SetColour(Debug::BLUE);
@@ -1217,7 +1223,10 @@ void TutorialGame::UpdateLevel(float dt) {
 				hasReverse = !hasReverse;
 			}
 			score++;
+			signS->Deactivate();
+			signC->Activate();
 			mapIndex = static_cast<int>(RandomValue(-3, 5));
+			gameLevel->SetScore(score);
 			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
 			hasRotation = !hasRotation;
 		}
@@ -1239,7 +1248,10 @@ void TutorialGame::UpdateLevel(float dt) {
 				hasReverse = !hasReverse;
 			}
 			score = 0;
+			signC->Deactivate();
+			signS->Activate();
 			mapIndex = 0;
+			gameLevel->SetScore(score);
 			gameLevel->AddLevelToWorld(world, mapIndex, hasRotation, hasReverse);
 			hasRotation = !hasRotation;
 		}

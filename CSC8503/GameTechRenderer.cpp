@@ -705,10 +705,10 @@ void GameTechRenderer::RenderCamera() {
 			int isWallLocation = glGetUniformLocation(shader->GetProgramID(), "isWall");
 			glUniform1i(isWallLocation, i->isWall);
 
-			if (i->isWall) {
+			/*if (i->isWall) {*/
 				int scaleLocation = glGetUniformLocation(shader->GetProgramID(), "scale");
 				glUniform1f(scaleLocation, i->scale);
-			}
+			//}
 
 			Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
 			glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);

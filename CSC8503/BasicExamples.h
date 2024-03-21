@@ -27,8 +27,10 @@ namespace NCL {
 		BasicExamples() {};
 		~BasicExamples();
 		GameObject* CreateCube(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
-		GameObject* CreateBigWall(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float scale = 0.05);
-		GameObject* CreateGreenWall(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float scale = 0.1);
+		GameObject* CreateSignStart(const Vector3& position, const Vector3& dimensions, float rotation = 0.0f, float scale = 1.0f, bool enable = true); 
+		GameObject* CreateSignContinue(const Vector3& position, const Vector3& dimensions, float rotation = 0.0f, float scale = 1.0f, bool enable = true);
+		GameObject* CreateBigWall(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float scale = 0.05f);
+		GameObject* CreateGreenWall(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float scale = 0.1f);
 
 		GameObject* CreateFloor(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
 		GameObject* CreateCeiling(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
@@ -118,6 +120,9 @@ namespace NCL {
 		Mesh* hangLightMesh = nullptr;
 		Mesh* layerMesh = nullptr;
 
+		GameObject* CreateLight(const Transform* transform, const Vector4& color, float radius, bool islight, bool isshadow);
+
+
 		Texture* basicTexture = nullptr;
 		Texture* IceCubeTexture = nullptr;
 		Texture* shieldTexture = nullptr;
@@ -128,6 +133,7 @@ namespace NCL {
 		Texture* ceilingTexture[6]   = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 		Texture* wallTexture[6] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 		Texture* greenWallTexture[6] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+		Texture* signTexture[2];
 		Shader* basicShader = nullptr;
 		Shader* floorShader = nullptr;
 		Shader* modelShader = nullptr;
