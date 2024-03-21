@@ -70,19 +70,19 @@ float realDT	= idealDT;
 void PhysicsSystem::Update(float dt) {	
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::B)) {
 		useBroadPhase = !useBroadPhase;
-		std::cout << "Setting broadphase to " << useBroadPhase << std::endl;
+		//std::cout << "Setting broadphase to " << useBroadPhase << std::endl;
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::N)) {
 		useSimpleContainer = !useSimpleContainer;
-		std::cout << "Setting broad container to " << useSimpleContainer << std::endl;
+		//std::cout << "Setting broad container to " << useSimpleContainer << std::endl;
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::I)) {
 		constraintIterationCount--;
-		std::cout << "Setting constraint iterations to " << constraintIterationCount << std::endl;
+		//std::cout << "Setting constraint iterations to " << constraintIterationCount << std::endl;
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::O)) {
 		constraintIterationCount++;
-		std::cout << "Setting constraint iterations to " << constraintIterationCount << std::endl;
+		//std::cout << "Setting constraint iterations to " << constraintIterationCount << std::endl;
 	}
 
 	dTOffset += dt; //We accumulate time delta here - there might be remainders from previous frame!

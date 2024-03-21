@@ -72,6 +72,8 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	greenWallTexture[3] = render->LoadTexture("Wall/Texture_131_roughness.png");
 	greenWallTexture[4] = render->LoadTexture("Wall/Texture_13_ao.png");
 	greenWallTexture[5] = DefualtTexture[5];
+	signTexture[0] = render->LoadTexture("Wall/PicturesOnTheWall/start.png");
+	signTexture[1] = render->LoadTexture("Wall/PicturesOnTheWall/continue.png");
 
 	bossMat = new MeshMaterial("Male_Guard.mat");
 	playerMat = new MeshMaterial("FemaleA.mat");
@@ -88,7 +90,6 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 
 	basicShader = render->LoadShader("scene.vert", "scene.frag");
 	floorShader = render->LoadShader("scene.vert", "scene_uv.frag");
-	//wallShader = render->LoadShader("scene.vert", "scene_uv.frag");
 	modelShader = render->LoadShader("model.vert", "model.frag");
 	bossShader = render->LoadShader("SkinningVertex.vert", "TexturedFragment.frag");
 	playerShader = render->LoadShader("SkinningVertex.vert", "player.frag");
@@ -258,6 +259,7 @@ GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& d
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[3], 3);
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[4], 4);
 	cube->GetRenderObject()->SetDefaultTexture(floorTexture[5], 5);
+	cube->GetRenderObject()->scale = 3.0;
 	cube->GetPhysicsObject()->Setelasticity(0);
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
@@ -296,7 +298,7 @@ GameObject* BasicExamples::CreateCeiling(const Vector3& position, const Vector3&
 	cube->GetRenderObject()->SetDefaultTexture(ceilingTexture[3], 3);
 	cube->GetRenderObject()->SetDefaultTexture(ceilingTexture[4], 4);
 	cube->GetRenderObject()->SetDefaultTexture(ceilingTexture[5], 5);
-
+	cube->GetRenderObject()->scale = 3.0;
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
 	cube->SetTag("Ground");
@@ -316,7 +318,7 @@ GameObject* BasicExamples::CreateCubeOBB(const Vector3& position, const Vector3&
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
 
-	cube->GetRenderObject()->SetColour(Vector4(0, 1, 0.5, 0.0));
+	cube->GetRenderObject()->SetColour(Vector4(0, 1, 0.5, 0.5));
 	cube->Deactivate();
 	return cube;
 }
@@ -509,6 +511,62 @@ GameObject* BasicExamples::CreateLight(const Vector3& position, const Vector4& c
 	return light;
 }
 
+GameObject* BasicExamples::CreateLight(const Transform* transform, const Vector4& color, float radius, bool islight, bool isshadow) {
+	GameObject* light = new GameObject("sphere");
+
+	light->GetTransform().SetScale(Vector3(radius, radius, radius)).SetPosition(transform->GetPosition());
+	light->SetRenderObject(new RenderObject(&light->GetTransform(), sphereMesh, nullptr, basicShader));
+	light->GetRenderObject()->isLight = true;
+	light->GetRenderObject()->onLight = islight;
+	light->GetRenderObject()->isShadow = isshadow;
+	light->GetRenderObject()->SetColour(color);
+
+	light->SetPhysicsObject(new PhysicsObject(&light->GetTransform(), light->GetBoundingVolume()));
+	light->GetPhysicsObject()->SetInverseMass(0.0f);
+	light->GetPhysicsObject()->InitCubeInertia();
+
+	return light;
+}
+
+GameObject* BasicExamples::CreateSignStart(const Vector3& position, const Vector3& dimensions, float rotation, float scale, bool enable) {
+	GameObject* cube = new GameObject("cube");
+
+	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Matrix4::Rotation(rotation, Vector3(0, 1, 0)));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, signTexture[0], floorShader));
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[1], 1);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[2], 2);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[3], 3);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[4], 4);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[5], 5);
+	cube->GetRenderObject()->hasShadow = false;
+	cube->GetRenderObject()->scale = scale;
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+	cube->GetPhysicsObject()->SetInverseMass(0.0f);
+	cube->GetPhysicsObject()->InitCubeInertia();
+	
+	return cube;
+}
+
+GameObject* BasicExamples::CreateSignContinue(const Vector3& position, const Vector3& dimensions, float rotation, float scale, bool enable) {
+	GameObject* cube = new GameObject("cube");
+
+	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Matrix4::Rotation(rotation, Vector3(0, 1, 0)));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, signTexture[1], floorShader));
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[1], 1);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[2], 2);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[3], 3);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[4], 4);
+	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[5], 5);
+	cube->GetRenderObject()->hasShadow = false;
+	cube->GetRenderObject()->scale = scale;
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+	cube->GetPhysicsObject()->SetInverseMass(0.0f);
+	cube->GetPhysicsObject()->InitCubeInertia();
+	
+	return cube;
+}
+
 Player* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	Player* player = new Player("player");
 
@@ -541,7 +599,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 		const std::string* filenameDiffuse = nullptr;
 		matEntry->GetEntry("Diffuse", &filenameDiffuse);
 		std::string pathDiffuse = *filenameDiffuse;
-		std::cout << "Diffuse Texture: " << pathDiffuse << std::endl;
+		//std::cout << "Diffuse Texture: " << pathDiffuse << std::endl;
 		if (!pathDiffuse.empty()) {
 			character->GetRenderObject()->matDiffuseTextures.emplace_back(renderer->LoadTexture(pathDiffuse));
 		}
@@ -550,7 +608,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 		const std::string* filenameNormal = nullptr;
 		if (matEntry->GetEntry("Bump", &filenameNormal)) {
 			std::string pathNormal = *filenameNormal;
-			std::cout << "Normal Texture: " << pathNormal << std::endl;
+			//std::cout << "Normal Texture: " << pathNormal << std::endl;
 			if (!pathNormal.empty()) {
 				character->GetRenderObject()->matNormalTextures.emplace_back(renderer->LoadTexture(pathNormal));
 			}
@@ -560,7 +618,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 		const std::string* filenameMetal = nullptr;
 		if (matEntry->GetEntry("Metallic", &filenameMetal)) {
 			std::string pathMetal = *filenameMetal;
-			std::cout << "Metal Texture: " << pathMetal << std::endl;
+			//std::cout << "Metal Texture: " << pathMetal << std::endl;
 			if (!pathMetal.empty()) {
 				character->GetRenderObject()->matMetalTextures.emplace_back(renderer->LoadTexture(pathMetal));
 			}
@@ -570,7 +628,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 		const std::string* filenameRoughness = nullptr;
 		if (matEntry->GetEntry("Roughness", &filenameRoughness)) {
 			std::string pathRoughness = *filenameRoughness;
-			std::cout << "Roughness Texture: " << pathRoughness << std::endl;
+			//std::cout << "Roughness Texture: " << pathRoughness << std::endl;
 			if (!pathRoughness.empty()) {
 				character->GetRenderObject()->matRoughnessTextures.emplace_back(renderer->LoadTexture(pathRoughness));
 			}
@@ -580,7 +638,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 		const std::string* filenameAo = nullptr;
 		if (matEntry->GetEntry("AO", &filenameAo)) {
 			std::string pathAo = *filenameAo;
-			std::cout << "Ao Texture: " << pathAo << std::endl;
+			//std::cout << "Ao Texture: " << pathAo << std::endl;
 			if (!pathAo.empty()) {
 				character->GetRenderObject()->matAoTextures.emplace_back(renderer->LoadTexture(pathAo));
 			}
@@ -590,7 +648,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 		const std::string* filenameHeight = nullptr;
 		if (matEntry->GetEntry("Height", &filenameHeight)) {
 			std::string pathHeight = *filenameHeight;
-			std::cout << "Height Texture: " << pathHeight << std::endl;
+			//std::cout << "Height Texture: " << pathHeight << std::endl;
 			if (!pathHeight.empty()) {
 				character->GetRenderObject()->matHeightTextures.emplace_back(renderer->LoadTexture(pathHeight));
 			}

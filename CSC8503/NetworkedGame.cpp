@@ -473,7 +473,7 @@ bool NetworkedGame::clientProcessDp(DeltaPacket* dp)
 
 bool NetworkedGame::serverProcessCP(ClientPacket* cp, int source)
 {
-	std::cout << "recieved";
+	//std::cout << "recieved";
 	int playerID = GetClientPlayerNum(source);
 	if (playerID != -1)
 	{

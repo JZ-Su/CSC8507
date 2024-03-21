@@ -29,7 +29,7 @@ Boss::Boss(Player* player) {
 		else if (state == Ongoing) {
 			this->distanceToTarget = calculateDistance(this->GetTransform().GetPosition(), this->player->GetTransform().GetPosition());
 			if (distanceToTarget > remoteAttackRange) {
-				std::cout << "idle.\n";
+				//std::cout << "idle.\n";
 			}
 			return Failure;
 		}
@@ -166,7 +166,7 @@ Boss::Boss(Player* player) {
 		else if (state == Ongoing) {
 			stunTimer += dt;
 			if (stunTimer >= stunDuration) {
-				std::cout << "I will destroy you!!!.\n";
+				//std::cout << "I will destroy you!!!.\n";
 				stunTimer = 0.0f;
 				return Success;
 			}
@@ -188,7 +188,7 @@ Boss::Boss(Player* player) {
 	);
 
 	BehaviourAction* dropItems = new BehaviourAction("DropItems", [&](float dt, BehaviourState state) -> BehaviourState {
-		std::cout << "drop items!" << std::endl;
+		//std::cout << "drop items!" << std::endl;
 		this->setIsDroppingMassiveItems(true);
 		return Failure;
 		});

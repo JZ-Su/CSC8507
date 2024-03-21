@@ -294,7 +294,7 @@ void GameTechRenderer::LoadSkybox() {
 	for (int i = 0; i < 6; ++i) {
 		TextureLoader::LoadTexture(filenames[i], texData[i], width[i], height[i], channels[i], flags[i]);
 		if (i > 0 && (width[i] != width[0] || height[0] != height[0])) {
-			std::cout << __FUNCTION__ << " cubemap input textures don't match in size?\n";
+			//std::cout << __FUNCTION__ << " cubemap input textures don't match in size?\n";
 			return;
 		}
 	}
@@ -337,7 +337,7 @@ void GameTechRenderer::Loadhdr() {
 	}
 	else
 	{
-		std::cout << "Failed to load HDR image." << std::endl;
+		//std::cout << "Failed to load HDR image." << std::endl;
 	}
 	stbi_set_flip_vertically_on_load(false);
 
@@ -717,10 +717,10 @@ void GameTechRenderer::RenderCamera() {
 			int isWallLocation = glGetUniformLocation(shader->GetProgramID(), "isWall");
 			glUniform1i(isWallLocation, i->isWall);
 
-			if (i->isWall) {
+			/*if (i->isWall) {*/
 				int scaleLocation = glGetUniformLocation(shader->GetProgramID(), "scale");
 				glUniform1f(scaleLocation, i->scale);
-			}
+			//}
 
 			Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
 			glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
@@ -1099,11 +1099,11 @@ void GameTechRenderer::NewRenderText() {
 Texture* GameTechRenderer::LoadTexture(const std::string& name) {
 	auto it = textureCache.find(name);
 	if (it != textureCache.end()) {
-		std::cout << "Texture '" << name << "' found in cache!" << std::endl;
+		//std::cout << "Texture '" << name << "' found in cache!" << std::endl;
 		return it->second.get(); // Return the texture in cache
 	}
 	else {
-		std::cout << "Loading texture '" << name << "'..." << std::endl;
+		//std::cout << "Loading texture '" << name << "'..." << std::endl;
 		// If the texture can't be found in cache, load it
 		UniqueOGLTexture texture = OGLTexture::TextureFromFile(name);
 		if (texture) {

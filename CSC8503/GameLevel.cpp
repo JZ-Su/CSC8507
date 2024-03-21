@@ -24,6 +24,8 @@ void GameLevel::CreateGeneric() {
 	}
 	player = playerList[0];
 	Generic.AddObject(player);
+	//Level 4 player: 
+	//Generic.AddObject(CreatePlayer(Vector3(-70+-, 10, -50), Vector3(1, 1, 1)));
 	//cameraCollision = CreateAABB(Vector3(0, 50, 0), Vector3(1, 1, 1), 10.0f);
 	//cameraCollision->SetTag("cameraCollision");
 	//Generic.AddObject(cameraCollision);
@@ -38,7 +40,7 @@ void GameLevel::AddLevelToWorld(GameWorld* world, Level l) {
 void GameLevel::AddLevelToWorld(GameWorld* world, int i, bool isRotate, bool isReverse) {
 	if (i > 5) i = i % 5 + 1;
 	else if (i <= 1) i = 1;
-
+	score = GetScore();
 	if (!isRotate) {
 		if (isReverse) {
 			level4_basic = level4_reverse[0];
@@ -63,8 +65,18 @@ void GameLevel::AddLevelToWorld(GameWorld* world, int i, bool isRotate, bool isR
 			falseEndArea = level4_basic.objectList[12];
 			falseEndArea->isEnable = false;
 		}
+
+		light = level4_basic.objectList[25];
 		door = (Door*)level4_basic.objectList[14];
 		door->Activation();
+		if (score == 0) {
+			level4_basic.objectList[27]->Deactivate();
+			level4_basic.objectList[26]->Activate();
+		}
+		else {
+			level4_basic.objectList[26]->Deactivate();
+			level4_basic.objectList[27]->Activate();
+		}
 		AddLevelToWorld(world, level4_basic);
 		AddLevelToWorld(world, level4_diff);
 	}
@@ -92,8 +104,17 @@ void GameLevel::AddLevelToWorld(GameWorld* world, int i, bool isRotate, bool isR
 			falseEndArea = level4r_basic.objectList[12];
 			falseEndArea->isEnable = false;
 		}
+		light = level4r_basic.objectList[25];
 		door = (Door*)level4r_basic.objectList[14];
 		door->Activation();
+		if (score == 0) {
+			level4r_basic.objectList[27]->Deactivate();
+			level4r_basic.objectList[26]->Activate();
+		}
+		else {
+			level4r_basic.objectList[26]->Deactivate();
+			level4r_basic.objectList[27]->Activate();
+		}
 		AddLevelToWorld(world, level4r_basic);
 		AddLevelToWorld(world, level4r_diff);
 	}
@@ -103,7 +124,6 @@ void GameLevel::RemoveLevel(GameWorld* world, Level* l, bool andClear, bool andD
 	for (auto element : (*l).objectList) {
 		world->RemoveGameObject(element, andDelete);
 	}
-
 	if (andClear) {
 		(*l).objectList.clear();
 	}
@@ -111,9 +131,9 @@ void GameLevel::RemoveLevel(GameWorld* world, Level* l, bool andClear, bool andD
 
 vector<GameObject*> GameLevel::CreatePortal(const Vector3& position) {
 	vector<GameObject*> vec;
-	vec.push_back(CreateCube(position + Vector3(-4, -0.5, 0), Vector3(1, 6.5, 1), 0.0f));
-	vec.push_back(CreateCube(position + Vector3(4, -0.5, 0),  Vector3(1, 6.5, 1), 0.0f));
-	vec.push_back(CreateCube(position + Vector3(0, 7, 0),     Vector3(5, 1, 1),   0.0f));
+	vec.push_back(CreateBigWall(position + Vector3(-4, -0.5, 0), Vector3(1, 6.5, 1), 0.0f));
+	vec.push_back(CreateBigWall(position + Vector3(4, -0.5, 0),  Vector3(1, 6.5, 1), 0.0f));
+	vec.push_back(CreateBigWall(position + Vector3(0, 7, 0),     Vector3(5, 1, 1),   0.0f));
 	vec.push_back(CreateCube(position, Vector3(4, 7, 0.1), 0.0f));
 	vec.back()->SetCollisionResponse(false);
 	vec.back()->GetRenderObject()->SetColour(Vector4(0.3, 0.8, 1.0, 1.0));
@@ -124,12 +144,13 @@ vector<GameObject*> GameLevel::CreatePortal(const Vector3& position) {
 }
 
 void GameLevel::CreateConnectionLevel() {
-	connection.AddObject(CreateCube(Vector3(0, 0, 0),    Vector3(20, 1, 75),  0.0f));
-	connection.AddObject(CreateCube(Vector3(-20, 10, 0), Vector3(10, 10, 75), 0.0f));
-	connection.AddObject(CreateCube(Vector3(20, 10, 0),  Vector3(10, 10, 75), 0.0f));
-	connection.AddObject(CreateCube(Vector3(0, 10, -75), Vector3(10, 10, 10), 0.0f));
-	connection.AddObject(CreateCube(Vector3(0, 10, 75),  Vector3(10, 10, 10), 0.0f));
-
+	connection.AddObject(CreateFloor(Vector3(0, 0, 0),    Vector3(75, 1, 75),  0.0f));
+	connection.AddObject(CreateCeiling(Vector3(0, 20, 0), Vector3(75, 1, 75), 0.0f));
+	connection.AddObject(CreateBigWall(Vector3(-20, 10, 0), Vector3(10, 10, 75), 0.0f));
+	connection.AddObject(CreateBigWall(Vector3(20, 10, 0),  Vector3(10, 10, 75), 0.0f));
+	connection.AddObject(CreateBigWall(Vector3(0, 10, -75), Vector3(10, 10, 10), 0.0f));
+	connection.AddObject(CreateBigWall(Vector3(0, 10, 75),  Vector3(10, 10, 10), 0.0f));
+	connection.AddObject(CreateLight(Vector3(0,18,0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
 	vector<GameObject*> vec = CreatePortal(Vector3(0, 7, -65));
 	for (const auto& ele : vec) {
 		connection.AddObject(ele);
@@ -349,7 +370,7 @@ void GameLevel::CreateLevel3() {
 	level3.AddObject(fireBallBullet);
 	level3.AddObject(shield = CreateShield(Vector3(0, -30, 20), Vector3(1, 1, 1), 5.0f));
 
-	//level3.AddObject(CreateRollingRockProp(Vector3(4, 3, 110), 0.5));
+	level3.AddObject(CreateRollingRockProp(Vector3(4, 3, 110), 0.5));
 	level3.AddObject(CreateShieldProp(Vector3(12, 3, 110), Vector3(1, 1, 1)));
 	level3.AddObject(CreateShieldProp(Vector3(-12, 3, 110), Vector3(1, 1, 1)));
 	level3.AddObject(CreateSpeedProp(Vector3(-4, 3, 110), Vector3(8, 8, 8)));
@@ -410,24 +431,48 @@ void GameLevel::CreateLevel4_Normal() {
 	l0.AddObject(CreateBigWall(Vector3(  0, 10,  90), Vector3(40, 20, 10), 0.0f));
 	l0.AddObject(CreateBigWall(Vector3( 50, 10,  90), Vector3(10, 20, 10), 0.0f));
 
+	l0.AddObject(CreateLight(player->GetTransform().GetPosition(), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
+	l0.AddObject(CreateSignStart(Vector3(-59.65, 15, -35), Vector3(0.5, 2, 4), 0.0f, 1.0));
+	l0.AddObject(CreateSignContinue(Vector3(-59.65, 10, -35), Vector3(0.5, 2, 4), 0.0f, 1.0));
+	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
 	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
-	l0.AddObject(CreateLight(Vector3(0, 19, 65), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
-	l0.AddObject(CreateLight(Vector3(-65, 19, 0), Vector4(0.2f, 0.1f, 0.1f, 1.0f), 50.0f, true, false));
-	level4_normal.emplace_back(l0);
+	l0.objectList.back()->SetBoundingVolume(nullptr);
+	level4_normal.emplace_back(l0); 
 	
 	Level l1;
+	l1.AddObject(CreateBookshelf(Vector3(10, 1, 61), 0.0f, Vector3(0, 1, 0), 0));
+	l1.AddObject(CreateBookshelf(Vector3(0, -5, 61), 0.0f, Vector3(0, 1, 0), 0));
+	l1.AddObject(CreateHangLight(Vector3(0, 20, 71), Vector3(4, 4, 4), 0.0f));
+
 	level4_normal.emplace_back(l1);
 
 	Level l2;
+	//other objects
+	l2.AddObject(CreateBookshelf(Vector3(10, 1, 61), 0.0f, Vector3(0, 1, 0), 0));
+	l2.AddObject(CreateBookshelf(Vector3(0, -5, 61), 0.0f, Vector3(0, 1, 0), 0));
+	l2.AddObject(CreateWallLight(Vector3(0, 18, 62), 0.0f, Vector3(0, 1, 0), 0));
 	level4_normal.emplace_back(l2);
 
 	Level l3;
+	//other objects
+	l3.AddObject(CreateBookshelf(Vector3(10, 1, 61), 0.0f, Vector3(0, 1, 0), 0));
+	l3.AddObject(CreateBookshelf(Vector3(0, -5, 61), 0.0f, Vector3(0, 1, 0), 0));
+	l3.AddObject(CreateWallLight(Vector3(0, 18, 78), 0.0f, Vector3(0, 1, 0), 180));
 	level4_normal.emplace_back(l3);
 
 	Level l4;
+	//other objects
+	l4.AddObject(CreateBookshelf(Vector3(10, 1, 61), 0.0f, Vector3(0, 1, 0), 0));
+	l4.AddObject(CreateBookshelf(Vector3(0, 1, 61), 0.0f, Vector3(0, 1, 0), 0));
+	l4.AddObject(CreateHangLight(Vector3(0, 20, 71), Vector3(4, 4, 4), 0.0f));
 	level4_normal.emplace_back(l4);
 
 	Level l5;
+	//other objects
+	l5.AddObject(CreateStairs(Vector3(-10, 0, 70), Vector3(2.7, 2, 1.25), 0.0f, Vector3(0, 1, 0), 90));
+	l5.AddObject(CreateCubeOBB(Vector3(-10, -13.5, 70), Vector3(21.6, 10, 15), 0.0f, Vector3(0, 0, 1), -45));
+	l5.AddObject(CreateStairs(Vector3(-30, 0, 70), Vector3(2.7, 2, 1.25), 0.0f, Vector3(0, 1, 0), -90));
+	l5.AddObject(CreateCubeOBB(Vector3(-30, -13.5, 70), Vector3(21.6, 10, 15), 0.0f, Vector3(0, 0, 1), 45));
 	level4_normal.emplace_back(l5);
 }
 
@@ -470,26 +515,49 @@ void GameLevel::CreateLevel4_Rotate() {
 	l0.AddObject(CreateBigWall(Vector3(0,  10, -90), Vector3(40, 20, 10), 0.0f));
 	l0.AddObject(CreateBigWall(Vector3(-50,10, -90), Vector3(10, 20, 10), 0.0f));
 
+	l0.AddObject(CreateLight(player->GetTransform().GetPosition(), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
+	l0.AddObject(CreateSignStart(Vector3(60.65, 15, 35), Vector3(0.5, 2, 4), 0.0f, 1.0));
+	l0.AddObject(CreateSignContinue(Vector3(60.65, 10, 35), Vector3(0.5, 2, 4), 0.0f, 1.0));
+
+	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
 	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
-	l0.AddObject(CreateLight(Vector3(0, 19, -65), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
-	l0.AddObject(CreateLight(Vector3(65, 19, 0), Vector4(0.2f, 0.1f, 0.1f, 1.0f), 50.0f, true, false));
+	l0.objectList.back()->SetBoundingVolume(nullptr);
 	level4_rotate.emplace_back(l0);
 
 	Level l1;
+	l1.AddObject(CreateBookshelf(Vector3(-10, 1, -61), 0.0f, Vector3(0, 1, 0), 0));
+	l1.AddObject(CreateBookshelf(Vector3(0, -5, -61), 0.0f, Vector3(0, 1, 0), 0));
+	l1.AddObject(CreateHangLight(Vector3(0, 20, -71), Vector3(4, 4, 4), 0.0f));
 	level4_rotate.emplace_back(l1);
 
 	Level l2;
 	//other objects
-	l2.AddObject(CreateCube(Vector3(-50, 5, -70), Vector3(5, 5, 5), 0.0f));
+	l2.AddObject(CreateBookshelf(Vector3(-10, 1, -61), 0.0f, Vector3(0, 1, 0), 0));
+	l2.AddObject(CreateBookshelf(Vector3(0, -5, -61), 0.0f, Vector3(0, 1, 0), 0));	
+	l2.AddObject(CreateBookshelf(Vector3(10, -5, -61), 0.0f, Vector3(0, 1, 0), 0));
+	l2.AddObject(CreateWallLight(Vector3(0, 18, -62), 0.0f, Vector3(0, 1, 0), 180));
 	level4_rotate.emplace_back(l2);
 
 	Level l3;
+	//other objects
+	l3.AddObject(CreateBookshelf(Vector3(-10, 1, -61), 0.0f, Vector3(0, 1, 0), 0));
+	l3.AddObject(CreateBookshelf(Vector3(0, -5, -78), 0.0f, Vector3(0, 1, 0), 0));
+	l3.AddObject(CreateWallLight(Vector3(0, 18, -78), 0.0f, Vector3(0, 1, 0), 0));
 	level4_rotate.emplace_back(l3);
 
 	Level l4;
+	//other objects
+	l4.AddObject(CreateBookshelf(Vector3(-10, 1, -78), 0.0f, Vector3(0, 1, 0), 0));
+	l4.AddObject(CreateBookshelf(Vector3(0,  1, -78), 0.0f, Vector3(0, 1, 0), 0));
+	l4.AddObject(CreateHangLight(Vector3(0, 25, -71), Vector3(1, 1, 1), 180.0f));
 	level4_rotate.emplace_back(l4);
 
 	Level l5;
+	//other objects
+	l5.AddObject(CreateBookshelf(Vector3(-10, 1, -61), 0.0f, Vector3(0, 1, 0), 0));
+	l5.AddObject(CreateBookshelf(Vector3(0, -5, -61), 0.0f, Vector3(0, 1, 0), 0));
+	l5.AddObject(CreateWallLight(Vector3(0, 18, -62), 0.0f, Vector3(0, 1, 0), 180));
+	l5.AddObject(CreateWallLight(Vector3(0, 18, -78), 0.0f, Vector3(0, 1, 0), 0));
 	level4_rotate.emplace_back(l5);
 }
 
@@ -532,25 +600,49 @@ void GameLevel::CreateLevel4_Reverse() {
 	l0.AddObject(CreateBigWall(Vector3(0,   10, 90), Vector3(40, 20, 10), 0.0f));
 	l0.AddObject(CreateBigWall(Vector3(50,  10, 90), Vector3(10, 20, 10), 0.0f));
 
-	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
-	l0.AddObject(CreateLight(Vector3(-65, 19, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
-	l0.AddObject(CreateLight(Vector3(0, 19, 65), Vector4(0.2f, 0.1f, 0.1f, 1.0f), 50.0f, true, false));
+	l0.AddObject(CreateLight(player->GetTransform().GetPosition(), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
+	l0.AddObject(CreateSignStart(Vector3(35, 15, 61), Vector3(0.5, 2, 4), 90.0f, 1.0));
+	l0.AddObject(CreateSignContinue(Vector3(35, 10, 61), Vector3(0.5, 2, 4), 90.0f, 1.0));
 
+	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
+	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
+	l0.objectList.back()->SetBoundingVolume(nullptr);
 	level4_reverse.emplace_back(l0);
 
 	Level l1;
+	l1.AddObject(CreateBookshelf(Vector3(-61, 1,10 ), 0.0f, Vector3(0, 1, 0), 90));
+	l1.AddObject(CreateBookshelf(Vector3(-61, -5,0 ), 0.0f, Vector3(0, 1, 0), 90));
+	l1.AddObject(CreateHangLight(Vector3(-71, 20,0 ), Vector3(4, 4, 4), 0.0f));
 	level4_reverse.emplace_back(l1);
 
 	Level l2;
+	//other objects
+	l2.AddObject(CreateBookshelf(Vector3(-61, 1, 10), 0.0f, Vector3(0, 1, 0), 90));
+	l2.AddObject(CreateBookshelf(Vector3(-61, -5, 0), 0.0f, Vector3(0, 1, 0), 90));
+	
 	level4_reverse.emplace_back(l2);
 
 	Level l3;
+	//other objects
+	l3.AddObject(CreateBookshelf(Vector3(-61, 1, 10), 0.0f, Vector3(0, 1, 0), 90));
+	l3.AddObject(CreateBookshelf(Vector3(-61, -5, 0), 0.0f, Vector3(0, 1, 0), 90));
+	l3.AddObject(CreateWallLight(Vector3(-78, 18, 10), 0.0f, Vector3(0, 1, 0), 90)); 
+	l3.AddObject(CreateWallLight(Vector3(-78, 18, -10), 0.0f, Vector3(0, 1, 0), 90));
 	level4_reverse.emplace_back(l3);
 
 	Level l4;
+	//other objects
+	l4.AddObject(CreateBookshelf(Vector3(-61 , 1, 10), 0.0f, Vector3(0, 1, 0), 90));
+	l4.AddObject(CreateBookshelf(Vector3(-61 , 1, 0 ), 0.0f, Vector3(0, 1, 0), 90));
+	l4.AddObject(CreateHangLight(Vector3(-71 , 20,0 ), Vector3(4, 4, 4), 0.0f));
+	l4.AddObject(CreateWallLight(Vector3(-62, 18, -10), 0.0f, Vector3(0, 1, 0), -90));
 	level4_reverse.emplace_back(l4);
 
 	Level l5;
+	//other objects
+	l5.AddObject(CreateBookshelf(Vector3(-61, -5, -10), 0.0f, Vector3(0, 1, 0), 90));
+	l5.AddObject(CreateBookshelf(Vector3(-61, -5, 0), 0.0f, Vector3(0, 1, 0), 90));
+	l5.AddObject(CreateWallLight(Vector3(-78, 18, 0), 0.0f, Vector3(0, 1, 0), 90));
 	level4_reverse.emplace_back(l5);
 
 }
@@ -595,25 +687,55 @@ void GameLevel::CreateLevel4_RR() {
 	l0.AddObject(CreateBigWall(Vector3(0,  10, -90), Vector3(40, 20, 10), 0.0f));
 	l0.AddObject(CreateBigWall(Vector3(-50,10, -90), Vector3(10, 20, 10), 0.0f));
 
+	l0.AddObject(CreateLight(player->GetTransform().GetPosition(), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
+	l0.AddObject(CreateSignStart(Vector3(-35, 15,-61 ), Vector3(0.5, 2, 4), 90.0f, 1.0));
+	l0.AddObject(CreateSignContinue(Vector3(-35, 10,-61 ), Vector3(0.5, 2, 4), 90.0f, 1.0));
+	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
 	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
-	l0.AddObject(CreateLight(Vector3(0, 19, -65),  Vector4(0.2f, 0.1f, 0.1f, 1.0f), 50.0f, true, false));
-	l0.AddObject(CreateLight(Vector3(65, 19, 0), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
-
+	l0.objectList.back()->SetBoundingVolume(nullptr);
 	level4_reverse_rotate.emplace_back(l0);
 
 	Level l1;
+	l1.AddObject(CreateBookshelf(Vector3(61, 1, -10), 0.0f, Vector3(0, 1, 0), -90));
+	l1.AddObject(CreateBookshelf(Vector3(61, -5, 0), 0.0f, Vector3(0, 1, 0), -90));
+	l1.AddObject(CreateHangLight(Vector3(71, 20, 0), Vector3(4, 4, 4), 0.0f));
 	level4_reverse_rotate.emplace_back(l1);
 
 	Level l2;
+	//other objects
+	l2.AddObject(CreateBookshelf(Vector3(61, 1, -10), 0.0f, Vector3(0, 1, 0), -90));
+	l2.AddObject(CreateBookshelf(Vector3(61, 1, 0), 0.0f, Vector3(0, 1, 0), -90)); 
+	l2.AddObject(CreateBookshelf(Vector3(61, 1, 10), 0.0f, Vector3(0, 1, 0), -90));
+	l2.AddObject(CreateBookshelf(Vector3(61, 1, 20), 0.0f, Vector3(0, 1, 0), -90));
 	level4_reverse_rotate.emplace_back(l2);
 
 	Level l3;
+	//other objects
+	l3.AddObject(CreateBookshelf(Vector3(61, 1, -10), 0.0f, Vector3(0, 1, 0), -90));
+	l3.AddObject(CreateBookshelf(Vector3(61, -5, 0), 0.0f, Vector3(0, 1, 0), -90));
+	l3.AddObject(CreateWallLight(Vector3(78, 18, 0), 0.0f, Vector3(0, 1, 0), -90));
+	l3.AddObject(CreateWallLight(Vector3(78, 5, 10), 0.0f, Vector3(0, 1, 0), -90));
 	level4_reverse_rotate.emplace_back(l3);
 
 	Level l4;
+	//other objects
+	l4.AddObject(CreateBookshelf(Vector3(61, 1, -10), 0.0f, Vector3(0, 1, 0), -90));
+	l4.AddObject(CreateBookshelf(Vector3(61, 1, 0), 0.0f, Vector3(0, 1, 0), -90));
+	l4.AddObject(CreateHangLight(Vector3(71, 20, 0), Vector3(4, 4, 4), 0.0f));
+	l4.AddObject(CreateWallLight(Vector3(62, 18, -10), 0.0f, Vector3(0, 1, 0), 90));
 	level4_reverse_rotate.emplace_back(l4);
 
 	Level l5;
+	//other objects
+	l5.AddObject(CreateBookshelf(Vector3(61, -5, 10), 0.0f, Vector3(0, 1, 0), -90));
+	l5.AddObject(CreateBookshelf(Vector3(61, -5, 0), 0.0f, Vector3(0, 1, 0), -90));
+	l5.AddObject(CreateBookshelf(Vector3(78, -5, 10), 0.0f, Vector3(0, 1, 0), -90));
+	l5.AddObject(CreateBookshelf(Vector3(78, -5, 0), 0.0f, Vector3(0, 1, 0), -90)); 
+	l5.AddObject(CreateBookshelf(Vector3(61, -5, -10), 0.0f, Vector3(0, 1, 0), -90));
+	l5.AddObject(CreateBookshelf(Vector3(61, -5, -20), 0.0f, Vector3(0, 1, 0), -90));
+	l5.AddObject(CreateBookshelf(Vector3(78, -5, -10), 0.0f, Vector3(0, 1, 0), -90));
+	l5.AddObject(CreateBookshelf(Vector3(78, -5, -20), 0.0f, Vector3(0, 1, 0), -90));
+	l5.AddObject(CreateWallLight(Vector3(78, 18, 0), 0.0f, Vector3(0, 1, 0), -90));
 	level4_reverse_rotate.emplace_back(l5);
 }
 
