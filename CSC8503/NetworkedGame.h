@@ -75,6 +75,8 @@ namespace NCL {
 
 			bool serverProcessCP(ClientPacket* cp, int source);
 
+			bool clientProcessRp(RoundStatePacket* rp);
+
 			void UpdateGamePlayerInput(float dt);
 
 			void ServerSendRoundState();
