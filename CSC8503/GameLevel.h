@@ -74,8 +74,6 @@ namespace NCL {
 		GameObject* GetBeginArea() const { return beginArea; }
 		GameObject* GetTrueEndArea() const { return trueEndArea; }
 		GameObject* GetFalseEndArea() const { return falseEndArea; }
-		GameObject* GetSignStart() const { return signStart; }
-		GameObject* GetSignContinue() const { return signContinue; }
 
 		void CreateLevel1_BookShelfs();
 		void CreateLevel1_SmallShelfs();
