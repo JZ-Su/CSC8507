@@ -203,7 +203,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	SetDebugStringBufferSizes(10000);
 	SetDebugLineBufferSizes(1000);
 
-	vector<char*> data(15, nullptr);
+	vector<char*> data(18, nullptr);
 	int width;
 	int height;
 	int channel;
@@ -239,6 +239,10 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	UImap["skill"] = data[13];
 	TextureLoader::LoadTexture("/UI/power.png", data[14], width, height, channel, flag);
 	UImap["power"] = data[14];
+	TextureLoader::LoadTexture("/UI/A.png", data[15], width, height, channel, flag);
+	UImap["ghostcd"] = data[15];
+	TextureLoader::LoadTexture("/UI/GHOTS.png", data[16], width, height, channel, flag);
+	UImap["ghostc"] = data[16];
 }
 
 GameTechRenderer::~GameTechRenderer() {
