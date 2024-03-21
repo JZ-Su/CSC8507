@@ -712,9 +712,10 @@ void TutorialGame::InitGame() {
 }
 
 void TutorialGame::ShowPause(float dt) {
-	Debug::Print("Pause!", Vector2(30, 30), Debug::RED);
-	Debug::Print("Press P to continue", Vector2(30, 50), Debug::BLACK);
-	Debug::Print("Press M back to main menu", Vector2(30, 70), Debug::BLACK);
+	Debug::Print("Pause!", Vector2(30, 20), Debug::RED);
+	Debug::Print("Press P to continue", Vector2(30, 40), Debug::BLACK);
+	Debug::Print("Press M back to main menu", Vector2(30, 60), Debug::BLACK);
+	Debug::Print("Press ESC exit game", Vector2(30, 80), Debug::GREEN);
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = OnGoing;
 		soundManager.ResumeAllSounds();
