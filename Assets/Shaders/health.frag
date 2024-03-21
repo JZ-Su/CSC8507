@@ -21,11 +21,13 @@ void main(void)
 		fragColor = texture(mainTex, IN.texCoord);
 	}
 	
+	if(fragColor.a==0){
+		discard;
+	}
+
 	if (useAlpha == 1) {
 		fragColor.a = alpha;
 	}
 
-	if(fragColor.a==0){
-		discard;
-	}
 }
+

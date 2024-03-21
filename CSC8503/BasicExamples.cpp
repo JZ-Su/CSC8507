@@ -449,7 +449,7 @@ GameObject* BasicExamples::CreateGhost(const Vector3& position, const Vector3& d
 	ghost->GetPhysicsObject()->SetInverseMass(inverseMass);
 	ghost->GetPhysicsObject()->InitCubeInertia();
 	ghost->GetRenderObject()->SetColour(Vector4(1, 1, 1, 0.5));
-
+	ghost->SetTag("ghost");
 	return ghost;
 }
 

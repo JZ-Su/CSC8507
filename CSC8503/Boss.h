@@ -125,6 +125,12 @@ namespace NCL {
 			float GetStunDuration() {
 				return stunDuration;
 			}
+			void DestroyCollisionVolume() {
+				if (boundingVolume) {
+					delete boundingVolume;
+					boundingVolume = nullptr;
+				}
+			}
 			float attackRange;
 		private:
 			int nextBullet = 0;

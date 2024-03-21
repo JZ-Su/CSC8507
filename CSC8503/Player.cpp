@@ -63,10 +63,8 @@ void Player::OnCollisionBegin(GameObject* otherObject) {
 	{
 		canJump = true;
 	}
-	if (otherObject->GetTag() == "item") {
-		if (itemList.size() < 4) {
+	if (otherObject->GetTag() == "item"&& itemList.size()<4) {
 		itemList.push_back(otherObject->GetName());
-		}
 		auto it = std::find(BasicExamples::propList.begin(), BasicExamples::propList.end(), otherObject);
 		if (it != BasicExamples::propList.end()) {
 			BasicExamples::propList.erase(it);

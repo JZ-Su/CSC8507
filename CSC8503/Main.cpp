@@ -117,15 +117,6 @@ int main() {
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 	
 	NetworkedGame* g = new NetworkedGame();
-	//sound
-	//ISoundEngine* engine = createIrrKlangDevice();
-	//if (!engine) {
-	//	return 0;
-	//}
-	//engine->play2D("../externals/media/getout.ogg", true);
-
-	//TestNetworking();
-	
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
 		float dt = w->GetTimer().GetTimeDeltaSeconds();

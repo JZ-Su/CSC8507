@@ -153,6 +153,8 @@ void TutorialGame::UpdateGame(float dt) {
 	if (PlayerPreHealth < player->GetHealth()) {
 		PlayerPreHealth = player->GetHealth();
 	}
+
+
 }
 
 void TutorialGame::UpdateKeys(float dt) {
@@ -323,18 +325,24 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 		//player->SetIsAccelerated(true);
 	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::Q)) {
-		if (progress <4) {
-			progress += 0.03;
+	if (useskill) {
+		if (Window::GetKeyboard()->KeyDown(KeyCodes::Q)) {
+			pressedQ = true;
+			if (progress < 4) {
+				progress += 0.03;
+			}
+			if (progress > 4) {
+				progress = 4;
+			}
+			skilltime = 0;
 		}
-		if (progress > 4) {
-			progress = 4;
+		else if (pressedQ) {
+			launchGhostMissle(progress);
+			progress = 0;
+			useskill = false;
+			pressedQ = false;
 		}
 	}
-	else {
-		progress = 0;
-	}
-
 	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();/*cameraCollision->GetTransform().GetPosition()*/
 	Quaternion q(viewMat);
 	float pitch = q.ToEuler().x;
@@ -458,7 +466,7 @@ void TutorialGame::InitWorld() {
 	
 	//isDebug = true;
 	isDebug = false;
-	int debugLevel =3;
+	int debugLevel = 3;
 
 	if (isDebug) {
 		switch (debugLevel)
@@ -519,6 +527,7 @@ void TutorialGame::InitWorld() {
 
 	score = 0;
 	totalTime = 0.0f;
+	skilltime = 0.0f;
 }
 
 /*
@@ -931,6 +940,12 @@ void TutorialGame::SwitchLevel() {
 			for (const auto& element : BasicExamples::propList) {
 				world->RemoveGameObject(element);
 			}
+			for (const auto& element : vec) {
+				world->RemoveGameObject(element);
+			}
+			for (const auto& element : ghostListWithTimestamps) {
+				world->RemoveGameObject(element.first);
+			}
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
@@ -972,7 +987,7 @@ void TutorialGame::UpdateLevel(float dt) {
 		GameObject* blocker = (GameObject*)closestCollision.node;
 		if (blocker->GetName() == "floor"|| blocker->GetName() == "aabb") {
 			float distance = playerPosition.y - blocker->GetTransform().GetPosition().y - blocker->GetTransform().GetScale().y / 2;
-			if (distance < 2) {
+			if (distance < 1.3) {
 				player->GetPhysicsObject()->AddForce(-physics->GetGravity() * 0.2);
 			}
 		}
@@ -1005,15 +1020,41 @@ void TutorialGame::UpdateLevel(float dt) {
 	}
 	// Level 3
 	else if (currentLevel == 6) {
+		level3Timer += dt;
 		gameLevel->GetBoss()->Update(dt);
 		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
+		skilltime += dt;
+		if (skilltime > 5) {
+			skilltime = 5;
+		}
+
+		if (skilltime == 5) {
+			useskill = true;
+		}
 		propSpawnTimer += dt;
-		if (boss->getIsDead()) {
+		if (boss->getIsDead()&& !bossDeathLogicDone) {
+			bossDeathLogic = true;
+		}
+		if (bossDeathLogic) {
+			Vector3 bossPos = boss->GetTransform().GetPosition() + Vector3(0, 6, 0);
+			vec.push_back(gameLevel->CreateCube(bossPos + Vector3(-4, -0.5, 0), Vector3(1, 6.5, 1), 0.0f));
+			vec.push_back(gameLevel->CreateCube(bossPos + Vector3(4, -0.5, 0), Vector3(1, 6.5, 1), 0.0f));
+			vec.push_back(gameLevel->CreateCube(bossPos + Vector3(0, 7, 0), Vector3(5, 1, 1), 0.0f));
+			for (const auto& ele : vec) {
+				world->AddGameObject(ele);
+			}
+
+			portal->GetTransform().SetPosition(bossPos);
+
 			portal->isEnable = true;
 			portal->GetRenderObject()->SetColour(Debug::GREEN);
-			portal->GetTransform().SetPosition(Vector3(0, 3, 100));
+			
+			boss->DestroyCollisionVolume();
+			bossDeathLogic = false;
+			bossDeathLogicDone = true;
+
 		}
-		if (propSpawnTimer > propSpawnCooldown) {
+		if (propSpawnTimer > propSpawnCooldown&&!boss->getIsDead()) {
 			GenerateRandomPropPositionInBounds(Vector3(-80, 1, -80), Vector3(80, 1, 80));
 			propSpawnTimer = 0.0f;
 		}
@@ -1100,16 +1141,17 @@ void TutorialGame::UpdateLevel(float dt) {
 			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 			Vector3 bossPosition = boss->GetTransform().GetPosition();
 			Vector3 hurtDirection = (playerPosition - bossPosition).Normalised();
-			player->GetPhysicsObject()->AddForce(hurtDirection * 500);
+			player->GetPhysicsObject()->AddForce(hurtDirection * 400);
 			player->SetIsRencentlyHurt(false);
 		}
 		else if (player->getIsRencentlyHurt() && player->getIsMeleeAttacked()) {
 			Vector3 playerPosition = player->GetTransform().GetPosition();
 			Vector3 bossPosition = boss->GetTransform().GetPosition();
 			Vector3 hurtDirection = (playerPosition - bossPosition).Normalised();
-			player->GetPhysicsObject()->AddForce(hurtDirection * 2000);
+			player->GetPhysicsObject()->AddForce(hurtDirection * 300);
 			player->SetIsRencentlyHurt(false);
 		}
+
 		if (player->getIsBeingHitBack()) {
 			hitBackTimer += dt;
 			if (hitBackTimer > hitBackDuration) {
@@ -1150,7 +1192,21 @@ void TutorialGame::UpdateLevel(float dt) {
 				UpdateTrackingBall(iceCubePosition, bossPosition, 900, dt);
 			}
 		}
+		for (auto it = ghostListWithTimestamps.begin(); it != ghostListWithTimestamps.end(); ) {
+			GameObject* ghostMissle = it->first;
+			float spawnTime = it->second;
+			float currentTime = level3Timer;
+			ghostMissle->GetPhysicsObject()->AddForce(Vector3(0, -9000, 0));
+			if (currentTime - spawnTime >= 8.0f) {
+				world->RemoveGameObject(ghostMissle);
+				it = ghostListWithTimestamps.erase(it);
+			}
+			else {
+				++it;
+			}
+		}
 		UpdateLevel3UI();
+		player->GetRenderObject()->SetColour(Vector4(1, 1, 1, 0.8));
 	}
 	// Level 4
 	else if (currentLevel == 8) {
@@ -1508,6 +1564,7 @@ void TutorialGame::UpdateLevel3UI() {
 	float b =y/x   ;
 
 	float distance = 0.2;
+	cd = skilltime / 6.0f;
 
 	for (int i = 0; i < itemList.size(); i++) {
 		GameTechRenderer::CreateGameUI({ Vector3(-0.36f + (i * distance), -0.83f, -1.0f), Vector3(-0.36f + (i * distance), -0.96f, -1.0f),
@@ -1526,6 +1583,8 @@ void TutorialGame::UpdateLevel3UI() {
 	GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
 		Vector3(0.5f, 0.95f, -1.0f) }, "bossframe", "health");
 	GameTechRenderer::CreateGameUI({ Vector3(0.6, -0.5f, -1.0f),  Vector3(0.6, -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f, -1.0f) }, "skill", "skill");
+
+	GameTechRenderer::CreateGameUI({ Vector3(0.625, -0.55f, -1.0f),  Vector3(0.625, -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f, -1.0f) }, "redbottle", "skill", cd + 0.155);
 
 	if (progress <= 1) {
 		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power", progress);
@@ -1609,4 +1668,20 @@ void TutorialGame::DropItems() {
 		break;
 	}
 
+}
+
+void TutorialGame::launchGhostMissle(float & progress) {
+	GameObject* ghostMissle = gameLevel->CreateGhost(player->GetTransform().GetPosition() + Vector3(0, 11, 0), Vector3(6, 6, 6), 0.01f);
+	Vector3 playerPos = player->GetTransform().GetPosition();
+	Vector3 bossPos = boss->GetTransform().GetPosition();
+	Vector3 direction = bossPos - playerPos;
+	Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(direction.x, -direction.z)));
+	ghostMissle->GetTransform().SetOrientation(targetOrientation);
+	ghostListWithTimestamps.push_back(std::make_pair(ghostMissle, level3Timer));
+	world->AddGameObject(ghostMissle);
+	Quaternion playerQuaternion = player->GetTransform().GetOrientation();
+	Vector3 defaultForward = Vector3(0, 0.35, -1);
+	//Vector3 newForward = Vector3(0, 1, 0);
+	Vector3 currentDirection = playerQuaternion * defaultForward;
+	ghostMissle->GetPhysicsObject()->AddForce(currentDirection * progress * 600000);
 }

@@ -151,6 +151,9 @@ namespace NCL {
 			float currenthealth;
 			float healthLength;
 			float BossHealthLendth;
+			float skilltime;
+			float cd;
+			bool useskill = false;
 
 			GameState gameState;
 			MainMenuState mainMenuState;
@@ -168,7 +171,7 @@ namespace NCL {
 
 			void UpdateShieldPosition(float dt);
 			void RollStone(GameObject* stone, const Vector3& forceDirection, float forceMagnitude);
-		
+			void launchGhostMissle(float& progress);
 
 			void AddSound();
 			void UpdateListenerPosition(float dt, const Vector3& playerPosition);
@@ -187,6 +190,7 @@ namespace NCL {
 			bool playerIsHit = false;
 			bool isCloseToPlayer = false;
 			bool hasReverse = false;
+			bool getRed = false;
 			int mapIndex = 0;
 
 			int iceCubeBulletFrames = 0;
@@ -219,12 +223,16 @@ namespace NCL {
 			bool lastWalkingState = false;
 			Vector3 mainCameraPosition;
 			bool isWalking = false;
+			bool pressedQ = false;
+			bool bossDeathLogic = false;
+			bool bossDeathLogicDone = false;
 			string currentBGM = "";
 			//std::vector<GameObject*> propList;
 			float progress=0;
+			float level3Timer = 0;
 			void UpdateLevel3UI();
-		
-
+			vector<GameObject*> vec;
+			std::vector<std::pair<GameObject*, float>> ghostListWithTimestamps;
 		};
 	}
 }

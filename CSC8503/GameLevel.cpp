@@ -1406,7 +1406,7 @@ void GameLevel::CreateLevel1_Handrail() {
 void GameLevel::CreateLevel1_Coins() {
 	Vector3 dimensions = Vector3(0.5, 0.5, 0.5);
 
-	coinList.push_back(CreateCoin(Vector3( 95, 5,  -5), dimensions));
+	//coinList.push_back(CreateCoin(Vector3( 95, 5,  -5), dimensions));
 	//coinList.push_back(CreateCoin(Vector3( 80, 5,  35), dimensions));
 	//coinList.push_back(CreateCoin(Vector3( 55, 5, -90), dimensions));
 	//coinList.push_back(CreateCoin(Vector3( 50, 5,   0), dimensions));
@@ -1419,7 +1419,7 @@ void GameLevel::CreateLevel1_Coins() {
 	//coinList.push_back(CreateCoin(Vector3(-90, 5,  40), dimensions));
 
 	//coinList.push_back(CreateCoin(Vector3( 20, 15,  20), dimensions));
-	//coinList.push_back(CreateCoin(Vector3(  0, 15,  70), dimensions));
+	coinList.push_back(CreateCoin(Vector3(  0, 15,  70), dimensions));
 	//coinList.push_back(CreateCoin(Vector3(  0, 15,  35), dimensions));
 	//coinList.push_back(CreateCoin(Vector3(  0, 15,  -5), dimensions));
 	//coinList.push_back(CreateCoin(Vector3(-30, 15,   5), dimensions));

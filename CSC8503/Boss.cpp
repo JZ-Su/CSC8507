@@ -236,4 +236,5 @@ Boss::~Boss() {
 	delete ChaseAndAttack;
 	delete Flinches;
 	delete Death;
+	delete dizziness;
 }
