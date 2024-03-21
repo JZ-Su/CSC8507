@@ -47,7 +47,7 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	controller.MapAxis(3, "XLook");
 	controller.MapAxis(4, "YLook");
 
-	gameState = Start;
+	gameState = MainMenu;
 	mainMenuState = MainMenu_Start;
 }
 /*
@@ -829,7 +829,7 @@ void TutorialGame::ShowPause(float dt) {
 void TutorialGame::ShowEnd(float dt) {
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) {
 		soundManager.stopSound("walking");
-		soundManager.stopSound("level4");
+		soundManager.stopSound("end");
 		gameState = MainMenu;
 		return;
 	}
