@@ -58,6 +58,7 @@ namespace NCL {
 		
 		GameObject* CreateGhost(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f);
 		GameObject* CreateRollingRock(const Vector3& position, float radius, float inverseMass = 0.5f);
+		GameObject* CreateRollingRockProp(const Vector3& position, float radius, float inverseMass = 0.0f);
 		GameObject* CreateShield(const Vector3& position, const Vector3& dimensions, float inverseMass);
 		GameObject* CreateShieldProp(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
 		GameObject* CreateSpeedProp(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
@@ -67,7 +68,7 @@ namespace NCL {
 		Boss*       CreateBoss(const Vector3& position, const Vector3& dimensions, Player* player, float inverseMass = 10.0f);
 		Door*       CreateDoor(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float rotation = 0.0f, float resDis = 15.0f);
 		
-		GameObject* CreatRedbottle(const Vector3& position, const Vector3& dimensions, float inverseMass = 10.0f, float rotation = 0.0f);
+		GameObject* CreateRedBottleProp(const Vector3& position, const Vector3& dimensions, float inverseMass = 0.0f);
 
 		MeshAnimation* getBossAnimation() const { return bossAnimation; }
 		MeshAnimation* getBossCheersAnimation() const { return bossCheersAnimation; }
@@ -97,6 +98,11 @@ namespace NCL {
 
 		GhostAI* GetGhostai() const { return ghost; }
 		GhostAI* GetGhostai2() const { return ghost2; }
+		//GameObject* getCamreaCollision() const { return cameraCollision; }
+
+		void ExportToObj(const Mesh& mesh, const std::string& filename);
+
+		static std::vector<GameObject*> propList;
 
 	protected:
 		Mesh* cubeMesh = nullptr;
@@ -119,6 +125,7 @@ namespace NCL {
 		Mesh* wallLightMesh = nullptr;
 		Mesh* hangLightMesh = nullptr;
 		Mesh* layerMesh = nullptr;
+		Mesh* redBottleMesh = nullptr;
 
 		GameObject* CreateLight(const Transform* transform, const Vector4& color, float radius, bool islight, bool isshadow);
 
@@ -127,6 +134,7 @@ namespace NCL {
 		Texture* IceCubeTexture = nullptr;
 		Texture* shieldTexture = nullptr;
 		Texture* speedPropTexture = nullptr;
+		Texture* redBottleTexture = nullptr;
 		Texture* FireBallTexture = nullptr;
 		Texture* DefualtTexture[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
 		Texture* floorTexture[6]   = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
@@ -141,6 +149,7 @@ namespace NCL {
 		Shader* bossShader = nullptr;
 		Shader* playerShader = nullptr;
 		Shader* lampShader = nullptr;
+		Shader* itemShader = nullptr;
 
 		MeshMaterial* bossMat = nullptr;
 		MeshMaterial* playerMat = nullptr;
@@ -181,6 +190,7 @@ namespace NCL {
 
 		GhostAI* ghost;
 		GhostAI* ghost2;
-
+	
+		//GameObject* cameraCollision;
 	};
 }

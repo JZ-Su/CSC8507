@@ -21,7 +21,9 @@ namespace NCL {
 			void SetGlobalDamping(float d) {
 				globalDamping = d;
 			}
-
+			Vector3 GetGravity() const {
+				return gravity;
+			}
 			void SetGravity(const Vector3& g);
 
 			std::vector<GameObject*> GetCollisionDetectionList(GameObject* o);
@@ -33,6 +35,8 @@ namespace NCL {
 			void HandleRollingRockCollisionLogic(GameObject* i, GameObject* j);
 
 			void HandleCoinCollisionLogic(GameObject* i, GameObject* j);
+
+			void HandleItemCollisionLogic(GameObject* i, GameObject* j);
 
 			void ParryBackBullet(GameObject* bullet, Player* player, Boss* boss);
 
@@ -60,7 +64,7 @@ namespace NCL {
 			Vector3 gravity;
 			float	dTOffset;
 			float	globalDamping;
-			float lineardamping;
+			float   lineardamping;
 			std::set<CollisionDetection::CollisionInfo> allCollisions;
 			std::set<CollisionDetection::CollisionInfo> broadphaseCollisions;
 			std::vector<CollisionDetection::CollisionInfo> broadphaseCollisionsVec;

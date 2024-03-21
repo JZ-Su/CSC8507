@@ -2,7 +2,8 @@
 
 uniform sampler2D 	mainTex;
 uniform int useTexture;
-
+uniform int useAlpha;
+uniform float alpha;
 in Vertex
 {
 	vec4 colour;
@@ -19,8 +20,11 @@ void main(void)
 	else {
 		fragColor = texture(mainTex, IN.texCoord);
 	}
-if(fragColor.a==0){
-discard;
-}
-
+	
+	if(fragColor.a==0){
+		discard;
+	}
+	if (useAlpha == 1) {
+		fragColor.a = alpha;
+	}
 }

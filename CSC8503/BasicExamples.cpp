@@ -4,10 +4,12 @@
 #include "MeshMaterial.h"
 
 #include <fstream>
+#include "TutorialGame.h"
 
 using namespace NCL;
 using namespace CSC8503;
 
+std::vector<GameObject*> BasicExamples::propList;
 
 BasicExamples::BasicExamples(GameTechRenderer* render) {
 
@@ -25,6 +27,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	rockMesh = render->LoadMesh("Rock.msh");
 	speedPropMesh = render->LoadMesh("CoffeCup.msh");
 	bookshelfMesh = render->LoadMesh("bookshelf.msh");
+	redBottleMesh = render->LoadMesh("Bottle_Health.msh");
 	tableMesh = render->LoadMesh("table.msh");
 	columnMesh = render->LoadMesh("column.msh");
 	stairMesh = render->LoadMesh("Stair.msh");
@@ -39,6 +42,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	shieldTexture = render->LoadTexture("Shield_AlbedoTransparency.png");
 	FireBallTexture = render->LoadTexture("FireBall.jpg");
 	speedPropTexture = render->LoadTexture("LowPolyFoodLiteTexture_01.png");
+	redBottleTexture = render->LoadTexture("Bottle_red_diff.png");
 	DefualtTexture[0] = render->LoadTexture("Defualt/white.jpg");
 	DefualtTexture[1] = render->LoadTexture("Defualt/grey.jpg");
 	DefualtTexture[2] = render->LoadTexture("Defualt/black.jpg");
@@ -91,6 +95,7 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	playerShader = render->LoadShader("SkinningVertex.vert", "player.frag");
 	ghostShader = render->LoadShader("SkinningVertex.vert", "ghost.frag");
 	lampShader = render->LoadShader("model.vert", "lamp.frag");
+	itemShader = render->LoadShader("scene.vert", "item.frag");
 
 	bossAnimation = new MeshAnimation("Taunt.anm");
 	bossCheersAnimation = new MeshAnimation("Angry.anm");
@@ -194,7 +199,7 @@ GameObject* BasicExamples::CreateBigWall(const Vector3& position, const Vector3&
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
-
+	cube->SetTag("wall");
 	return cube;
 }
 
@@ -219,7 +224,7 @@ GameObject* BasicExamples::CreateGreenWall(const Vector3& position, const Vector
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
-
+	cube->SetTag("wall");
 	return cube;
 }
 
@@ -258,6 +263,7 @@ GameObject* BasicExamples::CreateFloor(const Vector3& position, const Vector3& d
 	cube->GetPhysicsObject()->Setelasticity(0);
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
+	cube->GetPhysicsObject()->Setelasticity(0);
 	cube->SetTag("Ground");
 	return cube;
 }
@@ -458,7 +464,7 @@ Boss* BasicExamples::CreateBoss(const Vector3& position, const Vector3& dimensio
 	character->SetBoundingVolume((CollisionVolume*)volume);
 
 	character->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetOrientation(Matrix4::Rotation(180, Vector3(0, 1, 0)));
-	character->GetTransform().SetCollisionOffset(Vector3(0, dimensions.y, 0));
+	character->GetTransform().SetCollisionOffset(Vector3(0, dimensions.y*2, 0));
 
 	character->SetRenderObject(new RenderObject(&character->GetTransform(), bossMesh, nullptr, bossShader));
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
@@ -750,6 +756,7 @@ GameObject* BasicExamples::CreateRollingRock(const Vector3& position, float radi
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
 	sphere->GetPhysicsObject()->InitSphereInertia();
 	sphere->SetTag("rollingrock");
+	propList.push_back(sphere);
 	return sphere;
 }
 
@@ -824,19 +831,19 @@ GameObject* BasicExamples::CreateHandrail(const Vector3& position, float inverse
 	return handrail;
 }
 
-GameObject* BasicExamples::CreatRedbottle(const Vector3& position, const Vector3& dimensions, float inverseMass, float rotation ) {
+GameObject* BasicExamples::CreateRedBottleProp(const Vector3& position, const Vector3& dimensions, float inverseMass ) {
 	GameObject* redbottle = new GameObject("redbottle");
 
 	AABBVolume* volume = new AABBVolume(dimensions);
 	redbottle->SetBoundingVolume((CollisionVolume*)volume);
-	redbottle->GetTransform().SetPosition(position).SetScale(dimensions * 2);
-	redbottle->SetRenderObject(new RenderObject(&redbottle->GetTransform(), cubeMesh, basicTexture, basicShader));
+	redbottle->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Matrix4::Rotation(260, Vector3(1, 0, 0)));
+	redbottle->SetRenderObject(new RenderObject(&redbottle->GetTransform(), redBottleMesh, redBottleTexture, itemShader));
 	redbottle->SetPhysicsObject(new PhysicsObject(&redbottle->GetTransform(), redbottle->GetBoundingVolume()));
 
 	redbottle->GetPhysicsObject()->SetInverseMass(inverseMass);
 	redbottle->GetPhysicsObject()->InitCubeInertia();
 	redbottle->SetTag("item");
-
+	propList.push_back(redbottle);
 	return redbottle;
 }
 
@@ -848,14 +855,15 @@ GameObject* BasicExamples::CreateSpeedProp(const Vector3& position, const Vector
 	coffeecup->SetBoundingVolume((CollisionVolume*)volume);
 
 	coffeecup->GetTransform().SetScale(dimensions * 2).SetPosition(position);
-	coffeecup->SetRenderObject(new RenderObject(&coffeecup->GetTransform(), speedPropMesh, speedPropTexture, modelShader));
+	coffeecup->SetRenderObject(new RenderObject(&coffeecup->GetTransform(), speedPropMesh, speedPropTexture, itemShader));
 	coffeecup->SetPhysicsObject(new PhysicsObject(&coffeecup->GetTransform(), coffeecup->GetBoundingVolume()));
 	//shield->GetRenderObject()->isAnimation = true;
 	//LoadMaterialTextures(shield, shieldMesh, shieldMat, render);
 
 	coffeecup->GetPhysicsObject()->SetInverseMass(inverseMass);
 	coffeecup->GetPhysicsObject()->InitCubeInertia();
-	coffeecup->SetTag("speedprop");
+	coffeecup->SetTag("item");
+	propList.push_back(coffeecup);
 	return coffeecup;
 }
 
@@ -867,13 +875,32 @@ GameObject* BasicExamples::CreateShieldProp(const Vector3& position, const Vecto
 	shield->SetBoundingVolume((CollisionVolume*)volume);
 
 	shield->GetTransform().SetScale(dimensions * 2).SetPosition(position);
-	shield->SetRenderObject(new RenderObject(&shield->GetTransform(), shieldMesh, shieldTexture, modelShader));
+	shield->SetRenderObject(new RenderObject(&shield->GetTransform(), shieldMesh, shieldTexture, itemShader));
 	shield->SetPhysicsObject(new PhysicsObject(&shield->GetTransform(), shield->GetBoundingVolume()));
 	//shield->GetRenderObject()->isAnimation = true;
 	//LoadMaterialTextures(shield, shieldMesh, shieldMat, render);
 
 	shield->GetPhysicsObject()->SetInverseMass(inverseMass);
 	shield->GetPhysicsObject()->InitCubeInertia();
-	shield->SetTag("shieldprop");
+	shield->SetTag("item");
+	propList.push_back(shield);
 	return shield;
+}
+
+GameObject* BasicExamples::CreateRollingRockProp(const Vector3& position, float radius, float inverseMass) {
+	GameObject* sphere = new GameObject("rollingrockprop");
+	Vector3 sphereSize = Vector3(radius, radius, radius);
+	SphereVolume* volume = new SphereVolume(radius + 1);
+	sphere->SetBoundingVolume((CollisionVolume*)volume);
+
+	sphere->GetTransform().SetScale(sphereSize).SetPosition(position);
+
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), rockMesh, nullptr, itemShader));
+	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
+	sphere->GetRenderObject()->SetColour(Vector4(0.3f, 0.3f, 0.3f, 1.0f));
+	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
+	sphere->GetPhysicsObject()->InitSphereInertia();
+	sphere->SetTag("item");
+	propList.push_back(sphere);
+	return sphere;
 }

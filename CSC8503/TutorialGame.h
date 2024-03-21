@@ -9,33 +9,22 @@
 #include "StateGameObject.h"
 #include "NavigationGrid.h"
 #include "GameLevel.h"
-#include "BasicExamples.h"
 #include "MeshAnimation.h"
 #include "SoundManager.h"
 
 namespace NCL {
 	namespace CSC8503 {
 		enum GameState {
-			MainMenu,   Ranking, Start,
-			ModeSelect, OnGoing, Pause,
-			Win,        Lose,    Exit,
+			MainMenu,	ModeSelect,	Start,
+			OnGoing,	Pause,		End,
+			Exit
 		};
 		enum MainMenuState {
 			MainMenu_Start,
-			MainMenu_Ranking,
-			MainMenu_Exit,
+			MainMenu_Exit
 		};
 		enum GameMode {
-			TimeLimited,
-			ScoreRequired,
-		};
-		enum RankingPage {
-			TimeLimitedModePage,
-			ScoreRequiredModePage,
-		};
-		struct RankScore {
-			std::string playerName;
-			float score;
+			Single, Multi
 		};
 
 		class TutorialGame		{
@@ -50,14 +39,18 @@ namespace NCL {
 			//void UpdateState();
 
 			void ShowMainMenu(float dt);
-			void ShowRanking(float dt);
 			void SelectGameMode(float dt);
 			void InitGame();
 			void ShowPause(float dt);
-			void ShowWin(float dt);
-			void ShowLose(float dt);
+			void ShowEnd(float dt);
 			void ExecuteAttack(float dt);
 			
+			GameWorld* GetWorld() {
+				return world;
+			}
+
+			void DropMassiveItems();
+			void DropItems();
 		protected:
 			bool isDebug;
 
@@ -99,18 +92,6 @@ namespace NCL {
 
 			GameObject* selectionObject = nullptr;
 
-			Mesh*	capsuleMesh = nullptr;
-			Mesh*	cubeMesh	= nullptr;
-			Mesh*	sphereMesh	= nullptr;
-
-			Texture*	basicTex	= nullptr;
-			Shader*		basicShader = nullptr;
-
-			//Coursework Meshes
-			Mesh*	charMesh	= nullptr;
-			Mesh*	enemyMesh	= nullptr;
-			Mesh*	bonusMesh	= nullptr;
-
 			//Coursework Additional functionality	
 			GameObject* lockedObject	= nullptr;
 			Vector3 lockedOffset        = Vector3(0, 50, 50); //Vector3(0, 14, 20);
@@ -118,12 +99,12 @@ namespace NCL {
 				lockedObject = o;
 			}
 
-			GameObject* objClosest = nullptr;
-
 			GameLevel* gameLevel = nullptr;
+			//GameObject* cameraCollision = nullptr;
 
 			int score;
 			Player* player;
+
 			//Player* localplayer;
 			std::vector<Player*> playerlist;
 
@@ -155,15 +136,13 @@ namespace NCL {
 			float currenthealth;
 			float healthLength;
 			float BossHealthLendth;
+			float skilltime;
+			float cd;
+			bool useskill=false;
 
 			GameState gameState;
 			MainMenuState mainMenuState;
 			GameMode gameMode;
-
-			RankingPage rankingPage;
-			std::string nameString;
-			std::vector<RankScore> TimeTable, ScoreTable;
-			void LoadRankingFile();
 
 			void DrawAnim(GameObject* g, MeshAnimation* anim);
 			void UpdateAnim(GameObject* g, MeshAnimation* anim);
@@ -171,6 +150,7 @@ namespace NCL {
 			void UpdatePlayerAnim(Player* player, MeshAnimation* playerIdleAnimation, MeshAnimation* playerWalkAnimation, float dt);
 			void UpdateGhostAnim(GameObject* ghost, MeshAnimation* ghostAnimation, float dt);
 			void UpdateTrackingBall(Vector3 ballPosition,const Vector3& playerPosition, float speed, float dt);
+			Vector3 GenerateRandomPropPositionInBounds(const Vector3& minBound, const Vector3& maxBound);
 			void IceCubeBulletLogic(float dt);
 			void FireBallBulletLogic(float dt);
 
@@ -216,6 +196,10 @@ namespace NCL {
 			bool playShootingAnimation = false;
 			float hitBackTimer = 0.0f;
 			const float hitBackDuration = 1.0f;
+			float meleeAttackedTimer = 0.0f;
+			const float meleeAttackedDuration = 1.0f;
+			float propSpawnTimer = 0.0f;
+			float propSpawnCooldown = 3.5f;
 			static std::vector<std::string> itemList;
 
 			SoundManager soundManager;
@@ -223,10 +207,12 @@ namespace NCL {
 			bool lastWalkingState = false;
 			Vector3 mainCameraPosition;
 			bool isWalking = false;
-			string currentBGM="";
-			std::vector<GameObject*> propList;
-
+			string currentBGM = "";
+			//std::vector<GameObject*> propList;
+			float progress=0;
 			void UpdateLevel3UI();
+		
+
 		};
 	}
 }

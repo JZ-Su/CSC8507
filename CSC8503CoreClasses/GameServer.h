@@ -37,7 +37,7 @@ namespace NCL {
 			void AddPeer(int val);
 			void RemovePeer(int val);
 
-			void DeletPeer(int Peer);
+			//void DeletPeer(int Peer);
 
 			void DebugNetPeer();
 

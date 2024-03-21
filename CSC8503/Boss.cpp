@@ -117,7 +117,7 @@ Boss::Boss(Player* player) {
 				Debug::DrawLine(GetTransform().GetPosition(), this->player->GetTransform().GetPosition(), Debug::RED);
 				Debug::DrawCollisionBox(this);
 				Debug::DrawCollisionBox(this->player);
-				if (bulletTimer > 7.0F) {
+				if (bulletTimer > 12.0F) {
 					isShooting = true;
 				}
 				//std::cout << "remote attacking" << std::endl;
@@ -155,14 +155,11 @@ Boss::Boss(Player* player) {
 		}
 	);
 	dizziness = new BehaviourAction("dizziness", [&](float dt, BehaviourState state) -> BehaviourState {
-		static float stunTimer = 0.0f;
-		const float stunDuration = 4.0f;
 		const float healthThreshold = 50.0f;
 		if (bossHealth > healthThreshold || !firstBelow50||bossHealth<=0) {
 			return Failure;
 		}
 		if (state == Initialise) {
-			std::cout << "dizziness init.\n";
 			stunTimer = 0.0f;
 			return Ongoing;
 		}
@@ -171,7 +168,7 @@ Boss::Boss(Player* player) {
 			if (stunTimer >= stunDuration) {
 				std::cout << "I will destroy you!!!.\n";
 				stunTimer = 0.0f;
-				return Failure;
+				return Success;
 			}
 			return Ongoing;
 		}
@@ -189,6 +186,12 @@ Boss::Boss(Player* player) {
 		return state;
 		}
 	);
+
+	BehaviourAction* dropItems = new BehaviourAction("DropItems", [&](float dt, BehaviourState state) -> BehaviourState {
+		std::cout << "drop items!" << std::endl;
+		this->setIsDroppingMassiveItems(true);
+		return Failure;
+		});
 	BehaviourSelector* selection = new BehaviourSelector("Boss attack state");
 	BehaviourSequence* squence = new BehaviourSequence("Boss dizzy state");
 
@@ -200,7 +203,7 @@ Boss::Boss(Player* player) {
 	selection->AddChild(Idle);
 
 	squence->AddChild(dizziness);
-
+	squence->AddChild(dropItems);
 
 	//    selection->AddChild(Death);
 	Root = new BehaviourSequence("Root Sequence");

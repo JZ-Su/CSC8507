@@ -70,8 +70,8 @@ void main(void)
 	if(hasTexture) {
 		if(isWall){
 
-			vec4 uv = MyTriplanarSurfaceFunction(mainTex, IN.worldPos, scale);
-			albedo *= uv;
+			vec4 uvAlbedo = MyTriplanarSurfaceFunction(mainTex, IN.worldPos, scale);
+			albedo *= uvAlbedo;
 
 			vec4 uvNormal = MyTriplanarSurfaceFunction(normalTex, IN.worldPos, scale);
 

@@ -14,7 +14,7 @@
 #include "BasicExamples.h"
 #include "Boss.h"
 
-#include"PushdownState.h"
+#include "PushdownState.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -47,11 +47,8 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	controller.MapAxis(3, "XLook");
 	controller.MapAxis(4, "YLook");
 
-	//LoadRankingFile();
-	//gameState = MainMenu;
 	gameState = Start;
 	mainMenuState = MainMenu_Start;
-	gameMode = TimeLimited;
 }
 /*
 
@@ -74,6 +71,9 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
+	//Debug::DrawCollisionBox(player);
+	//Debug::DrawCollisionBox(cameraCollision);
+
 	if (player) {
 		if (PlayerPreHealth > player->GetHealth()) {
 			PlayerPreHealth -= 0.5f;
@@ -83,8 +83,8 @@ void TutorialGame::UpdateGame(float dt) {
 			PlayerPreHealth = player->GetHealth();
 		}
 	}
-	if (BossPrehHealth!= gameLevel->GetBoss()->getBossHealth()) {
-			BossPrehHealth -= 0.5f;
+	if (BossPrehHealth != gameLevel->GetBoss()->getBossHealth()) {
+		BossPrehHealth -= 0.5f;
 	}
 
 	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
@@ -104,6 +104,8 @@ void TutorialGame::UpdateGame(float dt) {
 		FMOD_VECTOR position = { mainCameraPosition.x, mainCameraPosition.y, mainCameraPosition.z };
 		if (!lastWalkingState) {
 			soundManager.play3DSound("walking", position);
+			soundManager.setSoundVolume("walking", 0.8f);
+			soundManager.setSoundSpeed("walking", 0.8f);
 		}
 		else {
 			soundManager.update3DSoundPosition("walking", position);
@@ -115,8 +117,28 @@ void TutorialGame::UpdateGame(float dt) {
 	}
 	
 	lastWalkingState = isWalking;
+	if (currentLevel == 4) {
+		Vector3 pos1 = gameLevel->GetGhostai()->GetTransform().GetPosition();
+		FMOD_VECTOR pos11 = { pos1.x,pos1.y, pos1.z };
+		Vector3 pos2 = gameLevel->GetGhostai2()->GetTransform().GetPosition();
+		FMOD_VECTOR pos22 = { pos2.x,pos2.y, pos2.z };
+		if (!soundManager.isSoundPlaying("ghost")) {
+			soundManager.play3DSound("ghost", pos11);
+			soundManager.setSoundVolume("ghost", 0.4f);
+			soundManager.play3DSound("ghost", pos22);
+			soundManager.setSoundVolume("ghost", 0.4f);
+		}
+		else {
+			soundManager.update3DSoundPosition("ghost", pos11);
+			soundManager.update3DSoundPosition("ghost", pos22);
+		}
+	}
+	if (currentLevel == 5) {
+		soundManager.stopSound("ghost");
+	}
 	soundManager.update();
 	totalTime += dt;
+	skilltime += dt;
 	SelectObject();
 	MoveSelectedObject();
 
@@ -130,6 +152,18 @@ void TutorialGame::UpdateGame(float dt) {
 	GameTechRenderer::UpdateUI();
 
 	if (!isDebug) SwitchLevel();
+	if (PlayerPreHealth < player->GetHealth()) {
+		PlayerPreHealth = player->GetHealth();
+	}
+
+	if (skilltime > 5) {
+		skilltime = 5;
+	}
+
+	if (skilltime == 5) {
+		useskill = true;
+	}
+
 }
 
 void TutorialGame::UpdateKeys(float dt) {
@@ -191,6 +225,7 @@ void TutorialGame::UpdateKeys(float dt) {
 }
 
 void TutorialGame::LockedObjectMovement(float dt) {
+	player->forceToBeAdded = Vector3();
 	Matrix4 view = world->GetMainCamera().BuildViewMatrix();
 	Matrix4 camWorld = view.Inverse();
 
@@ -199,6 +234,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	//forward is more tricky -  camera forward is 'into' the screen...
 	//so we can take a guess, and use the cross of straight up, and
 	//the right axis, to hopefully get a vector that's good enough!
+
 	Vector3 pos = lockedObject->GetTransform().GetPosition();
 	Quaternion ObjOrientation = lockedObject->GetTransform().GetOrientation();
 
@@ -225,6 +261,11 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Vector3 camdir = Mrot * Vector3(0, 0, -1);
 	Vector3 campos = targetpos - camdir * 20.0f;
 
+
+	//cameraCollision->GetTransform().SetPosition(campos + Vector3(0, 7, 3));
+
+	//physics->Update(dt);
+
 	/*Ray collisionRay = Ray(targetpos, -camdir);
 	RayCollision collisionRayData;
 	if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
@@ -235,92 +276,111 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*3): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*1.5);
+		//player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*3): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (-fwdAxis * 3) : player->forceToBeAdded += (-fwdAxis * 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
+		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (fwdAxis * 3) : player->forceToBeAdded += (fwdAxis * 1.5);
+		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
+
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis* 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (-rightAxis * 3) : player->forceToBeAdded += (-rightAxis * 1.5);
+		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis* 1.5);
+		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
+
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(rightAxis* 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (rightAxis * 3) : player->forceToBeAdded += (rightAxis * 1.5);
+		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(rightAxis* 1.5);
+		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
+
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
 		{
-			Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
-			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 24, velocity.z));
+			player->isSpacePressed = true;
+			/*Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
+			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 24, velocity.z));*/
 			player->SetCanJump(false);
 			player->setJumpTimer(1.1f);
 			player->SetIsJumping(true);
 		}
 	}
 	else {
+
 		if (player->IsJumping()) {
 			if (player->updateJumpTimer(dt)) {
+				player->isSpacePressed = false;
 				player->SetIsJumping(false);
 			}
 		}
 		player->SetIsWalk(false);
-		if (!player->getIsBeingHitBack()){ player->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0)); }
+		if (!player->getIsBeingHitBack() && !player->getIsMeleeAttacked()) {
+			float velocityY = player->GetPhysicsObject()->GetLinearVelocity().y;
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3(0, velocityY, 0));
+		}
 
 	}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM1)) {
 		player->UseItem(0);
-		gameLevel->GetBoss()->decreaseBossHealth(20);
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM2)) {
-		//player->UseItem(1);
-		gameLevel->GetShield()->SetIsNotHiding();
+		player->UseItem(1);
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM3)) {
-		//player->UseItem(2);
-		if (gameLevel == nullptr) {
-			return;
-		}
-		Quaternion playerQuaternion = player->GetTransform().GetOrientation();
-		Vector3 defaultForward = Vector3(0, 0, -1);
-		Vector3 currentDirection = playerQuaternion * defaultForward;
-		rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised()*10+Vector3(0,5,0), 4);
-		world->AddGameObject(rollingRock);
-		if (rollingRock) {	
-			RollStone(rollingRock, currentDirection, 42000);
-		}
+		player->UseItem(2);
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM4)) {
-		speedProp = gameLevel->CreateSpeedProp(Vector3(0, 5, 65), Vector3(16, 16, 16));
+		player->UseItem(3);
+		//speedProp = gameLevel->CreateSpeedProp(Vector3(0, 5, 65), Vector3(16, 16, 16));
 
-		world->AddGameObject(speedProp);
+		//world->AddGameObject(speedProp);
 
-		propList.push_back(speedProp);
+		//propList.push_back(speedProp);
 
-		player->SetIsAccelerated(true);
+		//player->SetIsAccelerated(true);
 	}
 
+	if (useskill) {
 
-	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
-	Quaternion q(viewMat);
-	float pitch = q.ToEuler().x;
-	float yaw = q.ToEuler().y;
+		if (Window::GetKeyboard()->KeyDown(KeyCodes::Q)) {
+			if (progress < 4) {
+				progress += 0.03;
+			}
+			if (progress > 4) {
+				progress = 4;
+			}
+			skilltime = 0;
+		}
+		else {
+			progress = 0;
+		}
 
-	Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
-	lockedObject->GetTransform().SetOrientation(lookat);
+		Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();/*cameraCollision->GetTransform().GetPosition()*/
+		Quaternion q(viewMat);
+		float pitch = q.ToEuler().x;
+		float yaw = q.ToEuler().y;
 
-	world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));
-	world->GetMainCamera().SetPitch(pitch);
-	world->GetMainCamera().SetYaw(yaw);
-	//renderer.UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
-	UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
+		Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
+		lockedObject->GetTransform().SetOrientation(lookat);
 
+		world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));/*cameraCollision->GetTransform().GetPosition()+Vector3(0,5,0)*/
+		world->GetMainCamera().SetPitch(pitch);
+		world->GetMainCamera().SetYaw(yaw);
+		//renderer.UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
+		UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
+
+	}
 }
-
 void TutorialGame::DebugObjectMovement() {
 	//If we've selected an object, we can manipulate it with some key presses
 	if (inSelectionMode && selectionObject) {
@@ -420,9 +480,12 @@ void TutorialGame::InitWorld() {
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
+	//cameraCollision = gameLevel->getCamreaCollision();
+
 	/*
 		Please switch the debug mode here
 	*/
+
 	isDebug = true;
 	//isDebug = false;
 	int debugLevel = 4;
@@ -432,7 +495,7 @@ void TutorialGame::InitWorld() {
 		{
 		case 1:
 			//Level 1
-			currentLevel = 2;
+			currentLevel = 4;
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 			ghostai = gameLevel->GetGhostai();
 			ghostai2 = gameLevel->GetGhostai2();
@@ -440,7 +503,7 @@ void TutorialGame::InitWorld() {
 			break;
 		case 2:
 			//Level 2
-			currentLevel = 4;
+			currentLevel = 2;
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 			break;
 		case 3:
@@ -486,6 +549,7 @@ void TutorialGame::InitWorld() {
 
 	score = 0;
 	totalTime = 0.0f;
+	skilltime = 0.0f;
 }
 
 /*
@@ -496,53 +560,53 @@ letting you move the camera around.
 
 */
 bool TutorialGame::SelectObject() {
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
-		inSelectionMode = !inSelectionMode;
-		if (inSelectionMode) {
-			Window::GetWindow()->ShowOSPointer(true);
-			Window::GetWindow()->LockMouseToWindow(false);
-		}
-		else {
-			Window::GetWindow()->ShowOSPointer(false);
-			Window::GetWindow()->LockMouseToWindow(true);
-		}
-	}
-	if (inSelectionMode) {
-		Debug::Print("Press Q to change to camera mode!", Vector2(5, 85));
+	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
+	//	inSelectionMode = !inSelectionMode;
+	//	if (inSelectionMode) {
+	//		Window::GetWindow()->ShowOSPointer(true);
+	//		Window::GetWindow()->LockMouseToWindow(false);
+	//	}
+	//	else {
+	//		Window::GetWindow()->ShowOSPointer(false);
+	//		Window::GetWindow()->LockMouseToWindow(true);
+	//	}
+	//}
+	//if (inSelectionMode) {
+	//	Debug::Print("Press Q to change to camera mode!", Vector2(5, 85));
 
-		if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::Left)) {
-			if (selectionObject) {	//set colour to deselected;
-				selectionObject->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
-				selectionObject = nullptr;
-			}
+	//	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::Left)) {
+	//		if (selectionObject) {	//set colour to deselected;
+	//			selectionObject->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
+	//			selectionObject = nullptr;
+	//		}
 
-			Ray ray = CollisionDetection::BuildRayFromMouse(world->GetMainCamera());
+	//		Ray ray = CollisionDetection::BuildRayFromMouse(world->GetMainCamera());
 
-			RayCollision closestCollision;
-			if (world->Raycast(ray, closestCollision, true)) {
-				selectionObject = (GameObject*)closestCollision.node;
+	//		RayCollision closestCollision;
+	//		if (world->Raycast(ray, closestCollision, true)) {
+	//			selectionObject = (GameObject*)closestCollision.node;
 
-				selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		//if (Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::L)) {
-		//	if (selectionObject) {
-		//		if (lockedObject == selectionObject) {
-		//			lockedObject = nullptr;
-		//		}
-		//		else {
-		//			lockedObject = selectionObject;
-		//		}
-		//	}
-		//}
-	}
-	else {
-		Debug::Print("Press Q to change to select mode!", Vector2(5, 85));
-	}
+	//			selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
+	//			return true;
+	//		}
+	//		else {
+	//			return false;
+	//		}
+	//	}
+	//	//if (Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::L)) {
+	//	//	if (selectionObject) {
+	//	//		if (lockedObject == selectionObject) {
+	//	//			lockedObject = nullptr;
+	//	//		}
+	//	//		else {
+	//	//			lockedObject = selectionObject;
+	//	//		}
+	//	//	}
+	//	//}
+	//}
+	//else {
+	//	Debug::Print("Press Q to change to select mode!", Vector2(5, 85));
+	//}
 	return false;
 }
 
@@ -578,7 +642,6 @@ void TutorialGame::MoveSelectedObject() {
 */
 void TutorialGame::ShowMainMenu(float dt) {
 	//clear the world
-	nameString = "";
 	lockedObject = nullptr;
 	world->ClearAndErase();
 	world->GetMainCamera().SetPitch(0.0f);
@@ -586,29 +649,25 @@ void TutorialGame::ShowMainMenu(float dt) {
 	world->GetMainCamera().SetPosition(Vector3(0, 0, 0));
 
 	Debug::Print("Main Menu", Vector2(30, 30), Debug::BLUE);
-	Debug::Print("Start Game", Vector2(30, 40), Debug::BLACK);
-	Debug::Print("Show Ranking", Vector2(30, 50), Debug::BLACK);
-	Debug::Print("Exit", Vector2(30, 60), Debug::BLACK);
 	switch (mainMenuState)
 	{
 	case NCL::CSC8503::MainMenu_Start:
 		Debug::Print("Start Game", Vector2(30, 40), Debug::RED);
-		break;
-	case NCL::CSC8503::MainMenu_Ranking:
-		Debug::Print("Show Ranking", Vector2(30, 50), Debug::RED);
+		Debug::Print("Exit", Vector2(30, 50), Debug::BLACK);
 		break;
 	case NCL::CSC8503::MainMenu_Exit:
-		Debug::Print("Exit", Vector2(30, 60), Debug::RED);
+		Debug::Print("Start Game", Vector2(30, 40), Debug::BLACK);
+		Debug::Print("Exit", Vector2(30, 50), Debug::RED);
 		break;
 	default:
 		break;
 	}
 
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::UP) && (mainMenuState != MainMenu_Start)) {
-		mainMenuState = static_cast<MainMenuState>(static_cast<int>(mainMenuState) - 1);
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::UP)) {
+		mainMenuState = MainMenu_Start;
 	}
-	else if (Window::GetKeyboard()->KeyPressed(KeyCodes::DOWN) && (mainMenuState != MainMenu_Exit)) {
-		mainMenuState = static_cast<MainMenuState>(static_cast<int>(mainMenuState) + 1);
+	else if (Window::GetKeyboard()->KeyPressed(KeyCodes::DOWN)) {
+		mainMenuState = MainMenu_Exit;
 	}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) {
@@ -616,10 +675,6 @@ void TutorialGame::ShowMainMenu(float dt) {
 		{
 		case NCL::CSC8503::MainMenu_Start:
 			gameState = ModeSelect;
-			break;
-		case NCL::CSC8503::MainMenu_Ranking:
-			rankingPage = TimeLimitedModePage;
-			gameState = Ranking;
 			break;
 		case NCL::CSC8503::MainMenu_Exit:
 			gameState = Exit;
@@ -632,59 +687,18 @@ void TutorialGame::ShowMainMenu(float dt) {
 	Debug::UpdateRenderables(dt);
 }
 
-void TutorialGame::ShowRanking(float dt) {
-	Debug::Print("Ranking", Vector2(5, 10), Debug::RED);
-	Debug::Print("Player Name:", Vector2(5, 20), Debug::RED);
-	if (rankingPage == TimeLimitedModePage) {
-		Debug::Print("Score:", Vector2(60, 20), Debug::RED);
-		for (int i = 0; i < 5; i++) {
-			if (i >= ScoreTable.size()) {
-				break;
-			}
-			else {
-				Debug::Print(ScoreTable[i].playerName, Vector2(5, 30 + 10 * i));
-				Debug::Print(std::to_string(static_cast<int>(ScoreTable[i].score)), Vector2(60, 30 + 10 * i));
-			}
-		}
-		Debug::Print("Press -> to switch page.", Vector2(5, 80));
-		Debug::Print("1 / 2  ->", Vector2(45, 90));
-	}
-	else {
-		Debug::Print("Time Cost:", Vector2(60, 20), Debug::RED);
-		for (int i = 0; i < 5; i++) {
-			if (i >= TimeTable.size()) {
-				break;
-			}
-			else {
-				Debug::Print(TimeTable[i].playerName, Vector2(5, 30 + 10 * i));
-				Debug::Print(std::to_string(TimeTable[i].score), Vector2(60, 30 + 10 * i));
-			}
-		}
-		Debug::Print("Press <- to switch page.", Vector2(5, 80));
-		Debug::Print("<-  2 / 2", Vector2(37.5, 90));
-	}
-	Debug::Print("Press Enter to back to main menu", Vector2(5, 85));
-
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RIGHT)) rankingPage = ScoreRequiredModePage;
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::LEFT))  rankingPage = TimeLimitedModePage;
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) gameState = MainMenu;
-
-	renderer->Render();
-	Debug::UpdateRenderables(dt);
-}
-
 void TutorialGame::SelectGameMode(float dt) {
 	Debug::Print("Mode Select: ", Vector2(30, 30), Debug::BLUE);
-	if (gameMode == TimeLimited) {
-		Debug::Print("Time Limited: 150s", Vector2(30, 50), Debug::RED);
-		Debug::Print("Score Required: 20", Vector2(30, 60), Debug::BLACK);
+	if (gameMode == Multi) {
+		Debug::Print("Multi Player", Vector2(30, 50), Debug::RED);
+		Debug::Print("Single player", Vector2(30, 60), Debug::BLACK);
 	}
-	else if (gameMode == ScoreRequired) {
-		Debug::Print("Time Limited: 150s", Vector2(30, 50), Debug::BLACK);
-		Debug::Print("Score Required: 20", Vector2(30, 60), Debug::RED);
+	else if (gameMode == Single) {
+		Debug::Print("Multi Player", Vector2(30, 50), Debug::BLACK);
+		Debug::Print("Single player", Vector2(30, 60), Debug::RED);
 	}
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::UP))   gameMode = TimeLimited;
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::DOWN)) gameMode = ScoreRequired;
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::UP))   gameMode = Multi;
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::DOWN)) gameMode = Single;
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) gameState = Start;
 
@@ -707,127 +721,25 @@ void TutorialGame::ShowPause(float dt) {
 	Debug::UpdateRenderables(dt);
 }
 
-void TutorialGame::ShowWin(float dt) {
-	Debug::Print("You win!", Vector2(20, 30), Debug::RED);
-	Debug::Print("Press Enter to continue", Vector2(20, 60), Debug::BLACK);
-
-	if (gameMode == TimeLimited) {
-		Debug::Print("Your score:", Vector2(20, 35), Debug::BLACK);
-		Debug::Print(std::to_string(score), Vector2(35, 40), Debug::BLACK);
-		int lowestScore;
-		ScoreTable.size() > 4 ? lowestScore = ScoreTable[4].score : lowestScore = ScoreTable[ScoreTable.size() - 1].score;
-		if (score > lowestScore) {
-			Debug::Print("New Record!", Vector2(20, 45), Debug::RED);
-			Debug::Print("Please input your name:________", Vector2(20, 50), Debug::RED);
-			Debug::Print(nameString, Vector2(63, 50));
-			char r = Window::GetKeyboard()->GetKey();
-			if (r != '0') {
-				if (r == 8 && !nameString.empty()) {
-					nameString.pop_back();
-				}
-				else {
-					nameString += r;
-				}
-			}
-		}
-		if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) {
-			if (score > lowestScore) {
-				for (int i = 0; i < ScoreTable.size(); i++) {
-					if (score > ScoreTable[i].score) {
-						RankScore rk;
-						rk.score = score;
-						rk.playerName = nameString;
-						ScoreTable.insert(ScoreTable.begin() + i, rk);
-						break;
-					}
-				}
-				std::ofstream file;
-				file.open(Assets::SCOREDIR + "timeMode.txt", std::ios::out | std::ios::trunc);
-				if (!ScoreTable.empty()) {
-					for (int i = 0; i < ScoreTable.size() && i < 5; i++) {
-						file << ScoreTable[i].playerName << std::endl;
-						file << ScoreTable[i].score << std::endl;
-					}
-				}
-			}
-			gameState = MainMenu;
-		}
+void TutorialGame::ShowEnd(float dt) {
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) {
+		gameState = MainMenu;
+		return;
 	}
-	else {
-		Debug::Print("Cost Time:", Vector2(20, 35), Debug::BLACK);
-		Debug::Print(std::to_string(totalTime), Vector2(35, 40), Debug::BLACK);
-		float mostTimeCost;
-		TimeTable.size() > 4 ? mostTimeCost = TimeTable[4].score : mostTimeCost = TimeTable[TimeTable.size() - 1].score;
-		if (totalTime < mostTimeCost) {
-			Debug::Print("New Record!", Vector2(20, 45), Debug::RED);
-			Debug::Print("Please input your name:________", Vector2(20, 50), Debug::RED);
-			Debug::Print(nameString, Vector2(63, 50));
-			char r = Window::GetKeyboard()->GetKey();
-			if (r != '0') {
-				if (r == 8 && !nameString.empty()) {
-					nameString.pop_back();
-				}
-				else {
-					nameString += r;
-				}
-			}
-		}
-		if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) {
-			if (totalTime < mostTimeCost) {
-				for (int i = 0; i < TimeTable.size(); i++) {
-					if (score < TimeTable[i].score) {
-						RankScore rk;
-						rk.score = score;
-						rk.playerName = nameString;
-						TimeTable.insert(TimeTable.begin() + i, rk);
-						break;
-					}
-				}
-				std::ofstream file;
-				file.open(Assets::SCOREDIR + "scoreMode.txt", std::ios::out | std::ios::trunc);
-				if (!TimeTable.empty()) {
-					for (int i = 0; i < TimeTable.size() && i < 5; i++) {
-						file << TimeTable[i].playerName << std::endl;
-						file << TimeTable[i].score << std::endl;
-					}
-				}
-			}
-			gameState = MainMenu;
-		}
+
+	totalTime += dt;
+	float sceneAlpha, fontAlpha;
+	totalTime < 3 ? sceneAlpha = totalTime / 3 : sceneAlpha = 1;
+	GameTechRenderer::CreateGameUI({ Vector3(-1,1,-1),Vector3(-1,-1,-1),Vector3(1,-1,-1),Vector3(1,1,-1) }, "changingblood", "blank", sceneAlpha);
+
+	if (totalTime > 3.5) {
+		Debug::Print("Thanks For Playing!", Vector2(30, 30));
+		Debug::Print("Press Enter to Mainmenu", Vector2(30, 40));
 	}
 
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
-}
-
-void TutorialGame::ShowLose(float dt) {
-	Debug::Print("You lose!", Vector2(30, 40), Debug::BLUE);
-	Debug::Print("Press Enter to continue", Vector2(30, 70), Debug::BLACK);
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) gameState = MainMenu;
-	renderer->Render();
-	Debug::UpdateRenderables(dt);
-}
-
-void TutorialGame::LoadRankingFile() {
-	std::ifstream timeFile(Assets::SCOREDIR + "timeMode.txt");
-	std::ifstream scoreFile(Assets::SCOREDIR + "scoreMode.txt");
-	while (!scoreFile.eof()) {
-		std::string name;
-		scoreFile >> name;
-		float s;
-		scoreFile >> s;
-		TimeTable.emplace_back(name, s);
-	}
-	while (!timeFile.eof())
-	{
-		std::string name;
-		timeFile >> name;
-		float s;
-		timeFile >> s;
-		ScoreTable.emplace_back(name, s);
-	}
-	scoreFile.close();
-	timeFile.close();
+	GameTechRenderer::UpdateUI();
 }
 
 void TutorialGame::DrawAnim(GameObject* g, MeshAnimation* anim) {
@@ -850,7 +762,7 @@ void TutorialGame::UpdateAnim(GameObject* g, MeshAnimation* anim) {
 }
 
 void TutorialGame::UpdateBossAnim(Boss* boss, MeshAnimation* bossAnimation, float dt) {
-	if (boss != nullptr&&!boss->getIsDead()) {
+	if (boss != nullptr && !boss->getIsDead()) {
 		if (gameLevel->GetBoss()->getIsRencentlyHurt()) {
 			boss->GetRenderObject()->frameTime -= dt / 2.0;
 			UpdateAnim(boss, bossFlinchAnimation);
@@ -938,7 +850,7 @@ void TutorialGame::UpdateBossAnim(Boss* boss, MeshAnimation* bossAnimation, floa
 	else {
 		bossDeathTimer += dt;
 		if (bossDeathTimer < bossDeathDuration) {
-			boss->GetRenderObject()->frameTime -= dt ;
+			boss->GetRenderObject()->frameTime -= dt;
 			UpdateAnim(boss, bossDeathAnimation);
 		}
 	}
@@ -978,6 +890,24 @@ void TutorialGame::SwitchLevel() {
 	if (!physics->GetCollisionDetectionList(portal).empty() && physics->GetCollisionDetectionList(portal)[0] == player) {
 		switch (currentLevel)
 		{
+		case 1:
+			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
+			player->GetTransform().SetPosition(Vector3(235, 10, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			portal = gameLevel->GetLevel2()->portal;
+			PlayLevelBGM("level2");
+			currentLevel++;
+			break;
+		case 2:
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), true);
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
+			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			portal = gameLevel->GetConnection()->portal;
+			PlayLevelBGM("level0");
+			currentLevel++;
+			break;
 		case 3:
 			GameLevel::RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
@@ -1001,42 +931,24 @@ void TutorialGame::SwitchLevel() {
 			PlayLevelBGM("level0");
 			currentLevel++;
 			break;
-		case 1:
-			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
-			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
-			player->GetTransform().SetPosition(Vector3(235, 10, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
-			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
-			portal = gameLevel->GetLevel2()->portal;
-			PlayLevelBGM("level2");
-			currentLevel++;
-			break;
-		case 2:
-			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), true);
-			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
-			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
-			portal = gameLevel->GetConnection()->portal;
-			PlayLevelBGM("level0");
-			currentLevel++;
-			break;
 		case 5:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(0, 4, 135)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel3()->portal;
-
+			portal->isEnable = false;
+			portal->GetRenderObject()->SetColour(Debug::RED);
 			boss = gameLevel->GetBoss();
 			shield = gameLevel->GetShield();
 			bossAnimation = gameLevel->getBossAnimation();
-			shield = gameLevel->GetShield();
 			iceCubeBullet = gameLevel->getIceCubeBullet();
 			bossCheersAnimation = gameLevel->getBossCheersAnimation();
 			bossShootingAnimation = gameLevel->getBossShootingAnimation();
 			bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
 			bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
 			bossChasingAnimation = gameLevel->getBossChasingAnimation();
-			fireBallBullet = gameLevel->getFireBallBullet();	
+			fireBallBullet = gameLevel->getFireBallBullet();
 			bossAngryAnimation = gameLevel->getBossAngryAnimation();
 			bossDeathAnimation = gameLevel->getBossDeathAnimation();
 			PlayerPreHealth = player->GetHealth();
@@ -1046,6 +958,9 @@ void TutorialGame::SwitchLevel() {
 			break;
 		case 6:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true);
+			for (const auto& element : BasicExamples::propList) {
+				world->RemoveGameObject(element);
+			}
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
@@ -1060,6 +975,10 @@ void TutorialGame::SwitchLevel() {
 			player->GetTransform().SetPosition(Vector3(-70, 10, -50)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			PlayLevelBGM("level4");
+			if (exit != nullptr) {
+				delete exit;
+				exit = nullptr;
+			}
 			currentLevel++;
 			break;
 		default:
@@ -1073,6 +992,21 @@ void TutorialGame::UpdateLevel(float dt) {
 	player->UpdatePlayer(dt);
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
+	Vector3 playerPosition;
+	playerPosition = player->GetTransform().GetPosition() + Vector3(0, 1, 0);
+	Vector3 direction = Vector3(0, -1, 0);
+	Ray ray = Ray(playerPosition, direction);
+	RayCollision closestCollision;
+	//closestCollision.rayDistance = gameLevel->GetBoss()->attackRange;
+	if (world->Raycast(ray, closestCollision, true)) {
+		GameObject* blocker = (GameObject*)closestCollision.node;
+		if (blocker->GetName() == "floor" || blocker->GetName() == "aabb") {
+			float distance = playerPosition.y - blocker->GetTransform().GetPosition().y - blocker->GetTransform().GetScale().y / 2;
+			if (distance < 2) {
+				player->GetPhysicsObject()->AddForce(-physics->GetGravity() * 0.2);
+			}
+		}
+	}
 	// Level 1 stuff
 	if (currentLevel == 4) {
 		ghostai->Update(dt);
@@ -1092,15 +1026,47 @@ void TutorialGame::UpdateLevel(float dt) {
 		for (const auto& element : gameLevel->GetL2Doors()) {
 			element->Update(dt);
 			if (element->GetState() != "keepState" && element->GetTimer() - dt == 0) {
-				soundManager.playSound("door");
+				Vector3 pos = element->GetTransform().GetPosition();
+				FMOD_VECTOR poss = { pos.x,pos.y, pos.z };
+				soundManager.play3DSound("door", poss);
+				soundManager.setSoundVolume("door", 2.0f);
 			}
 		}
 	}
 	// Level 3
 	else if (currentLevel == 6) {
-
 		gameLevel->GetBoss()->Update(dt);
 		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
+		propSpawnTimer += dt;
+		if (boss->getIsDead()) {
+			portal->isEnable = true;
+			portal->GetRenderObject()->SetColour(Debug::GREEN);
+			portal->GetTransform().SetPosition(Vector3(0, 3, 100));
+		}
+		if (propSpawnTimer > propSpawnCooldown) {
+			GenerateRandomPropPositionInBounds(Vector3(-80, 1, -80), Vector3(80, 1, 80));
+			propSpawnTimer = 0.0f;
+		}
+		if (boss->GetStunTimer() >= 0.5f && std::fmod(boss->GetStunTimer(), 0.5f) < dt && boss->GetStunTimer() != 0.0f) {
+			DropItems();
+		}
+		if (gameLevel->GetBoss()->getIsDroppingMassiveItems()) {
+			DropMassiveItems();
+			DropMassiveItems();
+			gameLevel->GetBoss()->setIsDroppingMassiveItems(false);
+		}
+		if (player->getIsRollingRock()) {
+			Quaternion playerQuaternion = player->GetTransform().GetOrientation();
+			Vector3 defaultForward = Vector3(0, 0, -1);
+			Vector3 currentDirection = playerQuaternion * defaultForward;
+			rollingRock = gameLevel->CreateRollingRock(player->GetTransform().GetPosition() + currentDirection.Normalised() * 10 + Vector3(0, 5, 0), 4);
+
+			world->AddGameObject(rollingRock);
+			if (rollingRock) {
+				RollStone(rollingRock, currentDirection, 72000);
+				player->SetIsRollingRock(false);
+			}
+		}
 		if (player->getIsAccelerated()) {
 			speedPropTimer += dt;
 			if (speedPropTimer > speedPropDuration) {
@@ -1113,16 +1079,33 @@ void TutorialGame::UpdateLevel(float dt) {
 		}
 		if (gameLevel->GetBoss()->getShooting()) {
 			if (boss->getNextBullet() == 0) {
-				// 发射冰块子弹
 				gameLevel->GetBoss()->setIsShootingIceCube(true);
 				IceCubeBulletLogic(dt);
 			}
 			else {
-				// 发射火球子弹
 				gameLevel->GetBoss()->setIsShootingFireBall(true);
 				FireBallBulletLogic(dt);
 			}
 
+		}
+		if (!iceCubeBullet->GetIsHiding() && !gameLevel->GetBoss()->getShooting()) {
+			iceCubeBullet->GetPhysicsObject()->AddForce(Vector3(0, 15.0f, 0));
+			iceCubeBullet->UpdateExistenceTime(dt);
+			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
+			Vector3 ballPosition = iceCubeBullet->GetTransform().GetPosition();
+			//UpdateTrackingBall(ballPosition, playerPosition, 2, dt);
+			//if (iceCubeBullet->GetExistenceTime() >= 6.0f) {
+			if (!iceCubeBullet->GetIsBlockBack()) {
+				UpdateTrackingBall(ballPosition, playerPosition, 15, dt);
+				std::cout << "tracking" << std::endl;
+			}
+			if (iceCubeBullet->GetExistenceTime() >= 10.0f) {
+
+				gameLevel->GetBoss()->setHasIceCubeBullet(true);
+				iceCubeBullet->SetIsHiding(true, Vector3(20, -98, 0));
+				iceCubeBullet->GetPhysicsObject()->SetLinearVelocity(Vector3());
+				iceCubeBullet->SetIsBolckBack(false);
+			}
 		}
 		if (fireBallBullet->GetIsHiding() && iceCubeBullet->GetIsHiding()) {
 			boss->updateBulletTimer(dt);
@@ -1130,20 +1113,31 @@ void TutorialGame::UpdateLevel(float dt) {
 		if (gameLevel->GetBoss()->getIsAttack()) {
 			ExecuteAttack(dt);
 		}
+		if (player->getIsProtected()) {
+			gameLevel->GetShield()->SetIsNotHiding();
+		}
 		if (!gameLevel->GetShield()->GetIsHiding()) {
 			Debug::DrawCollisionBox(shield);
 			UpdateShieldPosition(dt);
 			shieldPropTimer += dt;
 			if (shieldPropTimer > shieldPropDuration) {
 				gameLevel->GetShield()->SetIsHiding(true, Vector3(0, -65, 30));
+				player->SetIsProtected(false);
 				shieldPropTimer = 0.0f;
 			}
 		}
-		if (player->getIsRencentlyHurt()&& player->getIsBeingHitBack()) {
+		if (player->getIsRencentlyHurt() && player->getIsBeingHitBack()) {
 			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 			Vector3 bossPosition = boss->GetTransform().GetPosition();
 			Vector3 hurtDirection = (playerPosition - bossPosition).Normalised();
-			player->GetPhysicsObject()->AddForce(hurtDirection * 50);
+			player->GetPhysicsObject()->AddForce(hurtDirection * 500);
+			player->SetIsRencentlyHurt(false);
+		}
+		else if (player->getIsRencentlyHurt() && player->getIsMeleeAttacked()) {
+			Vector3 playerPosition = player->GetTransform().GetPosition();
+			Vector3 bossPosition = boss->GetTransform().GetPosition();
+			Vector3 hurtDirection = (playerPosition - bossPosition).Normalised();
+			player->GetPhysicsObject()->AddForce(hurtDirection * 2000);
 			player->SetIsRencentlyHurt(false);
 		}
 		if (player->getIsBeingHitBack()) {
@@ -1151,6 +1145,13 @@ void TutorialGame::UpdateLevel(float dt) {
 			if (hitBackTimer > hitBackDuration) {
 				player->SetIsBeingHitBack(false);
 				hitBackTimer = 0.0f;
+			}
+		}
+		else if (player->getIsMeleeAttacked()) {
+			meleeAttackedTimer += dt;
+			if (meleeAttackedTimer > meleeAttackedDuration) {
+				player->SetIsMeleeAttacked(false);
+				meleeAttackedTimer = 0.0f;
 			}
 		}
 		if (fireBallBullet->GetIsBlockBack()) {
@@ -1187,7 +1188,10 @@ void TutorialGame::UpdateLevel(float dt) {
 		gameLevel->UpdateLight();
 		
 		if (gameLevel->GetL4Door()->GetState() != "keepState" && gameLevel->GetL4Door()->GetTimer() - dt == 0) {
-			soundManager.playSound("door");
+			Vector3 pos = gameLevel->GetL4Door()->GetTransform().GetPosition();
+			FMOD_VECTOR poss = { pos.x,pos.y, pos.z };
+			soundManager.play3DSound("door", poss);
+			soundManager.setSoundVolume("door", 2.0f);
 		}
 		GameObject* beginDet = gameLevel->GetBeginArea();
 		GameObject* trueEndDet = gameLevel->GetTrueEndArea();
@@ -1256,7 +1260,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			hasRotation = !hasRotation;
 		}
 
-		if (score == 6 && exit == nullptr) {
+		if (score == 5 && exit == nullptr) {
 			if (!hasReverse && !hasRotation) {
 				exit = gameLevel->CreateCube(Vector3(-30, 10, -70), Vector3(15, 15, 15), 0.0f);
 			}
@@ -1269,8 +1273,21 @@ void TutorialGame::UpdateLevel(float dt) {
 			else if (hasReverse && hasRotation) {
 				exit = gameLevel->CreateCube(Vector3(-70, 10, -30), Vector3(15, 15, 15), 0.0f);
 			}
-			exit->GetRenderObject()->SetColour(Debug::WHITE);
+			exit->GetRenderObject()->SetColour(Debug::WHITE * 2);
+			exit->GetRenderObject()->SetDefaultTexture(nullptr, 0);
+			exit->SetTag("Exit");
 			world->AddGameObject(exit);
+		}
+
+		if (exit != nullptr) {
+			vector<GameObject*> ExitCD = physics->GetCollisionDetectionList(exit);
+			if (std::count(ExitCD.begin(), ExitCD.end(), player)) {
+				totalTime = 0;
+				gameState = End;
+				soundManager.stopSound("level4");
+				soundManager.playSound("end");
+				soundManager.setSoundVolume("end", 2.0f);
+			}
 		}
 	}
 }
@@ -1308,7 +1325,7 @@ void TutorialGame::IceCubeBulletLogic(float dt) {
 		std::cout << "Icecube bullet is coming!" << std::endl;
 	}
 	if (!iceCubeBullet->GetIsHiding()) {
-		iceCubeBullet->GetPhysicsObject()->AddForce(Vector3(0, 12.0f, 0));
+		iceCubeBullet->GetPhysicsObject()->AddForce(Vector3(0, 10.0f, 0));
 		iceCubeBullet->UpdateExistenceTime(dt);
 		Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 		Vector3 ballPosition = iceCubeBullet->GetTransform().GetPosition();
@@ -1316,6 +1333,7 @@ void TutorialGame::IceCubeBulletLogic(float dt) {
 		//if (iceCubeBullet->GetExistenceTime() >= 6.0f) {
 		if (!iceCubeBullet->GetIsBlockBack()) {
 			UpdateTrackingBall(ballPosition, playerPosition, 15, dt);
+			std::cout << "tracking" << std::endl;
 		}
 		if (iceCubeBullet->GetExistenceTime() >= 10.0f) {
 
@@ -1340,9 +1358,9 @@ void TutorialGame::ExecuteAttack(float dt) {
 		if (closestCollision.node == player) {
 			if (playerIsHit) {
 				player->updateHealth(-4);
-				std::cout << "now player health is " << player->GetHealth() << std::endl;
 				player->SetIsRencentlyHurt(true);
-				player->SetIsBeingHitBack(true);
+				//player->SetIsBeingHitBack(true);
+				player->SetIsMeleeAttacked(true);
 				playerIsHit = false;
 			}
 		}
@@ -1383,12 +1401,16 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 
 void TutorialGame::AddSound() {
 	soundManager.loadSound("walking", "../externals/media/walk.mp3", true, false);
+	/*soundManager.loadSound("ghost", "../externals/media/ghost.mp3", false, false);*/
+	soundManager.loadSound("ghost", "../externals/media/ghost.mp3", true, false);
 	soundManager.loadSound("door", "../externals/media/door.mp3", false, false);
+	soundManager.loadSound("end", "../externals/media/bgm/end.mp3", true, true);
 	std::map<std::string, std::string> bgmPaths = {
 	   {"level1", "../externals/media/bgm/ophelia.mp3"},
 	   {"level2", "../externals/media/bgm/TownTheme.mp3"},
 	   {"level3", "../externals/media/bgm/BattleInTheWinter.mp3"},
-	   {"level4", "../externals/media/bgm/jntm.mp3"},
+	   /*{"level4", "../externals/media/bgm/jntm.mp3"},*/
+		{"level4", "../externals/media/bgm/David.mp3"},
 	   {"level0","../externals/media/bgm/safezone.mp3"},
 	};
 	soundManager.loadAllBGM(bgmPaths);
@@ -1410,8 +1432,6 @@ void TutorialGame::InitAudio() {
 		std::cout << "Failed to initialize SoundManager" << std::endl;
 	}
 	AddSound();
-	soundManager.setSoundVolume("walking", 0.7f);
-	soundManager.setSoundVolume("door", 1.0f);
 	/*previousPlayerPosition = player->GetTransform().GetPosition();*/
 	previousMainCameraPosition = world->GetMainCamera().GetPosition();
 }
@@ -1422,13 +1442,20 @@ void TutorialGame::PlayLevelBGM(const std::string& levelName) {
 	}
 	currentBGM = levelName;
 	soundManager.playSound(currentBGM);
+	if (currentBGM == "level3") {
+		soundManager.setSoundVolume(currentBGM, 1.0f);
+	}
+	else {
+		soundManager.setSoundVolume(currentBGM, 0.4f);
+	}
+
 }
 
-void TutorialGame::RollStone(GameObject * stone, const Vector3 & forceDirection, float forceMagnitude) {
+void TutorialGame::RollStone(GameObject* stone, const Vector3& forceDirection, float forceMagnitude) {
 	PhysicsObject* stonePhysics = stone->GetPhysicsObject();
 
 	if (stonePhysics) {
-		Vector3 stoneCenter = stone->GetTransform().GetPosition()+Vector3(0,2,0);
+		Vector3 stoneCenter = stone->GetTransform().GetPosition() + Vector3(0, 2, 0);
 
 		Vector3 force = forceDirection * forceMagnitude;
 
@@ -1458,19 +1485,52 @@ void TutorialGame::UpdateShieldPosition(float dt) {
 	shield->GetTransform().SetPosition(Vector3(x, y, z));
 }
 
+Vector3 TutorialGame::GenerateRandomPropPositionInBounds(const Vector3& minBound, const Vector3& maxBound) {
+
+	srand(static_cast<unsigned int>(time(nullptr)));
+
+	int randomNumber = rand() % 4;
+
+	float x = std::rand() % 181 - 90;
+	float y = 3;
+	float z = std::rand() % 181 - 90;
+	GameObject* speedProp = nullptr;
+	GameObject* shieldProp = nullptr;
+	GameObject* rollingRockProp = nullptr;
+	GameObject* redBottleProp = nullptr;
+	switch (randomNumber) {
+	case 0:
+		speedProp = gameLevel->CreateSpeedProp(Vector3(x, y, z), Vector3(8, 8, 8));
+		world->AddGameObject(speedProp);
+		break;
+	case 1:
+		shieldProp = gameLevel->CreateShieldProp(Vector3(x, y, z), Vector3(1, 1, 1));
+		world->AddGameObject(shieldProp);
+		break;
+	case 2:
+		rollingRockProp = gameLevel->CreateRollingRockProp(Vector3(x, y, z), 0.5);
+		world->AddGameObject(rollingRockProp);
+		break;
+	case 3:
+		redBottleProp = gameLevel->CreateRedBottleProp(Vector3(x, y, z), Vector3(2, 2, 2));
+		world->AddGameObject(redBottleProp);
+		break;
+	}
+
+	return Vector3(x, y, z);
+}
+
 void TutorialGame::UpdateLevel3UI() {
 	health = (100.0f - (player->GetHealth())) * 0.008f;
 	healthLength = (100 - PlayerPreHealth) * 0.008f;
 
 	bosshealth = (100.0f - (gameLevel->GetBoss()->getBossHealth())) * 0.01f;
 
-	std::cout << "boss:" << bosshealth << std::endl;
-	std::cout << "player:" << health << std::endl;
-	BossHealthLendth = (100 - BossPrehHealth) * 0.01; 
+	BossHealthLendth = (100 - BossPrehHealth) * 0.01;
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f, -0.8f, -1.0f), Vector3(0.4f, -0.75f, -1.0f) }, "background", "health");
 
-	GameTechRenderer::CreateGameUI({ Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) , 
+	GameTechRenderer::CreateGameUI({ Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) ,
 		Vector3(0.4 - healthLength , -0.75f, -1.0f), Vector3(0.4 - healthLength, -0.8f, -1.0f) }, "changingblood", "health");
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.4, -0.75f, -1.0f), Vector3(-0.4, -0.8f, -1.0f), Vector3(0.4f - health, -0.8f, -1.0f), Vector3(0.4f - health, -0.75f, -1.0f) }, "blood", "health");
@@ -1484,10 +1544,16 @@ void TutorialGame::UpdateLevel3UI() {
 
 	itemList = Player::GetItemList();
 
+	float x = Window::GetWindow()->GetScreenSize().x;
+	float y = Window::GetWindow()->GetScreenSize().y;
+	float b = y / x;
+
 	float distance = 0.2;
+	cd = skilltime / 6.0f;
+
 	for (int i = 0; i < itemList.size(); i++) {
-		GameTechRenderer::CreateGameUI({ Vector3(-0.4f + (i * distance), -0.83f, -1.0f), Vector3(-0.4f + (i * distance), -0.96f, -1.0f),
-		Vector3(-0.2f + (i * distance), -0.96f, -1.0f), Vector3(-0.2f + (i * distance), -0.83f, -1.0f) }, itemList.at(i), "item");
+		GameTechRenderer::CreateGameUI({ Vector3(-0.36f + (i * distance), -0.83f, -1.0f), Vector3(-0.36f + (i * distance), -0.96f, -1.0f),
+		Vector3(-0.36f + (i * distance) + (0.2 * b), -0.96f, -1.0f), Vector3(-0.36f + (i * distance) + (0.2 * b), -0.83f, -1.0f) }, itemList.at(i), "item");
 	}
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
@@ -1501,7 +1567,90 @@ void TutorialGame::UpdateLevel3UI() {
 
 	GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
 		Vector3(0.5f, 0.95f, -1.0f) }, "bossframe", "health");
+	GameTechRenderer::CreateGameUI({ Vector3(0.6, -0.5f, -1.0f),  Vector3(0.6, -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f, -1.0f) }, "skill", "skill");
+
+	GameTechRenderer::CreateGameUI({ Vector3(0.625, -0.55f, -1.0f),  Vector3(0.625, -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f, -1.0f) }, "redbottle", "skill", cd + 0.155);
+
+	if (progress <= 1) {
+		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power", progress);
+	}
+	if (progress <= 2 && progress > 1) {
+		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power", 1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.6625, -0.45f, -1.0f),  Vector3(0.6625, -0.48f, -1.0f),  Vector3(0.6775f, -0.48f, -1.0f),  Vector3(0.6775f, -0.45f, -1.0f) }, "power", "power", progress - 1);
+	}
+	if (progress <= 3 && progress > 2) {
+		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power", 1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.6625, -0.45f, -1.0f),  Vector3(0.6625, -0.48f, -1.0f),  Vector3(0.6775f, -0.48f, -1.0f),  Vector3(0.6775f, -0.45f, -1.0f) }, "power", "power", 1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.685, -0.45f, -1.0f),  Vector3(0.685, -0.48f, -1.0f),  Vector3(0.70f, -0.48f, -1.0f),  Vector3(0.70f, -0.45f, -1.0f) }, "power", "power", progress - 2);
+	}
+	if (progress <= 4 && progress > 3) {
+		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power", 1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.6625, -0.45f, -1.0f),  Vector3(0.6625, -0.48f, -1.0f),  Vector3(0.6775f, -0.48f, -1.0f),  Vector3(0.6775f, -0.45f, -1.0f) }, "power", "power", 1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.685, -0.45f, -1.0f),  Vector3(0.685, -0.48f, -1.0f),  Vector3(0.70f, -0.48f, -1.0f),  Vector3(0.70f, -0.45f, -1.0f) }, "power", "power", 1);
+		GameTechRenderer::CreateGameUI({ Vector3(0.705, -0.45f, -1.0f),  Vector3(0.705, -0.48f, -1.0f),  Vector3(0.720f, -0.48f, -1.0f),  Vector3(0.720f, -0.45f, -1.0f) }, "power", "power", progress - 3);
+	}
+
+}
+
+void TutorialGame::DropMassiveItems() {
+	GameObject* dropSpeedProp = nullptr;
+	GameObject* dropShieldProp = nullptr;
+	GameObject* dropRollingRockProp = nullptr;
+	GameObject* dropRedBottleProp = nullptr;
+	Vector3 bossPos = boss->GetTransform().GetPosition() + (Vector3(0, 15, 0));
+	dropSpeedProp = gameLevel->CreateSpeedProp(bossPos, Vector3(8, 8, 8), 2.0f);
+	world->AddGameObject(dropSpeedProp);
+
+	dropShieldProp = gameLevel->CreateShieldProp(bossPos, Vector3(1, 1, 1), 2.0f);
+	world->AddGameObject(dropShieldProp);
+
+	dropRollingRockProp = gameLevel->CreateRollingRockProp(bossPos, 0.5, 2.0f);
+	world->AddGameObject(dropRollingRockProp);
+
+	dropRedBottleProp = gameLevel->CreateRedBottleProp(bossPos, Vector3(2, 2, 2), 2.0f);
+	world->AddGameObject(dropRedBottleProp);
+
+	Vector3 randomDirection1 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+	Vector3 randomDirection2 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+	Vector3 randomDirection3 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+	Vector3 randomDirection4 = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+	dropSpeedProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
+	dropShieldProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
+	dropRollingRockProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
+	dropRedBottleProp->GetPhysicsObject()->AddForce(randomDirection1.Normalised() * 6000);
+}
+
+void TutorialGame::DropItems() {
+	GameObject* dropSpeedProp = nullptr;
+	GameObject* dropShieldProp = nullptr;
+	GameObject* dropRollingRockProp = nullptr;
+	GameObject* dropRedBottleProp = nullptr;
+	Vector3 bossPos = boss->GetTransform().GetPosition() + (Vector3(0, 15, 0));
 
 
+	int randomNumber = rand() % 4;
+	Vector3 randomDirection = Vector3((rand() % 200 - 100) / 100.0f, 0, (rand() % 200 - 100) / 100.0f);
+	switch (randomNumber) {
+	case 0:
+		dropSpeedProp = gameLevel->CreateSpeedProp(bossPos, Vector3(8, 8, 8), 2.0f);
+		world->AddGameObject(dropSpeedProp);
+		dropSpeedProp->GetPhysicsObject()->AddForce(randomDirection.Normalised() * 8000);
+		break;
+	case 1:
+		dropShieldProp = gameLevel->CreateShieldProp(bossPos, Vector3(1, 1, 1), 2.0f);
+		world->AddGameObject(dropShieldProp);
+		dropShieldProp->GetPhysicsObject()->AddForce(randomDirection.Normalised() * 8000);
+		break;
+	case 2:
+		dropRollingRockProp = gameLevel->CreateRollingRockProp(bossPos, 0.5, 2.0f);
+		world->AddGameObject(dropRollingRockProp);
+		dropRollingRockProp->GetPhysicsObject()->AddForce(randomDirection.Normalised() * 8000);
+		break;
+	case 3:
+		dropRedBottleProp = gameLevel->CreateRedBottleProp(bossPos, Vector3(2, 2, 2), 2.0f);
+		world->AddGameObject(dropRedBottleProp);
+		dropRedBottleProp->GetPhysicsObject()->AddForce(randomDirection.Normalised() * 8000);
+		break;
+	}
 
 }
