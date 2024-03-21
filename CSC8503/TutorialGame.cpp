@@ -833,6 +833,8 @@ void TutorialGame::ShowPause(float dt) {
 
 void TutorialGame::ShowEnd(float dt) {
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) {
+		soundManager.stopSound("walking");
+		soundManager.stopSound("level4");
 		gameState = MainMenu;
 		return;
 	}
