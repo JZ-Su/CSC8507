@@ -43,7 +43,7 @@ namespace NCL {
 			TutorialGame();
 			~TutorialGame();
 
-			virtual void UpdateGame(float dt);
+			void UpdateGame(float dt);
 
 			GameState GetState() { return gameState; }
 
@@ -61,7 +61,7 @@ namespace NCL {
 		protected:
 			bool isDebug;
 
-			virtual void InitialiseAssets();
+			void InitialiseAssets();
 
 			void InitCamera();
 			void InitAudio();
