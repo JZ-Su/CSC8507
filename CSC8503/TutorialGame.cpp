@@ -171,7 +171,7 @@ void TutorialGame::UpdateKeys(float dt) {
 			//portal = gameLevel->GetLevel2()->portal;
 			//PlayLevelBGM("level2");
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(0, 4, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			PlayLevelBGM("level0");
@@ -184,7 +184,7 @@ void TutorialGame::UpdateKeys(float dt) {
 			//portal = gameLevel->GetConnection()->portal;
 			//PlayLevelBGM("level0");
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
-			player->GetTransform().SetPosition(Vector3(235, 10, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(235, 4, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel2()->portal;
 			PlayLevelBGM("level2");
@@ -1063,7 +1063,7 @@ void TutorialGame::SwitchLevel() {
 		case 1:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
-			player->GetTransform().SetPosition(Vector3(235, 10, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(235, 4, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel2()->portal;
 			PlayLevelBGM("level2");
@@ -1072,7 +1072,7 @@ void TutorialGame::SwitchLevel() {
 		case 2:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), true);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(0, 4, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			PlayLevelBGM("level0");
@@ -1081,7 +1081,7 @@ void TutorialGame::SwitchLevel() {
 		case 3:
 			GameLevel::RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(0, 4, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel1()->portal;
 			portal->isEnable = false;
@@ -1095,7 +1095,7 @@ void TutorialGame::SwitchLevel() {
 		case 4:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel1(), true);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(0, 4, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			PlayLevelBGM("level0");
@@ -1138,7 +1138,7 @@ void TutorialGame::SwitchLevel() {
 				world->RemoveGameObject(element.first);
 			}
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(0, 4, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			PlayLevelBGM("level0");
@@ -1148,7 +1148,7 @@ void TutorialGame::SwitchLevel() {
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), true);
 			gameLevel->AddLevelToWorld(world, 0, true, false);
 			gameLevel->AddLevelToWorld(world, 0, false, false);
-			player->GetTransform().SetPosition(Vector3(-70, 10, -50)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(-70, 4, -50)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			PlayLevelBGM("level4");
 			if (exit != nullptr) {
@@ -1178,9 +1178,19 @@ void TutorialGame::UpdateLevel(float dt) {
 		GameObject* blocker = (GameObject*)closestCollision.node;
 		if (blocker->GetName() == "floor" || blocker->GetName() == "aabb") {
 			float distance = playerPosition.y - blocker->GetTransform().GetPosition().y - blocker->GetTransform().GetScale().y / 2;
-			if (distance < 1.3) {
-				player->GetPhysicsObject()->AddForce(-physics->GetGravity() * 0.2);
+			if (currentLevel != 6) {
+				player->GetPhysicsObject()->AddForce(-physics->GetGravity() * 0.021);
 			}
+			else {
+				if (distance < 1.6) {
+					player->GetPhysicsObject()->AddForce(-physics->GetGravity() * 0.021);
+				}
+			}
+			//float playerX = player->GetTransform().GetPosition().x;
+			//float playerY = blocker->GetTransform().GetPosition().y + blocker->GetTransform().GetScale().y / 2;
+			//float playerZ = player->GetTransform().GetPosition().z;
+			//player->GetTransform().SetPosition(Vector3(playerX, playerY, playerZ));
+
 		}
 	}
 	// Level 1 stuff
@@ -1780,8 +1790,6 @@ void TutorialGame::UpdateLevel3UI() {
 	else {
 		GameTechRenderer::CreateGameUI({ Vector3(0.625, -0.55f, -1.0f),  Vector3(0.625, -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f, -1.0f) }, "ghostcd", "skill", cd + 0.155);
 	}
-
-	GameTechRenderer::CreateGameUI({ Vector3(0.625, -0.55f, -1.0f),  Vector3(0.625, -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f, -1.0f) }, "redbottle", "skill", cd + 0.155);
 
 	if (progress <= 1) {
 		GameTechRenderer::CreateGameUI({ Vector3(0.64, -0.45f, -1.0f),  Vector3(0.64, -0.48, -1.0f),  Vector3(0.655f, -0.48f, -1.0f),  Vector3(0.655f, -0.45f, -1.0f) }, "power", "power", progress);

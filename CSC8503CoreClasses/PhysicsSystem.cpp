@@ -540,7 +540,7 @@ void PhysicsSystem::HandleFireballBulletCollisionLogic(GameObject* i, GameObject
 	if (i->GetTag() == "fireballbullet" && j->GetTag() == "item") {
 		skipImpulseResolveCollision = true;
 	}
-	if (i->GetTag() == "fireballbullet" && j->GetTag() != "boss" && j->GetTag() != "player" && j->GetTag() != "item") {
+	if (i->GetTag() == "fireballbullet" && j->GetTag() != "boss" && j->GetTag() != "player" && j->GetTag() != "item" && j->GetTag() != "ghost") {
 		i->SetIsHiding(true, Vector3(20, -98, 0));
 		i->GetPhysicsObject()->SetLinearVelocity(Vector3());
 		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
@@ -554,7 +554,7 @@ void PhysicsSystem::HandleFireballBulletCollisionLogic(GameObject* i, GameObject
 		boss->SetShooting(false);
 		skipImpulseResolveCollision = true;
 	}
-	if (j->GetTag() == "fireballbullet" && i->GetTag() != "boss" && i->GetTag() != "player" && i->GetTag() != "item") {
+	if (j->GetTag() == "fireballbullet" && i->GetTag() != "boss" && i->GetTag() != "player" && i->GetTag() != "item" && i->GetTag() != "ghost") {
 		j->SetIsHiding(true, Vector3(20, -98, 0));
 		j->GetPhysicsObject()->SetLinearVelocity(Vector3());
 		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
@@ -651,7 +651,7 @@ void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject*
 	if (i->GetTag() == "icecubebullet" && j->GetTag() == "item") {
 		skipImpulseResolveCollision = true;
 	}
-	if (i->GetTag() == "icecubebullet" && j->GetTag() != "boss" && j->GetTag() != "player"&& j->GetTag() != "item") {
+	if (i->GetTag() == "icecubebullet" && j->GetTag() != "boss" && j->GetTag() != "player"&& j->GetTag() != "item"&& j->GetTag() != "ghost") {
 		i->SetIsHiding(true, Vector3(20, -98, 0));
 		i->GetPhysicsObject()->SetLinearVelocity(Vector3());
 		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
@@ -665,7 +665,7 @@ void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject*
 		boss->SetShooting(false);
 		skipImpulseResolveCollision = true;
 	}
-	if (j->GetTag() == "icecubebullet" && i->GetTag() != "boss" && i->GetTag() != "player" && i->GetTag() != "item") {
+	if (j->GetTag() == "icecubebullet" && i->GetTag() != "boss" && i->GetTag() != "player" && i->GetTag() != "item" && i->GetTag() != "ghost") {
 		j->SetIsHiding(true, Vector3(20, -98, 0));
 		j->GetPhysicsObject()->SetLinearVelocity(Vector3());
 		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
@@ -724,9 +724,20 @@ void PhysicsSystem::HandleRollingRockCollisionLogic(GameObject* i, GameObject* j
 	}
 	if (i->GetTag() == "ghost" && j->GetTag() == "boss" && i->GetHurtBossAlready()) {
 		skipImpulseResolveCollision = true;
-
 	}
-	else if (j->GetTag() == "ghost" && i->GetTag() == "boss" && j->GetHurtBossAlready()) {
+	if (j->GetTag() == "ghost" && i->GetTag() == "boss" && j->GetHurtBossAlready()) {
+		skipImpulseResolveCollision = true;
+	}
+	if (i->GetTag() == "ghost" && j->GetTag() == "icecubebullet") {
+		skipImpulseResolveCollision = true;
+	}
+	if (j->GetTag() == "ghost" && i->GetTag() == "icecubebullet") {
+		skipImpulseResolveCollision = true;
+	}
+	if (j->GetTag() == "ghost" && i->GetTag() == "fireballbullet") {
+		skipImpulseResolveCollision = true;
+	}
+	if (i->GetTag() == "ghost" && j->GetTag() == "fireballbullet") {
 		skipImpulseResolveCollision = true;
 	}
 }

@@ -18,8 +18,9 @@ GameLevel::GameLevel(GameTechRenderer* render) : BasicExamples(render) {
 void GameLevel::CreateGeneric() {
 	/*player = CreatePlayer(Vector3(0, 4, 0), Vector3(2, 2, 2), 35.0f);*/
 	for (int i = 0; i < 4; i++) {
-		Player* playertemp = CreatePlayer(Vector3((0 + i) * 2, 10, 30), Vector3(2, 2, 2), 45.0f);
+		Player* playertemp = CreatePlayer(Vector3((0 + i) * 2, 4, 30), Vector3(2, 2, 2), 45.0f);
 		playerList.push_back(playertemp);
+
 	}
 	player = playerList[0];
 	Generic.AddObject(player);
@@ -352,6 +353,7 @@ void GameLevel::CreateLevel3() {
 	level3.AddObject(CreateShieldProp(Vector3(12, 3, 110), Vector3(1, 1, 1)));
 	level3.AddObject(CreateShieldProp(Vector3(-12, 3, 110), Vector3(1, 1, 1)));
 	level3.AddObject(CreateSpeedProp(Vector3(-4, 3, 110), Vector3(8, 8, 8)));
+	level3.AddObject(CreateRedBottleProp(Vector3(4, 3, 110), Vector3(2, 2, 2)));
 
 	// level3.AddObject(boss);
 	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/
