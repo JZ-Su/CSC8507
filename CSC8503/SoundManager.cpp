@@ -146,3 +146,24 @@ void SoundManager::setSoundSpeed(const std::string& name, float speedFactor) {
         }
     }
 }
+
+void SoundManager::PauseAllSounds() {
+    if (!isInitialized) return;
+
+    FMOD::ChannelGroup* masterGroup = nullptr;
+    audioSystem->getMasterChannelGroup(&masterGroup);
+    if (masterGroup) {
+        masterGroup->setPaused(true);
+    }
+}
+
+void SoundManager::ResumeAllSounds() {
+    if (!isInitialized) return;
+
+    FMOD::ChannelGroup* masterGroup = nullptr;
+    audioSystem->getMasterChannelGroup(&masterGroup);
+    if (masterGroup) {
+        masterGroup->setPaused(false);
+    }
+}
+

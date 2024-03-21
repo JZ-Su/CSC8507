@@ -92,6 +92,7 @@ void TutorialGame::UpdateGame(float dt) {
 	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
+		soundManager.PauseAllSounds();
 		return;
 	}
 	if (!inSelectionMode) world->GetMainCamera().UpdateCamera(dt);
@@ -485,8 +486,8 @@ void TutorialGame::InitWorld() {
 		Please switch the debug mode here
 	*/
 
-	isDebug = true;
-	//isDebug = false;
+	//isDebug = true;
+	isDebug = false;
 	int debugLevel = 4;
 
 	if (isDebug) {
@@ -714,7 +715,10 @@ void TutorialGame::ShowPause(float dt) {
 	Debug::Print("Pause!", Vector2(30, 30), Debug::RED);
 	Debug::Print("Press P to continue", Vector2(30, 50), Debug::BLACK);
 	Debug::Print("Press M back to main menu", Vector2(30, 70), Debug::BLACK);
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) gameState = OnGoing;
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
+		gameState = OnGoing;
+		soundManager.ResumeAllSounds();
+	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::M)) gameState = MainMenu;
 	renderer->Render();
 	Debug::UpdateRenderables(dt);
