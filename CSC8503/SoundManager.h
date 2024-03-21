@@ -24,6 +24,8 @@ namespace NCL {
             void update3DSoundPosition(const std::string& name, const FMOD_VECTOR& newPosition);
             void loadAllBGM(const std::map<std::string, std::string>& bgmPaths);
             void setSoundSpeed(const std::string& name, float speedFactor);
+            void ResumeAllSounds();
+            void PauseAllSounds();
         private:
             FMOD::System* audioSystem;
             std::map<std::string, FMOD::Sound*> sounds;

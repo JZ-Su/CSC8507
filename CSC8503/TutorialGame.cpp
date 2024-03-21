@@ -222,7 +222,6 @@ void TutorialGame::UpdateKeys(float dt) {
 		DebugObjectMovement();
 	}
 }
-
 void TutorialGame::LockedObjectMovement(float dt) {
 	player->forceToBeAdded = Vector3();
 	Matrix4 view = world->GetMainCamera().BuildViewMatrix();
@@ -275,32 +274,24 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
-		//player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*3): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*1.5);
-		player->getIsAccelerated() ? player->forceToBeAdded += (-fwdAxis * 3) : player->forceToBeAdded += (-fwdAxis * 1.5);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * 15);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
 		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? player->forceToBeAdded += (fwdAxis * 3) : player->forceToBeAdded += (fwdAxis * 1.5);
-		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 1.5);
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 15);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? player->forceToBeAdded += (-rightAxis * 3) : player->forceToBeAdded += (-rightAxis * 1.5);
-		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis* 1.5);
-		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
-
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 15);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? player->forceToBeAdded += (rightAxis * 3) : player->forceToBeAdded += (rightAxis * 1.5);
-		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(rightAxis* 1.5);
-		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
-
+		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 30) : lockedObject->GetPhysicsObject()->AddForce(rightAxis * 15);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
@@ -381,7 +372,6 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
 
 }
-
 void TutorialGame::DebugObjectMovement() {
 	//If we've selected an object, we can manipulate it with some key presses
 	if (inSelectionMode && selectionObject) {
