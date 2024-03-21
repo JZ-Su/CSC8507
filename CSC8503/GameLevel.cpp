@@ -232,9 +232,6 @@ void GameLevel::CreateLevel2() {
 				}
 				// Vertical
 				else if (pixelData[(i + 1) * size + j] == Debug::WHITE && !isScaned[i + 1][j]) {
-					if (i == 56) {
-						std::cout << std::endl;
-					}
 					int length = 1;
 					while (pixelData[(i + length) * size + j] == Debug::WHITE && !isScaned[i + length][j]) {
 						isScaned[i + length][j] = true;
