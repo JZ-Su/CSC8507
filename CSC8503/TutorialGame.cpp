@@ -173,24 +173,14 @@ void TutorialGame::UpdateKeys(float dt) {
 		{
 		case 1:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
-			//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
-			//player->GetTransform().SetPosition(Vector3(235, 10, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
-			//player->GetPhysicsObject()->SetLinearVelocity(Vector3());
-			//portal = gameLevel->GetLevel2()->portal;
-			//PlayLevelBGM("level2");
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			PlayLevelBGM("level0");
 			break;
-		case 2:
+		case 2: 
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), false);
-			//gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			//player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
-			//player->GetPhysicsObject()->SetLinearVelocity(Vector3());
-			//portal = gameLevel->GetConnection()->portal;
-			//PlayLevelBGM("level0");
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
 			player->GetTransform().SetPosition(Vector3(235, 10, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
@@ -200,16 +190,6 @@ void TutorialGame::UpdateKeys(float dt) {
 			break;
 		case 3:
 			GameLevel::RemoveLevel(world, gameLevel->GetConnection(), false);
-			//gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-			//player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
-			//player->GetPhysicsObject()->SetLinearVelocity(Vector3());
-			//portal = gameLevel->GetLevel1()->portal;
-			//portal->isEnable = false;
-			//portal->GetRenderObject()->SetColour(Debug::RED);
-			//ghostai = gameLevel->GetGhostai();
-			//ghostai2 = gameLevel->GetGhostai2();
-			//ghostAnimation = gameLevel->getGhostAnimation();
-			//PlayLevelBGM("level1");
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
@@ -218,11 +198,6 @@ void TutorialGame::UpdateKeys(float dt) {
 			break;
 		case 4:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel1(), true);
-			//gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			//player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
-			//player->GetPhysicsObject()->SetLinearVelocity(Vector3());
-			//portal = gameLevel->GetConnection()->portal;
-			//PlayLevelBGM("level0");
 			gameLevel->CreateLevel1();
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
 			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
@@ -237,27 +212,6 @@ void TutorialGame::UpdateKeys(float dt) {
 			break;
 		case 5:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
-			/*gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-			player->GetTransform().SetPosition(Vector3(0, 4, 135)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
-			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
-			portal = gameLevel->GetLevel3()->portal;
-			portal->isEnable = false;
-			portal->GetRenderObject()->SetColour(Debug::RED);
-			boss = gameLevel->GetBoss();
-			shield = gameLevel->GetShield();
-			bossAnimation = gameLevel->getBossAnimation();
-			iceCubeBullet = gameLevel->getIceCubeBullet();
-			bossCheersAnimation = gameLevel->getBossCheersAnimation();
-			bossShootingAnimation = gameLevel->getBossShootingAnimation();
-			bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
-			bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
-			bossChasingAnimation = gameLevel->getBossChasingAnimation();
-			fireBallBullet = gameLevel->getFireBallBullet();
-			bossAngryAnimation = gameLevel->getBossAngryAnimation();
-			bossDeathAnimation = gameLevel->getBossDeathAnimation();
-			PlayerPreHealth = player->GetHealth();
-			BossPrehHealth = gameLevel->GetBoss()->getBossHealth();
-			PlayLevelBGM("level3");*/
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
 			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
@@ -269,11 +223,6 @@ void TutorialGame::UpdateKeys(float dt) {
 			for (const auto& element : BasicExamples::propList) {
 				world->RemoveGameObject(element);
 			}
-			//gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			//player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
-			//player->GetPhysicsObject()->SetLinearVelocity(Vector3());
-			//portal = gameLevel->GetConnection()->portal;
-			//PlayLevelBGM("level0");
 			gameLevel->CreateLevel3();
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
 			player->GetTransform().SetPosition(Vector3(0, 4, 135)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
@@ -306,25 +255,13 @@ void TutorialGame::UpdateKeys(float dt) {
 			PlayLevelBGM("level0");
 			break;
 		case 8:
-			/*gameLevel->RemoveLevel(world, gameLevel->GetConnection(), true);
-			gameLevel->AddLevelToWorld(world, 0, true, false);
-			gameLevel->AddLevelToWorld(world, 0, false, false);
-			player->GetTransform().SetPosition(Vector3(-70, 10, -50)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
-			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
-			PlayLevelBGM("level4");
-			if (exit != nullptr) {
-				delete exit;
-				exit = nullptr;
-			}
-		
-			break;*/
-
 			GameLevel::RemoveLevel(world, gameLevel->GetLevel4()[0], false);
 			GameLevel::RemoveLevel(world, gameLevel->GetLevel4()[1], false);
 			GameLevel::RemoveLevel(world, gameLevel->GetLevel4r()[0], false);
 			GameLevel::RemoveLevel(world, gameLevel->GetLevel4r()[1], false);
 			gameLevel->AddLevelToWorld(world, 0, true, false);
 			gameLevel->AddLevelToWorld(world, 0, false, false);
+			score = 0;
 			player->GetTransform().SetPosition(Vector3(-70, 10, -50)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			PlayLevelBGM("level4");
@@ -336,12 +273,7 @@ void TutorialGame::UpdateKeys(float dt) {
 		default:
 			break;
 		}
-	//We can reset the simulation at any time with F1
-	/*	renderer->Update(dt);
-		physics->Update(dt);
-		renderer->Render();*/
 		selectionObject = nullptr;
-	/*	GameTechRenderer::UpdateUI();*/
 	}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::F2)) {
@@ -378,16 +310,16 @@ void TutorialGame::UpdateKeys(float dt) {
 			LockCameraToObject(nullptr);
 		}
 	}
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::H)) {
-		gameLevel->GetBoss()->decreaseBossHealth(20.0f);
-		std::cout << "Boss's Health:" << gameLevel->GetBoss()->getBossHealth() << std::endl;
-		gameLevel->GetBoss()->SetIsRencentlyHurt(true);
-	}
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::H)) {
-		gameLevel->GetBoss()->decreaseBossHealth(20.0f);
-		std::cout << "Boss's Health:" << gameLevel->GetBoss()->getBossHealth() << std::endl;
-		gameLevel->GetBoss()->SetIsRencentlyHurt(true);
-	}
+	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::H)) {
+	//	gameLevel->GetBoss()->decreaseBossHealth(20.0f);
+	//	std::cout << "Boss's Health:" << gameLevel->GetBoss()->getBossHealth() << std::endl;
+	//	gameLevel->GetBoss()->SetIsRencentlyHurt(true);
+	//}
+	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::H)) {
+	//	gameLevel->GetBoss()->decreaseBossHealth(20.0f);
+	//	std::cout << "Boss's Health:" << gameLevel->GetBoss()->getBossHealth() << std::endl;
+	//	gameLevel->GetBoss()->SetIsRencentlyHurt(true);
+	//}
 	if (lockedObject) {
 		//LockedObjectMovement(dt);
 	}
@@ -967,7 +899,6 @@ void TutorialGame::UpdateBossAnim(Boss* boss, MeshAnimation* bossAnimation, floa
 				else if (gameLevel->GetBoss()->getIsShootingFireBall()) {
 					boss->GetRenderObject()->frameTime -= dt;
 					UpdateAnim(boss, bossAngryAnimation);
-					std::cout << "Boss is angry, be ready to counter the FIREBALL!" << std::endl;
 					bossAngryTimer += dt;
 					if (bossAngryTimer >= bossAngryDuration) {
 						boss->GetRenderObject()->frameTime -= dt / 1.6;
@@ -1275,7 +1206,6 @@ void TutorialGame::UpdateLevel(float dt) {
 			//if (iceCubeBullet->GetExistenceTime() >= 6.0f) {
 			if (!iceCubeBullet->GetIsBlockBack()) {
 				UpdateTrackingBall(ballPosition, playerPosition, 15, dt);
-				std::cout << "tracking" << std::endl;
 			}
 			if (iceCubeBullet->GetExistenceTime() >= 10.0f) {
 
@@ -1490,7 +1420,6 @@ void TutorialGame::IceCubeBulletLogic(float dt) {
 		iceCubeBullet->SetExistenceTime(0.0f);
 		iceCubeBullet->GetPhysicsObject()->AddForce(forwardVector * 800);
 		isCloseToPlayer = true;
-		std::cout << "Icecube bullet is coming!" << std::endl;
 	}
 	if (!iceCubeBullet->GetIsHiding()) {
 		iceCubeBullet->GetPhysicsObject()->AddForce(Vector3(0, 10.0f, 0));
@@ -1501,7 +1430,6 @@ void TutorialGame::IceCubeBulletLogic(float dt) {
 		//if (iceCubeBullet->GetExistenceTime() >= 6.0f) {
 		if (!iceCubeBullet->GetIsBlockBack()) {
 			UpdateTrackingBall(ballPosition, playerPosition, 15, dt);
-			std::cout << "tracking" << std::endl;
 		}
 		if (iceCubeBullet->GetExistenceTime() >= 10.0f) {
 
@@ -1551,7 +1479,6 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 		// Update position of fireball
 		Vector3 fireBallDirection = (playerPosition - ballPosition).Normalised();
 		fireBallBullet->GetPhysicsObject()->AddForce(fireBallDirection * 9300);
-		std::cout << "Fireball bullet is coming!" << std::endl;
 	}
 	if (!fireBallBullet->GetIsHiding()) {
 		fireBallBullet->GetPhysicsObject()->AddForce(Vector3(0, 2.0f, 0));
@@ -1597,7 +1524,6 @@ void TutorialGame::UpdateListenerPosition(float dt, const Vector3& playerPositio
 }
 void TutorialGame::InitAudio() {
 	if (!soundManager.init()) {
-		std::cout << "Failed to initialize SoundManager" << std::endl;
 	}
 	AddSound();
 	/*previousPlayerPosition = player->GetTransform().GetPosition();*/

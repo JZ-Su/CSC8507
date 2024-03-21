@@ -541,7 +541,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 		const std::string* filenameDiffuse = nullptr;
 		matEntry->GetEntry("Diffuse", &filenameDiffuse);
 		std::string pathDiffuse = *filenameDiffuse;
-		std::cout << "Diffuse Texture: " << pathDiffuse << std::endl;
+		//std::cout << "Diffuse Texture: " << pathDiffuse << std::endl;
 		if (!pathDiffuse.empty()) {
 			character->GetRenderObject()->matDiffuseTextures.emplace_back(renderer->LoadTexture(pathDiffuse));
 		}
@@ -550,7 +550,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 		const std::string* filenameNormal = nullptr;
 		if (matEntry->GetEntry("Bump", &filenameNormal)) {
 			std::string pathNormal = *filenameNormal;
-			std::cout << "Normal Texture: " << pathNormal << std::endl;
+			//std::cout << "Normal Texture: " << pathNormal << std::endl;
 			if (!pathNormal.empty()) {
 				character->GetRenderObject()->matNormalTextures.emplace_back(renderer->LoadTexture(pathNormal));
 			}
@@ -560,7 +560,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 		const std::string* filenameMetal = nullptr;
 		if (matEntry->GetEntry("Metallic", &filenameMetal)) {
 			std::string pathMetal = *filenameMetal;
-			std::cout << "Metal Texture: " << pathMetal << std::endl;
+			//std::cout << "Metal Texture: " << pathMetal << std::endl;
 			if (!pathMetal.empty()) {
 				character->GetRenderObject()->matMetalTextures.emplace_back(renderer->LoadTexture(pathMetal));
 			}
@@ -570,7 +570,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 		const std::string* filenameRoughness = nullptr;
 		if (matEntry->GetEntry("Roughness", &filenameRoughness)) {
 			std::string pathRoughness = *filenameRoughness;
-			std::cout << "Roughness Texture: " << pathRoughness << std::endl;
+			//std::cout << "Roughness Texture: " << pathRoughness << std::endl;
 			if (!pathRoughness.empty()) {
 				character->GetRenderObject()->matRoughnessTextures.emplace_back(renderer->LoadTexture(pathRoughness));
 			}
@@ -580,7 +580,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 		const std::string* filenameAo = nullptr;
 		if (matEntry->GetEntry("AO", &filenameAo)) {
 			std::string pathAo = *filenameAo;
-			std::cout << "Ao Texture: " << pathAo << std::endl;
+			//std::cout << "Ao Texture: " << pathAo << std::endl;
 			if (!pathAo.empty()) {
 				character->GetRenderObject()->matAoTextures.emplace_back(renderer->LoadTexture(pathAo));
 			}
@@ -590,7 +590,7 @@ void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, Mesh
 		const std::string* filenameHeight = nullptr;
 		if (matEntry->GetEntry("Height", &filenameHeight)) {
 			std::string pathHeight = *filenameHeight;
-			std::cout << "Height Texture: " << pathHeight << std::endl;
+			//std::cout << "Height Texture: " << pathHeight << std::endl;
 			if (!pathHeight.empty()) {
 				character->GetRenderObject()->matHeightTextures.emplace_back(renderer->LoadTexture(pathHeight));
 			}
