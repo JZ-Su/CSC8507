@@ -278,22 +278,29 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		//player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*3): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*1.5);
 		player->getIsAccelerated() ? player->forceToBeAdded+=(-fwdAxis * 3) : player->forceToBeAdded += (-fwdAxis * 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
+		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
 		player->getIsAccelerated() ? player->forceToBeAdded += (fwdAxis * 3) : player->forceToBeAdded += (fwdAxis* 1.5);
 		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
+
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
 		player->getIsAccelerated() ? player->forceToBeAdded += (-rightAxis * 3) : player->forceToBeAdded += (-rightAxis* 1.5);
 		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis* 1.5);
+		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
+
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
 		player->getIsAccelerated() ? player->forceToBeAdded += (rightAxis * 3) : player->forceToBeAdded += (rightAxis* 1.5);
 		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(rightAxis* 1.5);
+		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
+
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
@@ -364,14 +371,6 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 		Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
 		lockedObject->GetTransform().SetOrientation(lookat);
-
-	player->orientationNetPlayer = lookat;
-
-	world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));
-	world->GetMainCamera().SetPitch(pitch);
-	world->GetMainCamera().SetYaw(yaw);
-	//renderer.UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
-	UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
 
 		world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));/*cameraCollision->GetTransform().GetPosition()+Vector3(0,5,0)*/
 		world->GetMainCamera().SetPitch(pitch);
@@ -486,9 +485,9 @@ void TutorialGame::InitWorld() {
 		Please switch the debug mode here
 	*/
 	
-	//isDebug = true;
-	isDebug = false;
-	int debugLevel =3;
+	isDebug = true;
+	//isDebug = false;
+	int debugLevel =4;
 
 	if (isDebug) {
 		switch (debugLevel)
@@ -649,26 +648,25 @@ void TutorialGame::ShowMainMenu(float dt) {
 	world->GetMainCamera().SetPosition(Vector3(0, 0, 0));
 
 	Debug::Print("Main Menu", Vector2(30, 30), Debug::BLUE);
-	Debug::Print("Start Game", Vector2(30, 40), Debug::BLACK);
-	Debug::Print("Show Ranking", Vector2(30, 50), Debug::BLACK);
-	Debug::Print("Exit", Vector2(30, 60), Debug::BLACK);
 	switch (mainMenuState)
 	{
 	case NCL::CSC8503::MainMenu_Start:
 		Debug::Print("Start Game", Vector2(30, 40), Debug::RED);
+		Debug::Print("Exit", Vector2(30, 50), Debug::BLACK);
 		break;
 	case NCL::CSC8503::MainMenu_Exit:
+		Debug::Print("Start Game", Vector2(30, 40), Debug::BLACK);
 		Debug::Print("Exit", Vector2(30, 50), Debug::RED);
 		break;
 	default:
 		break;
 	}
 
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::UP) && (mainMenuState != MainMenu_Start)) {
-		mainMenuState = static_cast<MainMenuState>(static_cast<int>(mainMenuState) - 1);
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::UP)) {
+		mainMenuState = MainMenu_Start;
 	}
-	else if (Window::GetKeyboard()->KeyPressed(KeyCodes::DOWN) && (mainMenuState != MainMenu_Exit)) {
-		mainMenuState = static_cast<MainMenuState>(static_cast<int>(mainMenuState) + 1);
+	else if (Window::GetKeyboard()->KeyPressed(KeyCodes::DOWN)) {
+		mainMenuState = MainMenu_Exit;
 	}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) {
