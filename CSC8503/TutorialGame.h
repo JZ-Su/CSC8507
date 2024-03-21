@@ -9,7 +9,6 @@
 #include "StateGameObject.h"
 #include "NavigationGrid.h"
 #include "GameLevel.h"
-#include "BasicExamples.h"
 #include "MeshAnimation.h"
 #include "SoundManager.h"
 
@@ -33,7 +32,7 @@ namespace NCL {
 			TutorialGame();
 			~TutorialGame();
 
-			virtual void UpdateGame(float dt);
+			void UpdateGame(float dt);
 
 			GameState GetState() { return gameState; }
 
@@ -55,7 +54,7 @@ namespace NCL {
 		protected:
 			bool isDebug;
 
-			virtual void InitialiseAssets();
+			void InitialiseAssets();
 
 			void InitCamera();
 			void InitAudio();
@@ -93,26 +92,12 @@ namespace NCL {
 
 			GameObject* selectionObject = nullptr;
 
-			Mesh*	capsuleMesh = nullptr;
-			Mesh*	cubeMesh	= nullptr;
-			Mesh*	sphereMesh	= nullptr;
-
-			Texture*	basicTex	= nullptr;
-			Shader*		basicShader = nullptr;
-
-			//Coursework Meshes
-			Mesh*	charMesh	= nullptr;
-			Mesh*	enemyMesh	= nullptr;
-			Mesh*	bonusMesh	= nullptr;
-
 			//Coursework Additional functionality	
 			GameObject* lockedObject	= nullptr;
 			Vector3 lockedOffset        = Vector3(0, 50, 50); //Vector3(0, 14, 20);
 			void LockCameraToObject(GameObject* o) {
 				lockedObject = o;
 			}
-
-			GameObject* objClosest = nullptr;
 
 			GameLevel* gameLevel = nullptr;
 			//GameObject* cameraCollision = nullptr;

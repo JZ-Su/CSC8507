@@ -135,6 +135,11 @@ namespace NCL {
 			static const std::vector<std::string>& GetItemList() { return itemList; }
 			static int GetItemListSize() { return itemList.size(); }
 			static std::vector<std::string> itemList;
+			char isSpacePressed;
+			Vector3 forceToBeAdded;
+			Quaternion orientationNetPlayer;
+			
+
 		protected:
 			bool isRencentlyHurt;
 			float health;
@@ -142,9 +147,9 @@ namespace NCL {
 			float timer;
 			float jumpTimer;
 			bool isDead = false;
+			bool isJumping = false;
 			bool canJump = false;
 			bool isWalk = false;
-			bool isJumping = false;
 			bool isAccelerated = false;
 			bool isBeingHitBack = false;
 			bool isProtected = false;
