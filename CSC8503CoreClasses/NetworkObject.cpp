@@ -68,9 +68,11 @@ bool NetworkObject::ReadFullPacket(FullPacket &p) {
 		return false; //received an "old" packet, ignore!!
 	}
 
-	std::cout << "processing??";
+	//std::cout << "processing??";
 
 	lastFullState = p.fullState;
+
+	std::cout << "pos" << lastFullState.position;
 
 	object.GetTransform().SetPosition(lastFullState.position);
 	object.GetTransform().SetOrientation(lastFullState.orientation);
