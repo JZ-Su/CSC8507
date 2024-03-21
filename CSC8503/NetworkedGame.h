@@ -62,7 +62,7 @@ namespace NCL {
 			
 		protected:
 
-			void InitialiseAssets() override;
+			//void InitialiseAssets() override;
 			void UpdateAsServer(float dt);
 			void UpdateAsClient(float dt);
 
