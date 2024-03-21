@@ -87,9 +87,9 @@ void TutorialGame::UpdateGame(float dt) {
 		BossPrehHealth -= 0.5f;
 	}
 	
-	Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
-	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
-	Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
+	//Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
+	//Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
+	//Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
 		soundManager.PauseAllSounds();
@@ -97,8 +97,8 @@ void TutorialGame::UpdateGame(float dt) {
 	}
 	if (!inSelectionMode) world->GetMainCamera().UpdateCamera(dt);
 	if (lockedObject != nullptr) LockedObjectMovement(dt);
-	if (lockedObject == nullptr) Debug::Print("Press F to lock camera", Vector2(5, 80));
-	else Debug::Print("Press F to free camera", Vector2(5, 80));
+	//if (lockedObject == nullptr) Debug::Print("Press F to lock camera", Vector2(5, 80));
+	//else Debug::Print("Press F to free camera", Vector2(5, 80));
 	/*playerPosition = player->GetTransform().GetPosition();*/
 	mainCameraPosition = world->GetMainCamera().GetPosition();
 	if (isWalking) {
@@ -175,7 +175,7 @@ void TutorialGame::UpdateKeys(float dt) {
 		case 2: 
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
-			player->GetTransform().SetPosition(Vector3(235, 4, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			//player->GetTransform().SetPosition(Vector3(235, 4, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel2()->portal;
 			PlayLevelBGM("level2");
@@ -184,7 +184,7 @@ void TutorialGame::UpdateKeys(float dt) {
 		case 3:
 			GameLevel::RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(0, 4, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			PlayLevelBGM("level0");
@@ -193,7 +193,7 @@ void TutorialGame::UpdateKeys(float dt) {
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel1(), true);
 			gameLevel->CreateLevel1();
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel1());
-			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(0, 4, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel1()->portal;
 			portal->isEnable = false;
@@ -206,7 +206,7 @@ void TutorialGame::UpdateKeys(float dt) {
 		case 5:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			player->GetTransform().SetPosition(Vector3(0, 10, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(0, 4, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			PlayLevelBGM("level0");
@@ -242,7 +242,7 @@ void TutorialGame::UpdateKeys(float dt) {
 		case 7:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			player->GetTransform().SetPosition(Vector3(0, 10, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(0, 4, 0)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			PlayLevelBGM("level0");
@@ -255,7 +255,7 @@ void TutorialGame::UpdateKeys(float dt) {
 			gameLevel->AddLevelToWorld(world, 0, true, false);
 			gameLevel->AddLevelToWorld(world, 0, false, false);
 			score = 0;
-			player->GetTransform().SetPosition(Vector3(-70, 10, -50)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(-70, 4, -50)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			PlayLevelBGM("level4");
 			if (exit != nullptr) {
@@ -581,8 +581,8 @@ void TutorialGame::InitWorld() {
 		Please switch the debug mode here
 	*/
 	
-	isDebug = true;
-	//isDebug = false;
+	//isDebug = true;
+	isDebug = false;
 	int debugLevel =4;
 
 	if (isDebug) {
@@ -713,7 +713,7 @@ line - after the third, they'll be able to twist under torque aswell.
 */
 
 void TutorialGame::MoveSelectedObject() {
-	Debug::Print("Click Force:" + std::to_string(forceMagnitude), Vector2(5, 90));
+	//Debug::Print("Click Force:" + std::to_string(forceMagnitude), Vector2(5, 90));
 	forceMagnitude += Window::GetMouse()->GetWheelMovement() * 100.0f;
 
 	if (!selectionObject) {
@@ -991,7 +991,7 @@ void TutorialGame::SwitchLevel() {
 		case 1:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
-			player->GetTransform().SetPosition(Vector3(235, 4, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(235, 0, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel2()->portal;
 			PlayLevelBGM("level2");
@@ -1153,11 +1153,11 @@ void TutorialGame::UpdateLevel(float dt) {
 		gameLevel->GetBoss()->Update(dt);
 		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
 		skilltime += dt;
-		if (skilltime > 5) {
-			skilltime = 5;
+		if (skilltime > 10) {
+			skilltime = 10;
 		}
 
-		if (skilltime == 5) {
+		if (skilltime == 10) {
 			useskill = true;
 		}
 		propSpawnTimer += dt;
@@ -1448,7 +1448,7 @@ void TutorialGame::UpdateLevel(float dt) {
 
 void TutorialGame::UpdateTrackingBall(Vector3 ballPosition, const Vector3& playerPosition, float speed, float dt) {
 
-	Debug::DrawLine(ballPosition, playerPosition, Debug::BLACK);
+	//Debug::DrawLine(ballPosition, playerPosition, Debug::BLACK);
 	Vector3 direction = (playerPosition - ballPosition).Normalised();
 	Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(direction.x, -direction.z)));
 	iceCubeBullet->GetTransform().SetOrientation(targetOrientation);
@@ -1699,7 +1699,7 @@ void TutorialGame::UpdateLevel3UI() {
 	float b =y/x   ;
 
 	float distance = 0.2;
-	cd = skilltime / 6.0f;
+	cd = skilltime / 11.0f;
 	for (int i = 0; i < itemList.size(); i++) {
 		GameTechRenderer::CreateGameUI({ Vector3(-0.36f + (i * distance), -0.83f, -1.0f), Vector3(-0.36f + (i * distance), -0.96f, -1.0f),
 		Vector3(-0.36f + (i * distance)+(0.2 * b), -0.96f, -1.0f), Vector3(-0.36f + (i * distance)+(0.2*b), -0.83f, -1.0f)}, itemList.at(i), "item");
@@ -1717,7 +1717,7 @@ void TutorialGame::UpdateLevel3UI() {
 	GameTechRenderer::CreateGameUI({ Vector3(-0.5, 0.95f, -1.0f), Vector3(-0.5, 0.9f, -1.0f), Vector3(0.5f, 0.9f, -1.0f),
 		Vector3(0.5f, 0.95f, -1.0f) }, "bossframe", "health");
 	GameTechRenderer::CreateGameUI({ Vector3(0.6, -0.5f, -1.0f),  Vector3(0.6, -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f - (0.3), -1.0f),  Vector3(0.6 + (0.3 * b), -0.5f, -1.0f) }, "skill", "skill");
-	if (skilltime == 5) {
+	if (skilltime == 10) {
 		GameTechRenderer::CreateGameUI({ Vector3(0.625, -0.55f, -1.0f),  Vector3(0.625, -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f - (0.2), -1.0f),  Vector3(0.625 + (0.2 * b), -0.55f, -1.0f) }, "ghostc", "skill");
 	}
 	else {

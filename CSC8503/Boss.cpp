@@ -63,7 +63,7 @@ Boss::Boss(Player* player) {
 		if (attackBool) {
 			isAttack = true;
 			lastAttackTime = 0.0f;
-			Debug::DrawLine(bossPosition, bossPosition + direction * attackRange, Debug::RED);
+			//Debug::DrawLine(bossPosition, bossPosition + direction * attackRange, Debug::RED);
 			lastAttackTime += dt;
 			return Ongoing;
 		}
@@ -72,10 +72,10 @@ Boss::Boss(Player* player) {
 			this->GetTransform().SetOrientation(targetOrientation);
 			bossPosition += direction * chaseSpeed * dt;
 			this->GetTransform().SetPosition(bossPosition);
-			Debug::DrawLine(bossPosition, this->player->GetTransform().GetPosition(), Debug::GREEN);
-			Debug::DrawLine(GetTransform().GetPosition(), this->player->GetTransform().GetPosition(), Debug::RED);
-			Debug::DrawCollisionBox(this);
-			Debug::DrawCollisionBox(this->player);
+			//Debug::DrawLine(bossPosition, this->player->GetTransform().GetPosition(), Debug::GREEN);
+			//Debug::DrawLine(GetTransform().GetPosition(), this->player->GetTransform().GetPosition(), Debug::RED);
+			//Debug::DrawCollisionBox(this);
+			//Debug::DrawCollisionBox(this->player);
 			isChasing = true;
 			lastAttackTime += dt;
 			return Ongoing;
@@ -114,9 +114,9 @@ Boss::Boss(Player* player) {
 				Vector3 direction = (targetPosition - bossPosition).Normalised();
 				Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(direction.x, -direction.z)));
 				this->GetTransform().SetOrientation(targetOrientation);
-				Debug::DrawLine(GetTransform().GetPosition(), this->player->GetTransform().GetPosition(), Debug::RED);
-				Debug::DrawCollisionBox(this);
-				Debug::DrawCollisionBox(this->player);
+				//Debug::DrawLine(GetTransform().GetPosition(), this->player->GetTransform().GetPosition(), Debug::RED);
+				//Debug::DrawCollisionBox(this);
+				//Debug::DrawCollisionBox(this->player);
 				if (bulletTimer > 12.0F) {
 					isShooting = true;
 				}

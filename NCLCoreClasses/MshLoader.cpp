@@ -27,14 +27,14 @@ bool MshLoader::LoadMesh(const std::string& filename, Mesh& destinationMesh) {
 	file >> filetype;
 
 	if (filetype != "MeshGeometry") {
-		std::cout << __FUNCTION__ << " File is not a Mesh file!\n";
+		//std::cout << __FUNCTION__ << " File is not a Mesh file!\n";
 		return false;
 	}
 
 	file >> fileVersion;
 
 	if (fileVersion != 1) {
-		std::cout << __FUNCTION__ << " Mesh file has incompatible version!\n";
+		//std::cout << __FUNCTION__ << " Mesh file has incompatible version!\n";
 		return false;
 	}
 

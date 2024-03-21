@@ -56,7 +56,7 @@ void OGLShader::ReloadShader() {
 
 				shaderIDs[i] = glCreateShader(shaderTypes[i]);
 
-				std::cout << "Reading " << shaderNames[i] << " shader " << shaderFiles[i] << "\n";
+				//std::cout << "Reading " << shaderNames[i] << " shader " << shaderFiles[i] << "\n";
 
 				const char* stringData	 = fileContents.c_str();
 				int			stringLength = (int)fileContents.length();
@@ -69,7 +69,7 @@ void OGLShader::ReloadShader() {
 					glAttachShader(programID, shaderIDs[i]);
 				}
 				else {
-					std::cout << shaderNames[i] << " shader " << shaderFiles[i] << " has failed!" << "\n";
+					//std::cout << shaderNames[i] << " shader " << shaderFiles[i] << " has failed!" << "\n";
 				}
 				PrintCompileLog(shaderIDs[i]);
 			}
@@ -84,7 +84,7 @@ void OGLShader::ReloadShader() {
 		std::cout << "This shader has failed!" << "\n";
 	}
 	else {
-		std::cout << "Shader loaded!" << "\n";
+		//std::cout << "Shader loaded!" << "\n";
 	}
 }
 

@@ -36,23 +36,6 @@ bool TextureLoader::LoadTexture(const std::string& filename, char*& outData, int
 
 	std::string realPath = isAbsolute ? filename : Assets::TEXTUREDIR + filename;
 
-	//char* cachedData = GetTextureFromCache(realPath);
-	//if (cachedData) {
-	//	std::cout << "Load cache from" << *cachedData << "  ";
-	//	outData = cachedData;
-	//	return true;
-	//}
-	//if (cachedData) {
-	//	// 将纹理数据写入PNG文件
-	//	std::string outputPath = "cached_texture.png";
-	//	TextureWriter::WritePNG(outputPath, cachedData, width, height, channels);
-
-	//	// 打印提示信息
-	//	std::cout << "Texture data written to: " << outputPath << std::endl;
-	//}
-	//else {
-	//	std::cout << "No texture data found in cache for: " << realPath << std::endl;
-
 	if (it != fileHandlers.end()) {
 		// use cache to load textures
 		if (it->second(realPath, outData, width, height, channels, flags)) {
@@ -68,10 +51,6 @@ bool TextureLoader::LoadTexture(const std::string& filename, char*& outData, int
 
 		if (texData) {
 			outData = reinterpret_cast<char*>(texData);
-			//AddTextureToCache(realPath, outData);
-			//std::string outputPath = "cached_texture.png";
-			//TextureWriter::WritePNG(outputPath, outData, width, height, channels);
-			//std::cout << "add to cache:" <<realPath<< std::endl;
 			return true;
 		}
 	}
