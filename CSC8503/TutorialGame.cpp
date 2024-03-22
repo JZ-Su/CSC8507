@@ -311,16 +311,7 @@ void TutorialGame::UpdateKeys(float dt) {
 			LockCameraToObject(nullptr);
 		}
 	}
-	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::H)) {
-	//	gameLevel->GetBoss()->decreaseBossHealth(20.0f);
-	//	std::cout << "Boss's Health:" << gameLevel->GetBoss()->getBossHealth() << std::endl;
-	//	gameLevel->GetBoss()->SetIsRencentlyHurt(true);
-	//}
-	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::H)) {
-	//	gameLevel->GetBoss()->decreaseBossHealth(20.0f);
-	//	std::cout << "Boss's Health:" << gameLevel->GetBoss()->getBossHealth() << std::endl;
-	//	gameLevel->GetBoss()->SetIsRencentlyHurt(true);
-	//}
+	
 	if (lockedObject) {
 		//LockedObjectMovement(dt);
 	}
@@ -382,25 +373,27 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
 		//player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*3): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*1.5);
-		player->getIsAccelerated() ? player->forceToBeAdded+=(-fwdAxis * 3) : player->forceToBeAdded += (-fwdAxis * 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded+=(-fwdAxis * 1.5) : player->forceToBeAdded += (-fwdAxis * 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
-		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
+		player->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? player->forceToBeAdded += (fwdAxis * 3) : player->forceToBeAdded += (fwdAxis* 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (fwdAxis * 1.5) : player->forceToBeAdded += (fwdAxis* 1.5);
 		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
-		lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
+		player->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis* 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (-rightAxis * 1.5) : player->forceToBeAdded += (-rightAxis* 1.5);
+		player->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(rightAxis* 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (rightAxis * 1.5) : player->forceToBeAdded += (rightAxis* 1.5);
+		player->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
@@ -663,53 +656,7 @@ letting you move the camera around.
 
 */
 bool TutorialGame::SelectObject() {
-	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
-	//	inSelectionMode = !inSelectionMode;
-	//	if (inSelectionMode) {
-	//		Window::GetWindow()->ShowOSPointer(true);
-	//		Window::GetWindow()->LockMouseToWindow(false);
-	//	}
-	//	else {
-	//		Window::GetWindow()->ShowOSPointer(false);
-	//		Window::GetWindow()->LockMouseToWindow(true);
-	//	}
-	//}
-	//if (inSelectionMode) {
-	//	Debug::Print("Press Q to change to camera mode!", Vector2(5, 85));
-
-	//	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::Left)) {
-	//		if (selectionObject) {	//set colour to deselected;
-	//			selectionObject->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
-	//			selectionObject = nullptr;
-	//		}
-
-	//		Ray ray = CollisionDetection::BuildRayFromMouse(world->GetMainCamera());
-
-	//		RayCollision closestCollision;
-	//		if (world->Raycast(ray, closestCollision, true)) {
-	//			selectionObject = (GameObject*)closestCollision.node;
-
-	//			selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
-	//			return true;
-	//		}
-	//		else {
-	//			return false;
-	//		}
-	//	}
-	//	//if (Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::L)) {
-	//	//	if (selectionObject) {
-	//	//		if (lockedObject == selectionObject) {
-	//	//			lockedObject = nullptr;
-	//	//		}
-	//	//		else {
-	//	//			lockedObject = selectionObject;
-	//	//		}
-	//	//	}
-	//	//}
-	//}
-	//else {
-	//	Debug::Print("Press Q to change to select mode!", Vector2(5, 85));
-	//}
+	
 	return false;
 }
 

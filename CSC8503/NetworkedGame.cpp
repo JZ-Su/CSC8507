@@ -117,29 +117,12 @@ void NetworkedGame::UpdateGame(float dt) {
 		}
 	}
 
-	/*if (!thisServer && Window::GetKeyboard()->KeyPressed(KeyCodes::F9)) {
-		StartAsServer();
-	}
-	if (!thisClient && Window::GetKeyboard()->KeyPressed(KeyCodes::F10)) {
-		StartAsClient(127,0,0,1);
-	}*/
+	
 	if (isRoundstart)
 	{
-		//updateRoundTime(dt);
-		//UpdateScoreTable();
-		//LevelDelayOver(dt);
+		
 	}
-	/*if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q))
-	{
-		if (lockedObject == nullptr) {
-			lockedObject = localPlayer;
-			Window::GetWindow()->ShowOSPointer(true);
-		}
-		else if (lockedObject == lockedObject) {
-			lockedObject = nullptr;
-			Window::GetWindow()->ShowOSPointer(false);
-		}
-	}*/
+	
 
 	TutorialGame::UpdateGame(dt);
 }
@@ -159,23 +142,14 @@ void NetworkedGame::UpdateAsClient(float dt) {
 	ClientPacket newPacket;
 
 	
-	//Vector3 PointerPos;
-	//findOSpointerWorldPosition(PointerPos);
+	
 	newPacket.forceToBeAdded = player->forceToBeAdded;
 	newPacket.orientationNetPlayer = player->orientationNetPlayer;
 	newPacket.btnStates[0] = player->IsJumping();
-	/*newPacket.btnStates[1] = Window::GetKeyboard()->KeyHeld(KeyCodes::S) ? 1 : 0;
-	newPacket.btnStates[2] = Window::GetKeyboard()->KeyHeld(KeyCodes::D) ? 1 : 0;
-	newPacket.btnStates[3] = Window::GetKeyboard()->KeyHeld(KeyCodes::A) ? 1 : 0;
-	newPacket.btnStates[4] = Window::GetKeyboard()->KeyPressed(KeyCodes::SHIFT) ? 1 : 0;
-	newPacket.btnStates[5] = Window::GetMouse()->ButtonPressed(MouseButtons::Type::Left) ? 1 : 0;*/
+	
 	newPacket.lastID = GlobalStateID;
 
-	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
-	//	//fire button pressed!
-	//	//newPacket.buttonstates[0] = 1;
-	//	newPacket.lastID = 0; //You'll need to work this out somehow...
-	//}
+	
 	thisClient->SendPacket(newPacket);
 }
 
@@ -269,20 +243,11 @@ void NetworkedGame::SpawnPlayer() {
 }
 
 void NetworkedGame::StartLevel() {
-	//InitWorld();
-	//AddWallToWorld(Vector3(-188, 4, -188), Vector3(4, 4, 4));
-	//physics->UseGravity(true);
-
-	//scoreTable.clear();
-	//for (int i = 0; i < 4; ++i) { scoreTable.push_back(0); }
-	//Change Round State
+	
 	GlobalStateID = -1;
 	SpawnPlayer();
 	isRoundstart = true;
-	//RoundTime = 600.0f;
-	//roundDelayOver = false;
-	//delayTime = 0.6f;
-	//isRoundstart = true;
+	
 }
 
 void NetworkedGame::LevelOver()
@@ -318,16 +283,7 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 		serverProcessCP(realPacket, source);
 		break;
 	}
-	/*case BasicNetworkMessages::Player_State: {
-		PlayerStatePacket* realPacket = (PlayerStatePacket*)payload;
-		clientProcessPp(realPacket);
-		break;
-	}
-	case BasicNetworkMessages::bullet_state: {
-		BulletStatePacket* realPacket = (BulletStatePacket*)payload;
-		clientProcessBp(realPacket);
-		break;
-	}*/
+	
 	}
 }
 
@@ -393,28 +349,12 @@ void NetworkedGame::ServerUpdatePlayerList()
 	thisServer->SendGlobalPacket(plist);
 }
 
-//void NetworkedGame::InitialiseAssets()
-//{
-//	/*InitCamera();
-//	InitAudio();
-//	InitWorld();*/
-//	//SpawnPlayer();
-//}
+
 
 GameObject* NetworkedGame::AddNetPlayerToWorld(const Vector3& position, int playerNum)
 {
 	GameObject* thisplayer = playerlist[playerNum];
-	//float meshSize = 2.0f;
-	//Vector3 volumeSize = Vector3(1.0, 1.6, 1.0);
-	//float inverseMass = 1.0f / 60.0f;
-
-	//NetworkPlayer* character = new NetworkPlayer(this, playerNum);
-	//AABBVolume* volume = new AABBVolume(volumeSize);
-
-	//character->SetBoundingVolume((CollisionVolume*)volume);
-	//character->GetTransform()
-	//	.SetScale(Vector3(meshSize, meshSize, meshSize))
-	//	.SetPosition(position);
+	
 
 	//character->SetRenderObject(new RenderObject(&character->GetTransform(), charMesh, nullptr, basicShader));
 	//character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
@@ -426,27 +366,7 @@ GameObject* NetworkedGame::AddNetPlayerToWorld(const Vector3& position, int play
 
 	world->AddGameObject(thisplayer);
 	return thisplayer;
-	//networkObjects.insert(std::pair<int, NetworkObject*>(playerNum, character->GetNetworkObject()));
-
-	//Vector4 colour;
-	//switch (playerNum)
-	//{
-	//case 0:
-	//	colour = Debug::RED;
-	//	break;
-	//case 1:
-	//	colour = Debug::BLUE;
-	//	break;
-	//case 2:
-	//	colour = Debug::YELLOW;
-	//	break;
-	//case 3:
-	//	colour = Debug::CYAN;
-	//	break;
-	//}
-	//character->GetRenderObject()->SetColour(colour);
-
-	//return character;
+	
 }
 
 bool NetworkedGame::clientProcessFp(FullPacket* fp)
@@ -521,13 +441,9 @@ void NetworkedGame::UpdateGamePlayerInput(float dt)
 		{
 			if (player->isSpacePressed == 1 ? true : false) {
 				Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
-				player->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 24, velocity.z));
+				player->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 2, velocity.z));
 			}
-			/*if (thePlayer->GetBtnState(Down) == 1) { btnVal[Down] = true; }
-			if (thePlayer->GetBtnState(Right) == 1) { btnVal[Right] = true; }
-			if (thePlayer->GetBtnState(Left) == 1) { btnVal[Left] = true; }*/
-			/*thePlayer->MovePlayer(btnVal[Up], btnVal[Down], btnVal[Right], btnVal[Left]);
-			thePlayer->GameTick(dt);*/
+			
 			player->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 			player->GetTransform().SetOrientation(player->orientationNetPlayer);
 		}
@@ -538,40 +454,24 @@ void NetworkedGame::UpdateGamePlayerInput(float dt)
 				Player* thePlayer = (Player*)(serverPlayers[i]);
 				if (thePlayer->isSpacePressed == 1 ? true : false) {
 					Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
-					thePlayer->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 24, velocity.z));
+					thePlayer->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 2, velocity.z));
 				}
-				/*if (thePlayer->GetBtnState(Down) == 1) { btnVal[Down] = true; }
-				if (thePlayer->GetBtnState(Right) == 1) { btnVal[Right] = true; }
-				if (thePlayer->GetBtnState(Left) == 1) { btnVal[Left] = true; }*/
-				/*thePlayer->MovePlayer(btnVal[Up], btnVal[Down], btnVal[Right], btnVal[Left]);
-				thePlayer->GameTick(dt);*/
+				
 				thePlayer->GetPhysicsObject()->AddForce(thePlayer->forceToBeAdded);
 				thePlayer->GetTransform().SetOrientation(thePlayer->orientationNetPlayer);
 			}
 		}
-		/*bullet::UpdateBulletList();
-
-		for (auto i : geese)
-		{
-			i->getStateMachine()->Update(dt);
-		}
-
-		undercoverAgent->ExcuteBehavioursTree(dt);*/
+		
 	}
 
-	//float yaw = treasure->GetTransform().GetOrientation().ToEuler().y + 45 * dt;
-	//treasure->GetTransform().SetOrientation(Quaternion::EulerAnglesToQuaternion(0, yaw, 0));
+	
 }
 
 void NetworkedGame::ServerSendRoundState()
 {
 	RoundStatePacket state;
 	state.isRoundStart = this->isRoundstart;
-	/*if (isRoundstart)
-	{
-		for (int i = 0; i < 4; ++i) { state.scoretable[i] = scoreTable[i]; }
-		state.isTreasureExist = treasure->getOwner() == nullptr ? true : false;
-	}*/
+	
 	thisServer->SendGlobalPacket(state);
 }
 
@@ -586,9 +486,7 @@ void NetworkedGame::ServerSendPlayerState()
 				PlayerStatePacket state;
 				NetworkPlayer* thisPlayer = (NetworkPlayer*)(serverPlayers[i]);
 				state.playerNum = i;
-				/*state.state[0] = (int)thisPlayer->getSprintCD();
-				state.state[1] = (int)thisPlayer->getFireCD();
-				state.state[2] = thisPlayer->getHaveTreasure() ? 1 : 0;*/
+				
 				thisServer->SendGlobalPacket(state);
 			}
 		}

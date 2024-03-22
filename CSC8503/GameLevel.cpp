@@ -431,7 +431,7 @@ void GameLevel::CreateLevel4_Normal() {
 	l0.AddObject(CreateBigWall(Vector3( 50, 10,  90), Vector3(10, 20, 10), 0.0f));
 
 	l0.AddObject(CreateLight(player->GetTransform().GetPosition(), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
-	l0.AddObject(CreateSignStart(Vector3(-59.65, 15, -35), Vector3(0.5, 2, 4), 0.0f, 1.0));
+	l0.AddObject(CreateSignStart(Vector3(-59.65, 10, -35), Vector3(0.5, 2, 4), 0.0f, 1.0));
 	l0.AddObject(CreateSignContinue(Vector3(-59.65, 10, -35), Vector3(0.5, 2, 4), 0.0f, 1.0));
 	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
 	l0.AddObject(CreateFloor(Vector3(0, 0, 0), Vector3(100, 1, 100)));
@@ -515,7 +515,7 @@ void GameLevel::CreateLevel4_Rotate() {
 	l0.AddObject(CreateBigWall(Vector3(-50,10, -90), Vector3(10, 20, 10), 0.0f));
 
 	l0.AddObject(CreateLight(player->GetTransform().GetPosition(), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
-	l0.AddObject(CreateSignStart(Vector3(59.65, 15, 35), Vector3(0.5, 2, 4), 0.0f, 1.0));
+	l0.AddObject(CreateSignStart(Vector3(59.65, 10, 35), Vector3(0.5, 2, 4), 0.0f, 1.0));
 	l0.AddObject(CreateSignContinue(Vector3(59.65, 10, 35), Vector3(0.5, 2, 4), 0.0f, 1.0));
 
 	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
@@ -905,15 +905,29 @@ void GameLevel::CreateLevel1_Stairs() {
 	level1.AddObject(CreateCubeOBB(Vector3(35, 6.35, 76.4), Vector3(5, 10, 10), 0.0f, Vector3(1, 0, 0), -30));
 	level1.AddObject(CreateStairs(Vector3(-35, 10, 64), Vector3(1.25, 2, 2), 0.0f, Vector3(0, 1, 0), 180));
 	level1.AddObject(CreateCubeOBB(Vector3(-35, 6.35, 76.4), Vector3(5, 10, 10), 0.0f, Vector3(1, 0, 0), -30));
+	level1.AddObject(CreateAABB(Vector3(31, 15, 71), Vector3(0.5, 10, 9), 0.0f));
+	level1.AddObject(CreateAABB(Vector3(39, 15, 71), Vector3(0.5, 10, 9), 0.0f));
+	level1.AddObject(CreateAABB(Vector3(-31, 15, 71), Vector3(0.5, 10, 9), 0.0f));
+	level1.AddObject(CreateAABB(Vector3(-39, 15, 71), Vector3(0.5, 10, 9), 0.0f));
 
 	level1.AddObject(CreateStairs(Vector3(56, 0, 44), Vector3(2.5, 2, 2), 0.0f, Vector3(0, 1, 0), 90));
 	level1.AddObject(CreateCubeOBB(Vector3(43.7, -3.7, 44), Vector3(10, 10, 10), 0.0f, Vector3(0, 0, 1), -30));
 	level1.AddObject(CreateStairs(Vector3(-56, 0, 44), Vector3(2.5, 2, 2), 0.0f, Vector3(0, 1, 0), -90));
 	level1.AddObject(CreateCubeOBB(Vector3(-43.7, -3.7, 44), Vector3(10, 10, 10), 0.0f, Vector3(0, 0, 1), 30));
+	level1.AddObject(CreateAABB(Vector3(49.5, 5, 52), Vector3(9, 10, 1.5), 0.0f));
+	level1.AddObject(CreateAABB(Vector3(49.5, 5, 35.5), Vector3(9, 10, 1.5), 0.0f));
+	level1.AddObject(CreateAABB(Vector3(-49.5, 5, 52), Vector3(9, 10, 1.5), 0.0f));
+	level1.AddObject(CreateAABB(Vector3(-49.5, 5, 35.5), Vector3(9, 10, 1.5), 0.0f));
+
+
 	level1.AddObject(CreateStairs(Vector3(  83, 0, 4), Vector3(2.5, 2, 2), 0.0f));
 	level1.AddObject(CreateCubeOBB(Vector3( 83, -3.7, -8.3), Vector3(10, 10, 10), 0.0f, Vector3(1, 0, 0), 30));
 	level1.AddObject(CreateStairs(Vector3( -83, 0, 4), Vector3(2.5, 2, 2), 0.0f));
 	level1.AddObject(CreateCubeOBB(Vector3(-83, -3.7, -8.3), Vector3(10, 10, 10), 0.0f, Vector3(1, 0, 0), 30));
+	level1.AddObject(CreateAABB(Vector3(74.5, 5, -2.5), Vector3(1.5, 10, 9), 0.0f));
+	level1.AddObject(CreateAABB(Vector3(91.5, 5, -2.5), Vector3(1.5, 10, 9), 0.0f)); 
+	level1.AddObject(CreateAABB(Vector3(-74.5, 5, -2.5), Vector3(1.5, 10, 9), 0.0f));
+	level1.AddObject(CreateAABB(Vector3(-91.5, 5, -2.5), Vector3(1.5, 10, 9), 0.0f));
 }
 
 void GameLevel::CreateLevel1_Handrail() {
