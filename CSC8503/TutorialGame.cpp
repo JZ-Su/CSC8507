@@ -189,7 +189,7 @@ void TutorialGame::UpdateKeys(float dt) {
 }
 
 void TutorialGame::LockedObjectMovement(float dt) {
-	player->forceToBeAdded = Vector3();
+	//player->forceToBeAdded = Vector3();
 	Matrix4 view = world->GetMainCamera().BuildViewMatrix();
 	Matrix4 camWorld = view.Inverse();
 
@@ -198,8 +198,9 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	//forward is more tricky -  camera forward is 'into' the screen...
 	//so we can take a guess, and use the cross of straight up, and
 	//the right axis, to hopefully get a vector that's good enough!
-	Vector3 pos = lockedObject->GetTransform().GetPosition();
-	Quaternion ObjOrientation = lockedObject->GetTransform().GetOrientation();
+
+	Vector3 pos = player->GetTransform().GetPosition();
+	Quaternion ObjOrientation = player->GetTransform().GetOrientation();
 
 	//fwd axis of camera
 	Vector3 UpAxis = Vector3(0, 1, 0);
@@ -220,7 +221,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Matrix4 Mpitch = Matrix4::Rotation(v, Myaw * Vector3(-1, 0, 0));
 	Matrix4 Mrot = Mpitch * Myaw;
 
-	Vector3 targetpos = lockedObject->GetTransform().GetPosition();
+	Vector3 targetpos = player->GetTransform().GetPosition();
 	Vector3 camdir = Mrot * Vector3(0, 0, -1);
 	Vector3 campos = targetpos - camdir * 20.0f;
 
@@ -235,29 +236,38 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
 		//player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*3): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*1.5);
-		player->getIsAccelerated() ? player->forceToBeAdded+=(-fwdAxis * 3) : player->forceToBeAdded += (-fwdAxis * 1.5);
-		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
+
+		player->getIsAccelerated() ? player->forceToBeAdded += (-fwdAxis * 3) : player->forceToBeAdded += (-fwdAxis * 1.5);
+		//lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
+		//lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
 		player->getIsAccelerated() ? player->forceToBeAdded += (fwdAxis * 3) : player->forceToBeAdded += (fwdAxis* 1.5);
 		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 1.5);
-		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+
+		//lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+		//lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
+
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
 		player->getIsAccelerated() ? player->forceToBeAdded += (-rightAxis * 3) : player->forceToBeAdded += (-rightAxis* 1.5);
 		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(-rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(-rightAxis* 1.5);
+		//lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
+
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
 		player->getIsAccelerated() ? player->forceToBeAdded += (rightAxis * 3) : player->forceToBeAdded += (rightAxis* 1.5);
 		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(rightAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(rightAxis* 1.5);
+		//lockedObject->GetPhysicsObject()->AddForce(player->forceToBeAdded);
+
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
 		{
-			player->isSpacePressed = true;
+			player->isSpacePressed = '1';
 			/*Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
 			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 24, velocity.z));*/
 			player->SetCanJump(false);
@@ -269,12 +279,15 @@ void TutorialGame::LockedObjectMovement(float dt) {
 
 		if (player->IsJumping()) {
 			if (player->updateJumpTimer(dt)) {
-				player->isSpacePressed = false;
+				player->isSpacePressed = '0';
 				player->SetIsJumping(false);
 			}
 		}
 		player->SetIsWalk(false);
 		if (!player->getIsBeingHitBack()){ player->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0)); }
+			//float velocityY = player->GetPhysicsObject()->GetLinearVelocity().y;
+			//player->GetPhysicsObject()->SetLinearVelocity(Vector3(0, velocityY, 0));
+		}
 
 	}
 
@@ -319,7 +332,10 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
 	lockedObject->GetTransform().SetOrientation(lookat);
 
-	player->orientationNetPlayer = lookat;
+		Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
+		player->GetTransform().SetOrientation(lookat);
+
+		player->orientationNetPlayer = player->GetTransform().GetOrientation();
 
 	world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));
 	world->GetMainCamera().SetPitch(pitch);
@@ -1078,9 +1094,24 @@ void TutorialGame::SwitchLevel() {
 
 void TutorialGame::UpdateLevel(float dt) {
 	// update player
-	player->UpdatePlayer(dt);
+	//player->UpdatePlayer(dt);
 	UpdatePlayerAnim(player, playerIdleAnimation, playerWalkAnimation, dt);
 
+	Vector3 playerPosition;
+	playerPosition = player->GetTransform().GetPosition() + Vector3(0, 1, 0);
+	Vector3 direction = Vector3(0, -1, 0);
+	Ray ray = Ray(playerPosition, direction);
+	RayCollision closestCollision;
+	//closestCollision.rayDistance = gameLevel->GetBoss()->attackRange;
+	if (world->Raycast(ray, closestCollision, true)) {
+		GameObject* blocker = (GameObject*)closestCollision.node;
+		if (blocker->GetName() == "floor" || blocker->GetName() == "aabb") {
+			float distance = playerPosition.y - blocker->GetTransform().GetPosition().y - blocker->GetTransform().GetScale().y / 2;
+			if (distance < 2) {
+				//player->GetPhysicsObject()->AddForce(-physics->GetGravity() * 0.2);
+			}
+		}
+	}
 	// Level 1 stuff
 	if (currentLevel == 4) {
 		ghostai->Update(dt);
