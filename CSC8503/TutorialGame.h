@@ -51,6 +51,14 @@ namespace NCL {
 
 			void DropMassiveItems();
 			void DropItems();
+
+			
+		private:
+			static TutorialGame* instance;
+			static TutorialGame* GetGame() {
+				return instance;
+			};
+
 		protected:
 			bool isDebug;
 
