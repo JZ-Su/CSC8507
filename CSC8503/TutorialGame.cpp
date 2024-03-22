@@ -20,7 +20,7 @@ using namespace NCL;
 using namespace CSC8503;
 
 std::vector<std::string> TutorialGame::itemList;
-
+TutorialGame* TutorialGame::instance = nullptr;
 TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *Window::GetWindow()->GetMouse()) {
 	world = new GameWorld();
 #ifdef USEVULKAN
@@ -49,6 +49,7 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 
 	gameState = MainMenu;
 	mainMenuState = MainMenu_Start;
+	instance = this;
 }
 /*
 
