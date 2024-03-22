@@ -751,7 +751,8 @@ void TutorialGame::ShowMainMenu(float dt) {
 		Debug::Print("Exit", Vector2(30, 50), Debug::BLACK);
 		break;
 	case NCL::CSC8503::MainMenu_Exit:
-		Debug::Print("Exit", Vector2(30, 60), Debug::RED);
+		Debug::Print("Start Game", Vector2(30, 40), Debug::BLACK);
+		Debug::Print("Exit", Vector2(30, 50), Debug::RED);
 		break;
 	default:
 		break;

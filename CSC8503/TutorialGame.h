@@ -51,8 +51,6 @@ namespace NCL {
 
 			void DropMassiveItems();
 			void DropItems();
-
-			void AsyncLoading(float dt);
 			
 		private:
 			static TutorialGame* instance;
