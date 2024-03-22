@@ -71,8 +71,9 @@ BasicExamples::BasicExamples(GameTechRenderer* render) {
 	greenWallTexture[3] = render->LoadTexture("Wall/Texture_131_roughness.png");
 	greenWallTexture[4] = render->LoadTexture("Wall/Texture_13_ao.png");
 	greenWallTexture[5] = DefualtTexture[5];
-	signTexture[0] = render->LoadTexture("Wall/PicturesOnTheWall/start.png");
-	signTexture[1] = render->LoadTexture("Wall/PicturesOnTheWall/continue.png");
+	signTexture[0] = render->LoadTexture("Wall/PicturesOnTheWall/start.png"); 
+	signTexture[1] = render->LoadTexture("Wall/PicturesOnTheWall/start_reverse.png");
+	signTexture[2] = render->LoadTexture("Wall/PicturesOnTheWall/continue.png");
 
 	bossMat = new MeshMaterial("Male_Guard.mat");
 	playerMat = new MeshMaterial("FemaleA.mat");
@@ -527,11 +528,11 @@ GameObject* BasicExamples::CreateLight(const Transform* transform, const Vector4
 	return light;
 }
 
-GameObject* BasicExamples::CreateSignStart(const Vector3& position, const Vector3& dimensions, float rotation, float scale, bool enable) {
+GameObject* BasicExamples::CreateSignStart(const Vector3& position, const Vector3& dimensions, float rotation, float scale, int num) {
 	GameObject* cube = new GameObject("cube");
 
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Matrix4::Rotation(rotation, Vector3(0, 1, 0)));
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, signTexture[0], floorShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, signTexture[num], floorShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[1], 1);
 	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[2], 2);
@@ -547,11 +548,11 @@ GameObject* BasicExamples::CreateSignStart(const Vector3& position, const Vector
 	return cube;
 }
 
-GameObject* BasicExamples::CreateSignContinue(const Vector3& position, const Vector3& dimensions, float rotation, float scale, bool enable) {
+GameObject* BasicExamples::CreateSignContinue(const Vector3& position, const Vector3& dimensions, float rotation, float scale) {
 	GameObject* cube = new GameObject("cube");
 
 	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2).SetOrientation(Matrix4::Rotation(rotation, Vector3(0, 1, 0)));
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, signTexture[1], floorShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, signTexture[2], floorShader));
 	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[1], 1);
 	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[2], 2);
 	cube->GetRenderObject()->SetDefaultTexture(DefualtTexture[3], 3);

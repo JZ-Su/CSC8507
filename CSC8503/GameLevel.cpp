@@ -515,8 +515,8 @@ void GameLevel::CreateLevel4_Rotate() {
 	l0.AddObject(CreateBigWall(Vector3(-50,10, -90), Vector3(10, 20, 10), 0.0f));
 
 	l0.AddObject(CreateLight(player->GetTransform().GetPosition(), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
-	l0.AddObject(CreateSignStart(Vector3(60.65, 15, 35), Vector3(0.5, 2, 4), 0.0f, 1.0));
-	l0.AddObject(CreateSignContinue(Vector3(60.65, 10, 35), Vector3(0.5, 2, 4), 0.0f, 1.0));
+	l0.AddObject(CreateSignStart(Vector3(59.65, 15, 35), Vector3(0.5, 2, 4), 0.0f, 1.0));
+	l0.AddObject(CreateSignContinue(Vector3(59.65, 10, 35), Vector3(0.5, 2, 4), 0.0f, 1.0));
 
 	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
 	l0.AddObject(CreateFloor(Vector3(0, 0.0, 0), Vector3(100, 1, 100)));
@@ -600,8 +600,8 @@ void GameLevel::CreateLevel4_Reverse() {
 	l0.AddObject(CreateBigWall(Vector3(50,  10, 90), Vector3(10, 20, 10), 0.0f));
 
 	l0.AddObject(CreateLight(player->GetTransform().GetPosition(), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
-	l0.AddObject(CreateSignStart(Vector3(35, 15, 61), Vector3(0.5, 2, 4), 90.0f, 1.0));
-	l0.AddObject(CreateSignContinue(Vector3(35, 10, 61), Vector3(0.5, 2, 4), 90.0f, 1.0));
+	l0.AddObject(CreateSignStart(Vector3(35, 10, 59.7), Vector3(0.5, 2, 4), 90.0f, 1.0, 1));
+	l0.AddObject(CreateSignContinue(Vector3(35, 10, 59.7), Vector3(0.5, 2, 4), 90.0f, 1.0));
 
 	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
 	l0.AddObject(CreateFloor(Vector3(0, 0, 0), Vector3(100, 1, 100)));
@@ -609,38 +609,38 @@ void GameLevel::CreateLevel4_Reverse() {
 	level4_reverse.emplace_back(l0);
 
 	Level l1;
-	l1.AddObject(CreateBookshelf(Vector3(-61, 1,10 ), 0.0f, Vector3(0, 1, 0), 90));
-	l1.AddObject(CreateBookshelf(Vector3(-61, -5,0 ), 0.0f, Vector3(0, 1, 0), 90));
+	l1.AddObject(CreateBookshelf(Vector3(-62, 1,10 ), 0.0f, Vector3(0, 1, 0), 90));
+	l1.AddObject(CreateBookshelf(Vector3(-62, -5,0 ), 0.0f, Vector3(0, 1, 0), 90));
 	l1.AddObject(CreateHangLight(Vector3(-71, 20,0 ), Vector3(4, 4, 4), 0.0f));
 	level4_reverse.emplace_back(l1);
 
 	Level l2;
 	//other objects
-	l2.AddObject(CreateBookshelf(Vector3(-61, 1, 10), 0.0f, Vector3(0, 1, 0), 90));
-	l2.AddObject(CreateBookshelf(Vector3(-61, -5, 0), 0.0f, Vector3(0, 1, 0), 90));
+	l2.AddObject(CreateBookshelf(Vector3(-62, 1, 10), 0.0f, Vector3(0, 1, 0), 90));
+	l2.AddObject(CreateBookshelf(Vector3(-62, -5, 0), 0.0f, Vector3(0, 1, 0), 90));
 	
 	level4_reverse.emplace_back(l2);
 
 	Level l3;
 	//other objects
-	l3.AddObject(CreateBookshelf(Vector3(-61, 1, 10), 0.0f, Vector3(0, 1, 0), 90));
-	l3.AddObject(CreateBookshelf(Vector3(-61, -5, 0), 0.0f, Vector3(0, 1, 0), 90));
+	l3.AddObject(CreateBookshelf(Vector3(-62, 1, 10), 0.0f, Vector3(0, 1, 0), 90));
+	l3.AddObject(CreateBookshelf(Vector3(-62, -5, 0), 0.0f, Vector3(0, 1, 0), 90));
 	l3.AddObject(CreateWallLight(Vector3(-78, 18, 10), 0.0f, Vector3(0, 1, 0), 90)); 
 	l3.AddObject(CreateWallLight(Vector3(-78, 18, -10), 0.0f, Vector3(0, 1, 0), 90));
 	level4_reverse.emplace_back(l3);
 
 	Level l4;
 	//other objects
-	l4.AddObject(CreateBookshelf(Vector3(-61 , 1, 10), 0.0f, Vector3(0, 1, 0), 90));
-	l4.AddObject(CreateBookshelf(Vector3(-61 , 1, 0 ), 0.0f, Vector3(0, 1, 0), 90));
+	l4.AddObject(CreateBookshelf(Vector3(-62 , 1, 10), 0.0f, Vector3(0, 1, 0), 90));
+	l4.AddObject(CreateBookshelf(Vector3(-62 , 1, 0 ), 0.0f, Vector3(0, 1, 0), 90));
 	l4.AddObject(CreateHangLight(Vector3(-71 , 20,0 ), Vector3(4, 4, 4), 0.0f));
-	l4.AddObject(CreateWallLight(Vector3(-62, 18, -10), 0.0f, Vector3(0, 1, 0), -90));
+	l4.AddObject(CreateWallLight(Vector3(-63, 18, -10), 0.0f, Vector3(0, 1, 0), -90));
 	level4_reverse.emplace_back(l4);
 
 	Level l5;
 	//other objects
-	l5.AddObject(CreateBookshelf(Vector3(-61, -5, -10), 0.0f, Vector3(0, 1, 0), 90));
-	l5.AddObject(CreateBookshelf(Vector3(-61, -5, 0), 0.0f, Vector3(0, 1, 0), 90));
+	l5.AddObject(CreateBookshelf(Vector3(-62, -5, -10), 0.0f, Vector3(0, 1, 0), 90));
+	l5.AddObject(CreateBookshelf(Vector3(-62, -5, 0), 0.0f, Vector3(0, 1, 0), 90));
 	l5.AddObject(CreateWallLight(Vector3(-78, 18, 0), 0.0f, Vector3(0, 1, 0), 90));
 	level4_reverse.emplace_back(l5);
 
@@ -687,51 +687,51 @@ void GameLevel::CreateLevel4_RR() {
 	l0.AddObject(CreateBigWall(Vector3(-50,10, -90), Vector3(10, 20, 10), 0.0f));
 
 	l0.AddObject(CreateLight(player->GetTransform().GetPosition(), Vector4(1.0f, 0.8f, 0.5f, 1.0f), 50.0f, true, true));
-	l0.AddObject(CreateSignStart(Vector3(-35, 15,-61 ), Vector3(0.5, 2, 4), 90.0f, 1.0));
-	l0.AddObject(CreateSignContinue(Vector3(-35, 10,-61 ), Vector3(0.5, 2, 4), 90.0f, 1.0));
+	l0.AddObject(CreateSignStart(Vector3(-35, 10,-59.7 ), Vector3(0.5, 2, 4), 90.0f, 1.0, 1));
+	l0.AddObject(CreateSignContinue(Vector3(-35, 10,-59.7 ), Vector3(0.5, 2, 4), 90.0f, 1.0));
 	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
 	l0.AddObject(CreateFloor(Vector3(0, 0, 0), Vector3(100, 1, 100)));
 	l0.objectList.back()->SetBoundingVolume(nullptr);
 	level4_reverse_rotate.emplace_back(l0);
 
 	Level l1;
-	l1.AddObject(CreateBookshelf(Vector3(61, 1, -10), 0.0f, Vector3(0, 1, 0), -90));
-	l1.AddObject(CreateBookshelf(Vector3(61, -5, 0), 0.0f, Vector3(0, 1, 0), -90));
+	l1.AddObject(CreateBookshelf(Vector3(61.5, 1, -10), 0.0f, Vector3(0, 1, 0), -90));
+	l1.AddObject(CreateBookshelf(Vector3(61.5, -5, 0), 0.0f, Vector3(0, 1, 0), -90));
 	l1.AddObject(CreateHangLight(Vector3(71, 20, 0), Vector3(4, 4, 4), 0.0f));
 	level4_reverse_rotate.emplace_back(l1);
 
 	Level l2;
 	//other objects
-	l2.AddObject(CreateBookshelf(Vector3(61, 1, -10), 0.0f, Vector3(0, 1, 0), -90));
-	l2.AddObject(CreateBookshelf(Vector3(61, 1, 0), 0.0f, Vector3(0, 1, 0), -90)); 
-	l2.AddObject(CreateBookshelf(Vector3(61, 1, 10), 0.0f, Vector3(0, 1, 0), -90));
-	l2.AddObject(CreateBookshelf(Vector3(61, 1, 20), 0.0f, Vector3(0, 1, 0), -90));
+	l2.AddObject(CreateBookshelf(Vector3(61.5, 1, -10), 0.0f, Vector3(0, 1, 0), -90));
+	l2.AddObject(CreateBookshelf(Vector3(61.5, 1, 0), 0.0f, Vector3(0, 1, 0), -90)); 
+	l2.AddObject(CreateBookshelf(Vector3(61.5, 1, 10), 0.0f, Vector3(0, 1, 0), -90));
+	l2.AddObject(CreateBookshelf(Vector3(61.5, 1, 20), 0.0f, Vector3(0, 1, 0), -90));
 	level4_reverse_rotate.emplace_back(l2);
 
 	Level l3;
 	//other objects
-	l3.AddObject(CreateBookshelf(Vector3(61, 1, -10), 0.0f, Vector3(0, 1, 0), -90));
-	l3.AddObject(CreateBookshelf(Vector3(61, -5, 0), 0.0f, Vector3(0, 1, 0), -90));
+	l3.AddObject(CreateBookshelf(Vector3(61.5, 1, -10), 0.0f, Vector3(0, 1, 0), -90));
+	l3.AddObject(CreateBookshelf(Vector3(61.5, -5, 0), 0.0f, Vector3(0, 1, 0), -90));
 	l3.AddObject(CreateWallLight(Vector3(78, 18, 0), 0.0f, Vector3(0, 1, 0), -90));
 	l3.AddObject(CreateWallLight(Vector3(78, 5, 10), 0.0f, Vector3(0, 1, 0), -90));
 	level4_reverse_rotate.emplace_back(l3);
 
 	Level l4;
 	//other objects
-	l4.AddObject(CreateBookshelf(Vector3(61, 1, -10), 0.0f, Vector3(0, 1, 0), -90));
-	l4.AddObject(CreateBookshelf(Vector3(61, 1, 0), 0.0f, Vector3(0, 1, 0), -90));
+	l4.AddObject(CreateBookshelf(Vector3(61.5, 1, -10), 0.0f, Vector3(0, 1, 0), -90));
+	l4.AddObject(CreateBookshelf(Vector3(61.5, 1, 0), 0.0f, Vector3(0, 1, 0), -90));
 	l4.AddObject(CreateHangLight(Vector3(71, 20, 0), Vector3(4, 4, 4), 0.0f));
 	l4.AddObject(CreateWallLight(Vector3(62, 18, -10), 0.0f, Vector3(0, 1, 0), 90));
 	level4_reverse_rotate.emplace_back(l4);
 
 	Level l5;
 	//other objects
-	l5.AddObject(CreateBookshelf(Vector3(61, -5, 10), 0.0f, Vector3(0, 1, 0), -90));
-	l5.AddObject(CreateBookshelf(Vector3(61, -5, 0), 0.0f, Vector3(0, 1, 0), -90));
+	l5.AddObject(CreateBookshelf(Vector3(61.5, -5, 10), 0.0f, Vector3(0, 1, 0), -90));
+	l5.AddObject(CreateBookshelf(Vector3(61.5, -5, 0), 0.0f, Vector3(0, 1, 0), -90));
 	l5.AddObject(CreateBookshelf(Vector3(78, -5, 10), 0.0f, Vector3(0, 1, 0), -90));
 	l5.AddObject(CreateBookshelf(Vector3(78, -5, 0), 0.0f, Vector3(0, 1, 0), -90)); 
-	l5.AddObject(CreateBookshelf(Vector3(61, -5, -10), 0.0f, Vector3(0, 1, 0), -90));
-	l5.AddObject(CreateBookshelf(Vector3(61, -5, -20), 0.0f, Vector3(0, 1, 0), -90));
+	l5.AddObject(CreateBookshelf(Vector3(61.5, -5, -10), 0.0f, Vector3(0, 1, 0), -90));
+	l5.AddObject(CreateBookshelf(Vector3(62, -5, -20), 0.0f, Vector3(0, 1, 0), -90));
 	l5.AddObject(CreateBookshelf(Vector3(78, -5, -10), 0.0f, Vector3(0, 1, 0), -90));
 	l5.AddObject(CreateBookshelf(Vector3(78, -5, -20), 0.0f, Vector3(0, 1, 0), -90));
 	l5.AddObject(CreateWallLight(Vector3(78, 18, 0), 0.0f, Vector3(0, 1, 0), -90));
