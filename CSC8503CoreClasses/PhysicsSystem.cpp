@@ -582,7 +582,7 @@ void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject*
 			i->SetIsHiding(true, Vector3(20, -98, 0));
 			i->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			boss->setHasIceCubeBullet(true);
-			player->updateHealth(-20);
+			player->updateHealth(-100);
 			player->SetIsBeingHitBack(true);
 			player->SetIsRencentlyHurt(true);
 			boss->setBulletTimer(0.0f);
@@ -603,7 +603,7 @@ void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject*
 			j->SetIsHiding(true, Vector3(20, -98, 0));
 			j->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			boss->setHasIceCubeBullet(true);
-			player->updateHealth(-20);
+			player->updateHealth(-100);
 			player->SetIsBeingHitBack(true);
 			player->SetIsRencentlyHurt(true);
 			boss->setBulletTimer(0.0f);

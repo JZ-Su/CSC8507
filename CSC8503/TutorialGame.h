@@ -218,6 +218,7 @@ namespace NCL {
 			bool pressedQ = false;
 			bool bossDeathLogic = false;
 			bool bossDeathLogicDone = false;
+			bool playerDeathLogic = false;
 			string currentBGM = "";
 			//std::vector<GameObject*> propList;
 			float progress=0;

@@ -212,9 +212,17 @@ void TutorialGame::UpdateKeys(float dt) {
 			PlayLevelBGM("level0");
 			break;
 		case 6:
+			player->SetHealth(100);
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true);
 			for (const auto& element : BasicExamples::propList) {
 				world->RemoveGameObject(element);
+			}
+			for (const auto& element : vec) {
+				world->RemoveGameObject(element);
+			}
+			for (const auto& element : ghostListWithTimestamps) {
+				world->RemoveGameObject(element.first);
 			}
 			gameLevel->CreateLevel3();
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
@@ -583,7 +591,7 @@ void TutorialGame::InitWorld() {
 	
 	isDebug = true;
 	//isDebug = false;
-	int debugLevel =4;
+	int debugLevel =3;
 
 	if (isDebug) {
 		switch (debugLevel)
@@ -1162,6 +1170,48 @@ void TutorialGame::UpdateLevel(float dt) {
 		gameLevel->GetBoss()->Update(dt);
 		UpdateBossAnim(gameLevel->GetBoss(), bossAnimation, dt);
 		skilltime += dt;
+		if (player->GetHealth() <= 0) {
+			player->SetIsDead(true);
+			//playerDeathLogic = true;
+		}
+		if (player->GetIsDead()) {
+			player->SetHealth(100);
+			player->SetIsDead(false);
+			//playerDeathLogic = false;
+			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true);
+			for (const auto& element : BasicExamples::propList) {
+				world->RemoveGameObject(element);
+			}
+			for (const auto& element : vec) {
+				world->RemoveGameObject(element);
+			}
+			for (const auto& element : ghostListWithTimestamps) {
+				world->RemoveGameObject(element.first);
+			}
+			gameLevel->CreateLevel3();
+			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
+			player->GetTransform().SetPosition(Vector3(0, 4, 135)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
+			portal = gameLevel->GetLevel3()->portal;
+			portal->isEnable = false;
+			portal->GetRenderObject()->SetColour(Debug::RED);
+			boss = gameLevel->GetBoss();
+			shield = gameLevel->GetShield();
+			bossAnimation = gameLevel->getBossAnimation();
+			iceCubeBullet = gameLevel->getIceCubeBullet();
+			bossCheersAnimation = gameLevel->getBossCheersAnimation();
+			bossShootingAnimation = gameLevel->getBossShootingAnimation();
+			bossFlinchAnimation = gameLevel->getBossFlinchAnimation();
+			bossAttackingAnimation = gameLevel->getBossAttackingAnimation();
+			bossChasingAnimation = gameLevel->getBossChasingAnimation();
+			fireBallBullet = gameLevel->getFireBallBullet();
+			bossAngryAnimation = gameLevel->getBossAngryAnimation();
+			bossDeathAnimation = gameLevel->getBossDeathAnimation();
+			PlayerPreHealth = player->GetHealth();
+			BossPrehHealth = gameLevel->GetBoss()->getBossHealth();
+			PlayLevelBGM("level3");
+
+		}
 		if (skilltime > 10) {
 			skilltime = 10;
 		}
