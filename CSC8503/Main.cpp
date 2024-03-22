@@ -160,7 +160,7 @@ int main() {
 			break;
 		}
 
-		//if (g->GetState() == Exit) break;
+		if (g->GetState() == Exit) break;
 
 		//if (networkDebug)
 		//{

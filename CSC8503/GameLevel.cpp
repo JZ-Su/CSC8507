@@ -374,7 +374,6 @@ void GameLevel::CreateLevel3() {
 	level3.AddObject(CreateShieldProp(Vector3(12, 3, 110), Vector3(1, 1, 1)));
 	level3.AddObject(CreateShieldProp(Vector3(-12, 3, 110), Vector3(1, 1, 1)));
 	level3.AddObject(CreateSpeedProp(Vector3(-4, 3, 110), Vector3(8, 8, 8)));
-	level3.AddObject(CreateRedBottleProp(Vector3(4, 3, 110), Vector3(2, 2, 2)));
 
 	// level3.AddObject(boss);
 	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/

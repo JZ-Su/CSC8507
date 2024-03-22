@@ -581,9 +581,9 @@ void TutorialGame::InitWorld() {
 		Please switch the debug mode here
 	*/
 	
-	isDebug = true;
-	//isDebug = false;
-	int debugLevel =4;
+	//isDebug = true;
+	isDebug = false;
+	int debugLevel =3;
 
 	if (isDebug) {
 		switch (debugLevel)
@@ -1023,7 +1023,7 @@ void TutorialGame::SwitchLevel() {
 		case 4:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel1(), true);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			player->GetTransform().SetPosition(Vector3(0, 4, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(0, 0, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			PlayLevelBGM("level0");
@@ -1032,7 +1032,7 @@ void TutorialGame::SwitchLevel() {
 		case 5:
 			gameLevel->RemoveLevel(world, gameLevel->GetConnection(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
-			player->GetTransform().SetPosition(Vector3(0, 4, 135)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(0, 0, 135)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel3()->portal;
 			portal->isEnable = false;
@@ -1164,7 +1164,7 @@ void TutorialGame::UpdateLevel(float dt) {
 		if (boss->getIsDead()&& !bossDeathLogicDone) {
 			bossDeathLogic = true;
 		}
-		if (bossDeathLogic) {
+		if (bossDeathLogic && !isDebug) {
 			Vector3 bossPos = boss->GetTransform().GetPosition() + Vector3(0, 6, 0);
 			vec.push_back(gameLevel->CreateCube(bossPos + Vector3(-4, -0.5, 0), Vector3(1, 6.5, 1), 0.0f));
 			vec.push_back(gameLevel->CreateCube(bossPos + Vector3(4, -0.5, 0), Vector3(1, 6.5, 1), 0.0f));
@@ -1269,14 +1269,14 @@ void TutorialGame::UpdateLevel(float dt) {
 			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 			Vector3 bossPosition = boss->GetTransform().GetPosition();
 			Vector3 hurtDirection = (playerPosition - bossPosition).Normalised();
-			player->GetPhysicsObject()->AddForce(hurtDirection * 400);
+			player->GetPhysicsObject()->AddForce(hurtDirection * 160);
 			player->SetIsRencentlyHurt(false);
 		}
 		else if (player->getIsRencentlyHurt() && player->getIsMeleeAttacked()) {
 			Vector3 playerPosition = player->GetTransform().GetPosition();
 			Vector3 bossPosition = boss->GetTransform().GetPosition();
 			Vector3 hurtDirection = (playerPosition - bossPosition).Normalised();
-			player->GetPhysicsObject()->AddForce(hurtDirection * 300);
+			player->GetPhysicsObject()->AddForce(hurtDirection * 160);
 			player->SetIsRencentlyHurt(false);
 		}
 

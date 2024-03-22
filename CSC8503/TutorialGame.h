@@ -185,11 +185,11 @@ namespace NCL {
 			float shootingTimer = 0.0f;
 			float attackingTimer = 0.0f;
 			float shieldPropTimer = 0.0f;
-			const float shieldPropDuration = 18.6f;
+			const float shieldPropDuration = 1.0f;
 			float bossAngryTimer = 0.0f;
 			const float bossAngryDuration = 1.6f;
 			float speedPropTimer = 0.0f;
-			const float speedPropDuration = 10.0f;
+			const float speedPropDuration = 6.0f;
 			const float attackingDuration = 0.4f;
 			const float shootingDuration = 0.65f;
 			float bossDeathTimer = 0.0f;

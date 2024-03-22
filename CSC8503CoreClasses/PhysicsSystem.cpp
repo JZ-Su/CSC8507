@@ -479,7 +479,7 @@ void PhysicsSystem::HandleFireballBulletCollisionLogic(GameObject* i, GameObject
 		else {
 			i->SetIsHiding(true, Vector3(0, -98, 0));
 			boss->setHasFireBallBullet(true);
-			player->updateHealth(-5);
+			player->updateHealth(-10);
 			player->SetIsBeingHitBack(true);
 			player->SetIsRencentlyHurt(true);
 			boss->setBulletTimer(0.0f);
@@ -500,7 +500,7 @@ void PhysicsSystem::HandleFireballBulletCollisionLogic(GameObject* i, GameObject
 		else {
 			j->SetIsHiding(true, Vector3(0, -98, 0));
 			boss->setHasFireBallBullet(true);
-			player->updateHealth(-5);
+			player->updateHealth(-10);
 			player->SetIsBeingHitBack(true);
 			player->SetIsRencentlyHurt(true);
 			boss->setBulletTimer(0.0f);
@@ -514,7 +514,7 @@ void PhysicsSystem::HandleFireballBulletCollisionLogic(GameObject* i, GameObject
 		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
 		i->SetIsHiding(true, Vector3(0, -98, 0));
 		boss->setHasFireBallBullet(true);
-		boss->updateHealth(-50);
+		boss->updateHealth(-10);
 		boss->SetIsRencentlyHurt(true);
 		boss->setBulletTimer(0.0f);
 		boss->setIsShootingFireBall(false);
@@ -526,7 +526,7 @@ void PhysicsSystem::HandleFireballBulletCollisionLogic(GameObject* i, GameObject
 		Boss* boss = dynamic_cast<Boss*>(gameWorld.GetObject("boss"));
 		j->SetIsHiding(true, Vector3(0, -98, 0));
 		boss->setHasFireBallBullet(true);
-		boss->updateHealth(-50);
+		boss->updateHealth(-10);
 		boss->SetIsRencentlyHurt(true);
 		boss->setBulletTimer(0.0f);
 		boss->setIsShootingFireBall(false);
@@ -582,7 +582,7 @@ void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject*
 			i->SetIsHiding(true, Vector3(20, -98, 0));
 			i->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			boss->setHasIceCubeBullet(true);
-			player->updateHealth(-5);
+			player->updateHealth(-20);
 			player->SetIsBeingHitBack(true);
 			player->SetIsRencentlyHurt(true);
 			boss->setBulletTimer(0.0f);
@@ -603,7 +603,7 @@ void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject*
 			j->SetIsHiding(true, Vector3(20, -98, 0));
 			j->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			boss->setHasIceCubeBullet(true);
-			player->updateHealth(-5);
+			player->updateHealth(-20);
 			player->SetIsBeingHitBack(true);
 			player->SetIsRencentlyHurt(true);
 			boss->setBulletTimer(0.0f);
@@ -618,7 +618,7 @@ void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject*
 		i->SetIsHiding(true, Vector3(20, -98, 0));
 		i->GetPhysicsObject()->SetLinearVelocity(Vector3());
 		boss->setHasIceCubeBullet(true);
-		boss->updateHealth(-50);
+		boss->updateHealth(-10);
 		boss->SetIsRencentlyHurt(true);
 		if (gameWorld.GetObject("icecubebullet")->GetIsBlockBack()) {
 			gameWorld.GetObject("icecubebullet")->SetIsBolckBack(false);
@@ -634,7 +634,7 @@ void PhysicsSystem::HandleIceCubeBulletCollisionLogic(GameObject* i, GameObject*
 		j->SetIsHiding(true, Vector3(20, -98, 0));
 		j->GetPhysicsObject()->SetLinearVelocity(Vector3());
 		boss->setHasIceCubeBullet(true);
-		boss->updateHealth(-50);
+		boss->updateHealth(-10);
 		boss->SetIsRencentlyHurt(true);
 		if (gameWorld.GetObject("icecubebullet")->GetIsBlockBack()) {
 			gameWorld.GetObject("icecubebullet")->SetIsBolckBack(false);
@@ -691,14 +691,14 @@ void PhysicsSystem::HandleRollingRockCollisionLogic(GameObject* i, GameObject* j
 	if (i->GetTag() == "rollingrock" && j->GetTag() == "boss"&&!i->GetHurtBossAlready()) {
 		Boss* boss = dynamic_cast<Boss*>(j);
 		boss->SetIsRencentlyHurt(true);
-		boss->updateHealth(-100);
+		boss->updateHealth(-10);
 		i->SetHurtBossAlready(true);
 
 	}
 	else if(j->GetTag() == "rollingrock" && i->GetTag() == "boss"&&!j->GetHurtBossAlready()) {
 		Boss* boss = dynamic_cast<Boss*>(i);
 		boss->SetIsRencentlyHurt(true);
-		boss->updateHealth(-100);
+		boss->updateHealth(-10);
 		j->SetHurtBossAlready(true);
 	}
 	if (i->GetTag() == "ghost" && j->GetTag() == "item") {
@@ -710,7 +710,7 @@ void PhysicsSystem::HandleRollingRockCollisionLogic(GameObject* i, GameObject* j
 	if (i->GetTag() == "ghost" && j->GetTag() == "boss" && !i->GetHurtBossAlready()) {
 		Boss* boss = dynamic_cast<Boss*>(j);
 		boss->SetIsRencentlyHurt(true);
-		boss->updateHealth(-20);
+		boss->updateHealth(-5);
 		i->SetHurtBossAlready(true);
 		skipImpulseResolveCollision = true;
 
@@ -718,7 +718,7 @@ void PhysicsSystem::HandleRollingRockCollisionLogic(GameObject* i, GameObject* j
 	else if (j->GetTag() == "ghost" && i->GetTag() == "boss" && !j->GetHurtBossAlready()) {
 		Boss* boss = dynamic_cast<Boss*>(i);
 		boss->SetIsRencentlyHurt(true);
-		boss->updateHealth(-20);
+		boss->updateHealth(-5);
 		j->SetHurtBossAlready(true);
 		skipImpulseResolveCollision = true;
 	}
