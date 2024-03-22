@@ -20,7 +20,7 @@ using namespace NCL;
 using namespace CSC8503;
 
 std::vector<std::string> TutorialGame::itemList;
-TutorialGame* TutorialGame::instance = nullptr;
+
 TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *Window::GetWindow()->GetMouse()) {
 	world = new GameWorld();
 #ifdef USEVULKAN
@@ -49,7 +49,6 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 
 	gameState = MainMenu;
 	mainMenuState = MainMenu_Start;
-	instance = this;
 }
 /*
 
@@ -1024,7 +1023,8 @@ void TutorialGame::SwitchLevel() {
 		case 4:
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel1(), true);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetConnection());
-			player->GetTransform().SetPosition(Vector3(0, 0, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			world->GetMainCamera().SetPitch(180);
+			player->GetTransform().SetPosition(Vector3(0, 0, 60)).SetOrientation(Quaternion(0.0, 0.0, 0.0, -1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetConnection()->portal;
 			PlayLevelBGM("level0");
