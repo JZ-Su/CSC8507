@@ -64,6 +64,7 @@ namespace NCL {
 		void CreateLevel4_Reverse();
 		void CreateLevel4_Rotate();
 		void CreateLevel4_RR();
+		
 		vector<Level> GetNormalL4() { return level4_normal; }
 		vector<Level> GetReverseL4() { return level4_rotate; }
 		vector<Level> GetRotateL4() { return level4_rotate; }
@@ -85,6 +86,21 @@ namespace NCL {
 		vector<Door*> GetL2Doors() const { return l2_Doors; }
 		bool CheckCoinList();
 
+		void UpdateLight() {
+			light->GetTransform().SetPosition(player->GetTransform().GetPosition() + Vector3(0, 10, 0));
+		}
+
+		int GetScore() {
+			return score;
+		}
+
+		void SetScore(int scor) {
+			score = scor;
+		}
+
+		GameObject* GetLight() {
+			return light;
+		}
 	protected:
 		Level level1;
 		Level level2;
@@ -99,7 +115,9 @@ namespace NCL {
 		GameObject* beginArea;
 		GameObject* trueEndArea;
 		GameObject* falseEndArea;
-		
+		GameObject* light;
+		GameObject* signStart; 
+		GameObject* signContinue;
 		Door*		door;
 
 		vector<Level> level4_normal;
@@ -110,5 +128,7 @@ namespace NCL {
 		vector<Door*> l2_Doors;
 
 		vector<GameObject*> coinList;
+
+		int score;
 	};
 }

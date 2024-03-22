@@ -24,7 +24,10 @@ void main(void)
 	if(fragColor.a==0){
 		discard;
 	}
+
 	if (useAlpha == 1) {
 		fragColor.a = alpha;
 	}
+
 }
+

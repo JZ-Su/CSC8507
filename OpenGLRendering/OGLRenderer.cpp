@@ -261,7 +261,7 @@ void OGLRenderer::InitWithWin32(Window& w) {
 
 	wglDeleteContext(tempContext);	//We don't need the temporary context any more!
 
-	std::cout << __FUNCTION__ << " Initialised OpenGL " << major << "." << minor << " rendering context" << std::endl;	//It's all gone wrong!
+	//std::cout << __FUNCTION__ << " Initialised OpenGL " << major << "." << minor << " rendering context" << std::endl;	//It's all gone wrong!
 
 	glEnable(GL_FRAMEBUFFER_SRGB);
 
@@ -329,6 +329,6 @@ static void APIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum
 	case GL_DEBUG_SEVERITY_LOW: severityName = "Priority(Low)"; break;
 	}
 
-	std::cout << "OpenGL Debug Output: " + sourceName + ", " + typeName + ", " + severityName + ", " + string(message) + "\n";
+	//std::cout << "OpenGL Debug Output: " + sourceName + ", " + typeName + ", " + severityName + ", " + string(message) + "\n";
 }
 #endif
