@@ -970,32 +970,32 @@ void GameLevel::CreateLevel1_Handrail() {
 void GameLevel::CreateLevel1_Coins() {
 	Vector3 dimensions = Vector3(0.5, 0.5, 0.5);
 
-	//coinList.push_back(CreateCoin(Vector3( 95, 5,  -5), dimensions));
-	//coinList.push_back(CreateCoin(Vector3( 80, 5,  35), dimensions));
-	//coinList.push_back(CreateCoin(Vector3( 55, 5, -90), dimensions));
-	//coinList.push_back(CreateCoin(Vector3( 50, 5,   0), dimensions));
-	//coinList.push_back(CreateCoin(Vector3( 37, 5, -90), dimensions));
-	//coinList.push_back(CreateCoin(Vector3( 32, 5, -58), dimensions));
-	//coinList.push_back(CreateCoin(Vector3( 20, 5, -35), dimensions));
-	//coinList.push_back(CreateCoin(Vector3(  0, 5, -70), dimensions));
-	//coinList.push_back(CreateCoin(Vector3(-40, 5, -90), dimensions));
-	//coinList.push_back(CreateCoin(Vector3(-43, 5, -50), dimensions));
-	//coinList.push_back(CreateCoin(Vector3(-90, 5,  40), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 95, 5,  -5), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 80, 5,  35), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 55, 5, -90), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 50, 5,   0), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 37, 5, -90), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 32, 5, -58), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 20, 5, -35), dimensions));
+	coinList.push_back(CreateCoin(Vector3(  0, 5, -70), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-40, 5, -90), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-43, 5, -50), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-90, 5,  40), dimensions));
 
-	//coinList.push_back(CreateCoin(Vector3( 20, 15,  20), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 20, 15,  20), dimensions));
 	coinList.push_back(CreateCoin(Vector3(  0, 15,  70), dimensions));
-	//coinList.push_back(CreateCoin(Vector3(  0, 15,  35), dimensions));
-	//coinList.push_back(CreateCoin(Vector3(  0, 15,  -5), dimensions));
-	//coinList.push_back(CreateCoin(Vector3(-30, 15,   5), dimensions));
+	coinList.push_back(CreateCoin(Vector3(  0, 15,  35), dimensions));
+	coinList.push_back(CreateCoin(Vector3(  0, 15,  -5), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-30, 15,   5), dimensions));
 
-	//coinList.push_back(CreateCoin(Vector3(-67, 15, -35), dimensions));
-	//coinList.push_back(CreateCoin(Vector3(-67, 15, -90), dimensions));
-	//coinList.push_back(CreateCoin(Vector3(-90, 15, -55), dimensions));
-	//coinList.push_back(CreateCoin(Vector3(-95, 15, -35), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-67, 15, -35), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-67, 15, -90), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-90, 15, -55), dimensions));
+	coinList.push_back(CreateCoin(Vector3(-95, 15, -35), dimensions));
 
-	//coinList.push_back(CreateCoin(Vector3( 68, 15, -35), dimensions));
-	//coinList.push_back(CreateCoin(Vector3( 68, 15, -75), dimensions));
-	//coinList.push_back(CreateCoin(Vector3( 95, 15, -35), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 68, 15, -35), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 68, 15, -75), dimensions));
+	coinList.push_back(CreateCoin(Vector3( 95, 15, -35), dimensions));
 
 	level1.AddObject(coinList);
 }

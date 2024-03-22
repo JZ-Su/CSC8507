@@ -123,19 +123,24 @@ void TutorialGame::UpdateGame(float dt) {
 		FMOD_VECTOR pos11 = { pos1.x,pos1.y, pos1.z };
 		Vector3 pos2 = gameLevel->GetGhostai2()->GetTransform().GetPosition();
 		FMOD_VECTOR pos22 = { pos2.x,pos2.y, pos2.z };
-		if (!soundManager.isSoundPlaying("ghost")) {
-			soundManager.play3DSound("ghost", pos11);
-			soundManager.setSoundVolume("ghost", 0.4f);
-			soundManager.play3DSound("ghost", pos22);
-			soundManager.setSoundVolume("ghost", 0.4f);
+		if (!soundManager.isSoundPlaying("ghost1")) {
+			soundManager.play3DSound("ghost1", pos11);
+			soundManager.setSoundVolume("ghost1", 0.4f);
 		}
 		else {
-			soundManager.update3DSoundPosition("ghost", pos11);
-			soundManager.update3DSoundPosition("ghost", pos22);
+			soundManager.update3DSoundPosition("ghost1", pos11);
+		}
+		if (!soundManager.isSoundPlaying("ghost2")) {
+			soundManager.play3DSound("ghost2", pos22);
+			soundManager.setSoundVolume("ghost2", 0.4f);
+		}
+		else {
+			soundManager.update3DSoundPosition("ghost2", pos22);
 		}
 	}
 	if (currentLevel == 5) {
-		soundManager.stopSound("ghost");
+		soundManager.stopSound("ghost1");
+		soundManager.stopSound("ghost2");
 	}
 	soundManager.update();
 	totalTime += dt;
@@ -215,6 +220,7 @@ void TutorialGame::UpdateKeys(float dt) {
 			player->SetHealth(100);
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel3(), true);
+			
 			for (const auto& element : BasicExamples::propList) {
 				world->RemoveGameObject(element);
 			}
@@ -225,6 +231,7 @@ void TutorialGame::UpdateKeys(float dt) {
 				world->RemoveGameObject(element.first);
 			}
 			gameLevel->CreateLevel3();
+			player->deletitemlist();
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel3());
 			player->GetTransform().SetPosition(Vector3(0, 4, 135)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
@@ -582,9 +589,9 @@ void TutorialGame::InitWorld() {
 		Please switch the debug mode here
 	*/
 	
-	isDebug = true;
-	//isDebug = false;
-	int debugLevel =3;
+	//isDebug = true;
+	isDebug = false;
+	int debugLevel =4;
 
 	if (isDebug) {
 		switch (debugLevel)
@@ -1122,6 +1129,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			//playerDeathLogic = true;
 		}
 		if (player->GetIsDead()) {
+			player->deletitemlist();
 			player->SetHealth(100);
 			player->SetIsDead(false);
 			//playerDeathLogic = false;
@@ -1515,7 +1523,7 @@ void TutorialGame::ExecuteAttack(float dt) {
 	if (world->Raycast(ray, closestCollision, true)) {
 		if (closestCollision.node == player) {
 			if (playerIsHit) {
-				player->updateHealth(-4);
+				player->updateHealth(-10);
 				player->SetIsRencentlyHurt(true);
 				//player->SetIsBeingHitBack(true);
 				player->SetIsMeleeAttacked(true);
@@ -1559,7 +1567,8 @@ void TutorialGame::FireBallBulletLogic(float dt) {
 void TutorialGame::AddSound() {
 	soundManager.loadSound("walking", "../externals/media/walk.mp3", true, false);
 	/*soundManager.loadSound("ghost", "../externals/media/ghost.mp3", false, false);*/
-	soundManager.loadSound("ghost", "../externals/media/ghost.mp3", true, false);
+	soundManager.loadSound("ghost1", "../externals/media/ghost.mp3", true, false);
+	soundManager.loadSound("ghost2", "../externals/media/ghost.mp3", true, false);
 	soundManager.loadSound("door", "../externals/media/door.mp3", false, false);
 	soundManager.loadSound("end", "../externals/media/bgm/end.mp3", true, true);
 	std::map<std::string, std::string> bgmPaths = {
@@ -1699,7 +1708,6 @@ void TutorialGame::UpdateLevel3UI() {
 	GameTechRenderer::CreateGameUI({ Vector3(0.2, -0.8f, -1.0f), Vector3(0.2, -1.0f, -1.0f), Vector3(0.4f, -1.0f, -1.0f), Vector3(0.4f, -0.8f, -1.0f) }, "inventory4", "item");
 
 	itemList = Player::GetItemList();
-	
 	float x = Window::GetWindow()->GetScreenSize().x;
 	float y = Window::GetWindow()->GetScreenSize().y;
 	float b =y/x   ;

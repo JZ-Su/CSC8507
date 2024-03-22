@@ -237,9 +237,9 @@ namespace NCL {
 		{
 			PushdownResult OnUpdate(float dt, PushdownState** newState) override
 			{
-				Debug::Print("Press NUMPAD1 : Start As Server", Vector2(5, 10), Debug::YELLOW);
-				Debug::Print("Press NUMPAD2 : Start As Client", Vector2(5, 20), Debug::YELLOW);
-				Debug::Print("Press P : Pause Game", Vector2(5, 95), Debug::YELLOW);
+				//Debug::Print("Press NUMPAD1 : Start As Server", Vector2(5, 10), Debug::YELLOW);
+			///	Debug::Print("Press NUMPAD2 : Start As Client", Vector2(5, 20), Debug::YELLOW);
+			//	Debug::Print("Press P : Pause Game", Vector2(5, 95), Debug::YELLOW);
 
 				if (game)
 				{

@@ -121,3 +121,7 @@ void Player::UseItem(int i) {
 		itemList.erase(itemList.begin() + i);
 	}
 }
+
+void Player::deletitemlist() {
+	itemList.clear();
+}

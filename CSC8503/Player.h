@@ -118,6 +118,7 @@ namespace NCL {
 			void SetIsMeleeAttacked(bool IsMeleeAttacked) {
 				isMeleeAttacked = IsMeleeAttacked;
 			}
+			void deletitemlist();
 			//bool updateJumpTimer(float dt);
 			float updateTimer(float dt);
 			float updateHealth(float inhealth);

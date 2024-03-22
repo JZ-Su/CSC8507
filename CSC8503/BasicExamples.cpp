@@ -175,7 +175,7 @@ GameObject* BasicExamples::CreateCube(const Vector3& position, const Vector3& di
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
-	cube->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 0.5));
+	cube->GetRenderObject()->SetColour(Vector4(0.5, 0.5, 0.5, 0.01));
 	return cube;
 }
 
