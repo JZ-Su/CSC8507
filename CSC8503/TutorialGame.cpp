@@ -583,7 +583,7 @@ void TutorialGame::InitWorld() {
 	
 	isDebug = true;
 	//isDebug = false;
-	int debugLevel =4;
+	int debugLevel =1;
 
 	if (isDebug) {
 		switch (debugLevel)
