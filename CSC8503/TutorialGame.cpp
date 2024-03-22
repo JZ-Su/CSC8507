@@ -60,8 +60,8 @@ for this module, even in the coursework, but you can add it if you like!
 
 void TutorialGame::InitialiseAssets() {
 	InitCamera();
-	InitAudio();
 	InitWorld();
+	gameState = OnGoing;
 }
 
 TutorialGame::~TutorialGame() {
@@ -567,7 +567,7 @@ void TutorialGame::InitWorld() {
 
 	world->ClearAndErase();
 	physics->Clear();
-	gameLevel = new GameLevel(renderer);
+	gameLevel = new GameLevel(this->renderer);
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 	player = gameLevel->GetPlayer();
 	playerlist = gameLevel->GetPlayerList();
@@ -800,9 +800,17 @@ void TutorialGame::SelectGameMode(float dt) {
 	Debug::UpdateRenderables(dt);
 }
 
-void TutorialGame::InitGame() {
+void TutorialGame::InitGame(float dt) {
+	InitAudio();
+
+	GameTechRenderer::CreateGameUI({ Vector3(-1,1,-1), Vector3(-1,-1,-1), Vector3(1,-1,-1), Vector3(1,1,-1) }, "loading", "");
+	Debug::Print("Loading", Vector2(43, 40), Vector4(1,0,1,1));
+	renderer->Render();
+	GameTechRenderer::UpdateUI();
+	Debug::UpdateRenderables(dt);
+	soundManager.playSound("end");
 	InitialiseAssets();
-	gameState = OnGoing;
+	soundManager.stopSound("end");
 }
 
 void TutorialGame::ShowPause(float dt) {

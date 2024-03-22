@@ -1,4 +1,5 @@
 #include "Window.h"
+#include <future>
 
 #include "Debug.h"
 
@@ -145,7 +146,7 @@ int main() {
 			g->SelectGameMode(dt);
 			break;
 		case NCL::CSC8503::Start:
-			g->InitGame();
+			g->InitGame(dt);
 			break;
 		case NCL::CSC8503::OnGoing:
 			g->UpdateGame(dt);
@@ -159,13 +160,6 @@ int main() {
 		default:
 			break;
 		}
-
-		//if (g->GetState() == Exit) break;
-
-		//if (networkDebug)
-		//{
-		//	g->UpdateGame(dt);
-		//}
 		
 	}
 	Window::DestroyGameWindow();

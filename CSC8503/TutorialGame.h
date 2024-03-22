@@ -40,7 +40,7 @@ namespace NCL {
 
 			void ShowMainMenu(float dt);
 			void SelectGameMode(float dt);
-			void InitGame();
+			void InitGame(float dt);
 			void ShowPause(float dt);
 			void ShowEnd(float dt);
 			void ExecuteAttack(float dt);
@@ -51,6 +51,9 @@ namespace NCL {
 
 			void DropMassiveItems();
 			void DropItems();
+
+			void AsyncLoading(float dt);
+
 		protected:
 			bool isDebug;
 

@@ -14,7 +14,6 @@ std::vector<GameObject*> BasicExamples::propList;
 BasicExamples::BasicExamples(GameTechRenderer* render) {
 
 	this->render = render; 
-
 	cubeMesh    = render->LoadMesh("cube.msh");
 	sphereMesh  = render->LoadMesh("sphere.msh");
 	capsuleMesh = render->LoadMesh("capsule.msh");

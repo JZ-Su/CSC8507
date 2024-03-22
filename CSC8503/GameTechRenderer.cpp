@@ -203,7 +203,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	SetDebugStringBufferSizes(10000);
 	SetDebugLineBufferSizes(1000);
 
-	vector<char*> data(18, nullptr);
+	vector<char*> data(20, nullptr);
 	int width;
 	int height;
 	int channel;
@@ -243,6 +243,8 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	UImap["ghostcd"] = data[15];
 	TextureLoader::LoadTexture("/UI/GHOTS.png", data[16], width, height, channel, flag);
 	UImap["ghostc"] = data[16];
+	TextureLoader::LoadTexture("/UI/background.png", data[17], width, height, channel, flag);
+	UImap["loading"] = data[17];
 }
 
 GameTechRenderer::~GameTechRenderer() {
