@@ -160,6 +160,8 @@ int main() {
 		default:
 			break;
 		}
+
+		if (g->GetState() == Exit) break;
 		
 	}
 	Window::DestroyGameWindow();

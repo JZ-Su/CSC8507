@@ -374,7 +374,6 @@ void GameLevel::CreateLevel3() {
 	level3.AddObject(CreateShieldProp(Vector3(12, 3, 110), Vector3(1, 1, 1)));
 	level3.AddObject(CreateShieldProp(Vector3(-12, 3, 110), Vector3(1, 1, 1)));
 	level3.AddObject(CreateSpeedProp(Vector3(-4, 3, 110), Vector3(8, 8, 8)));
-	level3.AddObject(CreateRedBottleProp(Vector3(4, 3, 110), Vector3(2, 2, 2)));
 
 	// level3.AddObject(boss);
 	/*static_cast<Boss*>(boss)->NCL::CSC8503::Boss::BossBehaviourTree(player);*/
@@ -435,7 +434,7 @@ void GameLevel::CreateLevel4_Normal() {
 	l0.AddObject(CreateSignStart(Vector3(-59.65, 15, -35), Vector3(0.5, 2, 4), 0.0f, 1.0));
 	l0.AddObject(CreateSignContinue(Vector3(-59.65, 10, -35), Vector3(0.5, 2, 4), 0.0f, 1.0));
 	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
-	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
+	l0.AddObject(CreateFloor(Vector3(0, 0, 0), Vector3(100, 1, 100)));
 	l0.objectList.back()->SetBoundingVolume(nullptr);
 	level4_normal.emplace_back(l0); 
 	
@@ -520,7 +519,7 @@ void GameLevel::CreateLevel4_Rotate() {
 	l0.AddObject(CreateSignContinue(Vector3(60.65, 10, 35), Vector3(0.5, 2, 4), 0.0f, 1.0));
 
 	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
-	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
+	l0.AddObject(CreateFloor(Vector3(0, 0.0, 0), Vector3(100, 1, 100)));
 	l0.objectList.back()->SetBoundingVolume(nullptr);
 	level4_rotate.emplace_back(l0);
 
@@ -605,7 +604,7 @@ void GameLevel::CreateLevel4_Reverse() {
 	l0.AddObject(CreateSignContinue(Vector3(35, 10, 61), Vector3(0.5, 2, 4), 90.0f, 1.0));
 
 	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
-	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
+	l0.AddObject(CreateFloor(Vector3(0, 0, 0), Vector3(100, 1, 100)));
 	l0.objectList.back()->SetBoundingVolume(nullptr);
 	level4_reverse.emplace_back(l0);
 
@@ -691,7 +690,7 @@ void GameLevel::CreateLevel4_RR() {
 	l0.AddObject(CreateSignStart(Vector3(-35, 15,-61 ), Vector3(0.5, 2, 4), 90.0f, 1.0));
 	l0.AddObject(CreateSignContinue(Vector3(-35, 10,-61 ), Vector3(0.5, 2, 4), 90.0f, 1.0));
 	l0.AddObject(CreateCeiling(Vector3(0, 22, 0), Vector3(100, 1, 100), 0.0f));
-	l0.AddObject(CreateFloor(Vector3(0, -0.1, 0), Vector3(100, 1, 100)));
+	l0.AddObject(CreateFloor(Vector3(0, 0, 0), Vector3(100, 1, 100)));
 	l0.objectList.back()->SetBoundingVolume(nullptr);
 	level4_reverse_rotate.emplace_back(l0);
 
