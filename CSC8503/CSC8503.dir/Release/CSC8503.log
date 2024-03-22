@@ -1,0 +1,298 @@
+﻿  Building Custom Rule C:/Users/c2013448/csc8507/CSC8503/CMakeLists.txt
+  Scanning sources for module dependencies...
+  std.ixx
+  std.compat.ixx
+  Compiling...
+  std.ixx
+  std.compat.ixx
+  cmake_pch.cxx
+  GameTechRenderer.cpp
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(145,12): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(549,53): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(701,54): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(955,13): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(956,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(956,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(960,13): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(969,13): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(970,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(970,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(974,13): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(1196,111): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(1196,81): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(1196,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp(1196,25): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Main.cpp
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\../CSC8503/Player.h(137,55): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\NetworkedGame.h(208,45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  NetworkedGame.cpp
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\../CSC8503/Player.h(137,55): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\NetworkedGame.h(208,45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\NetworkObject.h(9,20): warning C4099: 'NCL::CSC8503::FullPacket': type name first seen using 'class' now seen using 'struct'
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\NetworkObject.h(9,9): message : see declaration of 'NCL::CSC8503::FullPacket'
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\NetworkObject.h(19,21): warning C4099: 'NCL::CSC8503::DeltaPacket': type name first seen using 'class' now seen using 'struct'
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\NetworkObject.h(19,9): message : see declaration of 'NCL::CSC8503::DeltaPacket'
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\NetworkObject.h(31,22): warning C4099: 'NCL::CSC8503::ClientPacket': type name first seen using 'class' now seen using 'struct'
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\NetworkObject.h(31,9): message : see declaration of 'NCL::CSC8503::ClientPacket'
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\NetworkObject.h(66,26): warning C4099: 'NCL::CSC8503::RoundStatePacket': type name first seen using 'class' now seen using 'struct'
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\NetworkObject.h(66,9): message : see declaration of 'NCL::CSC8503::RoundStatePacket'
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\NetworkObject.h(78,27): warning C4099: 'NCL::CSC8503::PlayerStatePacket': type name first seen using 'class' now seen using 'struct'
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\NetworkObject.h(78,9): message : see declaration of 'NCL::CSC8503::PlayerStatePacket'
+  NetworkPlayer.cpp
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\../CSC8503/Player.h(137,55): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\NetworkedGame.h(208,45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  StateGameObject.cpp
+C:\Users\c2013448\csc8507\CSC8503\Player.h(137,55): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  TutorialGame.cpp
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\../CSC8503/Player.h(137,55): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(432,21): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(458,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(767,20): warning C4101: 'fontAlpha': unreferenced local variable
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(802,45): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(813,47): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(819,29): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(827,48): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(833,30): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(848,48): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(867,48): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(876,28): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1043,67): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1047,68): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1280,26): warning C4305: '*=': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1281,26): warning C4305: '*=': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1282,26): warning C4305: '*=': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1307,57): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1614,10): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1616,10): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1649,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1651,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1651,74): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1654,15): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1654,60): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1656,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1656,74): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1658,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1658,74): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1660,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1660,73): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1660,102): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1661,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1661,73): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1663,43): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1663,71): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1666,10): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1667,10): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1670,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1674,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1674,93): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1688,43): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1688,83): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1688,72): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1688,132): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1688,113): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1688,162): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1690,90): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1690,142): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1690,122): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1690,174): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1693,228): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1693,90): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1693,142): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1693,122): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1693,174): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1697,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1697,82): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1697,75): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1700,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1700,82): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1700,75): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1701,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1701,77): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1704,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1704,82): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1704,75): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1705,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1705,77): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1706,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1706,76): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1709,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1709,82): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1709,75): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1710,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1710,77): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1711,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1711,76): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1712,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1712,76): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp(1790,38): warning C4305: 'argument': truncation from 'double' to 'float'
+  BasicExamples.cpp
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\../CSC8503/Player.h(137,55): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(178,60): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(274,68): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(314,103): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(379,47): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(394,104): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(408,46): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(410,105): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(413,77): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(413,72): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(413,67): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(414,61): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(414,107): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(429,73): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(429,68): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(429,63): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(429,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(573,50): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(573,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(781,115): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(816,113): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(847,58): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(847,52): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(847,46): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(848,71): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(848,65): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(848,59): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(865,56): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(865,51): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(865,46): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(866,66): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(866,61): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp(866,56): warning C4305: 'argument': truncation from 'double' to 'float'
+  GameLevel.cpp
+C:\Users\c2013448\csc8507\CSC8503CoreClasses\../CSC8503/Player.h(137,55): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(21,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(132,51): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(134,56): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(134,51): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(243,64): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(243,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(255,65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(255,58): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(259,44): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(259,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(267,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(267,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(274,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(274,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(281,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(281,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(288,41): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(288,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(295,41): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(295,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(303,115): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(303,97): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(303,60): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(306,109): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(306,102): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(306,60): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(310,91): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(310,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(378,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(379,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(380,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(381,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(382,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(383,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(384,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(385,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(386,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(387,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(388,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(389,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(390,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(391,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(407,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(408,43): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(444,57): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(445,62): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(446,57): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(447,62): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(462,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(463,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(464,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(465,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(466,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(467,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(468,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(469,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(470,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(471,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(472,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(473,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(474,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(475,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(491,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(492,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(547,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(548,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(549,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(550,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(551,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(552,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(553,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(554,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(555,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(556,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(557,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(558,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(559,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(560,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(576,47): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(577,50): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(634,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(635,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(636,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(637,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(638,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(639,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(640,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(641,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(642,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(643,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(644,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(645,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(646,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(647,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(663,48): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(664,51): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(716,64): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(873,51): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(873,45): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(875,52): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(875,46): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(882,48): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(882,41): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(884,49): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(884,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(892,53): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(892,47): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(894,53): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp(894,47): warning C4305: 'argument': truncation from 'double' to 'float'
+  Player.cpp
+C:\Users\c2013448\csc8507\CSC8503\Player.h(137,55): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\Player.cpp(47,9): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\Player.cpp(59,23): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\Player.cpp(83,65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\Player.cpp(83,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Door.cpp
+C:\Users\c2013448\csc8507\CSC8503\Player.h(137,55): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  Boss.cpp
+C:\Users\c2013448\csc8507\CSC8503\Player.h(137,55): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\Boss.cpp(213,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Coin.cpp
+  SoundManager.cpp
+  GhostAI.cpp
+C:\Users\c2013448\csc8507\CSC8503\Player.h(137,55): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\c2013448\csc8507\CSC8503\GhostAI.cpp(18,108): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GhostAI.cpp(25,83): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\c2013448\csc8507\CSC8503\GhostAI.cpp(32,81): warning C4305: 'argument': truncation from 'double' to 'float'
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.h(56): warning C4172: returning address of local variable or temporary: l
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.h(52): warning C4172: returning address of local variable or temporary: l
+C:\Users\c2013448\csc8507\CSC8503\NetworkedGame.h(117): warning C4715: 'NCL::CSC8503::InGame::OnUpdate': not all control paths return a value
+  All 5923 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  CSC8503.vcxproj -> C:\Users\c2013448\csc8507\x64\Release\CSC8503.exe

@@ -53,10 +53,7 @@ Boss::Boss(Player* player) {
 			firstBelow50 = false;
 			return Failure;
 		}
-		//if (bossHealth <= 0) {
-		//    std::cout << "Boss health depleted.\n";
-		//    return Failure;
-		//}
+
 		attackBool = (distanceToPlayer <= attackRange) && (lastAttackTime >= attackCooldown);
 		attackCooldownBool = (distanceToPlayer <= chaseRange) && (lastAttackTime < attackCooldown);
 		chaseBool = (distanceToPlayer <= chaseRange) && (distanceToPlayer >= attackRange);
@@ -72,10 +69,7 @@ Boss::Boss(Player* player) {
 			this->GetTransform().SetOrientation(targetOrientation);
 			bossPosition += direction * chaseSpeed * dt;
 			this->GetTransform().SetPosition(bossPosition);
-			//Debug::DrawLine(bossPosition, this->player->GetTransform().GetPosition(), Debug::GREEN);
-			//Debug::DrawLine(GetTransform().GetPosition(), this->player->GetTransform().GetPosition(), Debug::RED);
-			//Debug::DrawCollisionBox(this);
-			//Debug::DrawCollisionBox(this->player);
+
 			isChasing = true;
 			lastAttackTime += dt;
 			return Ongoing;
@@ -114,9 +108,7 @@ Boss::Boss(Player* player) {
 				Vector3 direction = (targetPosition - bossPosition).Normalised();
 				Quaternion targetOrientation = Quaternion::AxisAngleToQuaterion(Vector3(0, -1, 0), Maths::RadiansToDegrees(atan2(direction.x, -direction.z)));
 				this->GetTransform().SetOrientation(targetOrientation);
-				//Debug::DrawLine(GetTransform().GetPosition(), this->player->GetTransform().GetPosition(), Debug::RED);
-				//Debug::DrawCollisionBox(this);
-				//Debug::DrawCollisionBox(this->player);
+
 				if (bulletTimer > 12.0F) {
 					isShooting = true;
 				}
@@ -208,14 +200,6 @@ Boss::Boss(Player* player) {
 	//    selection->AddChild(Death);
 	Root = new BehaviourSequence("Root Sequence");
 	Root->AddChild(selection);
-	//Root = new BehaviourSelector("Root");
-	//Combat = new BehaviourParallel("Combat");
-	//Combat->AddChild(dizziness);
-	//Combat->AddChild(antiRemoteAttack);
-	//Combat->AddChild(ChaseAndAttack);
-	//Root->AddChild(Death);
-	//Root->AddChild(Combat);
-	//Root->AddChild(Idle);
 }
 
 

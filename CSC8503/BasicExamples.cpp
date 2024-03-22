@@ -763,15 +763,9 @@ GameObject* BasicExamples::CreateRollingRock(const Vector3& position, float radi
 GameObject* BasicExamples::CreateShield(const Vector3& position, const Vector3& dimensions, float inverseMass) {
 	GameObject* shield = new GameObject("shield");
 
-	//AABBVolume* volume = new AABBVolume(Vector3(1.2, 1.2, 0.2) * dimensions);
-	//shield->GetTransform().SetCollisionDimensions(Vector3(1.2, 1.2, 0.2) * dimensions);
-	//shield->SetBoundingVolume((CollisionVolume*)volume);
-
 	shield->GetTransform().SetScale(dimensions * 2).SetPosition(position);
 	shield->SetRenderObject(new RenderObject(&shield->GetTransform(), shieldMesh, shieldTexture, modelShader));
 	shield->SetPhysicsObject(new PhysicsObject(&shield->GetTransform(), shield->GetBoundingVolume()));
-	//shield->GetRenderObject()->isAnimation = true;
-	//LoadMaterialTextures(shield, shieldMesh, shieldMat, render);
 
 	shield->GetPhysicsObject()->SetInverseMass(inverseMass);
 	shield->GetPhysicsObject()->InitCubeInertia();
@@ -857,8 +851,6 @@ GameObject* BasicExamples::CreateSpeedProp(const Vector3& position, const Vector
 	coffeecup->GetTransform().SetScale(dimensions * 2).SetPosition(position);
 	coffeecup->SetRenderObject(new RenderObject(&coffeecup->GetTransform(), speedPropMesh, speedPropTexture, itemShader));
 	coffeecup->SetPhysicsObject(new PhysicsObject(&coffeecup->GetTransform(), coffeecup->GetBoundingVolume()));
-	//shield->GetRenderObject()->isAnimation = true;
-	//LoadMaterialTextures(shield, shieldMesh, shieldMat, render);
 
 	coffeecup->GetPhysicsObject()->SetInverseMass(inverseMass);
 	coffeecup->GetPhysicsObject()->InitCubeInertia();
@@ -877,8 +869,6 @@ GameObject* BasicExamples::CreateShieldProp(const Vector3& position, const Vecto
 	shield->GetTransform().SetScale(dimensions * 2).SetPosition(position);
 	shield->SetRenderObject(new RenderObject(&shield->GetTransform(), shieldMesh, shieldTexture, itemShader));
 	shield->SetPhysicsObject(new PhysicsObject(&shield->GetTransform(), shield->GetBoundingVolume()));
-	//shield->GetRenderObject()->isAnimation = true;
-	//LoadMaterialTextures(shield, shieldMesh, shieldMat, render);
 
 	shield->GetPhysicsObject()->SetInverseMass(inverseMass);
 	shield->GetPhysicsObject()->InitCubeInertia();

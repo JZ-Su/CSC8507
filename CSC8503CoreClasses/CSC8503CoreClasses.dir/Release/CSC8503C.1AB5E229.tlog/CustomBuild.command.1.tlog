@@ -1,0 +1,10 @@
+^C:\USERS\C2013448\CSC8507\CSC8503CORECLASSES\CMAKELISTS.TXT
+setlocal
+C:\Users\c2013448\Cmake3.28.3\bin\cmake.exe -SC:/Users/c2013448/csc8507 -BC:/Users/c2013448/csc8507 --check-stamp-file C:/Users/c2013448/csc8507/CSC8503CoreClasses/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

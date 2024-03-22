@@ -1,0 +1,15 @@
+﻿  Building Custom Rule C:/Users/c2013448/csc8507/OpenGLRendering/CMakeLists.txt
+  cmake_pch.cxx
+  OGLTexture.h
+  OGLShader.h
+  OGLRenderer.h
+  OGLMesh.h
+  OGLComputeShader.h
+  OGLTexture.cpp
+  OGLShader.cpp
+  OGLRenderer.cpp
+  OGLMesh.cpp
+  OGLComputeShader.cpp
+  gl.h
+  gl.c
+  OpenGLRendering.vcxproj -> C:\Users\c2013448\csc8507\OpenGLRendering\Release\OpenGLRendering.lib

@@ -1,0 +1,55 @@
+﻿  Building Custom Rule C:/Users/c2013448/csc8507/NCLCoreClasses/CMakeLists.txt
+  cmake_pch.cxx
+  Assets.cpp
+  SimpleFont.cpp
+  TextureLoader.cpp
+  TextureWriter.cpp
+  Maths.cpp
+  Matrix2.cpp
+  Matrix3.cpp
+  Matrix4.cpp
+  Plane.cpp
+  Frustum.cpp
+  Quaternion.cpp
+  Vector2.cpp
+  Vector3.cpp
+  Vector4.cpp
+  Vector2i.cpp
+  Vector3I.cpp
+  Vector4I.cpp
+  MeshAnimation.cpp
+  Mesh.cpp
+  MshLoader.cpp
+  Compiling...
+  MeshMaterial.cpp
+  RendererBase.cpp
+  Shader.cpp
+  Texture.cpp
+  Camera.cpp
+  GameTimer.cpp
+  Keyboard.cpp
+  Mouse.cpp
+  Window.cpp
+  Controller.cpp
+  KeyboardMouseController.cpp
+  Win32Keyboard.cpp
+  Win32Mouse.cpp
+  Win32Window.cpp
+TextureLoader.obj : warning LNK4006: "int stbi_write_png_compression_level" (?stbi_write_png_compression_level@@3HA) already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: "int stbi_write_tga_with_rle" (?stbi_write_tga_with_rle@@3HA) already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: "int stbi_write_force_png_filter" (?stbi_write_force_png_filter@@3HA) already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: "public: static void __cdecl NCL::TextureWriter::WritePNG(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,char *,int,int,int)" (?WritePNG@TextureWriter@NCL@@SAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEADHHH@Z) already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: stbi_write_jpg already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: stbi_write_jpg_to_func already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: stbi_write_png_to_func already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: stbi_write_png already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: stbi_write_png_to_mem already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: stbi_zlib_compress already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: stbi_write_hdr already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: stbi_write_hdr_to_func already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: stbi_write_tga already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: stbi_write_tga_to_func already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: stbi_write_bmp already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: stbi_write_bmp_to_func already defined in TextureWriter.obj; second definition ignored
+TextureLoader.obj : warning LNK4006: stbi_flip_vertically_on_write already defined in TextureWriter.obj; second definition ignored
+  NCLCoreClasses.vcxproj -> C:\Users\c2013448\csc8507\NCLCoreClasses\Release\NCLCoreClasses.lib

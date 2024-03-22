@@ -71,9 +71,6 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-	//Debug::DrawCollisionBox(player);
-	//Debug::DrawCollisionBox(cameraCollision);
-
 	if (player) {
 		if (PlayerPreHealth > player->GetHealth()) {
 			PlayerPreHealth -= 0.5f;
@@ -86,10 +83,6 @@ void TutorialGame::UpdateGame(float dt) {
 	if (BossPrehHealth != gameLevel->GetBoss()->getBossHealth()) {
 		BossPrehHealth -= 0.5f;
 	}
-	
-	//Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Debug::RED);
-	//Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Debug::GREEN);
-	//Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Debug::BLUE);
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
 		gameState = Pause;
 		soundManager.PauseAllSounds();
@@ -97,9 +90,7 @@ void TutorialGame::UpdateGame(float dt) {
 	}
 	if (!inSelectionMode) world->GetMainCamera().UpdateCamera(dt);
 	if (lockedObject != nullptr) LockedObjectMovement(dt);
-	//if (lockedObject == nullptr) Debug::Print("Press F to lock camera", Vector2(5, 80));
-	//else Debug::Print("Press F to free camera", Vector2(5, 80));
-	/*playerPosition = player->GetTransform().GetPosition();*/
+
 	mainCameraPosition = world->GetMainCamera().GetPosition();
 	if (isWalking) {
 		FMOD_VECTOR position = { mainCameraPosition.x, mainCameraPosition.y, mainCameraPosition.z };
@@ -180,7 +171,7 @@ void TutorialGame::UpdateKeys(float dt) {
 		case 2: 
 			gameLevel->RemoveLevel(world, gameLevel->GetLevel2(), false);
 			gameLevel->AddLevelToWorld(world, *gameLevel->GetLevel2());
-			//player->GetTransform().SetPosition(Vector3(235, 4, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
+			player->GetTransform().SetPosition(Vector3(235, 4, 175)).SetOrientation(Quaternion(0.0, 0.0, 0.0, 1.0));
 			player->GetPhysicsObject()->SetLinearVelocity(Vector3());
 			portal = gameLevel->GetLevel2()->portal;
 			PlayLevelBGM("level2");
@@ -364,11 +355,6 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Vector3 camdir = Mrot * Vector3(0, 0, -1);
 	Vector3 campos = targetpos - camdir * 20.0f;
 
-
-	//cameraCollision->GetTransform().SetPosition(campos + Vector3(0, 7, 3));
-
-	//physics->Update(dt);
-
 	/*Ray collisionRay = Ray(targetpos, -camdir);
 	RayCollision collisionRayData;
 	if (world->Raycast(collisionRay, collisionRayData, true, lockedObject))
@@ -380,13 +366,13 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		player->SetIsWalk(true);
 		//player->getIsAccelerated()?lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*3): lockedObject->GetPhysicsObject()->AddForce(-fwdAxis*1.5);
-		player->getIsAccelerated() ? player->forceToBeAdded+=(-fwdAxis * 1.5) : player->forceToBeAdded += (-fwdAxis * 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded+=(-fwdAxis * 3) : player->forceToBeAdded += (-fwdAxis * 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
 		player->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? player->forceToBeAdded += (fwdAxis * 1.5) : player->forceToBeAdded += (fwdAxis* 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (fwdAxis * 3) : player->forceToBeAdded += (fwdAxis* 1.5);
 		//player->getIsAccelerated() ? lockedObject->GetPhysicsObject()->AddForce(fwdAxis * 3) : lockedObject->GetPhysicsObject()->AddForce(fwdAxis* 1.5);
 		lockedObject->GetTransform().SetOrientation(Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 		player->GetPhysicsObject()->AddForce(player->forceToBeAdded);
@@ -394,20 +380,18 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? player->forceToBeAdded += (-rightAxis * 1.5) : player->forceToBeAdded += (-rightAxis* 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (-rightAxis * 3) : player->forceToBeAdded += (-rightAxis* 1.5);
 		player->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->SetIsWalk(true);
-		player->getIsAccelerated() ? player->forceToBeAdded += (rightAxis * 1.5) : player->forceToBeAdded += (rightAxis* 1.5);
+		player->getIsAccelerated() ? player->forceToBeAdded += (rightAxis * 3) : player->forceToBeAdded += (rightAxis* 1.5);
 		player->GetPhysicsObject()->AddForce(player->forceToBeAdded);
 	}
 	else if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
 		if (player->GetCanJump())
 		{
 			player->isSpacePressed = true;
-			/*Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
-			lockedObject->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 24, velocity.z));*/
 			player->SetCanJump(false);
 			player->setJumpTimer(1.1f);
 			player->SetIsJumping(true);
@@ -440,13 +424,6 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM4)) {
 		player->UseItem(3);
-		//speedProp = gameLevel->CreateSpeedProp(Vector3(0, 5, 65), Vector3(16, 16, 16));
-
-		//world->AddGameObject(speedProp);
-
-		//propList.push_back(speedProp);
-
-		//player->SetIsAccelerated(true);
 	}
 	if (useskill) {
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::Q)) {
@@ -467,7 +444,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		}
 
 	}
-	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();/*cameraCollision->GetTransform().GetPosition()*/
+	Matrix4 viewMat = Matrix4::BuildViewMatrix(campos, targetpos, Vector3(0, 1, 0)).Inverse();
 	Quaternion q(viewMat);
 	float pitch = q.ToEuler().x;
 	float yaw = q.ToEuler().y;
@@ -475,10 +452,9 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Quaternion lookat = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
 	lockedObject->GetTransform().SetOrientation(lookat);
 
-	world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));/*cameraCollision->GetTransform().GetPosition()+Vector3(0,5,0)*/
+	world->GetMainCamera().SetPosition(campos + Vector3(0, 5, 3));
 	world->GetMainCamera().SetPitch(pitch);
 	world->GetMainCamera().SetYaw(yaw);
-	//renderer.UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
 	UpdateProjMatrixFov(Window::GetMouse()->GetWheelMovement());
 
 }
@@ -498,10 +474,6 @@ void TutorialGame::DebugObjectMovement() {
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::NUMPAD8)) {
 			selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 0, 10));
 		}
-
-		//if (Window::GetKeyboard()->KeyDown(KeyCodes::NUMPAD2)) {
-		//	selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 0, -10));
-		//}
 
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
 			selectionObject->GetPhysicsObject()->AddForce(Vector3(10, 0, 0));
@@ -531,10 +503,6 @@ void TutorialGame::DebugObjectMovement() {
 		if (Window::GetKeyboard()->KeyDown(KeyCodes::NUMPAD8)) {
 			player->GetPhysicsObject()->AddTorque(Vector3(0, 0, 10));
 		}
-
-		//if (Window::GetKeyboard()->KeyDown(KeyCodes::NUMPAD2)) {
-		//	player->GetPhysicsObject()->AddTorque(Vector3(0, 0, -10));
-		//}
 
 		else if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
 			player->GetPhysicsObject()->AddForce(Vector3(0, 0, -2));
@@ -579,11 +547,9 @@ void TutorialGame::InitWorld() {
 	gameLevel->AddLevelToWorld(world, gameLevel->GetGeneric());
 	player = gameLevel->GetPlayer();
 	playerlist = gameLevel->GetPlayerList();
-	//localplayer = gameLevel->GetPlayer();
 	playerWalkAnimation = gameLevel->getplayerWalkAnimation();
 	playerIdleAnimation = gameLevel->getplayerIdleAnimation();
 	playerJumpAnimation = gameLevel->getplayerJumpAnimation();
-	//cameraCollision = gameLevel->getCamreaCollision();
 
 	/*
 		Please switch the debug mode here
@@ -813,7 +779,6 @@ void TutorialGame::ShowEnd(float dt) {
 }
 
 void TutorialGame::DrawAnim(GameObject* g, MeshAnimation* anim) {
-	//const vector <Matrix4 > invBindPose = playerMesh->GetInverseBindPose();
 	const Matrix4* invBindPose = g->GetRenderObject()->GetMesh()->GetInverseBindPose().data();
 	const Matrix4* frameData = anim->GetJointData(g->GetRenderObject()->currentFrame % anim->GetFrameCount());
 	vector <Matrix4 > tempMatrices;
@@ -841,8 +806,6 @@ void TutorialGame::UpdateBossAnim(Boss* boss, MeshAnimation* bossAnimation, floa
 			bool iceCubeBulletShooting = iceCubeBullet->GetIsHiding() && fireBallBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasIceCubeBullet();
 			bool fireBallBulletShooting = fireBallBullet->GetIsHiding() && iceCubeBullet->GetIsHiding() && gameLevel->GetBoss()->getShooting() && gameLevel->GetBoss()->getHasFireBallBullet();
 			if (iceCubeBulletShooting || fireBallBulletShooting) {
-				/*boss->GetRenderObject()->frameTime -= dt;
-				UpdateAnim(boss, bossShootingAnimation);*/
 				playShootingAnimation = true;
 			}
 			if (playShootingAnimation) {
@@ -1072,7 +1035,6 @@ void TutorialGame::UpdateLevel(float dt) {
 	Vector3 direction = Vector3(0, -1, 0);
 	Ray ray = Ray(playerPosition, direction);
 	RayCollision closestCollision;
-	//closestCollision.rayDistance = gameLevel->GetBoss()->attackRange;
 	if (world->Raycast(ray, closestCollision, true)) {
 		GameObject* blocker = (GameObject*)closestCollision.node;
 		if (blocker->GetName() == "floor"|| blocker->GetName() == "aabb"|| blocker->GetName() == "cube") {
@@ -1085,11 +1047,6 @@ void TutorialGame::UpdateLevel(float dt) {
 					player->GetPhysicsObject()->AddForce(-physics->GetGravity() * 0.021);
 				}
 			}
-			//float playerX = player->GetTransform().GetPosition().x;
-			//float playerY = blocker->GetTransform().GetPosition().y + blocker->GetTransform().GetScale().y / 2;
-			//float playerZ = player->GetTransform().GetPosition().z;
-			//player->GetTransform().SetPosition(Vector3(playerX, playerY, playerZ));
-
 		}
 	}
 	// Level 1 stuff
@@ -1247,8 +1204,7 @@ void TutorialGame::UpdateLevel(float dt) {
 			iceCubeBullet->UpdateExistenceTime(dt);
 			Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 			Vector3 ballPosition = iceCubeBullet->GetTransform().GetPosition();
-			//UpdateTrackingBall(ballPosition, playerPosition, 2, dt);
-			//if (iceCubeBullet->GetExistenceTime() >= 6.0f) {
+
 			if (!iceCubeBullet->GetIsBlockBack()) {
 				UpdateTrackingBall(ballPosition, playerPosition, 15, dt);
 			}
@@ -1496,8 +1452,7 @@ void TutorialGame::IceCubeBulletLogic(float dt) {
 		iceCubeBullet->UpdateExistenceTime(dt);
 		Vector3 playerPosition = player->GetTransform().GetPosition() + Vector3(0, 5, 0);
 		Vector3 ballPosition = iceCubeBullet->GetTransform().GetPosition();
-		//UpdateTrackingBall(ballPosition, playerPosition, 2, dt);
-		//if (iceCubeBullet->GetExistenceTime() >= 6.0f) {
+
 		if (!iceCubeBullet->GetIsBlockBack()) {
 			UpdateTrackingBall(ballPosition, playerPosition, 15, dt);
 		}

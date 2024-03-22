@@ -1,0 +1,17 @@
+C:\Users\c2013448\csc8507\CSC8503\CMakeFiles\CSC8503.dir\cmake_pch.cxx;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\cmake_pch.obj
+C:\Users\c2013448\csc8507\CSC8503\GameTechRenderer.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\GameTechRenderer.obj
+C:\Users\c2013448\csc8507\CSC8503\Main.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\Main.obj
+C:\Users\c2013448\csc8507\CSC8503\NetworkedGame.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\NetworkedGame.obj
+C:\Users\c2013448\csc8507\CSC8503\NetworkPlayer.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\NetworkPlayer.obj
+C:\Users\c2013448\csc8507\CSC8503\StateGameObject.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\StateGameObject.obj
+C:\Users\c2013448\csc8507\CSC8503\TutorialGame.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\TutorialGame.obj
+C:\Users\c2013448\csc8507\CSC8503\BasicExamples.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\BasicExamples.obj
+C:\Users\c2013448\csc8507\CSC8503\GameLevel.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\GameLevel.obj
+C:\Users\c2013448\csc8507\CSC8503\Player.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\Player.obj
+C:\Users\c2013448\csc8507\CSC8503\Door.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\Door.obj
+C:\Users\c2013448\csc8507\CSC8503\Boss.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\Boss.obj
+C:\Users\c2013448\csc8507\CSC8503\Coin.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\Coin.obj
+C:\Users\c2013448\csc8507\CSC8503\SoundManager.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\SoundManager.obj
+C:\Users\c2013448\csc8507\CSC8503\GhostAI.cpp;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\GhostAI.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\modules\std.ixx;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\std.ixx.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\modules\std.compat.ixx;C:\Users\c2013448\csc8507\CSC8503\CSC8503.dir\Release\std.compat.ixx.obj

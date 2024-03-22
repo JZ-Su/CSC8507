@@ -554,11 +554,6 @@ void GameTechRenderer::RenderShadowMap() {
 			glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
 			glActiveTexture(GL_TEXTURE1);
 			if (!(*i).isLight) {
-				/*Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
-				mvpMatrix = modelMatrix;
-				glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
-				glActiveTexture(GL_TEXTURE1);*/
-
 				BindMesh((OGLMesh&)*(*i).GetMesh());
 				size_t layerCount = (*i).GetMesh()->GetSubMeshCount();
 				for (size_t i = 0; i < layerCount; ++i) {

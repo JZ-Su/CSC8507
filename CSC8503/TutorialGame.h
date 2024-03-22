@@ -80,7 +80,6 @@ namespace NCL {
 			void DebugObjectMovement();
 			void LockedObjectMovement(float dt);
 			void UpdateProjMatrixFov(float df);
-			//void BridgeConstraintTest();
 
 #ifdef USEVULKAN
 			GameTechVulkanRenderer*	renderer;
@@ -107,12 +106,10 @@ namespace NCL {
 			}
 
 			GameLevel* gameLevel = nullptr;
-			//GameObject* cameraCollision = nullptr;
 
 			int score;
 			Player* player;
 
-			//Player* localplayer;
 			std::vector<Player*> playerlist;
 
 			Boss* boss;
@@ -220,7 +217,6 @@ namespace NCL {
 			bool bossDeathLogicDone = false;
 			bool playerDeathLogic = false;
 			string currentBGM = "";
-			//std::vector<GameObject*> propList;
 			float progress=0;
 			float level3Timer = 0;
 			void UpdateLevel3UI();

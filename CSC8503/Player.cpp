@@ -69,8 +69,7 @@ void Player::OnCollisionBegin(GameObject* otherObject) {
 		if (it != BasicExamples::propList.end()) {
 			BasicExamples::propList.erase(it);
 		}
-		//TutorialGame tutorialgame;
-		//tutorialgame.getWorld()->RemoveGameObject(otherObject);
+
 		otherObject->Deactivate();
 
 		int minX = 0;
