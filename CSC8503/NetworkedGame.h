@@ -59,6 +59,8 @@ namespace NCL {
 			bool isRoundStart() { return isRoundstart; }
 			bool isGameOver() { return isGameover; }
 
+			void SetRoundStart(bool in) { isRoundstart = in; }
+
 			
 		protected:
 
@@ -68,7 +70,7 @@ namespace NCL {
 
 			void BroadcastSnapshot(bool deltaFrame);
 			void UpdateMinimumState();
-			GameObject* AddNetPlayerToWorld(const Vector3& position, int playerNum);
+			Player* AddNetPlayerToWorld(const Vector3& position, int playerNum);
 
 			bool clientProcessFp(FullPacket* fp);
 			bool clientProcessDp(DeltaPacket* dp);
@@ -98,7 +100,7 @@ namespace NCL {
 			std::map<int, NetworkObject*> networkObjects;
 
 			std::vector<int> PlayersList;
-			std::vector<GameObject*> serverPlayers;
+			std::vector<Player*> serverPlayers;
 			GameObject* localPlayer;
 			PushdownMachine* MenuSystem;
 		};
@@ -138,13 +140,13 @@ namespace NCL {
 
 			PushdownResult RoundOnGoing(float dt, NetworkedGame* thisGame)
 			{
-				startDisplayTime -= dt;
+				/*startDisplayTime -= dt;
 				if (startDisplayTime > 0) { Debug::Print("Round Start!", Vector2(38, 35), Debug::RED); }
 				blinkTime -= dt;
 				if (blinkTime < 0) {
 					displayTreasureSign = !displayTreasureSign;
 					blinkTime = 0.6f;
-				}
+				}*/
 
 				//Debug::Print(thisGame->getRoundTimeToString(), Vector2(34, 10), Debug::YELLOW);
 				//Debug::Print(thisGame->getLocalPLayerScoreToString(), Vector2(70, 10), Debug::YELLOW);
@@ -207,6 +209,7 @@ namespace NCL {
 					NetworkedGame* thisGame = (NetworkedGame*)game;
 					if (thisGame->isRoundStart())
 					{
+						thisGame->StartLevel();
 						*newState = new InGame();
 						return PushdownResult::Push;
 					}
@@ -216,7 +219,7 @@ namespace NCL {
 						Debug::Print("Press S : Game Start!", Vector2(5, 80), Debug::YELLOW);
 						if (Window::GetKeyboard()->KeyPressed(KeyCodes::S))
 						{
-							thisGame->StartLevel();
+							thisGame->SetRoundStart(true);
 						}
 					}
 					if (thisGame->isClient())

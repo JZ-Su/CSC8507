@@ -504,27 +504,27 @@ GameObject* BasicExamples::CreateLight(const Vector3& position, const Vector4& c
 }
 
 Player* BasicExamples::CreatePlayer(const Vector3& position, const Vector3& dimensions, float inverseMass) {
-	Player* player = new Player("player");
+	Player* newplayer = new Player("player");
 
 	Vector3 collisionDimensions = Vector3(0.6, 1.0, 0.6) * dimensions;
 	AABBVolume* volume = new AABBVolume(collisionDimensions);
-	player->GetTransform().SetCollisionDimensions(collisionDimensions);
-	player->SetBoundingVolume((CollisionVolume*)volume);
+	newplayer->GetTransform().SetCollisionDimensions(collisionDimensions);
+	newplayer->SetBoundingVolume((CollisionVolume*)volume);
 
-	player->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetCollisionOffset(Vector3(0, dimensions.y, 0));
-	player->SetRenderObject(new RenderObject(&player->GetTransform(), playerMesh, nullptr, playerShader));
-	player->SetPhysicsObject(new PhysicsObject(&player->GetTransform(), player->GetBoundingVolume()));
-	player->GetRenderObject()->isAnimation = true;
-	player->GetRenderObject()->isAnimated = true;
+	newplayer->GetTransform().SetScale(dimensions * 2).SetPosition(position).SetCollisionOffset(Vector3(0, dimensions.y, 0));
+	newplayer->SetRenderObject(new RenderObject(&newplayer->GetTransform(), playerMesh, nullptr, playerShader));
+	newplayer->SetPhysicsObject(new PhysicsObject(&newplayer->GetTransform(), newplayer->GetBoundingVolume()));
+	newplayer->GetRenderObject()->isAnimation = true;
+	newplayer->GetRenderObject()->isAnimated = true;
 
-	LoadMaterialTextures(player, playerMesh, playerMat, render);
+	LoadMaterialTextures(newplayer, playerMesh, playerMat, render);
 
-	player->GetPhysicsObject()->SetInverseMass(inverseMass);
-	player->GetPhysicsObject()->InitPlayerInertia();
-	player->GetPhysicsObject()->Setelasticity(0);
-	player->GetPhysicsObject()->SetApplyAngImp(false);
-	player->SetTag("player");
-	return player;
+	newplayer->GetPhysicsObject()->SetInverseMass(inverseMass);
+	newplayer->GetPhysicsObject()->InitPlayerInertia();
+	newplayer->GetPhysicsObject()->Setelasticity(0);
+	newplayer->GetPhysicsObject()->SetApplyAngImp(false);
+	newplayer->SetTag("player");
+	return newplayer;
 }
 
 void BasicExamples::LoadMaterialTextures(GameObject* character, Mesh* mesh, MeshMaterial* material, GameTechRenderer* renderer) {

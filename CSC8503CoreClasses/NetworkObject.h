@@ -30,7 +30,7 @@ namespace NCL::CSC8503 {
 
 	struct ClientPacket : public GamePacket {
 		int		lastID;
-		Vector3 forceToBeAdded;
+		//Vector3 forceToBeAdded;
 		Quaternion orientationNetPlayer;
 		char	btnStates[6];
 
@@ -99,10 +99,10 @@ namespace NCL::CSC8503 {
 		void UpdateStateHistory(int minID);
 		int getNetWorkID()const { return networkID; }
 		GameObject* getGameObjectPtr() const { return &object; }
+		NetworkState& GetLatestNetworkState();
 
 	protected:
 
-		NetworkState& GetLatestNetworkState();
 
 		bool GetNetworkState(int frameID, NetworkState& state);
 

@@ -90,24 +90,26 @@ void NetworkedGame::UpdateGame(float dt) {
 		{
 			if (thisServer) {
 				UpdateAsServer(dt);
+				
 			}
 			else if (thisClient) {
 				UpdateAsClient(dt);
 			}
 			
 		}
+		if (thisServer) {
+			ServerUpdatePlayerList();
+			ServerSendRoundState();
+		}
 		timeToNextPacket += 1.0f / 60.0f; //20hz server/client update
 	}
 
 	if (thisServer) {
 		thisServer->UpdateServer();
-		ServerUpdatePlayerList();
-		ServerSendRoundState();
-		if(isRoundStart())
-			UpdateGamePlayerInput(dt);
-		physics->Update(dt);
+		
 		if (isRoundStart()) {
-			//SpawnPlayer();
+			UpdateGamePlayerInput(dt);
+			physics->Update(dt);
 		}
 	}
 	else if (thisClient) {
@@ -116,30 +118,6 @@ void NetworkedGame::UpdateGame(float dt) {
 			//SpawnPlayer();
 		}
 	}
-
-	/*if (!thisServer && Window::GetKeyboard()->KeyPressed(KeyCodes::F9)) {
-		StartAsServer();
-	}
-	if (!thisClient && Window::GetKeyboard()->KeyPressed(KeyCodes::F10)) {
-		StartAsClient(127,0,0,1);
-	}*/
-	if (isRoundstart)
-	{
-		//updateRoundTime(dt);
-		//UpdateScoreTable();
-		//LevelDelayOver(dt);
-	}
-	/*if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q))
-	{
-		if (lockedObject == nullptr) {
-			lockedObject = localPlayer;
-			Window::GetWindow()->ShowOSPointer(true);
-		}
-		else if (lockedObject == lockedObject) {
-			lockedObject = nullptr;
-			Window::GetWindow()->ShowOSPointer(false);
-		}
-	}*/
 
 	TutorialGame::UpdateGame(dt);
 }
@@ -161,14 +139,15 @@ void NetworkedGame::UpdateAsClient(float dt) {
 	
 	//Vector3 PointerPos;
 	//findOSpointerWorldPosition(PointerPos);
-	newPacket.forceToBeAdded = player->forceToBeAdded;
-	newPacket.orientationNetPlayer = player->orientationNetPlayer;
-	newPacket.btnStates[0] = player->IsJumping();
-	/*newPacket.btnStates[1] = Window::GetKeyboard()->KeyHeld(KeyCodes::S) ? 1 : 0;
+	//newPacket.forceToBeAdded = player->forceToBeAdded;
+	newPacket.orientationNetPlayer = player->GetTransform().GetOrientation();
+	//std::cout << "orio" << player->orientationNetPlayer;
+	newPacket.btnStates[0] = Window::GetKeyboard()->KeyHeld(KeyCodes::W) ? 1 : 0;
+	newPacket.btnStates[1] = Window::GetKeyboard()->KeyHeld(KeyCodes::S) ? 1 : 0;
 	newPacket.btnStates[2] = Window::GetKeyboard()->KeyHeld(KeyCodes::D) ? 1 : 0;
 	newPacket.btnStates[3] = Window::GetKeyboard()->KeyHeld(KeyCodes::A) ? 1 : 0;
-	newPacket.btnStates[4] = Window::GetKeyboard()->KeyPressed(KeyCodes::SHIFT) ? 1 : 0;
-	newPacket.btnStates[5] = Window::GetMouse()->ButtonPressed(MouseButtons::Type::Left) ? 1 : 0;*/
+	newPacket.btnStates[4] = player->isSpacePressed =='1' ? 1 : 0;
+
 	newPacket.lastID = GlobalStateID;
 
 	//if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
@@ -177,6 +156,7 @@ void NetworkedGame::UpdateAsClient(float dt) {
 	//	newPacket.lastID = 0; //You'll need to work this out somehow...
 	//}
 	thisClient->SendPacket(newPacket);
+	player->forceToBeAdded = Vector3();
 }
 
 void NetworkedGame::BroadcastSnapshot(bool deltaFrame) {
@@ -195,7 +175,7 @@ void NetworkedGame::BroadcastSnapshot(bool deltaFrame) {
 		//and store the lastID somewhere. A map between player
 		//and an int could work, or it could be part of a 
 		//NetworkPlayer struct. 
-		int playerState = 0;
+		int playerState = o->GetLatestNetworkState().stateID;
 		GamePacket* newPacket = nullptr;
 		if (o->WritePacket(&newPacket, deltaFrame, playerState)) {
 			thisServer->SendGlobalPacket(*newPacket);
@@ -258,12 +238,12 @@ void NetworkedGame::SpawnPlayer() {
 	if (isServer())
 	{
 		if(player != serverPlayers[0])
-			player = dynamic_cast<Player*>( serverPlayers[0]);
+			player =  serverPlayers[0];
 	}
 	else if (isClient())
 	{
 		if (player != serverPlayers[GetClientPlayerNum()])
-			player = dynamic_cast<Player*>(serverPlayers[GetClientPlayerNum()]);
+			player = serverPlayers[GetClientPlayerNum()];
 	}
 	LockCameraToObject(player);
 }
@@ -276,7 +256,7 @@ void NetworkedGame::StartLevel() {
 	//scoreTable.clear();
 	//for (int i = 0; i < 4; ++i) { scoreTable.push_back(0); }
 	//Change Round State
-	GlobalStateID = -1;
+	//GlobalStateID = -1;
 	SpawnPlayer();
 	isRoundstart = true;
 	//RoundTime = 600.0f;
@@ -332,16 +312,16 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 }
 
 void NetworkedGame::OnPlayerCollision(NetworkPlayer* a, NetworkPlayer* b) {
-	if (thisServer) { //detected a collision between players!
-		MessagePacket newPacket;
-		newPacket.messageID = COLLISION_MSG;
-		newPacket.playerID  = a->GetPlayerNum();
+	//if (thisServer) { //detected a collision between players!
+	//	MessagePacket newPacket;
+	//	newPacket.messageID = COLLISION_MSG;
+	//	newPacket.playerID  = a->GetPlayerNum();
 
-		thisClient->SendPacket(newPacket);
+	//	thisClient->SendPacket(newPacket);
 
-		newPacket.playerID = b->GetPlayerNum();
-		thisClient->SendPacket(newPacket);
-	}
+	//	newPacket.playerID = b->GetPlayerNum();
+	//	thisClient->SendPacket(newPacket);
+	//}
 }
 
 int NetworkedGame::GetClientPlayerNum()
@@ -401,9 +381,9 @@ void NetworkedGame::ServerUpdatePlayerList()
 //	//SpawnPlayer();
 //}
 
-GameObject* NetworkedGame::AddNetPlayerToWorld(const Vector3& position, int playerNum)
+Player* NetworkedGame::AddNetPlayerToWorld(const Vector3& position, int playerNum)
 {
-	GameObject* thisplayer = playerlist[playerNum];
+	Player* thisplayer = playerlist[playerNum];
 	//float meshSize = 2.0f;
 	//Vector3 volumeSize = Vector3(1.0, 1.6, 1.0);
 	//float inverseMass = 1.0f / 60.0f;
@@ -424,7 +404,7 @@ GameObject* NetworkedGame::AddNetPlayerToWorld(const Vector3& position, int play
 	//character->GetPhysicsObject()->InitCubeInertia();
 
 
-	world->AddGameObject(thisplayer);
+	//world->AddGameObject(thisplayer);
 	return thisplayer;
 	//networkObjects.insert(std::pair<int, NetworkObject*>(playerNum, character->GetNetworkObject()));
 
@@ -473,16 +453,21 @@ bool NetworkedGame::clientProcessDp(DeltaPacket* dp)
 
 bool NetworkedGame::serverProcessCP(ClientPacket* cp, int source)
 {
-	std::cout << "recieved";
+	//std::cout << "recieved";
 	int playerID = GetClientPlayerNum(source);
 	if (playerID != -1)
 	{
-		Player* thePlayer = (Player*)(serverPlayers[playerID]);
-		thePlayer->forceToBeAdded=(cp->forceToBeAdded);
+		Player* thePlayer = dynamic_cast<Player*>(serverPlayers[playerID]);
+		//thePlayer->forceToBeAdded=(cp->forceToBeAdded);
 		//if (cp->btnStates[Sprint] == 1) { thePlayer->PlayerSprint(); }
 		//if (cp->btnStates[Fire] == 1) { thePlayer->PlayerFire(); }
 		thePlayer->orientationNetPlayer = cp->orientationNetPlayer;
-		thePlayer->isSpacePressed = cp->btnStates[0];
+		thePlayer->btnState[0] = cp->btnStates[0];
+		thePlayer->btnState[1] = cp->btnStates[1];
+		thePlayer->btnState[2] = cp->btnStates[2];
+		thePlayer->btnState[3] = cp->btnStates[3];
+
+		thePlayer->isSpacePressed = cp->btnStates[4];
 		/*thePlayer->SetBtnState(Right, cp->btnStates[Right]);
 		thePlayer->SetBtnState(Left, cp->btnStates[Left]);*/
 
@@ -519,34 +504,32 @@ void NetworkedGame::UpdateGamePlayerInput(float dt)
 	{
 		if (player != nullptr)
 		{
-			if (player->isSpacePressed == 1 ? true : false) {
-				Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
-				player->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 24, velocity.z));
-			}
-			/*if (thePlayer->GetBtnState(Down) == 1) { btnVal[Down] = true; }
-			if (thePlayer->GetBtnState(Right) == 1) { btnVal[Right] = true; }
-			if (thePlayer->GetBtnState(Left) == 1) { btnVal[Left] = true; }*/
-			/*thePlayer->MovePlayer(btnVal[Up], btnVal[Down], btnVal[Right], btnVal[Left]);
-			thePlayer->GameTick(dt);*/
-			player->GetPhysicsObject()->AddForce(player->forceToBeAdded);
-			player->GetTransform().SetOrientation(player->orientationNetPlayer);
+			//player->GetTransform().SetOrientation(player->orientationNetPlayer);
+			player->btnState[0] = Window::GetKeyboard()->KeyHeld(KeyCodes::W) ? 1 : 0;
+			player->btnState[1] = Window::GetKeyboard()->KeyHeld(KeyCodes::S) ? 1 : 0;
+			player->btnState[2] = Window::GetKeyboard()->KeyHeld(KeyCodes::D) ? 1 : 0;
+			player->btnState[3] = Window::GetKeyboard()->KeyHeld(KeyCodes::A) ? 1 : 0;
+			//player->btnState[4] = player->isSpacePressed == '1' ? 1 : 0;
 		}
-		for (int i = 1; i < serverPlayers.size(); ++i)
+		for (int i = 0; i < serverPlayers.size(); ++i)
 		{
 			if (serverPlayers[i] != nullptr)
 			{
-				Player* thePlayer = (Player*)(serverPlayers[i]);
-				if (thePlayer->isSpacePressed == 1 ? true : false) {
-					Vector3 velocity = lockedObject->GetPhysicsObject()->GetLinearVelocity();
-					thePlayer->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 24, velocity.z));
+				Player* thePlayer = dynamic_cast<Player*>(serverPlayers[i]);
+				if (thePlayer->isSpacePressed == '1') {
+					Vector3 velocity = thePlayer->GetPhysicsObject()->GetLinearVelocity();
+					thePlayer->GetPhysicsObject()->SetLinearVelocity(Vector3(velocity.x, 3, velocity.z));
 				}
-				/*if (thePlayer->GetBtnState(Down) == 1) { btnVal[Down] = true; }
-				if (thePlayer->GetBtnState(Right) == 1) { btnVal[Right] = true; }
-				if (thePlayer->GetBtnState(Left) == 1) { btnVal[Left] = true; }*/
-				/*thePlayer->MovePlayer(btnVal[Up], btnVal[Down], btnVal[Right], btnVal[Left]);
-				thePlayer->GameTick(dt);*/
-				thePlayer->GetPhysicsObject()->AddForce(thePlayer->forceToBeAdded);
 				thePlayer->GetTransform().SetOrientation(thePlayer->orientationNetPlayer);
+				bool forward	= thePlayer->btnState[0];
+				bool back		= thePlayer->btnState[1];
+				bool right		= thePlayer->btnState[2];
+				bool left		= thePlayer->btnState[3];
+
+				thePlayer->MovePlayer(forward, back, right, left);
+
+				//std::cout << "orie" << thePlayer->orientationNetPlayer;
+				//std::cout << "force" << thePlayer->forceToBeAdded;
 			}
 		}
 		/*bullet::UpdateBulletList();
@@ -584,7 +567,7 @@ void NetworkedGame::ServerSendPlayerState()
 			if (serverPlayers[i] != nullptr)
 			{
 				PlayerStatePacket state;
-				NetworkPlayer* thisPlayer = (NetworkPlayer*)(serverPlayers[i]);
+				Player* thisPlayer = (Player*)(serverPlayers[i]);
 				state.playerNum = i;
 				/*state.state[0] = (int)thisPlayer->getSprintCD();
 				state.state[1] = (int)thisPlayer->getFireCD();

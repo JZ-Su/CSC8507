@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Window.h"
 #include "GameWorld.h"
+#include "PhysicsObject.h"
 namespace NCL {
 	namespace CSC8503 {
 		class Player :public GameObject
@@ -117,9 +118,29 @@ namespace NCL {
 			static const std::vector<std::string>& GetItemList() { return itemList; }
 
 			char isSpacePressed;
+			char btnState[4] = { 0,0,0,0 };
 			Vector3 forceToBeAdded;
 			Quaternion orientationNetPlayer;
 			
+			void MovePlayer(bool Forward, bool Backward, bool Right, bool Left)
+			{
+				Vector3 MoveDir = Vector3(0, 0, 0);
+				if (Forward) { MoveDir += Vector3(0, 0, -1); }
+				if (Backward) { MoveDir += Vector3(0, 0, 1); }
+				if (Right) { MoveDir += Vector3(1, 0, 0); }
+				if (Left) { MoveDir += Vector3(-1, 0, 0); }
+				MoveDir = MoveDir.Normalised();
+
+				MoveDir = GetTransform().GetOrientation()  * MoveDir;
+
+				float f = getIsAccelerated() ? 3.0f : 1.5f;
+
+				Vector3 force = MoveDir * f;
+				
+				//std::cout << "velocity : " << physicsObject->GetLinearVelocity().Length() << std::endl;
+				this->physicsObject->AddForce(force);
+				//Debug::DrawLine(this->transform.GetPosition(), this->transform.GetPosition() + force, Debug::RED, 0.0f);
+			}
 
 		protected:
 			bool isRencentlyHurt;

@@ -109,7 +109,7 @@ int main() {
 		return -1;
 	}
 	w->ShowOSPointer(false);
-	w->LockMouseToWindow(true);
+	w->LockMouseToWindow(false);
 	
 	//TutorialGame* g = new TutorialGame();
 	bool networkDebug = true;
