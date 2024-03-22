@@ -146,24 +146,7 @@ namespace NCL {
 					blinkTime = 0.6f;
 				}
 
-				//Debug::Print(thisGame->getRoundTimeToString(), Vector2(34, 10), Debug::YELLOW);
-				//Debug::Print(thisGame->getLocalPLayerScoreToString(), Vector2(70, 10), Debug::YELLOW);
-				//::Print(thisGame->getLocalPlayerSprintCDToString(), Vector2(12, 80), Debug::YELLOW);
-				//Debug::Print(thisGame->getLocalPlayerFireCDToString(), Vector2(70, 80), Debug::YELLOW);
-				//if (displayTreasureSign) { Debug::Print(thisGame->getLocalPlayerHasTreasure(), Vector2(30, 17), Debug::RED); }
-
-				//if (Window::GetKeyboard()->KeyHeld(KeyCodes::TAB))
-				//{
-				//	Debug::Print("====================================", Vector2(15, 22), Debug::YELLOW);
-				//	//Debug::Print(thisGame->getPlayersScore(0), Vector2(18, 30), Debug::RED);
-				//	//Debug::Print(thisGame->getPlayersScore(1), Vector2(18, 40), Debug::BLUE);
-				//	//Debug::Print(thisGame->getPlayersScore(2), Vector2(18, 50), Debug::YELLOW);
-				//	//Debug::Print(thisGame->getPlayersScore(3), Vector2(18, 60), Debug::CYAN);
-				//	Debug::Print("====================================", Vector2(15, 70), Debug::YELLOW);
-				//}
-				//else {
-				//	Debug::Print("Hold TAB to show score table", Vector2(25, 95), Debug::YELLOW);
-				//}
+				
 
 				if (thisGame->isServer())
 				{
@@ -213,8 +196,8 @@ namespace NCL {
 					if (thisGame->isServer())
 					{
 						Debug::Print("is You", Vector2(40, 30), Debug::RED);
-						Debug::Print("Press S : Game Start!", Vector2(5, 80), Debug::YELLOW);
-						if (Window::GetKeyboard()->KeyPressed(KeyCodes::S))
+						Debug::Print("Press SPACE : Game Start!", Vector2(5, 80), Debug::YELLOW);
+						if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE))
 						{
 							thisGame->StartLevel();
 						}
@@ -308,54 +291,7 @@ namespace NCL {
 
 		};
 
-		/*class MainMenu : public PushdownState
-		{
-			PushdownResult OnUpdate(float dt, PushdownState** newState) override
-			{
-				Debug::Print("The Crazy Goat!!", Vector2(35, 13), GetColorChanged(dt));
-				Debug::Print("Press 1 : Solo Game", Vector2(5, 23), Debug::YELLOW);
-				Debug::Print("Press 2 : MultiPlayer Game", Vector2(5, 33), Debug::YELLOW);
-				Debug::Print("Press 3 : Control Hint", Vector2(5, 43), Debug::YELLOW);
-				Debug::Print("Press 4 : Option", Vector2(5, 53), Debug::YELLOW);
-				Debug::Print("Press Esc : Game Over", Vector2(5, 80), Debug::YELLOW);
-
-				if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM1))
-				{
-
-				}
-				if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM2))
-				{
-					*newState = new MultiplayerMenu();
-					return PushdownResult::Push;
-				}
-				if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM3))
-				{
-					*newState = new HintMenu();
-					return PushdownResult::Push;
-				}
-				if (Window::GetKeyboard()->KeyPressed(KeyCodes::NUM4))
-				{
-
-				}
-				if (Window::GetKeyboard()->KeyPressed(KeyCodes::ESCAPE))
-				{
-					return PushdownResult::Pop;
-				}
-				return PushdownResult::NoChange;
-			}
-
-		protected:
-			Vector4 GetColorChanged(float dt)
-			{
-				time += dt;
-				float r = (std::sin(time) + 1.0f) / 2.0f;
-				float g = (std::sin(time + 2.094f) + 1.0f) / 2.0f;
-				float b = (std::sin(time + 4.188f) + 1.0f) / 2.0f;
-
-				return Vector4(r, g, b, 1.0);
-			}
-			float time = 0.0f;
-		};*/
+		
 	}
 }
 
